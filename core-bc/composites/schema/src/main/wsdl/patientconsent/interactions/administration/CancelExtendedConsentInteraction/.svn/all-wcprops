@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/!svn/ver/1214/ServiceInteractions/riv/ehr/patientconsent/trunk/schemas/interactions/administration/CancelExtendedConsentInteraction
+END
+CancelExtendedConsentInteraction_1.0_RIVTABP21.wsdl
+K 25
+svn:wc:ra_dav:version-url
+V 188
+/svn/!svn/ver/1214/ServiceInteractions/riv/ehr/patientconsent/trunk/schemas/interactions/administration/CancelExtendedConsentInteraction/CancelExtendedConsentInteraction_1.0_RIVTABP21.wsdl
+END
+CancelExtendedConsentResponder_1.0.xsd
+K 25
+svn:wc:ra_dav:version-url
+V 175
+/svn/!svn/ver/1214/ServiceInteractions/riv/ehr/patientconsent/trunk/schemas/interactions/administration/CancelExtendedConsentInteraction/CancelExtendedConsentResponder_1.0.xsd
+END

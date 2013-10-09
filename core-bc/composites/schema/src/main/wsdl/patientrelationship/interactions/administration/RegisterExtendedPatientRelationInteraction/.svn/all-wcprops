@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 151
+/svn/!svn/ver/1215/ServiceInteractions/riv/ehr/patientrelationship/trunk/schemas/interactions/administration/RegisterExtendedPatientRelationInteraction
+END
+RegisterExtendedPatientRelationResponder_1.0.xsd
+K 25
+svn:wc:ra_dav:version-url
+V 200
+/svn/!svn/ver/1215/ServiceInteractions/riv/ehr/patientrelationship/trunk/schemas/interactions/administration/RegisterExtendedPatientRelationInteraction/RegisterExtendedPatientRelationResponder_1.0.xsd
+END
+RegisterExtendedPatientRelationInteraction_1.0_RIVTABP21.wsdl
+K 25
+svn:wc:ra_dav:version-url
+V 213
+/svn/!svn/ver/1215/ServiceInteractions/riv/ehr/patientrelationship/trunk/schemas/interactions/administration/RegisterExtendedPatientRelationInteraction/RegisterExtendedPatientRelationInteraction_1.0_RIVTABP21.wsdl
+END

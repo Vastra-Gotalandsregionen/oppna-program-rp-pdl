@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements. See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership. Inera AB licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied. See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ -->	
+<wsdl:definitions name='GetConsentsForCareProviderInteraction'
+	xmlns:wsdl='http://schemas.xmlsoap.org/wsdl/'
+	xmlns:soap='http://schemas.xmlsoap.org/wsdl/soap/'
+	xmlns:xs='http://www.w3.org/2001/XMLSchema'
+	xmlns:tjsr='urn:riv:ehr:patientconsent:querying:GetConsentsForCareProviderResponder:1'
+	xmlns:itr='urn:riv:itintegration:registry:1'
+	xmlns:tns='urn:riv:ehr:patientconsent:querying:GetConsentsForCareProvider:1:rivtabp21'
+	targetNamespace='urn:riv:ehr:patientconsent:querying:GetConsentsForCareProvider:1:rivtabp21'>
+
+	<wsdl:documentation xml:lang='sv'>
+		 Tjänsteinteraktionens namn: GetConsentsForCareProvider
+		 Beskrivning: 
+		   Tjänst som läser alla giltiga samtyckesintyg för en viss vårdgivare med grundinformation.        
+		   Med giltiga samtyckesintyg avses de samtyckesintyg, alternativt intyg om nödsituation, som används som underlag vid en kontroll av åtkomst (CheckConsents).
+		   Det är valbart om makulerade och återkallade samtyckesintyg som ej är utgångna (giltigt t o m har passerats) skall returneras. 
+		   Utgångna samtyckesintyg (giltigt t o m har passerats) returneras ej oavsett makulering eller återkallning.
+		   Det går även att ange en tidpunkt (CreatedOnOrAfter) från när man önskar inhämta uppgifter och på så sätt undvika att inhämta data som redan hämtats vid ett tidigare tillfälle. Här avses tidpunkten då samtycket lagrades i tjänsten.         
+		   Tjänsten tillåts att dela upp listan av samtyckesintyg i mindre delar för att minska på belastningen på systemet. Om detta sker kommer flaggan HasMore att vara satt om det finns fler samtyckesintyg att hämta. De resterande samtyckesintygen skall i så fall hämtas med ytterligare anrop till tjänsten tills flaggan HashMore ej längre är satt (false). 
+		   Tjänsten returnerar en ny tidpunkt (CreatedOnOrAfter) som anger från och med nästa tidpunkt som samtyckesintygen ej har hämtats. Detta värde kan användas som inparameter i ytterligare anrop till tjänsten för att hämta nästa sekvens av samtyckesintyg.                
+		   Tjänsten kan användas i ett integrationsmönster där vårdsystemet med visst intervall inhämtar alla samtycken det behöver utifrån de vårdgivare som systemet hanterar information från, för att sedan vid behov utföra intern kontroll mot underlaget av samtycken och nödsituationsintyg.        
+		   Viktigt att kontrollera att alla samtycken är hämtade genom att kontrollera värdet på flaggan HasMore.
+		 Revisioner: 
+		 Tjänstedomän: patientconsent:querying
+		 Tjänsteinteraktionstyp: Fråga-Svar
+		 WS-profil: RIVTABP21
+		 Förvaltas av: Inera AB
+	</wsdl:documentation>
+	
+	<wsdl:types>
+		<xs:schema targetNamespace='urn:riv:ehr:patientconsent:querying:GetConsentsForCareProvider:1:rivtabp21'>
+			<xs:import schemaLocation='GetConsentsForCareProviderResponder_1.0.xsd' namespace='urn:riv:ehr:patientconsent:querying:GetConsentsForCareProviderResponder:1' />
+			<xs:import schemaLocation='../../../core_components/itintegration_registry_1.0.xsd' namespace='urn:riv:itintegration:registry:1' />
+		</xs:schema>
+	</wsdl:types>
+	
+		
+	<wsdl:message name='GetConsentsForCareProviderRequest'>
+		<wsdl:part name='LogicalAddress' element='itr:LogicalAddress'>
+			<wsdl:documentation xml:lang='sv'>Som logisk adress anges HSA-id för aktörens vårdgivare.</wsdl:documentation>
+		</wsdl:part>
+	
+		<wsdl:part name='parameters' element='tjsr:GetConsentsForCareProviderRequest' />
+	</wsdl:message>
+
+	<wsdl:message name='GetConsentsForCareProviderResponse'>
+		<wsdl:part name='parameters' element='tjsr:GetConsentsForCareProviderResponse' />
+	</wsdl:message>
+
+	<wsdl:portType name='GetConsentsForCareProviderResponderInterface'>
+		<wsdl:operation name='GetConsentsForCareProvider'>
+			<wsdl:input message='tns:GetConsentsForCareProviderRequest' />
+			<wsdl:output message='tns:GetConsentsForCareProviderResponse' />
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<wsdl:binding name='GetConsentsForCareProviderResponderBinding' type='tns:GetConsentsForCareProviderResponderInterface'>
+		<soap:binding style='document' transport='http://schemas.xmlsoap.org/soap/http' />
+		<wsdl:operation name='GetConsentsForCareProvider'>
+			<soap:operation soapAction='urn:riv:ehr:patientconsent:querying:GetConsentsForCareProviderResponder:1:GetConsentsForCareProvider' style='document' />
+			<wsdl:input>
+				<soap:header use='literal' message='tns:GetConsentsForCareProviderRequest' part='LogicalAddress' />
+				<soap:body use='literal' parts='parameters' />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use='literal' />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+
+	<wsdl:service name='GetConsentsForCareProviderResponderService'>
+		<wsdl:port name='GetConsentsForCareProviderResponderPort' binding='tns:GetConsentsForCareProviderResponderBinding'>
+			<soap:address location='http://tempuri.org' />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

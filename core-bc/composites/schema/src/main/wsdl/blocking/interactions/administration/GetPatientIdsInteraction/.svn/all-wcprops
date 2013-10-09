@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/!svn/ver/1202/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/administration/GetPatientIdsInteraction
+END
+GetPatientIdsResponder_2.0.xsd
+K 25
+svn:wc:ra_dav:version-url
+V 153
+/svn/!svn/ver/1202/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/administration/GetPatientIdsInteraction/GetPatientIdsResponder_2.0.xsd
+END
+GetPatientIdsInteraction_2.0_RIVTABP21.wsdl
+K 25
+svn:wc:ra_dav:version-url
+V 166
+/svn/!svn/ver/1202/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/administration/GetPatientIdsInteraction/GetPatientIdsInteraction_2.0_RIVTABP21.wsdl
+END

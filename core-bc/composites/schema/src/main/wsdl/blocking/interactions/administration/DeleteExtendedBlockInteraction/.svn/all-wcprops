@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/!svn/ver/1202/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/administration/DeleteExtendedBlockInteraction
+END
+DeleteExtendedBlockInteraction_2.0_RIVTABP21.wsdl
+K 25
+svn:wc:ra_dav:version-url
+V 178
+/svn/!svn/ver/1202/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/administration/DeleteExtendedBlockInteraction/DeleteExtendedBlockInteraction_2.0_RIVTABP21.wsdl
+END
+DeleteExtendedBlockResponder_2.0.xsd
+K 25
+svn:wc:ra_dav:version-url
+V 165
+/svn/!svn/ver/1202/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/administration/DeleteExtendedBlockInteraction/DeleteExtendedBlockResponder_2.0.xsd
+END

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements. See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership. Inera AB licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied. See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ -->	
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema' 
+	xmlns:tns='urn:riv:ehr:log:querying:1'
+	targetNamespace='urn:riv:ehr:log:querying:1'
+	xmlns:log='urn:riv:ehr:log:1'
+	elementFormDefault='qualified'
+	attributeFormDefault='unqualified' 
+	version='1.0'>
+
+	<xs:annotation>
+	    <xs:documentation xml:lang='sv'>
+	    </xs:documentation>
+	</xs:annotation>
+
+
+	<xs:import schemaLocation='../ehr_log_1.0.xsd' namespace='urn:riv:ehr:log:1' />
+
+
+		
+	<xs:complexType name="ResultType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som returneras som ett generellt svar från alla förändrande tjänster, t.ex. skapa, radera, etc. 
+		        En anropande klient skall alltid kontrollera att resultatkoden inte innehåller fel för att på så sätt veta om anropet lyckades. 
+		        Alla svarskoder förutom OK och INFO betyder att åtgärden inte genomfördes.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ResultCode" type="log:ResultCodeType"/>
+			<xs:element name="ResultText" type="xs:string"/>
+			<xs:element name="StartInterval" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="EndInterval" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="QueuedReportId" type="log:Id" minOccurs="0"/>
+			<xs:element name="QueueTime" type="xs:int" minOccurs="0"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="AccessLogsResultType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som returneras av tjänst. accessLogs ej satt vid eventuella fel.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Result" type="tns:ResultType"/>
+			<xs:element name="AccesssLogs" type="tns:AccessLogsType" minOccurs="0"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="AccessLogsType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som håller lista med Access loggar. Kan vara en tom lista.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="AccessLog" type="tns:AccessLogType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="AccessLogType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som håller information för vilken vårdgivare och vårdenhet som haft åtkomst samt typ av resurs, orsak och tidpunkt.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CareProviderId" type="log:HsaId"/>
+			<xs:element name="CareProviderName" type="xs:string"/>
+			<xs:element name="CareUnitId" type="log:HsaId"/>
+			<xs:element name="CareUnitName" type="xs:string"/>
+			<xs:element name="AccessDate" type="xs:dateTime"/>
+			<xs:element name="Purpose" type="log:PurposeDescription"/>
+			<xs:element name="ResourceType" type="log:ResourceTypeValue"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="InfoLogsResultType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som returneras av tjänst. careProviders är ej satt vid eventuella fel.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Result" type="tns:ResultType"/>
+			<xs:element name="CareProviders" type="tns:CareProvidersType" minOccurs="0"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="CareProvidersType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som håller lista med vårdgivare. Kan vara en tom lista.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CareProvider" type="log:CareProviderType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="LogsResultType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som returneras av tjänst. logs är ej satt vid eventuella fel.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Result" type="tns:ResultType"/>
+			<xs:element name="Logs" type="tns:LogsType" minOccurs="0"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="LogsType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som håller lista med loggposter. Kan vara en tom lista
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Log" type="log:LogType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

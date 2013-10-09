@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/!svn/ver/1261/ServiceInteractions/riv/ehr/log/trunk/schemas/interactions/querying/GetLogsForCareProviderInteraction
+END
+GetLogsForCareProviderInteraction_1.0_RIVTABP21.wsdl
+K 25
+svn:wc:ra_dav:version-url
+V 173
+/svn/!svn/ver/1261/ServiceInteractions/riv/ehr/log/trunk/schemas/interactions/querying/GetLogsForCareProviderInteraction/GetLogsForCareProviderInteraction_1.0_RIVTABP21.wsdl
+END
+GetLogsForCareProviderResponder_1.0.xsd
+K 25
+svn:wc:ra_dav:version-url
+V 160
+/svn/!svn/ver/1261/ServiceInteractions/riv/ehr/log/trunk/schemas/interactions/querying/GetLogsForCareProviderInteraction/GetLogsForCareProviderResponder_1.0.xsd
+END

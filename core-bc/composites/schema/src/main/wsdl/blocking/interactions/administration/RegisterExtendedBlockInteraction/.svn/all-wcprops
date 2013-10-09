@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/!svn/ver/1202/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/administration/RegisterExtendedBlockInteraction
+END
+RegisterExtendedBlockInteraction_2.0_RIVTABP21.wsdl
+K 25
+svn:wc:ra_dav:version-url
+V 182
+/svn/!svn/ver/1202/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/administration/RegisterExtendedBlockInteraction/RegisterExtendedBlockInteraction_2.0_RIVTABP21.wsdl
+END
+RegisterExtendedBlockResponder_2.0.xsd
+K 25
+svn:wc:ra_dav:version-url
+V 169
+/svn/!svn/ver/1202/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/administration/RegisterExtendedBlockInteraction/RegisterExtendedBlockResponder_2.0.xsd
+END

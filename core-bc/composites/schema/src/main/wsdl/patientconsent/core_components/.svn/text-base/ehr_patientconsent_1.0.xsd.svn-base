@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements. See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership. Inera AB licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied. See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ -->	
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema' 
+	xmlns:tns='urn:riv:ehr:patientconsent:1'
+	targetNamespace='urn:riv:ehr:patientconsent:1'
+	elementFormDefault='qualified'
+	attributeFormDefault='unqualified' 
+	version='1.0'>
+
+
+
+
+
+
+	<xs:simpleType name="ResultCodeType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Enumerationsvärde som anger de svarskoder som finns.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="OK">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Transaktionen har utförts enligt uppdraget.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="INFO">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Transaktionen har utförts enligt begäran, men det finns ett meddelande som konsumenten måste visa upp för användaren (om tillämpbart). Exempel på detta kan vara &amp;quot;kom fastande&amp;quot;.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ERROR">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Transaktionen har INTE kunnat utföras p.g.a ett logiskt fel. Det finns ett meddelande som konsumenten måste visa upp. Exempel på detta kan vara &amp;quot;tiden har bokats av annan patient&amp;quot;.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="VALIDATION_ERROR">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        En eller flera inparametrar innehåller felaktiga värden. Angiven tjänst utfördes ej.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ACCESSDENIED">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Behörighet saknas för att utföra begärd tjänst. Angiven tjänst utfördes ej.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="NOTFOUND">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Angiven artifakt finns ej. Angiven tjänst utfördes ej.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ALREADYEXISTS">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Angiven artifakt finns redan. Angiven tjänst utfördes ej.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="INVALIDSTATE">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Angiven tjänst utfördes ej då tjänsten eller artifakten var i ett felaktigt tillstånd.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="AssertionTypeType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Enumerationsvärde som anger typ av intyg som ger direktåtkomst till information från andra vådgivare enligt PDL.
+		        Kan vara patientens samtycke eller nödsituation.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Consent">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Patienten/Företrädaren har givit sitt samtycke.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Emergency">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Nödsituation föreligger. Patientens samtycke kunde ej inhämtas.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="ScopeType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Enumerationsvärde som anger omfånget/tillämpningsområde på intyget.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NationalLevel">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Intyget gäller på nationell nivå.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="ReasonText">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar en orsak eller anledning till en viss åtgärd.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="1024"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="AssignmentNameType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar namn på medarbetaruppdrag.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="256"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="Id">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar ett unikt identifikationsnummer enligt formatet för UUID (Universally Unique Identifier).
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="36"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="PersonIdValue">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar ett personnummer, samordningsnummer eller ett reservnummer.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="12"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="OwnerId">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som identifierar systemet som registrerade/skapade artifakten. Används endast för tekniskt bruk för t.ex. uppföljning och spårning.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="512"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="HsaId">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar det unika nummer som identifierar en anställd, uppdragstagare, strukturenhet eller en HCC funktion (HSA-id).
+		        Specificerat enligt HSA-schema tjänsteträdet version 3.9.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="32"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="ResultType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som returneras som ett generellt svar från alla förändrande tjänster, t.ex. skapa, radera, etc. 
+		        En tjänstekonsument skall alltid kontrollera att resultatkoden inte innehåller fel för att på så sätt veta om anropet lyckades. 
+		        Alla svarskoder förutom OK och INFO betyder att åtgärden inte genomfördes.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ResultCode" type="tns:ResultCodeType"/>
+			<xs:element name="ResultText" type="xs:string"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ActorType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som identifierar en medarbetare/person.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="EmployeeId" type="tns:HsaId"/>
+			<xs:element name="AssignmentId" type="tns:HsaId" minOccurs="0"/>
+			<xs:element name="AssignmentName" type="tns:AssignmentNameType" minOccurs="0"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="AccessingActorType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som identifierar en medarbetare/person som vill ha åtkomst till specifik information.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="EmployeeId" type="tns:HsaId"/>
+			<xs:element name="CareProviderId" type="tns:HsaId"/>
+			<xs:element name="CareUnitId" type="tns:HsaId"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ActionType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar den eller de aktörer/personer som begärt och/eller utfört en åtgärd med
+		        en möjlig orsak/anledning angivet som fritext.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="RequestDate" type="xs:dateTime"/>
+			<xs:element name="RequestedBy" type="tns:ActorType"/>
+			<xs:element name="RegistrationDate" type="xs:dateTime"/>
+			<xs:element name="RegisteredBy" type="tns:ActorType"/>
+			<xs:element name="ReasonText" type="tns:ReasonText" minOccurs="0"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="PDLAssertionType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar ett intyg som ger direktåtkomst till andra vårdgivares information enligt PDL. Datatypen beskriver grundformatet för ett intyg.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="AssertionId" type="tns:Id"/>
+			<xs:element name="AssertionType" type="tns:AssertionTypeType"/>
+			<xs:element name="Scope" type="tns:ScopeType"/>
+			<xs:element name="PatientId" type="tns:PersonIdValue"/>
+			<xs:element name="CareProviderId" type="tns:HsaId"/>
+			<xs:element name="CareUnitId" type="tns:HsaId"/>
+			<xs:element name="EmployeeId" type="tns:HsaId" minOccurs="0"/>
+			<xs:element name="StartDate" type="xs:dateTime"/>
+			<xs:element name="EndDate" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="OwnerId" type="tns:OwnerId" minOccurs="0"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ExtendedPDLAssertionType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar ett samtycke med ett utökat format. Innehåller information vem som har begärt respektive registrerat samtycket, samt om och när samtycket är återkallat eller makulerat.
+		        Datatypen utökar datatypen PDLAssertion.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="PDLAssertion" type="tns:PDLAssertionType"/>
+			<xs:element name="RepresentedBy" type="tns:PersonIdValue" minOccurs="0"/>
+			<xs:element name="RegistrationInfo" type="tns:ActionType"/>
+			<xs:element name="CancellationInfo" type="tns:ActionType" minOccurs="0"/>
+			<xs:element name="DeletionInfo" type="tns:ActionType" minOccurs="0"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="GetExtendedConsentsResultType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som innehåller resultatet från en hämtning av samtyckesintyg enligt det utökade formatet tillsammans med hämtade samtyckesintyg.
+		        Datatypen utökar datatypen Result.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Result" type="tns:ResultType"/>
+			<xs:element name="PdlAssertions" type="tns:ExtendedPDLAssertionType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="CancelledAssertionType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar ett makulerat eller återkallat samtycke samt tidpunkten när makuleringen eller återkallan utfördes.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="AssertionId" type="tns:Id"/>
+			<xs:element name="CancellationDate" type="xs:dateTime"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="GetAllAssertionsResultType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar en lista med giltiga intyg tillsammans med en lista av makulerade och återkallade intyg. Den används för att dela upp svaret från tjänsten i mindre delar baserat på tidpunkt.
+		        Datatypen innehåller information om det finns ytterligare intyg att hämta samt en ny starttidpunkt för när nästa sekvens av intyg startar.
+		        Datatypen utökar datatypen Result.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Result" type="tns:ResultType"/>
+			<xs:element name="MoreOnOrAfter" type="xs:dateTime"/>
+			<xs:element name="HasMore" type="xs:boolean"/>
+			<xs:element name="Assertions" type="tns:PDLAssertionType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="CancelledAssertions" type="tns:CancelledAssertionType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="GetConsentsResultType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som innehåller resultatet från en hämtning av samtyckesintyg enligt det utökade formatet tillsammans med hämtade samtyckesintyg.
+		        Datatypen utökar datatypen Result.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Result" type="tns:ResultType"/>
+			<xs:element name="PdlAssertions" type="tns:PDLAssertionType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="CheckResultType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som anger om det finns ett giltigt samtycke, alternativt intyg om nödsituation, gällande åtkomst för viss aktör. 
+		        Datatypen utökar datatypen Result.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Result" type="tns:ResultType"/>
+			<xs:element name="HasConsent" type="xs:boolean"/>
+			<xs:element name="AssertionType" type="tns:AssertionTypeType" minOccurs="0"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

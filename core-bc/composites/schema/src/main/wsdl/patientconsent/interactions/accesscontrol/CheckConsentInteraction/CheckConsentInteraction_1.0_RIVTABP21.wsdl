@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements. See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership. Inera AB licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied. See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ -->	
+<wsdl:definitions name='CheckConsentInteraction'
+	xmlns:wsdl='http://schemas.xmlsoap.org/wsdl/'
+	xmlns:soap='http://schemas.xmlsoap.org/wsdl/soap/'
+	xmlns:xs='http://www.w3.org/2001/XMLSchema'
+	xmlns:tjsr='urn:riv:ehr:patientconsent:accesscontrol:CheckConsentResponder:1'
+	xmlns:itr='urn:riv:itintegration:registry:1'
+	xmlns:tns='urn:riv:ehr:patientconsent:accesscontrol:CheckConsent:1:rivtabp21'
+	targetNamespace='urn:riv:ehr:patientconsent:accesscontrol:CheckConsent:1:rivtabp21'>
+
+	<wsdl:documentation xml:lang='sv'>
+		 Tjänsteinteraktionens namn: CheckConsent
+		 Beskrivning: 
+		   Tjänst som kontrollerar om det finns ett giltigt samtycke, alternativt intyg om nödsituation, gällande åtkomst för viss aktör (vårdenhet eller medarbetare).
+		   Med giltigt samtycke avses ett samtycke som fortfarande är giltigt (giltigt t o m har ej passerats), ej makulerat eller återkallat.
+		   Om ett giltigt intyg gällande åtkomst för angiven aktör hittas, kommer tjänsten att svara OK.
+		 Revisioner: 
+		 Tjänstedomän: patientconsent:accesscontrol
+		 Tjänsteinteraktionstyp: Fråga-Svar
+		 WS-profil: RIVTABP21
+		 Förvaltas av: Inera AB
+	</wsdl:documentation>
+	
+	<wsdl:types>
+		<xs:schema targetNamespace='urn:riv:ehr:patientconsent:accesscontrol:CheckConsent:1:rivtabp21'>
+			<xs:import schemaLocation='CheckConsentResponder_1.0.xsd' namespace='urn:riv:ehr:patientconsent:accesscontrol:CheckConsentResponder:1' />
+			<xs:import schemaLocation='../../../core_components/itintegration_registry_1.0.xsd' namespace='urn:riv:itintegration:registry:1' />
+		</xs:schema>
+	</wsdl:types>
+	
+		
+	<wsdl:message name='CheckConsentRequest'>
+		<wsdl:part name='LogicalAddress' element='itr:LogicalAddress'>
+			<wsdl:documentation xml:lang='sv'>Som logisk adress anges HSA-id för aktörens vårdgivare.</wsdl:documentation>
+		</wsdl:part>
+	
+		<wsdl:part name='parameters' element='tjsr:CheckConsentRequest' />
+	</wsdl:message>
+
+	<wsdl:message name='CheckConsentResponse'>
+		<wsdl:part name='parameters' element='tjsr:CheckConsentResponse' />
+	</wsdl:message>
+
+	<wsdl:portType name='CheckConsentResponderInterface'>
+		<wsdl:operation name='CheckConsent'>
+			<wsdl:input message='tns:CheckConsentRequest' />
+			<wsdl:output message='tns:CheckConsentResponse' />
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<wsdl:binding name='CheckConsentResponderBinding' type='tns:CheckConsentResponderInterface'>
+		<soap:binding style='document' transport='http://schemas.xmlsoap.org/soap/http' />
+		<wsdl:operation name='CheckConsent'>
+			<soap:operation soapAction='urn:riv:ehr:patientconsent:accesscontrol:CheckConsentResponder:1:CheckConsent' style='document' />
+			<wsdl:input>
+				<soap:header use='literal' message='tns:CheckConsentRequest' part='LogicalAddress' />
+				<soap:body use='literal' parts='parameters' />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use='literal' />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+
+	<wsdl:service name='CheckConsentResponderService'>
+		<wsdl:port name='CheckConsentResponderPort' binding='tns:CheckConsentResponderBinding'>
+			<soap:address location='http://tempuri.org' />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/!svn/ver/1337/ServiceInteractions/riv/ehr/log/trunk/schemas/interactions/querying/GetLogsForPatientInteraction
+END
+GetLogsForPatientInteraction_1.0_RIVTABP21.wsdl
+K 25
+svn:wc:ra_dav:version-url
+V 163
+/svn/!svn/ver/1261/ServiceInteractions/riv/ehr/log/trunk/schemas/interactions/querying/GetLogsForPatientInteraction/GetLogsForPatientInteraction_1.0_RIVTABP21.wsdl
+END
+GetLogsForPatientResponder_1.0.xjb
+K 25
+svn:wc:ra_dav:version-url
+V 150
+/svn/!svn/ver/1337/ServiceInteractions/riv/ehr/log/trunk/schemas/interactions/querying/GetLogsForPatientInteraction/GetLogsForPatientResponder_1.0.xjb
+END
+GetLogsForPatientInteraction_1.0_RIVTABP21.bind
+K 25
+svn:wc:ra_dav:version-url
+V 163
+/svn/!svn/ver/1337/ServiceInteractions/riv/ehr/log/trunk/schemas/interactions/querying/GetLogsForPatientInteraction/GetLogsForPatientInteraction_1.0_RIVTABP21.bind
+END
+GetLogsForPatientInteraction_1.0_RIVTABP21.xjb
+K 25
+svn:wc:ra_dav:version-url
+V 162
+/svn/!svn/ver/1337/ServiceInteractions/riv/ehr/log/trunk/schemas/interactions/querying/GetLogsForPatientInteraction/GetLogsForPatientInteraction_1.0_RIVTABP21.xjb
+END
+GetLogsForPatientResponder_1.0.bind
+K 25
+svn:wc:ra_dav:version-url
+V 151
+/svn/!svn/ver/1337/ServiceInteractions/riv/ehr/log/trunk/schemas/interactions/querying/GetLogsForPatientInteraction/GetLogsForPatientResponder_1.0.bind
+END
+GetLogsForPatientResponder_1.0.xsd
+K 25
+svn:wc:ra_dav:version-url
+V 150
+/svn/!svn/ver/1261/ServiceInteractions/riv/ehr/log/trunk/schemas/interactions/querying/GetLogsForPatientInteraction/GetLogsForPatientResponder_1.0.xsd
+END

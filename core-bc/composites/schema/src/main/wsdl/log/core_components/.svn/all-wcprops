@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/!svn/ver/1337/ServiceInteractions/riv/ehr/log/trunk/schemas/core_components
+END
+itintegration_registry_1.0.xsd
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/!svn/ver/1210/ServiceInteractions/riv/ehr/log/trunk/schemas/core_components/itintegration_registry_1.0.xsd
+END
+ehr_log_1.0.xsd
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/!svn/ver/1337/ServiceInteractions/riv/ehr/log/trunk/schemas/core_components/ehr_log_1.0.xsd
+END

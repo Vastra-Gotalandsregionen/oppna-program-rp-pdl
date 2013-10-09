@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements. See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership. Inera AB licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied. See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ -->	
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema' 
+	xmlns:tns='urn:riv:ehr:blocking:administration:GetExtendedBlocksForPatientResponder:2'				
+	xmlns:blockingadministration='urn:riv:ehr:blocking:administration:2'
+	xmlns:blocking='urn:riv:ehr:blocking:2'
+	targetNamespace='urn:riv:ehr:blocking:administration:GetExtendedBlocksForPatientResponder:2'
+	elementFormDefault='qualified'
+	attributeFormDefault='unqualified'
+	version='2.0'>
+
+	<xs:import schemaLocation='../ehr_administration_2.0.xsd' namespace='urn:riv:ehr:blocking:administration:2' />
+	<xs:import schemaLocation='../../../core_components/ehr_blocking_2.0.xsd' namespace='urn:riv:ehr:blocking:2' />
+
+
+	<xs:element name='GetExtendedBlocksForPatientRequest' type='tns:GetExtendedBlocksForPatientRequestType'/>
+
+	<xs:complexType name='GetExtendedBlocksForPatientRequestType'>
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Tjänst som läser alla spärrar för en viss patient och organisation. Varje spärr innehåller också tillfälliga hävningar om sådana finns.
+		        Tjänsten returnerar även makulerade och permanent hävda spärrar, samt tidigare gjorda tillfälliga hävningar, för att ge ett historikunderlag (vad som har hänt med patientens spärrar tidigare).
+		        Tjänsten används för att på lokal nivå kunna söka fram och administrera patientens spärrar och dess eventuella tillfälliga hävningar för en viss vårdgivare.
+		        Tjänsten realiseras på lokal nivå.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CareProviderId" type="blocking:HsaId"/>
+			<xs:element name="PatientId" type="blocking:PersonIdValue"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:element name='GetExtendedBlocksForPatientResponse' type='tns:GetExtendedBlocksForPatientResponseType'/>
+
+	<xs:complexType name='GetExtendedBlocksForPatientResponseType'>
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Tjänst som läser alla spärrar för en viss patient och organisation. Varje spärr innehåller också tillfälliga hävningar om sådana finns.
+		        Tjänsten returnerar även makulerade och permanent hävda spärrar, samt tidigare gjorda tillfälliga hävningar, för att ge ett historikunderlag (vad som har hänt med patientens spärrar tidigare).
+		        Tjänsten används för att på lokal nivå kunna söka fram och administrera patientens spärrar och dess eventuella tillfälliga hävningar för en viss vårdgivare.
+		        Tjänsten realiseras på lokal nivå.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="GetExtendedBlocksResultType" type="blockingadministration:GetExtendedBlocksResultType"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

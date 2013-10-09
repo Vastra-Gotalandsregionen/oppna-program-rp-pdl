@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/svn/!svn/ver/1214/ServiceInteractions/riv/ehr/patientconsent/trunk/schemas/interactions/administration/RegisterExtendedConsentInteraction
+END
+RegisterExtendedConsentInteraction_1.0_RIVTABP21.wsdl
+K 25
+svn:wc:ra_dav:version-url
+V 192
+/svn/!svn/ver/1214/ServiceInteractions/riv/ehr/patientconsent/trunk/schemas/interactions/administration/RegisterExtendedConsentInteraction/RegisterExtendedConsentInteraction_1.0_RIVTABP21.wsdl
+END
+RegisterExtendedConsentResponder_1.0.xsd
+K 25
+svn:wc:ra_dav:version-url
+V 179
+/svn/!svn/ver/1214/ServiceInteractions/riv/ehr/patientconsent/trunk/schemas/interactions/administration/RegisterExtendedConsentInteraction/RegisterExtendedConsentResponder_1.0.xsd
+END

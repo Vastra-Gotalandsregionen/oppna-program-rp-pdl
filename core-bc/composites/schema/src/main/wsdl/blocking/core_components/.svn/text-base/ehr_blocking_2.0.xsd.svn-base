@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements. See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership. Inera AB licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied. See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ -->	
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema' 
+	xmlns:tns='urn:riv:ehr:blocking:2'
+	targetNamespace='urn:riv:ehr:blocking:2'
+	elementFormDefault='qualified'
+	attributeFormDefault='unqualified' 
+	version='2.0'>
+
+
+
+
+
+
+	<xs:simpleType name="ResultCodeType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Enumerationsvärde som anger de svarskoder som finns.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="OK">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Transaktionen har utförts enligt uppdraget.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="INFO">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Transaktionen har utförts enligt begäran, men det finns ett meddelande som konsumenten måste visa upp för användaren (om tillämpbart). Exempel på detta kan vara &amp;quot;kom fastande&amp;quot;.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ERROR">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Transaktionen har INTE kunnat utföras p.g.a ett logiskt fel. Det finns ett meddelande som konsumenten måste visa upp. Exempel på detta kan vara &amp;quot;tiden har bokats av annan patient&amp;quot;.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="VALIDATIONERROR">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        En eller flera inparametrar innehåller felaktiga värden. Angiven tjänst utfördes ej.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ACCESSDENIED">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Behörighet saknas för att utföra begärd tjänst. Angiven tjänst utfördes ej.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="NOTFOUND">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Angiven artifakt finns ej. Angiven tjänst utfördes ej.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="ALREADYEXISTS">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Angiven artifakt finns redan. Angiven tjänst utfördes ej.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="INVALIDSTATE">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Angiven tjänst utfördes ej då tjänsten eller artifakten var i ett felaktigt tillstånd.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="TemporaryRevokeReasonType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Enumerationsvärde som anger orsaken/anledningen till en tillfällig hävning.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PatientsConsent">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Patienten har givit sitt samtycke till en tillfällig hävning.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Emergency">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Nödsituation föreligger. Patientens samtycke för en tillfällig hävning kunde ej inhämtas.
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="BlockTypeType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Enumerationsvärde som anger typ av spärr.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Inner">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Representerar en inre spärr (inom vårdenhet).
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Outer">
+				<xs:annotation>
+				    <xs:documentation xml:lang='sv'>
+				        Representerar en yttre spärr (inom vårdgivare).
+				    </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="ReasonText">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar en orsak eller anledning till en viss åtgärd.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="1024"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="AssignmentNameType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar namn på medarbetaruppdrag.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="256"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="Id">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar ett unikt identifikationsnummer enligt formatet för UUID (Universally Unique Identifier).
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="36"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="PersonIdValue">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar ett personnummer, samordningsnummer eller ett reservnummer.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="12"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="OwnerId">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som identifierar systemet som registrerade/skapade artifakten. Används endast för tekniskt bruk för t.ex. uppföljning och spårning.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="512"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="HsaId">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar det unika nummer som identifierar en anställd, uppdragstagare, strukturenhet eller en HCC funktion (HSA-id).
+		        Specificerat enligt HSA-schema tjänsteträdet version 3.9.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="32"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="InformationTypeIdValue">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som används för att ange informationstyper.
+		        Giltiga värden är endast:
+		        Typ     Beskrivning
+		        lak     Läkemedel - Ordination/förskrivning
+		        upp     Uppmärksamhetsinformation
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="6"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="InformationTypeDescription">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som används för att ange en beskrivning på en informationstyp.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="64"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="ResultType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som returneras som ett generellt svar från alla förändrande tjänster, t.ex. skapa, radera, etc. 
+		        En tjänstekonsument skall alltid kontrollera att resultatkoden inte innehåller fel för att på så sätt veta om anropet lyckades. 
+		        Alla svarskoder förutom OK och INFO betyder att åtgärden inte genomfördes.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ResultCode" type="tns:ResultCodeType"/>
+			<xs:element name="ResultText" type="xs:string"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ActorType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som identifierar en medarbetare/person.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="EmployeeId" type="tns:HsaId"/>
+			<xs:element name="AssignmentId" type="tns:HsaId" minOccurs="0"/>
+			<xs:element name="AssignmentName" type="tns:AssignmentNameType" minOccurs="0"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="AccessingActorType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som identifierar en medarbetare/person som vill ha åtkomst till specifik information.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="EmployeeId" type="tns:HsaId"/>
+			<xs:element name="CareProviderId" type="tns:HsaId"/>
+			<xs:element name="CareUnitId" type="tns:HsaId"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ActionType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar den eller de aktörer/personer som begärt och/eller utfört en åtgärd med
+		        en möjlig orsak/anledning angivet som fritext.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="RequestDate" type="xs:dateTime"/>
+			<xs:element name="RequestedBy" type="tns:ActorType"/>
+			<xs:element name="RegistrationDate" type="xs:dateTime"/>
+			<xs:element name="RegisteredBy" type="tns:ActorType"/>
+			<xs:element name="ReasonText" type="tns:ReasonText" minOccurs="0"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="InformationTypeType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar de Informationstyper som kan undantas från att spärras.
+		        En spärr gäller normalt alla informationstyper.
+		        Denna lista utgör de informationstyper som kan undantas från att spärras. 
+		        Om försök görs att registrera en spärr innehållandes en okänd informationstyp skall spärrtjänsten att neka detta.
+		        lak     Läkemedel - Ordination/förskrivning
+		        upp     Uppmärksamhetsinformation
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="InfoTypeId" type="tns:InformationTypeIdValue"/>
+			<xs:element name="InfoTypeDescription" type="tns:InformationTypeDescription"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="BlockType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar en existerande spärr med alla dess attribut. Datatypen beskriver grundformatet för en spärr.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="BlockId" type="tns:Id"/>
+			<xs:element name="BlockType" type="tns:BlockTypeType"/>
+			<xs:element name="PatientId" type="tns:PersonIdValue"/>
+			<xs:element name="InformationStartDate" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="InformationEndDate" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="InformationCareUnitId" type="tns:HsaId" minOccurs="0"/>
+			<xs:element name="InformationCareProviderId" type="tns:HsaId"/>
+			<xs:element name="ExcludedInformationTypes" type="tns:InformationTypeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="TemporaryRevokes" type="tns:TemporaryRevokeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="OwnerId" type="tns:OwnerId" minOccurs="0"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="TemporaryRevokeType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar en tillfällig hävning för en spärr med alla dess attribut. En tillfällig hävning tillhör alltid en spärr. 
+		        Datatypen beskriver grundformatet för en tillfällig hävning.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TemporaryRevokeId" type="tns:Id"/>
+			<xs:element name="EndDate" type="xs:dateTime"/>
+			<xs:element name="RevokedForCareUnitId" type="tns:HsaId"/>
+			<xs:element name="RevokedForEmployeeId" type="tns:HsaId" minOccurs="0"/>
+			<xs:element name="OwnerId" type="tns:OwnerId" minOccurs="0"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="TemporaryRevokeRegistrationType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar en registrering av en tillfällig hävning med de attribut som behövs.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TemporaryRevokeId" type="tns:Id"/>
+			<xs:element name="BlockId" type="tns:Id"/>
+			<xs:element name="EndDate" type="xs:dateTime"/>
+			<xs:element name="RevokedForCareUnitId" type="tns:HsaId"/>
+			<xs:element name="RevokedForEmployeeId" type="tns:HsaId" minOccurs="0"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="BlockHeaderType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar spärrdata, antingen innehållandes endast spärrdata, eller spärrdata tillsammans med avregistrerade spärrar, beroende på hur klienten efterfrågat data.
+		        Datatypen utökar datatypen Result.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Result" type="tns:ResultType"/>
+			<xs:element name="Blocks" type="tns:BlockType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="NextCreatedOnOrAfter" type="xs:dateTime"/>
+			<xs:element name="LatestCancellation" type="xs:dateTime"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="InformationEntityType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar den information som behövs vid en kontroll om spärr föreligger.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="InformationStartDate" type="xs:dateTime"/>
+			<xs:element name="InformationEndDate" type="xs:dateTime"/>
+			<xs:element name="InformationCareUnitId" type="tns:HsaId"/>
+			<xs:element name="InformationCareProviderId" type="tns:HsaId"/>
+			<xs:element name="InformationType" type="tns:InformationTypeIdValue" minOccurs="0"/>
+			<xs:element name="RowNumber" type="xs:int"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="CheckResultType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar ett svar från kontrollen av åtkomst till information.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Blocked" type="xs:boolean"/>
+			<xs:element name="RowNumber" type="xs:int"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="CheckBlocksResultType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som innehåller resultatet från tjänsten CheckBlocks.
+		        Datatypen utökar datatypen Result.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Result" type="tns:ResultType"/>
+			<xs:element name="CheckResults" type="tns:CheckResultType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

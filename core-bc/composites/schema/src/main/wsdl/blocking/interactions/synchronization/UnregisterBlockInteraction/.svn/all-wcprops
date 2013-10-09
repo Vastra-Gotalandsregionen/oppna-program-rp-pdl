@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/!svn/ver/1202/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/synchronization/UnregisterBlockInteraction
+END
+UnregisterBlockResponder_2.0.xsd
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/svn/!svn/ver/1202/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/synchronization/UnregisterBlockInteraction/UnregisterBlockResponder_2.0.xsd
+END
+UnregisterBlockInteraction_2.0_RIVTABP21.wsdl
+K 25
+svn:wc:ra_dav:version-url
+V 171
+/svn/!svn/ver/1202/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/synchronization/UnregisterBlockInteraction/UnregisterBlockInteraction_2.0_RIVTABP21.wsdl
+END

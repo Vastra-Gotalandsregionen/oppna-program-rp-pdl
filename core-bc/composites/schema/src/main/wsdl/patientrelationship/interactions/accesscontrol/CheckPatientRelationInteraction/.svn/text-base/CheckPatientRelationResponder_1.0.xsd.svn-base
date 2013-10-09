@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements. See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership. Inera AB licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied. See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ -->	
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema' 
+	xmlns:tns='urn:riv:ehr:patientrelationship:accesscontrol:CheckPatientRelationResponder:1'				
+	xmlns:patientrelationship='urn:riv:ehr:patientrelationship:1'
+	targetNamespace='urn:riv:ehr:patientrelationship:accesscontrol:CheckPatientRelationResponder:1'
+	elementFormDefault='qualified'
+	attributeFormDefault='unqualified'
+	version='1.0'>
+
+	<xs:import schemaLocation='../../../core_components/ehr_patientrelationship_1.0.xsd' namespace='urn:riv:ehr:patientrelationship:1' />
+
+
+	<xs:element name='CheckPatientRelationRequest' type='tns:CheckPatientRelationRequestType'/>
+
+	<xs:complexType name='CheckPatientRelationRequestType'>
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Tjänst som kontrollerar om patientrelation mellan patienten och aktör föreligger.
+		        Tjänsten utvärderar om patientrelation finns mellan patient och aktör (medarbetare). 
+		        Om en giltig patientrelation gällande åtkomst för angiven aktör hittas, kommer tjänsten att svara OK.
+		        Med giltig patientrelation avses en patientrelation som fortfarande är giltigt (giltigt t o m har ej passerats), ej makulerat eller återkallat.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="AccessingActor" type="patientrelationship:AccessingActorType"/>
+			<xs:element name="PatientId" type="patientrelationship:PersonIdValue"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:element name='CheckPatientRelationResponse' type='tns:CheckPatientRelationResponseType'/>
+
+	<xs:complexType name='CheckPatientRelationResponseType'>
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Tjänst som kontrollerar om patientrelation mellan patienten och aktör föreligger.
+		        Tjänsten utvärderar om patientrelation finns mellan patient och aktör (medarbetare). 
+		        Om en giltig patientrelation gällande åtkomst för angiven aktör hittas, kommer tjänsten att svara OK.
+		        Med giltig patientrelation avses en patientrelation som fortfarande är giltigt (giltigt t o m har ej passerats), ej makulerat eller återkallat.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CheckResultType" type="patientrelationship:CheckResultType"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

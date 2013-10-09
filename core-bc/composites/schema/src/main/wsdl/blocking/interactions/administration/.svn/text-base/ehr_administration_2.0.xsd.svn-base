@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema' 
+	xmlns:tns='urn:riv:ehr:blocking:administration:2'
+	targetNamespace='urn:riv:ehr:blocking:administration:2'
+	xmlns:blocking='urn:riv:ehr:blocking:2'
+	elementFormDefault='qualified'
+	attributeFormDefault='unqualified' 
+	version='2.0'>
+
+
+
+	<xs:import schemaLocation='../../core_components/ehr_blocking_2.0.xsd' namespace='urn:riv:ehr:blocking:2' />
+
+
+
+	<xs:complexType name="ExtendedTemporaryRevokeType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar en tillfällig hävning enligt det utökade formatet.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="TemporaryRevokeId" type="blocking:Id"/>
+			<xs:element name="EndDate" type="xs:dateTime"/>
+			<xs:element name="RevokedForCareUnitId" type="blocking:HsaId"/>
+			<xs:element name="RevokedForEmployeeId" type="blocking:HsaId" minOccurs="0"/>
+			<xs:element name="RevocationReason" type="blocking:TemporaryRevokeReasonType" minOccurs="0"/>
+			<xs:element name="RevocationReasonText" type="blocking:ReasonText" minOccurs="0"/>
+			<xs:element name="RegistrationInfo" type="blocking:ActionType"/>
+			<xs:element name="CancellationInfo" type="blocking:ActionType" minOccurs="0"/>
+			<xs:element name="OwnerId" type="blocking:OwnerId" minOccurs="0"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ExtendedBlockType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som representerar en spärr enligt det utökade formatet.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="BlockId" type="blocking:Id"/>
+			<xs:element name="BlockType" type="blocking:BlockTypeType"/>
+			<xs:element name="PatientId" type="blocking:PersonIdValue"/>
+			<xs:element name="InformationStartDate" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="InformationEndDate" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="InformationCareUnitId" type="blocking:HsaId" minOccurs="0"/>
+			<xs:element name="InformationCareProviderId" type="blocking:HsaId"/>
+			<xs:element name="ExcludedInformationTypes" type="blocking:InformationTypeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="RegistrationInfo" type="blocking:ActionType"/>
+			<xs:element name="PermanentRevokedInfo" type="blocking:ActionType" minOccurs="0"/>
+			<xs:element name="DeletionInfo" type="blocking:ActionType" minOccurs="0"/>
+			<xs:element name="TemporaryRevokes" type="tns:ExtendedTemporaryRevokeType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="OwnerId" type="blocking:OwnerId" minOccurs="0"/>
+			<xs:element name="LocallyCreated" type="xs:boolean"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="GetExtendedBlocksResultType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som innehåller resultatet från tjänsten GetExtendedBlocksForPatient. 
+		        Datatypen utökar datatypen Result.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Result" type="blocking:ResultType"/>
+			<xs:element name="Blocks" type="tns:ExtendedBlockType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="GetPatientIdResultType">
+		<xs:annotation>
+		    <xs:documentation xml:lang='sv'>
+		        Datatyp som innehåller resultatet från tjänsten GetPatientIdsForCareProvider.
+		        Datatypen utökar datatypen Result.
+		    </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Result" type="blocking:ResultType"/>
+			<xs:element name="PatientIds" type="blocking:PersonIdValue" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

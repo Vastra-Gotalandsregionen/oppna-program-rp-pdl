@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/!svn/ver/1202/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/querying/GetBlocksForPatientInteraction
+END
+GetBlocksForPatientResponder_2.0.xsd
+K 25
+svn:wc:ra_dav:version-url
+V 159
+/svn/!svn/ver/1202/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/querying/GetBlocksForPatientInteraction/GetBlocksForPatientResponder_2.0.xsd
+END
+GetBlocksForPatientInteraction_2.0_RIVTABP21.wsdl
+K 25
+svn:wc:ra_dav:version-url
+V 172
+/svn/!svn/ver/1202/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/querying/GetBlocksForPatientInteraction/GetBlocksForPatientInteraction_2.0_RIVTABP21.wsdl
+END

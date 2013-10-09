@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 149
+/svn/!svn/ver/1215/ServiceInteractions/riv/ehr/patientrelationship/trunk/schemas/interactions/administration/DeleteExtendedPatientRelationInteraction
+END
+DeleteExtendedPatientRelationResponder_1.0.xsd
+K 25
+svn:wc:ra_dav:version-url
+V 196
+/svn/!svn/ver/1215/ServiceInteractions/riv/ehr/patientrelationship/trunk/schemas/interactions/administration/DeleteExtendedPatientRelationInteraction/DeleteExtendedPatientRelationResponder_1.0.xsd
+END
+DeleteExtendedPatientRelationInteraction_1.0_RIVTABP21.wsdl
+K 25
+svn:wc:ra_dav:version-url
+V 209
+/svn/!svn/ver/1215/ServiceInteractions/riv/ehr/patientrelationship/trunk/schemas/interactions/administration/DeleteExtendedPatientRelationInteraction/DeleteExtendedPatientRelationInteraction_1.0_RIVTABP21.wsdl
+END

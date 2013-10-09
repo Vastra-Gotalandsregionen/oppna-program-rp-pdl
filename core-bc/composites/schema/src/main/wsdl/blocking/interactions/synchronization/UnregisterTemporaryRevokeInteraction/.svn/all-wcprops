@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/!svn/ver/1202/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/synchronization/UnregisterTemporaryRevokeInteraction
+END
+UnregisterTemporaryRevokeResponder_2.0.xsd
+K 25
+svn:wc:ra_dav:version-url
+V 178
+/svn/!svn/ver/1202/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/synchronization/UnregisterTemporaryRevokeInteraction/UnregisterTemporaryRevokeResponder_2.0.xsd
+END
+UnregisterTemporaryRevokeInteraction_2.0_RIVTABP21.wsdl
+K 25
+svn:wc:ra_dav:version-url
+V 191
+/svn/!svn/ver/1202/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/synchronization/UnregisterTemporaryRevokeInteraction/UnregisterTemporaryRevokeInteraction_2.0_RIVTABP21.wsdl
+END

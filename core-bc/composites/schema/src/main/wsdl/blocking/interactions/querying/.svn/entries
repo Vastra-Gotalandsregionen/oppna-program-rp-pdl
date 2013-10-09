@@ -1,0 +1,40 @@
+10
+
+dir
+2177
+http://rivta.googlecode.com/svn/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/querying
+http://rivta.googlecode.com/svn
+
+
+
+2012-10-22T13:57:45.418147Z
+1202
+stef.eriksson@logica.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+c1faef40-eec5-6430-f181-9cb8a2d1d0ae
+
+GetAllBlocksForPatientInteraction
+dir
+
+GetAllBlocksInteraction
+dir
+
+GetBlocksForPatientInteraction
+dir
+
+GetBlocksInteraction
+dir
+

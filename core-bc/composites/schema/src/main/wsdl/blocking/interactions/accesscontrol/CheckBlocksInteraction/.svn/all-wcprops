@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/!svn/ver/1896/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/accesscontrol/CheckBlocksInteraction
+END
+CheckBlocksResponder_3.0.xsd
+K 25
+svn:wc:ra_dav:version-url
+V 148
+/svn/!svn/ver/1896/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/accesscontrol/CheckBlocksInteraction/CheckBlocksResponder_3.0.xsd
+END
+CheckBlocksInteraction_3.0_RIVTABP21.wsdl
+K 25
+svn:wc:ra_dav:version-url
+V 161
+/svn/!svn/ver/1896/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/accesscontrol/CheckBlocksInteraction/CheckBlocksInteraction_3.0_RIVTABP21.wsdl
+END

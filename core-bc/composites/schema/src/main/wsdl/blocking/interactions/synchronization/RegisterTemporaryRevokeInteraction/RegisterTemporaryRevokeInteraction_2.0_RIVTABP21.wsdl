@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements. See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership. Inera AB licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied. See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ -->	
+<wsdl:definitions name='RegisterTemporaryRevokeInteraction'
+	xmlns:wsdl='http://schemas.xmlsoap.org/wsdl/'
+	xmlns:soap='http://schemas.xmlsoap.org/wsdl/soap/'
+	xmlns:xs='http://www.w3.org/2001/XMLSchema'
+	xmlns:tjsr='urn:riv:ehr:blocking:synchronization:RegisterTemporaryRevokeResponder:2'
+	xmlns:itr='urn:riv:itintegration:registry:1'
+	xmlns:tns='urn:riv:ehr:blocking:synchronization:RegisterTemporaryRevoke:2:rivtabp21'
+	targetNamespace='urn:riv:ehr:blocking:synchronization:RegisterTemporaryRevoke:2:rivtabp21'>
+
+	<wsdl:documentation xml:lang='sv'>
+		 Tjänsteinteraktionens namn: RegisterTemporaryRevoke
+		 Beskrivning: 
+		   Tjänst som registrerar en tillfällig hävning för en given spärr i den nationella spärrtjänsten, om spärren finns.
+		   Tjänsten används för att synkronisera en lokal tillfällig hävning till den nationella spärrtjänsten.
+		   Tjänsten realiseras på nationell nivå.
+		 Revisioner: 
+		 Tjänstedomän: blocking:synchronization
+		 Tjänsteinteraktionstyp: Fråga-Svar
+		 WS-profil: RIVTABP21
+		 Förvaltas av: Inera AB
+	</wsdl:documentation>
+	
+	<wsdl:types>
+		<xs:schema targetNamespace='urn:riv:ehr:blocking:synchronization:RegisterTemporaryRevoke:2:rivtabp21'>
+			<xs:import schemaLocation='RegisterTemporaryRevokeResponder_2.0.xsd' namespace='urn:riv:ehr:blocking:synchronization:RegisterTemporaryRevokeResponder:2' />
+			<xs:import schemaLocation='../../../core_components/itintegration_registry_1.0.xsd' namespace='urn:riv:itintegration:registry:1' />
+		</xs:schema>
+	</wsdl:types>
+	
+		
+	<wsdl:message name='RegisterTemporaryRevokeRequest'>
+		<wsdl:part name='LogicalAddress' element='itr:LogicalAddress'>
+			<wsdl:documentation xml:lang='sv'>Som logisk adress anges HSA-id för vårdgivaren som spärren gäller för.</wsdl:documentation>
+		</wsdl:part>
+	
+		<wsdl:part name='parameters' element='tjsr:RegisterTemporaryRevokeRequest' />
+	</wsdl:message>
+
+	<wsdl:message name='RegisterTemporaryRevokeResponse'>
+		<wsdl:part name='parameters' element='tjsr:RegisterTemporaryRevokeResponse' />
+	</wsdl:message>
+
+	<wsdl:portType name='RegisterTemporaryRevokeResponderInterface'>
+		<wsdl:operation name='RegisterTemporaryRevoke'>
+			<wsdl:input message='tns:RegisterTemporaryRevokeRequest' />
+			<wsdl:output message='tns:RegisterTemporaryRevokeResponse' />
+		</wsdl:operation>
+	</wsdl:portType>
+
+	<wsdl:binding name='RegisterTemporaryRevokeResponderBinding' type='tns:RegisterTemporaryRevokeResponderInterface'>
+		<soap:binding style='document' transport='http://schemas.xmlsoap.org/soap/http' />
+		<wsdl:operation name='RegisterTemporaryRevoke'>
+			<soap:operation soapAction='urn:riv:ehr:blocking:synchronization:RegisterTemporaryRevokeResponder:2:RegisterTemporaryRevoke' style='document' />
+			<wsdl:input>
+				<soap:header use='literal' message='tns:RegisterTemporaryRevokeRequest' part='LogicalAddress' />
+				<soap:body use='literal' parts='parameters' />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use='literal' />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+
+	<wsdl:service name='RegisterTemporaryRevokeResponderService'>
+		<wsdl:port name='RegisterTemporaryRevokeResponderPort' binding='tns:RegisterTemporaryRevokeResponderBinding'>
+			<soap:address location='http://tempuri.org' />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
