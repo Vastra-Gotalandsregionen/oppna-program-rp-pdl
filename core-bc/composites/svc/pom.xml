@@ -16,12 +16,6 @@
   <artifactId>oppna-program-rp-pdl-core-bc-composite-svc</artifactId>
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
-  <properties>
-    <ehr.blocking.version>2</ehr.blocking.version>
-    <ehr.patientconsent.version>1</ehr.patientconsent.version>
-    <ehr.patientrelationship.version>1</ehr.patientrelationship.version>
-    <ehr.log.version>1</ehr.log.version>
-  </properties>
 
   <dependencies>
     <dependency>
@@ -49,28 +43,6 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxws</artifactId>
       <version>${apache.cxf.version}</version>
-    </dependency>
-
-
-    <dependency>
-      <groupId>se.rivta.tools</groupId>
-      <artifactId>ehr-blocking-schemas</artifactId>
-      <version>${ehr.blocking.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>se.rivta.tools</groupId>
-      <artifactId>ehr-patientconsent-schemas</artifactId>
-      <version>${ehr.patientconsent.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>se.rivta.tools</groupId>
-      <artifactId>ehr-patientrelationship-schemas</artifactId>
-      <version>${ehr.patientrelationship.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>se.rivta.tools</groupId>
-      <artifactId>urn-riv-ehr-log-schemas</artifactId>
-      <version>${ehr.log.version}</version>
     </dependency>
 
     <dependency>

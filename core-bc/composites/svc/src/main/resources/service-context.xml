@@ -13,7 +13,7 @@
   <context:component-scan base-package="se.vgregion.service" />
 
   <jaxws:client id="blocksForPatient"
-                serviceClass="se.riv.ehr.blocking.querying.getblocksforpatient.v2.rivtabp21.GetBlocksForPatientResponderService"
+                serviceClass="se.riv.ehr.blocking.accesscontrol.checkblocks.v3.rivtabp21.CheckBlocksResponderService"
                 address="http://localhost:8081" />
 
 </beans>
