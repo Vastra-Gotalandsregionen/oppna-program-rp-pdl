@@ -1,7 +1,12 @@
 package se.vgregion.service.pdl;
 
 
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import se.riv.ehr.blocking.querying.getblocksforpatient.v2.rivtabp21.GetBlocksForPatientResponderService;
 import se.vgregion.pdl.domain.PatientEngagement;
 import se.vgregion.pdl.domain.PdlContext;
 import se.vgregion.pdl.domain.PdlReport;
@@ -12,7 +17,16 @@ import static org.junit.Assert.assertTrue;
 
 public class PdlBlockingSpecification {
 
-    private PdlServiceImpl service;
+
+    @Mock
+    private GetBlocksForPatientResponderService blocksForPatient;
+
+    @InjectMocks
+    private PdlServiceImpl service = new PdlServiceImpl();
+
+    @Before public void initMocks() {
+        MockitoAnnotations.initMocks(this);
+    }
 
     @Test
     public void reportHasBlocks() throws Exception {
@@ -23,7 +37,6 @@ public class PdlBlockingSpecification {
         // Engagements + SAML-ticket -> Context
 
         PdlContext ctx = new PdlContext();
-        service = new PdlServiceImpl(); // Ansvar: Hämta och filtrera
 
         PdlReport pdlReport = service.pdlReport(ctx); // Beslutsunderlag
         // Engagements beskriver vart patientdata finns.

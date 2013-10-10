@@ -1,83 +1,0 @@
-10
-
-dir
-2177
-http://rivta.googlecode.com/svn/ServiceInteractions/riv/ehr/blocking/trunk/schemas/interactions/administration
-http://rivta.googlecode.com/svn
-
-
-
-2012-11-20T11:57:06.203927Z
-1372
-stef.eriksson@logica.com
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-c1faef40-eec5-6430-f181-9cb8a2d1d0ae
-
-ehr_administration_2.0.xsd
-file
-
-
-
-
-2013-09-23T13:16:37.000000Z
-f5140937298e1a25c2aa9453e416cc42
-2012-10-22T13:57:45.418147Z
-1202
-stef.eriksson@logica.com
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-4231
-
-RegisterExtendedBlockInteraction
-dir
-
-RegisterTemporaryExtendedRevokeInteraction
-dir
-
-GetPatientIdsInteraction
-dir
-
-CancelTemporaryExtendedRevokeInteraction
-dir
-
-RevokeExtendedBlockInteraction
-dir
-
-GetExtendedBlocksForPatientInteraction
-dir
-
-DeleteExtendedBlockInteraction
-dir
-
