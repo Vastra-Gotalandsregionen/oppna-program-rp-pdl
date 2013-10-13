@@ -13,6 +13,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -77,7 +78,7 @@ class Blocking {
                     break;
             }
         }
-        return checkedBlocks;
+        return Collections.unmodifiableList(checkedBlocks); // IMMUTABLE
     }
 
     private static XMLGregorianCalendar xmlDate() {
