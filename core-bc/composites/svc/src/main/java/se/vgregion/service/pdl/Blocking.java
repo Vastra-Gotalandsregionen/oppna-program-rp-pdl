@@ -9,7 +9,11 @@ import se.vgregion.domain.pdl.CheckedBlock;
 import se.vgregion.domain.pdl.PatientEngagement;
 import se.vgregion.domain.pdl.PdlContext;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 class Blocking {
@@ -35,8 +39,8 @@ class Blocking {
 
             en.setInformationCareProviderId(eg.careProviderHsaId);
             en.setInformationCareUnitId(eg.careUnitHsaId);
-            en.setInformationStartDate(PdlServiceImpl.xmlDate()); // FIXME: 2013-10-13 Magnus Andersson: xmlDate belongs in a util class.
-            en.setInformationEndDate(PdlServiceImpl.xmlDate());
+            en.setInformationStartDate(xmlDate());
+            en.setInformationEndDate(xmlDate());
             if (eg.informationType != PatientEngagement.InformationType.OTHR) {
                 en.setInformationType(eg.informationType.toString());
             }
@@ -74,6 +78,15 @@ class Blocking {
             }
         }
         return checkedBlocks;
+    }
+
+    private static XMLGregorianCalendar xmlDate() {
+        try {
+            GregorianCalendar c = new GregorianCalendar();
+            return DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+        } catch (DatatypeConfigurationException e) {
+            throw new RuntimeException("Unable to create XMLDate", e);
+        }
     }
 }
 

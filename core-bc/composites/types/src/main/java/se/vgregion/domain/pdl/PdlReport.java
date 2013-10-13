@@ -5,7 +5,7 @@ import java.util.List;
 public class PdlReport {
 
     public enum ConsentType {
-        CONSENT, EMERGENCY
+        CONSENT, EMERGENCY, FALLBACK
     }
 
     public final boolean hasBlocks;
