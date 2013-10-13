@@ -44,27 +44,26 @@ Generation time : 2013-10-08 14:16:23 CEST
       <artifactId>cxf-rt-transports-http</artifactId>
       <version>${apache.cxf.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>se.rivta.tools</groupId>
+      <artifactId>ehr-blocking-schemas</artifactId>
+      <version>${ehr.blocking.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>se.rivta.tools</groupId>
+      <artifactId>ehr-patientconsent-schemas</artifactId>
+      <version>${ehr.patientconsent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>se.rivta.tools</groupId>
+      <artifactId>ehr-patientrelationship-schemas</artifactId>
+      <version>${ehr.patientrelationship.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>se.rivta.tools</groupId>
+      <artifactId>urn-riv-ehr-log-schemas</artifactId>
+      <version>${ehr.log.version}</version>
+    </dependency>
   </dependencies>
-
-
-  <dependency>
-    <groupId>se.rivta.tools</groupId>
-    <artifactId>ehr-blocking-schemas</artifactId>
-    <version>${ehr.blocking.version}</version>
-  </dependency>
-  <dependency>
-    <groupId>se.rivta.tools</groupId>
-    <artifactId>ehr-patientconsent-schemas</artifactId>
-    <version>${ehr.patientconsent.version}</version>
-  </dependency>
-  <dependency>
-    <groupId>se.rivta.tools</groupId>
-    <artifactId>ehr-patientrelationship-schemas</artifactId>
-    <version>${ehr.patientrelationship.version}</version>
-  </dependency>
-  <dependency>
-    <groupId>se.rivta.tools</groupId>
-    <artifactId>urn-riv-ehr-log-schemas</artifactId>
-    <version>${ehr.log.version}</version>
-  </dependency>
 </project>
