@@ -1,4 +1,4 @@
-package se.vgregion.pdl.domain;
+package se.vgregion.domain.pdl;
 
 import java.util.Collections;
 import java.util.List;

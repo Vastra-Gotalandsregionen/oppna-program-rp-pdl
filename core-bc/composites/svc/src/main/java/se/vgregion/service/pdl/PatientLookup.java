@@ -1,6 +1,6 @@
 package se.vgregion.service.pdl;
 
-import se.vgregion.pdl.domain.PatientEngagement;
+import se.vgregion.domain.pdl.PatientEngagement;
 
 import java.util.List;
 

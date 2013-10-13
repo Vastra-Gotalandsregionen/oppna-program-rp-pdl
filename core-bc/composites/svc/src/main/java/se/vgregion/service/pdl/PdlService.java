@@ -1,7 +1,7 @@
 package se.vgregion.service.pdl;
 
-import se.vgregion.pdl.domain.PdlContext;
-import se.vgregion.pdl.domain.PdlReport;
+import se.vgregion.domain.pdl.PdlContext;
+import se.vgregion.domain.pdl.PdlReport;
 
 public interface PdlService {
 

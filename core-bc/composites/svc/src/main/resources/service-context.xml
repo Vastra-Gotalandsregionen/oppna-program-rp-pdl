@@ -16,4 +16,11 @@
                 serviceClass="se.riv.ehr.blocking.accesscontrol.checkblocks.v3.rivtabp21.CheckBlocksResponderService"
                 address="http://localhost:8081" />
 
+  <jaxws:client id="patientConsent"
+                serviceClass="se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderService"
+                address="http://localhost:8081" />
+
+  <jaxws:client id="relationshipWithPatient"
+                serviceClass="se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderService"
+                address="http://localhost:8081" />
 </beans>

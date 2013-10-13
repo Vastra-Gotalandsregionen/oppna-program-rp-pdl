@@ -1,4 +1,4 @@
-package se.vgregion.pdl.domain;
+package se.vgregion.domain.pdl;
 
 public class CheckedBlock {
     public enum BlockStatus { OK, BLOCKED }
