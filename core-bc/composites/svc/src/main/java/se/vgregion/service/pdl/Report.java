@@ -29,24 +29,36 @@ public class Report {
             final CheckConsentResponderService consentForPatient,
             final CheckPatientRelationResponderService relationshipWithPatient) {
 
-        ExecutorService executorService = Executors.newFixedThreadPool(3); // TODO: 2013-10-14: Magnus Andersson > Bad Choise?
+        ExecutorService executorService = Executors.newFixedThreadPool(3); // TODO: 2013-10-14: Magnus Andersson > Bad Choise? Feels like a bad idea to fix a pool.
 
+        // Start multiple requests
         Future<List<CheckedBlock>> blocksFuture = blocks(ctx, blocksForPatient, executorService);
         Future<CheckedConsent> consentFuture = consent(ctx, consentForPatient, executorService);
         Future<Boolean> relationshipFuture = relationship(ctx, relationshipWithPatient, executorService);
 
-        List<CheckedBlock> checkedBlocks = null;
+        // Aggreagate results
+        List<CheckedBlock> checkedBlocks = blocksWithFallback(blocksFuture);
+        CheckedConsent checkedConsent = consentWithFallback(consentFuture);
+        Boolean hasRelationship = relationshipWithFallback(relationshipFuture);
 
+        executorService.shutdown();
+
+        return new PdlReport(checkedBlocks, checkedConsent, hasRelationship);
+    }
+
+    private static Boolean relationshipWithFallback(Future<Boolean> relationshipFuture) {
+        Boolean hasRelationship = true;
         try {
-            checkedBlocks = blocksFuture.get();
+            hasRelationship = relationshipFuture.get();
         } catch (InterruptedException e) {
             // FIXME 2013-10-14 - Magnus Andersson > LOG this!
-            checkedBlocks = new ArrayList<CheckedBlock>(); // Fallback!
         } catch (ExecutionException e) {
             // FIXME 2013-10-14 - Magnus Andersson > LOG this!
-            checkedBlocks = new ArrayList<CheckedBlock>(); // Fallback!
         }
+        return hasRelationship;
+    }
 
+    private static CheckedConsent consentWithFallback(Future<CheckedConsent> consentFuture) {
         CheckedConsent checkedConsent = null;
         try {
             checkedConsent = consentFuture.get();
@@ -57,19 +69,21 @@ public class Report {
             // FIXME 2013-10-14 - Magnus Andersson > LOG this!
             checkedConsent = new CheckedConsent(PdlReport.ConsentType.FALLBACK, true); // Fallback!
         }
+        return checkedConsent;
+    }
 
-        Boolean hasRelationship = true;
+    private static List<CheckedBlock> blocksWithFallback(Future<List<CheckedBlock>> blocksFuture) {
+        List<CheckedBlock> checkedBlocks = null;
         try {
-            hasRelationship = relationshipFuture.get();
+            checkedBlocks = blocksFuture.get();
         } catch (InterruptedException e) {
             // FIXME 2013-10-14 - Magnus Andersson > LOG this!
+            checkedBlocks = new ArrayList<CheckedBlock>(); // Fallback!
         } catch (ExecutionException e) {
             // FIXME 2013-10-14 - Magnus Andersson > LOG this!
+            checkedBlocks = new ArrayList<CheckedBlock>(); // Fallback!
         }
-
-        executorService.shutdown();
-
-        return new PdlReport(checkedBlocks, checkedConsent, hasRelationship);
+        return checkedBlocks;
     }
 
     static Future<Boolean> relationship(final PdlContext ctx, final CheckPatientRelationResponderService relationshipWithPatient, ExecutorService executorService) {
