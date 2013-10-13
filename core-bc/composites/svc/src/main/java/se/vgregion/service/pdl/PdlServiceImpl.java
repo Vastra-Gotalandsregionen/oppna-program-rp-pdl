@@ -43,8 +43,7 @@ public class PdlServiceImpl implements PdlService {
     }
 
     @Override
-    public PdlAssertion affirmChoises(PdlContext ctx, PdlReport report, List<PatientEngagement> engagements) {
+    public PdlAssertion chooseInformation(PdlContext ctx, PdlReport report, List<PatientEngagement> engagements) {
         throw new IllegalStateException("Not implemented");
     }
-
 }
