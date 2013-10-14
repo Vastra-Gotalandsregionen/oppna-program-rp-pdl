@@ -85,12 +85,19 @@ Generation time : 2013-10-08 14:16:23 CEST
       <groupId>org.springframework</groupId>
       <artifactId>spring-context-support</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>oppna-program-rp-pdl-core-bc-composite-svc</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
+
 
   <profiles>
     <profile>

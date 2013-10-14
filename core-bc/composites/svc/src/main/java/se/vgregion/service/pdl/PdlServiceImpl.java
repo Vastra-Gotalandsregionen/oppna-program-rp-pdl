@@ -1,9 +1,9 @@
 package se.vgregion.service.pdl;
 
 import org.springframework.stereotype.Service;
-import se.riv.ehr.blocking.accesscontrol.checkblocks.v3.rivtabp21.CheckBlocksResponderService;
-import se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderService;
-import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderService;
+import se.riv.ehr.blocking.accesscontrol.checkblocks.v3.rivtabp21.CheckBlocksResponderInterface;
+import se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderInterface;
+import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
 import se.vgregion.domain.pdl.PatientEngagement;
 import se.vgregion.domain.pdl.PdlAssertion;
 import se.vgregion.domain.pdl.PdlContext;
@@ -16,11 +16,11 @@ import java.util.List;
 public class PdlServiceImpl implements PdlService {
 
     @Resource(name = "blocksForPatient")
-    private CheckBlocksResponderService blocksForPatient;
+    private CheckBlocksResponderInterface blocksForPatient;
     @Resource(name = "consentForPatient")
-    private CheckConsentResponderService consentForPatient;
+    private CheckConsentResponderInterface consentForPatient;
     @Resource(name = "relationshipWithPatient")
-    private CheckPatientRelationResponderService relationshipWithPatient;
+    private CheckPatientRelationResponderInterface relationshipWithPatient;
 
     @Override
     public PdlReport pdlReport(final PdlContext ctx) {

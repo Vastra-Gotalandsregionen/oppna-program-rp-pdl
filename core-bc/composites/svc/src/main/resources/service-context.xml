@@ -8,6 +8,10 @@
        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
        http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 
+  <context:property-placeholder
+          location="file:${user.home}/.pdl/application.properties"
+          ignore-resource-not-found="true" ignore-unresolvable="true" />
+
   <context:mbean-export />
 
   <context:annotation-config />
@@ -17,14 +21,18 @@
   <task:annotation-driven />
 
   <jaxws:client id="blocksForPatient"
-                serviceClass="se.riv.ehr.blocking.accesscontrol.checkblocks.v3.rivtabp21.CheckBlocksResponderService"
-                address="http://localhost:8081" />
+                serviceClass="se.riv.ehr.blocking.accesscontrol.checkblocks.v3.rivtabp21.CheckBlocksResponderInterface"
+                address="${ws.endpoint.pdl.blocks}" />
 
-  <jaxws:client id="patientConsent"
-                serviceClass="se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderService"
-                address="http://localhost:8081" />
+  <jaxws:client id="consentForPatient"
+                serviceClass="se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderInterface"
+                address="${ws.endpoint.pdl.consent}" />
 
   <jaxws:client id="relationshipWithPatient"
-                serviceClass="se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderService"
-                address="http://localhost:8081" />
+                serviceClass="se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface"
+                address="${ws.endpoint.pdl.relationship}" />
+
+  <jaxws:client id="logs"
+                serviceClass="se.riv.ehr.log.store.storelog.v1.rivtabp21.StoreLogResponderInterface"
+                address="${ws.endpoint.pdl.log}" />
 </beans>

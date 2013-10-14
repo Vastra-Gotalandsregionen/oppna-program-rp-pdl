@@ -30,4 +30,15 @@ public class PdlReport {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "PdlReport{" +
+                "hasBlocks=" + hasBlocks +
+                ", blocks=" + blocks +
+                ", hasConsent=" + hasConsent +
+                ", consentType=" + consentType +
+                ", hasRelationship=" + hasRelationship +
+                '}';
+    }
 }

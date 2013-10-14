@@ -7,13 +7,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import se.riv.ehr.blocking.accesscontrol.checkblocks.v3.rivtabp21.CheckBlocksResponderInterface;
-import se.riv.ehr.blocking.accesscontrol.checkblocks.v3.rivtabp21.CheckBlocksResponderService;
 import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v3.CheckBlocksRequestType;
 import se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderInterface;
-import se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderService;
 import se.riv.ehr.patientconsent.accesscontrol.checkconsentresponder.v1.CheckConsentRequestType;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
-import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderService;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationRequestType;
 import se.vgregion.domain.pdl.PatientEngagement;
 import se.vgregion.domain.pdl.PdlContext;
@@ -23,23 +20,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 public class PdlServiceSpecification {
 
     @Mock
-    private CheckBlocksResponderService blocksForPatient;
-    @Mock
     private CheckBlocksResponderInterface blocksInterface;
     @Mock
-    private CheckConsentResponderService consentForPatient;
-    @Mock
     private CheckConsentResponderInterface consentInterface;
-    @Mock
-    private CheckPatientRelationResponderService relationshipWithPatient;
     @Mock
     private CheckPatientRelationResponderInterface relationshipInterface;
 
@@ -68,11 +57,6 @@ public class PdlServiceSpecification {
                 "careUnitHsaId",
                 "employeeHsaId"
         );
-
-        // Setup interfaces
-        when(blocksForPatient.getCheckBlocksResponderPort()).thenReturn(blocksInterface);
-        when(consentForPatient.getCheckConsentResponderPort()).thenReturn(consentInterface);
-        when(relationshipWithPatient.getCheckPatientRelationResponderPort()).thenReturn(relationshipInterface);
     }
 
     @Test

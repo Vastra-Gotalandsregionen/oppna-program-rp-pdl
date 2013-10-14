@@ -1,13 +1,10 @@
 package se.vgregion.service.pdl;
 
 import se.riv.ehr.blocking.accesscontrol.checkblocks.v3.rivtabp21.CheckBlocksResponderInterface;
-import se.riv.ehr.blocking.accesscontrol.checkblocks.v3.rivtabp21.CheckBlocksResponderService;
 import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v3.CheckBlocksResponseType;
 import se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderInterface;
-import se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderService;
 import se.riv.ehr.patientconsent.accesscontrol.checkconsentresponder.v1.CheckConsentResponseType;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
-import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderService;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationResponseType;
 import se.vgregion.domain.pdl.CheckedBlock;
 import se.vgregion.domain.pdl.CheckedConsent;
@@ -25,9 +22,9 @@ public class Report {
 
     static PdlReport generateReport(
             final PdlContext ctx,
-            final CheckBlocksResponderService blocksForPatient,
-            final CheckConsentResponderService consentForPatient,
-            final CheckPatientRelationResponderService relationshipWithPatient) {
+            final CheckBlocksResponderInterface blocksForPatient,
+            final CheckConsentResponderInterface consentForPatient,
+            final CheckPatientRelationResponderInterface relationshipWithPatient) {
 
         ExecutorService executorService = Executors.newFixedThreadPool(3); // TODO: 2013-10-14: Magnus Andersson > Bad Choise? Feels like a bad idea to fix a pool.
 
@@ -86,7 +83,7 @@ public class Report {
         return checkedBlocks;
     }
 
-    static Future<Boolean> relationship(final PdlContext ctx, final CheckPatientRelationResponderService relationshipWithPatient, ExecutorService executorService) {
+    static Future<Boolean> relationship(final PdlContext ctx, final CheckPatientRelationResponderInterface relationshipWithPatient, ExecutorService executorService) {
         Callable<Boolean> relationshipAsync = new Callable<Boolean>() {
             public Boolean call() throws Exception {
                 return checkRelationship(ctx, relationshipWithPatient);
@@ -96,7 +93,7 @@ public class Report {
         return executorService.submit(relationshipAsync);
     }
 
-    static Future<CheckedConsent> consent(final PdlContext ctx, final CheckConsentResponderService consentForPatient, ExecutorService executorService) {
+    static Future<CheckedConsent> consent(final PdlContext ctx, final CheckConsentResponderInterface consentForPatient, ExecutorService executorService) {
         Callable<CheckedConsent> consentAsync = new Callable<CheckedConsent>() {
             public CheckedConsent call() throws Exception {
                 return checkConsent(ctx, consentForPatient);
@@ -106,7 +103,7 @@ public class Report {
         return executorService.submit(consentAsync);
     }
 
-    static Future<List<CheckedBlock>> blocks(final PdlContext ctx, final CheckBlocksResponderService blocksForPatient, ExecutorService executorService) {
+    static Future<List<CheckedBlock>> blocks(final PdlContext ctx, final CheckBlocksResponderInterface blocksForPatient, ExecutorService executorService) {
         Callable<List<CheckedBlock>> blocksAsync = new Callable<List<CheckedBlock>>() {
             public List<CheckedBlock> call() throws Exception {
                 return checkBlocks(ctx, blocksForPatient);
@@ -116,28 +113,23 @@ public class Report {
         return executorService.submit(blocksAsync);
     }
 
-    static boolean checkRelationship(PdlContext ctx, CheckPatientRelationResponderService relationshipWithPatient) {
-        CheckPatientRelationResponderInterface relationshipPort =
-                relationshipWithPatient.getCheckPatientRelationResponderPort();
+    static boolean checkRelationship(PdlContext ctx, CheckPatientRelationResponderInterface relationshipWithPatient) {
         CheckPatientRelationResponseType relationshipResponse =
-                relationshipPort.checkPatientRelation(ctx.careProviderHsaId, Relationship.checkRelationshipRequest(ctx));
+                relationshipWithPatient.checkPatientRelation(ctx.careProviderHsaId, Relationship.checkRelationshipRequest(ctx));
 
         return relationshipResponse.getCheckResultType().isHasPatientrelation();
     }
 
-    static List<CheckedBlock> checkBlocks(PdlContext ctx, CheckBlocksResponderService blocksForPatient) {
-        CheckBlocksResponderInterface blockPort = blocksForPatient.getCheckBlocksResponderPort();
+    static List<CheckedBlock> checkBlocks(PdlContext ctx, CheckBlocksResponderInterface blocksForPatient) {
         CheckBlocksResponseType blockResponse =
-                blockPort.checkBlocks(ctx.careProviderHsaId, Blocking.checkBlocksRequest(ctx));
+                blocksForPatient.checkBlocks(ctx.careProviderHsaId, Blocking.checkBlocksRequest(ctx));
 
         return Blocking.asCheckedBlocks(ctx, blockResponse);
     }
 
-    static CheckedConsent checkConsent(PdlContext ctx, CheckConsentResponderService consentForPatient) {
-        CheckConsentResponderInterface consentPort =
-                consentForPatient.getCheckConsentResponderPort();
+    static CheckedConsent checkConsent(PdlContext ctx, CheckConsentResponderInterface consentForPatient) {
         CheckConsentResponseType consentResponse =
-                consentPort.checkConsent(ctx.careProviderHsaId, Consent.checkConsentRequest(ctx));
+                consentForPatient.checkConsent(ctx.careProviderHsaId, Consent.checkConsentRequest(ctx));
 
         return Consent.asCheckedConsent(consentResponse);
     }

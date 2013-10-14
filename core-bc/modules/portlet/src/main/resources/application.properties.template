@@ -1,0 +1,7 @@
+## Place this file with property values in ${user.home}/.pdl/ with name application.properties
+
+# Endpoints for security services
+ws.endpoint.pdl.consent=
+ws.endpoint.pdl.relationship=
+ws.endpoint.pdl.blocks=
+ws.endpoint.pdl.log=

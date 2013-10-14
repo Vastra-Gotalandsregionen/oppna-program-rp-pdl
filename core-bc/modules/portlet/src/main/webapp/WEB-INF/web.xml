@@ -23,8 +23,8 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
   version="2.4">
 
-  <display-name>CHANGE ME!</display-name>
-  <description>CHANGE ME!</description>
+  <display-name>Patient information PDL</display-name>
+  <description>Search for patient information with PDL</description>
 
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
