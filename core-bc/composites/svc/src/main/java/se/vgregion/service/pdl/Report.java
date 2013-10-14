@@ -23,7 +23,7 @@ public class Report {
         // Utility class, no constructor!
     }
 
-    static PdlReport asyncReport(
+    static PdlReport generateReport(
             final PdlContext ctx,
             final CheckBlocksResponderService blocksForPatient,
             final CheckConsentResponderService consentForPatient,

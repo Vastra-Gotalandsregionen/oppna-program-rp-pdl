@@ -10,7 +10,11 @@
 
   <context:mbean-export />
 
+  <context:annotation-config />
+
   <context:component-scan base-package="se.vgregion.service" />
+
+  <task:annotation-driven />
 
   <jaxws:client id="blocksForPatient"
                 serviceClass="se.riv.ehr.blocking.accesscontrol.checkblocks.v3.rivtabp21.CheckBlocksResponderService"

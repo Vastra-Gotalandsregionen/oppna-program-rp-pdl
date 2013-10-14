@@ -24,7 +24,7 @@ public class PdlServiceImpl implements PdlService {
 
     @Override
     public PdlReport pdlReport(final PdlContext ctx) {
-        return Report.asyncReport(ctx, blocksForPatient, consentForPatient, relationshipWithPatient);
+        return Report.generateReport(ctx, blocksForPatient, consentForPatient, relationshipWithPatient);
     }
 
     @Override
