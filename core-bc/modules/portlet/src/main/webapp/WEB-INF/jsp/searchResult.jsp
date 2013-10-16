@@ -13,11 +13,8 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 
-<portlet:actionURL name="searchPatient" var="submitSearchURL">
-    <portlet:param name="ssn" value="450344-3434" />
-</portlet:actionURL>
+
 
 <div>
-    <a href="${submitSearchURL}">Search patient</a>
-
+Search complete. Found ${report.blocks.size()} blocks.
 </div>

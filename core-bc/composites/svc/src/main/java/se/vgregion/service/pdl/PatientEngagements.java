@@ -4,7 +4,7 @@ import se.vgregion.domain.pdl.PatientEngagement;
 
 import java.util.List;
 
-public interface PatientLookup {
+public interface PatientEngagements {
 
-    List<PatientEngagement> findPatient(String s);
+    List<PatientEngagement> forPatient(String ssn);
 }

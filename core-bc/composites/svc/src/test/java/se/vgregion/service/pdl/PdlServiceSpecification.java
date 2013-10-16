@@ -51,7 +51,7 @@ public class PdlServiceSpecification {
         );
 
         ctx = new PdlContext(
-                "patientHsaId",
+                "patientId",
                 engagements,
                 "careProviderHsaId",
                 "careUnitHsaId",

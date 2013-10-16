@@ -31,6 +31,52 @@ public class PdlReport {
         return false;
     }
 
+    public boolean isHasBlocks() {
+        return hasBlocks;
+    }
+
+    public List<CheckedBlock> getBlocks() {
+        return blocks;
+    }
+
+    public boolean isHasConsent() {
+        return hasConsent;
+    }
+
+    public ConsentType getConsentType() {
+        return consentType;
+    }
+
+    public boolean isHasRelationship() {
+        return hasRelationship;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PdlReport)) return false;
+
+        PdlReport pdlReport = (PdlReport) o;
+
+        if (hasBlocks != pdlReport.hasBlocks) return false;
+        if (hasConsent != pdlReport.hasConsent) return false;
+        if (hasRelationship != pdlReport.hasRelationship) return false;
+        if (!blocks.equals(pdlReport.blocks)) return false;
+        if (consentType != pdlReport.consentType) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (hasBlocks ? 1 : 0);
+        result = 31 * result + blocks.hashCode();
+        result = 31 * result + (hasConsent ? 1 : 0);
+        result = 31 * result + consentType.hashCode();
+        result = 31 * result + (hasRelationship ? 1 : 0);
+        return result;
+    }
+
     @Override
     public String toString() {
         return "PdlReport{" +

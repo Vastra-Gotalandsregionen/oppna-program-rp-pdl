@@ -31,7 +31,7 @@ public class RelationshipSpec {
             public CheckPatientRelationResponseType answer(InvocationOnMock invocationOnMock) throws Throwable {
                 CheckPatientRelationRequestType arg2 = (CheckPatientRelationRequestType) (invocationOnMock.getArguments()[1]);
 
-                assertEquals(ctx.patientHsaId, arg2.getPatientId());
+                assertEquals(ctx.patientId, arg2.getPatientId());
                 AccessingActorType actor = arg2.getAccessingActor();
                 assertEquals(ctx.careProviderHsaId, actor.getCareProviderId());
                 assertEquals(ctx.careUnitHsaId, actor.getCareUnitId());

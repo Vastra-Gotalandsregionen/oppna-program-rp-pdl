@@ -25,7 +25,7 @@ class Blocking {
 
     static CheckBlocksRequestType checkBlocksRequest(PdlContext ctx) {
         CheckBlocksRequestType req = new CheckBlocksRequestType();
-        req.setPatientId(ctx.patientHsaId);
+        req.setPatientId(ctx.patientId);
         AccessingActorType actor = new AccessingActorType();
         actor.setCareProviderId(ctx.careProviderHsaId);
         actor.setCareUnitId(ctx.careUnitHsaId);

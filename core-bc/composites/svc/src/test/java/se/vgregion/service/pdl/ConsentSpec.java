@@ -44,7 +44,7 @@ public class ConsentSpec {
             public CheckConsentResponseType answer(InvocationOnMock invocationOnMock) throws Throwable {
                 CheckConsentRequestType arg2 = (CheckConsentRequestType) (invocationOnMock.getArguments()[1]);
 
-                assertEquals(ctx.patientHsaId, arg2.getPatientId());
+                assertEquals(ctx.patientId, arg2.getPatientId());
                 AccessingActorType actor = arg2.getAccessingActor();
                 assertEquals(ctx.careProviderHsaId, actor.getCareProviderId());
                 assertEquals(ctx.careUnitHsaId, actor.getCareUnitId());

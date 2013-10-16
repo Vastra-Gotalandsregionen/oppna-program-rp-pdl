@@ -43,7 +43,7 @@ public class BlockingSpec {
             public CheckBlocksResponseType answer(InvocationOnMock invocationOnMock) throws Throwable {
                 CheckBlocksRequestType arg2 = (CheckBlocksRequestType) (invocationOnMock.getArguments()[1]);
                 AccessingActorType actor = arg2.getAccessingActor();
-                assertEquals(ctx.patientHsaId, arg2.getPatientId());
+                assertEquals(ctx.patientId, arg2.getPatientId());
                 assertEquals(ctx.careProviderHsaId, actor.getCareProviderId());
                 assertEquals(ctx.careUnitHsaId, actor.getCareUnitId());
                 assertEquals(ctx.employeeHsaId, actor.getEmployeeId());

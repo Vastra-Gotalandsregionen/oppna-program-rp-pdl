@@ -16,7 +16,7 @@ public class Relationship {
         actor.setCareProviderId(ctx.careProviderHsaId);
         actor.setCareUnitId(ctx.careUnitHsaId);
         actor.setEmployeeId(ctx.employeeHsaId);
-        request.setPatientId(ctx.patientHsaId);
+        request.setPatientId(ctx.patientId);
         request.setAccessingActor(actor);
         return request;
     }

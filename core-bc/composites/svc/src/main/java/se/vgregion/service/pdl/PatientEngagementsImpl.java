@@ -8,9 +8,9 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class PatientLookupImpl implements PatientLookup {
+public class PatientEngagementsImpl implements PatientEngagements {
     @Override
-    public List<PatientEngagement> findPatient(String s) {
+    public List<PatientEngagement> forPatient(String ssn) {
         return Collections.unmodifiableList(
                 Arrays.asList(
                         new PatientEngagement(
