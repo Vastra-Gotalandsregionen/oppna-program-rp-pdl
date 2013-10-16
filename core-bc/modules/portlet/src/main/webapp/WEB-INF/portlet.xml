@@ -29,7 +29,7 @@
     </supports>
     <resource-bundle>content/Language</resource-bundle>
     <portlet-info>
-      <title>Search Patient Information with PDL</title>
+      <title>Sök patientinformation med stöd för PDL</title>
       <short-title>PatientInformationPdl</short-title>
       <keywords>PLD Patient Informatin</keywords>
     </portlet-info>
