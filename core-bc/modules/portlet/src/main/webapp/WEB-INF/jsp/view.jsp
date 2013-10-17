@@ -39,10 +39,10 @@
 
             <div class="${elementWrapCssClass}">
                 <aui:field-wrapper cssClass="element-field-wrap">
-                    <label for="<portlet:namespace />ssn">
+                    <label for="<portlet:namespace />assignment">
                         <span>Uppdrag</span>
                     </label>
-                    ${assignment}
+                    ${state.ctx.assignment}
                 </aui:field-wrapper>
                 <span class="element-field-help">
                     Ditt nuvarande uppdrag.

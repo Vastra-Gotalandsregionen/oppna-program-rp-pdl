@@ -3,7 +3,6 @@ package se.vgregion.domain.pdl;
 import java.util.List;
 
 public class PdlReport {
-
     public enum ConsentType {
         CONSENT, EMERGENCY, FALLBACK
     }
@@ -22,6 +21,21 @@ public class PdlReport {
         this.consentType = checkedConsent.consentType;
     }
 
+    // Private, for copy only
+    private PdlReport(
+            boolean hasBlocks,
+            List<CheckedBlock> blocks,
+            boolean hasConsent,
+            ConsentType consentType,
+            boolean hasRelationship
+    ) {
+        this.hasBlocks = hasBlocks;
+        this.blocks = blocks;
+        this.hasConsent = hasConsent;
+        this.consentType = consentType;
+        this.hasRelationship = hasRelationship;
+    }
+
     private boolean containsBlocked(List<CheckedBlock> checkedBlocks) {
         for( CheckedBlock b : checkedBlocks ) {
             if(b.blocked == CheckedBlock.BlockStatus.BLOCKED) {
@@ -29,6 +43,15 @@ public class PdlReport {
             }
         }
         return false;
+    }
+
+    public PdlReport withRelationship(boolean newHasRelationship) {
+        return new PdlReport(
+                hasBlocks,
+                blocks,
+                hasConsent,
+                consentType,
+                newHasRelationship);
     }
 
     public boolean isHasBlocks() {

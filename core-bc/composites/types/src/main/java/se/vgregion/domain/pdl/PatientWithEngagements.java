@@ -15,6 +15,18 @@ public class PatientWithEngagements {
         this.patientDisplayName = patientDisplayName;
     }
 
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public List<Engagement> getEngagements() {
+        return engagements;
+    }
+
+    public String getPatientDisplayName() {
+        return patientDisplayName;
+    }
+
     @Override
     public String toString() {
         return "PatientWithEngagements{" +

@@ -14,8 +14,16 @@
 <liferay-theme:defineObjects />
 
 <div>
-Has blocks: ${report.hasBlocks}<br/>
-Found ${report.blocks.size()} blocks.<br>
-Has consent: ${report.hasConsent}<br/>
-Has relationship: ${report.hasRelationship}<br/>
+     <c:if test="${!state.report.hasRelationship}">
+         <portlet:actionURL name="establishRelationship" var="relationshipURL" />
+        Du saknar patientrelation med ${state.pwe.patientDisplayName}. <a href="${relationshipURL}">Skapa relation med patient.</a>
+     </c:if>
+
+
+     <c:if test="${state.report.hasRelationship}">
+        Välj i vilka system som du vill finna information.
+     </c:if>
 </div>
+<liferay-util:html-bottom>
+    <script type="text/javascript" src="<%= request.getContextPath() %>/js/pdl-async.js"></script>
+</liferay-util:html-bottom>

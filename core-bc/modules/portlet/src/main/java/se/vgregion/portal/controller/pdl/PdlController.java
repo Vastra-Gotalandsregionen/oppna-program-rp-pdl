@@ -6,13 +6,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import se.vgregion.domain.pdl.PatientWithEngagements;
 import se.vgregion.domain.pdl.PdlContext;
-import se.vgregion.domain.pdl.PdlReport;
 import se.vgregion.service.pdl.PatientEngagements;
 import se.vgregion.service.pdl.PdlService;
 
@@ -20,18 +21,28 @@ import javax.portlet.ActionResponse;
 
 @Controller
 @RequestMapping(value = "VIEW")
+@SessionAttributes("state")
 public class PdlController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PdlController.class.getName());
     @Autowired
     private PatientEngagements patientEngagements;
+
     @Autowired
     private PdlService pdl;
 
-    @RenderMapping
-    public String enterSearchPatient(final ModelMap model) {
-        PdlContext ctx = createContext();
-        model.addAttribute("assignment", "Sammanhållen Journalföring");
+    @Autowired
+    private PdlUserState state;
 
+    @ModelAttribute("state")
+    public PdlUserState initState() {
+        if(state.ctx == null) {
+            state.ctx = currentContext();
+        }
+        return state;
+    }
+
+    @RenderMapping
+    public String enterSearchPatient() {
         return "view";
     }
 
@@ -47,28 +58,30 @@ public class PdlController {
     @ActionMapping("searchPatient")
     public void searchPatientInformation(
             @RequestParam String ssn,
-            ModelMap model,
             ActionResponse response
     ) {
         // TODO: 2013-10-15: Magnus Andersson > Validate ssn. Existing libs available?
 
         LOGGER.trace("Looking for patient {}.", ssn);
         PatientWithEngagements pwe = patientEngagements.forPatient(ssn);
+        state.pwe = pwe;
 
-        PdlContext ctx = createContext(); // FIXME: 2013-10-16: Magnus Andersson > This should come from ENV.
+        state.report = pdl.pdlReport(state.ctx, pwe);
 
-        LOGGER.trace("Found {} engagements.", pwe.engagements.size());
-        if( pwe.engagements.size() > 0) {
+        response.setRenderParameter("view","searchResult");
+    }
 
-            LOGGER.trace("Generating report with context {} and patient with engagements {}.", ctx, pwe);
-            PdlReport report = pdl.pdlReport(ctx, pwe);
+    @ActionMapping("establishRelationship")
+    public void establishRelationship(
+            ActionResponse response
+    ) {
+        LOGGER.trace(
+                "Request to create relationship between employee {} and patient {}.",
+                state.ctx.employeeHsaId,
+                state.pwe.patientId
+        );
 
-            LOGGER.trace("Adding PatientWithEngagement to model {}.", pwe);
-            model.addAttribute("patientWithEngagement", pwe);
-
-            LOGGER.trace("Adding report to model {}.", report);
-            model.addAttribute("report", report);
-        }
+        state.report = pdl.patientRelationship(state.ctx, state.report, state.pwe.patientId);
 
         response.setRenderParameter("view","searchResult");
     }
@@ -79,11 +92,11 @@ public class PdlController {
     }
 
 
-    private PdlContext createContext() {
+    private PdlContext currentContext() {
         return new PdlContext(
                 "careProviderHsaId",
                 "careUnitHsaId",
-                "employeeHsaId"
-        );
+                "employeeHsaId",
+                "Sammanhållen Journalföring");
     }
 }

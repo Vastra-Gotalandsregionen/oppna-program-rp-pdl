@@ -30,8 +30,8 @@ public class PdlServiceImpl implements PdlService {
     }
 
     @Override
-    public PdlReport patientRelationship(PdlContext ctx) {
-        throw new IllegalStateException("Not implemented");
+    public PdlReport patientRelationship(PdlContext ctx, PdlReport report, String patientId) {
+        return report.withRelationship(true);
     }
 
     @Override

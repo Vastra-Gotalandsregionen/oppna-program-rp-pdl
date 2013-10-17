@@ -13,7 +13,7 @@ public interface PdlService {
 
     PdlReport patientConsent(PdlContext ctx);
 
-    PdlReport patientRelationship(PdlContext ctx);
+    PdlReport patientRelationship(PdlContext ctx, PdlReport report, String patientId);
 
     PdlReport unblockInformation(PdlContext ctx, String blockId, UnblockType unblockType, String unblockComment);
 
