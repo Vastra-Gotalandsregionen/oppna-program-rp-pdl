@@ -3,15 +3,15 @@ package se.vgregion.domain.pdl;
 public class CheckedBlock {
     public enum BlockStatus { OK, BLOCKED }
 
-    public final PatientEngagement engagement;
+    public final Engagement engagement;
     public final BlockStatus blocked;
 
-    public CheckedBlock(PatientEngagement engagement, BlockStatus blocked) {
+    public CheckedBlock(Engagement engagement, BlockStatus blocked) {
         this.engagement = engagement;
         this.blocked = blocked;
     }
 
-    public PatientEngagement getEngagement() {
+    public Engagement getEngagement() {
         return engagement;
     }
 

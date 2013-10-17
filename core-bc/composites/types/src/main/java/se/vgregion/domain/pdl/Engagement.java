@@ -1,6 +1,6 @@
 package se.vgregion.domain.pdl;
 
-public class PatientEngagement {
+public class Engagement {
     public enum InformationType {
         LAK("Läkemedel - Ordination/förskrivning"), UPP("Uppmärksamhetsinformation"),
         OTHR("Annan information");
@@ -22,7 +22,7 @@ public class PatientEngagement {
     public final String employeeHsaId;
     public final InformationType informationType;
 
-    public PatientEngagement(
+    public Engagement(
             String careProviderHsaId,
             String careUnitHsaId,
             String employeeHsaId,
@@ -31,5 +31,15 @@ public class PatientEngagement {
         this.careUnitHsaId = careUnitHsaId;
         this.employeeHsaId = employeeHsaId;
         this.informationType = informationType;
+    }
+
+    @Override
+    public String toString() {
+        return "Engagement{" +
+                "careProviderHsaId='" + careProviderHsaId + '\'' +
+                ", careUnitHsaId='" + careUnitHsaId + '\'' +
+                ", employeeHsaId='" + employeeHsaId + '\'' +
+                ", informationType=" + informationType +
+                '}';
     }
 }

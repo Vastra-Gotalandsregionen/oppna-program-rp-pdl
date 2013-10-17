@@ -15,13 +15,13 @@ class Consent {
         // Utility class, no constructor!
     }
 
-    static CheckConsentRequestType checkConsentRequest(PdlContext ctx) {
+    static CheckConsentRequestType checkConsentRequest(PdlContext ctx, String patientId) {
         CheckConsentRequestType request = new CheckConsentRequestType();
         AccessingActorType actor = new AccessingActorType();
         actor.setCareProviderId(ctx.careProviderHsaId);
         actor.setCareUnitId(ctx.careUnitHsaId);
         actor.setEmployeeId(ctx.employeeHsaId);
-        request.setPatientId(ctx.patientId);
+        request.setPatientId(patientId);
         request.setAccessingActor(actor);
         return request;
     }

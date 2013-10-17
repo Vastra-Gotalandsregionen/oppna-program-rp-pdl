@@ -1,9 +1,6 @@
 package se.vgregion.service.pdl;
 
-import se.vgregion.domain.pdl.PatientEngagement;
-import se.vgregion.domain.pdl.PdlAssertion;
-import se.vgregion.domain.pdl.PdlContext;
-import se.vgregion.domain.pdl.PdlReport;
+import se.vgregion.domain.pdl.*;
 
 import java.util.List;
 
@@ -12,7 +9,7 @@ public interface PdlService {
         CONSENT, EMERGENCY
     }
 
-    PdlReport pdlReport(PdlContext ctx);
+    PdlReport pdlReport(PdlContext ctx, PatientWithEngagements patientEngagements);
 
     PdlReport patientConsent(PdlContext ctx);
 
@@ -20,5 +17,5 @@ public interface PdlService {
 
     PdlReport unblockInformation(PdlContext ctx, String blockId, UnblockType unblockType, String unblockComment);
 
-    PdlAssertion chooseInformation(PdlContext ctx, PdlReport report, List<PatientEngagement> engagements);
+    PdlAssertion chooseInformation(PdlContext ctx, PdlReport report, List<Engagement> engagements);
 }

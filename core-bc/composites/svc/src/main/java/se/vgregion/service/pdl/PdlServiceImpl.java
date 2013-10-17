@@ -4,10 +4,7 @@ import org.springframework.stereotype.Service;
 import se.riv.ehr.blocking.accesscontrol.checkblocks.v3.rivtabp21.CheckBlocksResponderInterface;
 import se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderInterface;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
-import se.vgregion.domain.pdl.PatientEngagement;
-import se.vgregion.domain.pdl.PdlAssertion;
-import se.vgregion.domain.pdl.PdlContext;
-import se.vgregion.domain.pdl.PdlReport;
+import se.vgregion.domain.pdl.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -23,8 +20,8 @@ public class PdlServiceImpl implements PdlService {
     private CheckPatientRelationResponderInterface relationshipWithPatient;
 
     @Override
-    public PdlReport pdlReport(final PdlContext ctx) {
-        return Report.generateReport(ctx, blocksForPatient, consentForPatient, relationshipWithPatient);
+    public PdlReport pdlReport(final PdlContext ctx, PatientWithEngagements patientEngagements) {
+        return Report.generateReport(ctx, patientEngagements, blocksForPatient, consentForPatient, relationshipWithPatient);
     }
 
     @Override
@@ -43,7 +40,7 @@ public class PdlServiceImpl implements PdlService {
     }
 
     @Override
-    public PdlAssertion chooseInformation(PdlContext ctx, PdlReport report, List<PatientEngagement> engagements) {
+    public PdlAssertion chooseInformation(PdlContext ctx, PdlReport report, List<Engagement> engagements) {
         throw new IllegalStateException("Not implemented");
     }
 }

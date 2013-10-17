@@ -7,6 +7,7 @@ import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponde
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationResponseType;
 import se.riv.ehr.patientrelationship.v1.AccessingActorType;
 import se.riv.ehr.patientrelationship.v1.CheckResultType;
+import se.vgregion.domain.pdl.PatientWithEngagements;
 import se.vgregion.domain.pdl.PdlContext;
 
 import static org.junit.Assert.assertEquals;
@@ -25,13 +26,17 @@ public class RelationshipSpec {
         return response;
     }
 
-    public static Answer<CheckPatientRelationResponseType> relationshipRequestAndResponse(final PdlContext ctx, final boolean hasRelationship) {
+    public static Answer<CheckPatientRelationResponseType> relationshipRequestAndResponse(
+            final PdlContext ctx,
+            final PatientWithEngagements pe,
+            final boolean hasRelationship
+    ) {
         return new Answer<CheckPatientRelationResponseType>() {
             @Override
             public CheckPatientRelationResponseType answer(InvocationOnMock invocationOnMock) throws Throwable {
                 CheckPatientRelationRequestType arg2 = (CheckPatientRelationRequestType) (invocationOnMock.getArguments()[1]);
 
-                assertEquals(ctx.patientId, arg2.getPatientId());
+                assertEquals(pe.patientId, arg2.getPatientId());
                 AccessingActorType actor = arg2.getAccessingActor();
                 assertEquals(ctx.careProviderHsaId, actor.getCareProviderId());
                 assertEquals(ctx.careUnitHsaId, actor.getCareUnitId());

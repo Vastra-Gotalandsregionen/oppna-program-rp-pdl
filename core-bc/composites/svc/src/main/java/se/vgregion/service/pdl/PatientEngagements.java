@@ -1,10 +1,8 @@
 package se.vgregion.service.pdl;
 
-import se.vgregion.domain.pdl.PatientEngagement;
-
-import java.util.List;
+import se.vgregion.domain.pdl.PatientWithEngagements;
 
 public interface PatientEngagements {
 
-    List<PatientEngagement> forPatient(String ssn);
+    PatientWithEngagements forPatient(String ssn);
 }

@@ -9,6 +9,7 @@ import se.riv.ehr.patientconsent.v1.AccessingActorType;
 import se.riv.ehr.patientconsent.v1.AssertionTypeType;
 import se.riv.ehr.patientconsent.v1.ResultCodeType;
 import se.riv.ehr.patientconsent.v1.ResultType;
+import se.vgregion.domain.pdl.PatientWithEngagements;
 import se.vgregion.domain.pdl.PdlContext;
 
 import static org.junit.Assert.assertEquals;
@@ -38,13 +39,18 @@ public class ConsentSpec {
         return response;
     }
 
-    static Answer<CheckConsentResponseType> consentRequestAndRespond(final PdlContext ctx, final boolean hasConsent, final boolean emergency) {
+    static Answer<CheckConsentResponseType> consentRequestAndRespond(
+            final PdlContext ctx,
+            final PatientWithEngagements pe,
+            final boolean hasConsent,
+            final boolean emergency
+    ) {
         return new Answer<CheckConsentResponseType>() {
             @Override
             public CheckConsentResponseType answer(InvocationOnMock invocationOnMock) throws Throwable {
                 CheckConsentRequestType arg2 = (CheckConsentRequestType) (invocationOnMock.getArguments()[1]);
 
-                assertEquals(ctx.patientId, arg2.getPatientId());
+                assertEquals(pe.patientId, arg2.getPatientId());
                 AccessingActorType actor = arg2.getAccessingActor();
                 assertEquals(ctx.careProviderHsaId, actor.getCareProviderId());
                 assertEquals(ctx.careUnitHsaId, actor.getCareUnitId());

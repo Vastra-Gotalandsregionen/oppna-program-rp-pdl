@@ -8,6 +8,7 @@ import riv.ehr.blocking.accesscontrol._3.CheckResultType;
 import riv.ehr.blocking.accesscontrol._3.CheckStatusType;
 import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v3.CheckBlocksRequestType;
 import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v3.CheckBlocksResponseType;
+import se.vgregion.domain.pdl.PatientWithEngagements;
 import se.vgregion.domain.pdl.PdlContext;
 
 import java.util.List;
@@ -37,13 +38,18 @@ public class BlockingSpec {
     }
 
 
-    static Answer<CheckBlocksResponseType> blockingRequestAndRespond(final PdlContext ctx, final int rowNumber, final boolean isBlocked) {
+    static Answer<CheckBlocksResponseType> blockingRequestAndRespond(
+            final PdlContext ctx,
+            final PatientWithEngagements pe,
+            final int rowNumber,
+            final boolean isBlocked
+    ) {
         return new Answer<CheckBlocksResponseType>() {
             @Override
             public CheckBlocksResponseType answer(InvocationOnMock invocationOnMock) throws Throwable {
                 CheckBlocksRequestType arg2 = (CheckBlocksRequestType) (invocationOnMock.getArguments()[1]);
                 AccessingActorType actor = arg2.getAccessingActor();
-                assertEquals(ctx.patientId, arg2.getPatientId());
+                assertEquals(pe.patientId, arg2.getPatientId());
                 assertEquals(ctx.careProviderHsaId, actor.getCareProviderId());
                 assertEquals(ctx.careUnitHsaId, actor.getCareUnitId());
                 assertEquals(ctx.employeeHsaId, actor.getEmployeeId());

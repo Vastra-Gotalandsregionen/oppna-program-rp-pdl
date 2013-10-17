@@ -10,13 +10,13 @@ public class Relationship {
         // Utility class, no costructor!
     }
 
-    public static CheckPatientRelationRequestType checkRelationshipRequest(PdlContext ctx) {
+    public static CheckPatientRelationRequestType checkRelationshipRequest(PdlContext ctx, String patientId) {
         CheckPatientRelationRequestType request = new CheckPatientRelationRequestType();
         AccessingActorType actor = new AccessingActorType();
         actor.setCareProviderId(ctx.careProviderHsaId);
         actor.setCareUnitId(ctx.careUnitHsaId);
         actor.setEmployeeId(ctx.employeeHsaId);
-        request.setPatientId(ctx.patientId);
+        request.setPatientId(patientId);
         request.setAccessingActor(actor);
         return request;
     }

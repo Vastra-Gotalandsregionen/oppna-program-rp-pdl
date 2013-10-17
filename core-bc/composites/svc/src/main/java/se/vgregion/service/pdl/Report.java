@@ -6,10 +6,7 @@ import se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckCo
 import se.riv.ehr.patientconsent.accesscontrol.checkconsentresponder.v1.CheckConsentResponseType;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationResponseType;
-import se.vgregion.domain.pdl.CheckedBlock;
-import se.vgregion.domain.pdl.CheckedConsent;
-import se.vgregion.domain.pdl.PdlContext;
-import se.vgregion.domain.pdl.PdlReport;
+import se.vgregion.domain.pdl.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +19,7 @@ public class Report {
 
     static PdlReport generateReport(
             final PdlContext ctx,
+            final PatientWithEngagements patientEngagements,
             final CheckBlocksResponderInterface blocksForPatient,
             final CheckConsentResponderInterface consentForPatient,
             final CheckPatientRelationResponderInterface relationshipWithPatient) {
@@ -29,9 +27,9 @@ public class Report {
         ExecutorService executorService = Executors.newFixedThreadPool(3); // TODO: 2013-10-14: Magnus Andersson > Bad Choise? Feels like a bad idea to fix a pool.
 
         // Start multiple requests
-        Future<List<CheckedBlock>> blocksFuture = blocks(ctx, blocksForPatient, executorService);
-        Future<CheckedConsent> consentFuture = consent(ctx, consentForPatient, executorService);
-        Future<Boolean> relationshipFuture = relationship(ctx, relationshipWithPatient, executorService);
+        Future<List<CheckedBlock>> blocksFuture = blocks(ctx, patientEngagements, blocksForPatient, executorService);
+        Future<CheckedConsent> consentFuture = consent(ctx, patientEngagements.patientId, consentForPatient, executorService);
+        Future<Boolean> relationshipFuture = relationship(ctx, patientEngagements.patientId, relationshipWithPatient, executorService);
 
         // Aggreagate results
         List<CheckedBlock> checkedBlocks = blocksWithFallback(blocksFuture);
@@ -83,53 +81,53 @@ public class Report {
         return checkedBlocks;
     }
 
-    static Future<Boolean> relationship(final PdlContext ctx, final CheckPatientRelationResponderInterface relationshipWithPatient, ExecutorService executorService) {
+    static Future<Boolean> relationship(final PdlContext ctx, final String patientId, final CheckPatientRelationResponderInterface relationshipWithPatient, ExecutorService executorService) {
         Callable<Boolean> relationshipAsync = new Callable<Boolean>() {
             public Boolean call() throws Exception {
-                return checkRelationship(ctx, relationshipWithPatient);
+                return checkRelationship(ctx, patientId, relationshipWithPatient);
             }
         };
 
         return executorService.submit(relationshipAsync);
     }
 
-    static Future<CheckedConsent> consent(final PdlContext ctx, final CheckConsentResponderInterface consentForPatient, ExecutorService executorService) {
+    static Future<CheckedConsent> consent(final PdlContext ctx, final String patientId, final CheckConsentResponderInterface consentForPatient, ExecutorService executorService) {
         Callable<CheckedConsent> consentAsync = new Callable<CheckedConsent>() {
             public CheckedConsent call() throws Exception {
-                return checkConsent(ctx, consentForPatient);
+                return checkConsent(ctx, patientId, consentForPatient);
             }
         };
 
         return executorService.submit(consentAsync);
     }
 
-    static Future<List<CheckedBlock>> blocks(final PdlContext ctx, final CheckBlocksResponderInterface blocksForPatient, ExecutorService executorService) {
+    static Future<List<CheckedBlock>> blocks(final PdlContext ctx, final PatientWithEngagements patientEngagements, final CheckBlocksResponderInterface blocksForPatient, ExecutorService executorService) {
         Callable<List<CheckedBlock>> blocksAsync = new Callable<List<CheckedBlock>>() {
             public List<CheckedBlock> call() throws Exception {
-                return checkBlocks(ctx, blocksForPatient);
+                return checkBlocks(ctx, patientEngagements, blocksForPatient);
             }
         };
 
         return executorService.submit(blocksAsync);
     }
 
-    static boolean checkRelationship(PdlContext ctx, CheckPatientRelationResponderInterface relationshipWithPatient) {
+    static boolean checkRelationship(PdlContext ctx, String patientId, CheckPatientRelationResponderInterface relationshipWithPatient) {
         CheckPatientRelationResponseType relationshipResponse =
-                relationshipWithPatient.checkPatientRelation(ctx.careProviderHsaId, Relationship.checkRelationshipRequest(ctx));
+                relationshipWithPatient.checkPatientRelation(ctx.careProviderHsaId, Relationship.checkRelationshipRequest(ctx, patientId));
 
         return relationshipResponse.getCheckResultType().isHasPatientrelation();
     }
 
-    static List<CheckedBlock> checkBlocks(PdlContext ctx, CheckBlocksResponderInterface blocksForPatient) {
+    static List<CheckedBlock> checkBlocks(PdlContext ctx, PatientWithEngagements patientEngagements, CheckBlocksResponderInterface blocksForPatient) {
         CheckBlocksResponseType blockResponse =
-                blocksForPatient.checkBlocks(ctx.careProviderHsaId, Blocking.checkBlocksRequest(ctx));
+                blocksForPatient.checkBlocks(ctx.careProviderHsaId, Blocking.checkBlocksRequest(ctx, patientEngagements));
 
-        return Blocking.asCheckedBlocks(ctx, blockResponse);
+        return Blocking.asCheckedBlocks(ctx, patientEngagements, blockResponse);
     }
 
-    static CheckedConsent checkConsent(PdlContext ctx, CheckConsentResponderInterface consentForPatient) {
+    static CheckedConsent checkConsent(PdlContext ctx, String patientId, CheckConsentResponderInterface consentForPatient) {
         CheckConsentResponseType consentResponse =
-                consentForPatient.checkConsent(ctx.careProviderHsaId, Consent.checkConsentRequest(ctx));
+                consentForPatient.checkConsent(ctx.careProviderHsaId, Consent.checkConsentRequest(ctx, patientId));
 
         return Consent.asCheckedConsent(consentResponse);
     }

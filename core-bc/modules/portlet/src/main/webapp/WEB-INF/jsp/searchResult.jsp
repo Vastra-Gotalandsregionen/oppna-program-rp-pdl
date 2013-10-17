@@ -13,8 +13,9 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 
-
-
 <div>
-Search complete. Found ${report.blocks.size()} blocks.
+Has blocks: ${report.hasBlocks}<br/>
+Found ${report.blocks.size()} blocks.<br>
+Has consent: ${report.hasConsent}<br/>
+Has relationship: ${report.hasRelationship}<br/>
 </div>

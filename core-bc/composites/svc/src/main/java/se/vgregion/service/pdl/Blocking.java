@@ -6,7 +6,8 @@ import riv.ehr.blocking.accesscontrol._3.InformationEntityType;
 import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v3.CheckBlocksRequestType;
 import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v3.CheckBlocksResponseType;
 import se.vgregion.domain.pdl.CheckedBlock;
-import se.vgregion.domain.pdl.PatientEngagement;
+import se.vgregion.domain.pdl.Engagement;
+import se.vgregion.domain.pdl.PatientWithEngagements;
 import se.vgregion.domain.pdl.PdlContext;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -23,9 +24,9 @@ class Blocking {
         // Utility class, no constructor!
     }
 
-    static CheckBlocksRequestType checkBlocksRequest(PdlContext ctx) {
+    static CheckBlocksRequestType checkBlocksRequest(PdlContext ctx, PatientWithEngagements pe) {
         CheckBlocksRequestType req = new CheckBlocksRequestType();
-        req.setPatientId(ctx.patientId);
+        req.setPatientId(pe.patientId);
         AccessingActorType actor = new AccessingActorType();
         actor.setCareProviderId(ctx.careProviderHsaId);
         actor.setCareUnitId(ctx.careUnitHsaId);
@@ -34,15 +35,15 @@ class Blocking {
 
         List<InformationEntityType> entities = req.getInformationEntities();
 
-        for (int i = 0; i < ctx.engagements.size(); i++) {
+        for (int i = 0; i < pe.engagements.size(); i++) {
             InformationEntityType en = new InformationEntityType();
-            PatientEngagement eg = ctx.engagements.get(i);
+            Engagement eg = pe.engagements.get(i);
 
             en.setInformationCareProviderId(eg.careProviderHsaId);
             en.setInformationCareUnitId(eg.careUnitHsaId);
             en.setInformationStartDate(xmlDate());
             en.setInformationEndDate(xmlDate());
-            if (eg.informationType != PatientEngagement.InformationType.OTHR) {
+            if (eg.informationType != Engagement.InformationType.OTHR) {
                 en.setInformationType(eg.informationType.toString());
             }
             en.setRowNumber(i);
@@ -57,15 +58,20 @@ class Blocking {
      * The WSDL-contract for some unfathomable reason requires the client to remember what row numbers were used when
      * sending the request. Therefore it is necessary to keep track of the request state and later enrich the answer.
      *
+     *
      * @param ctx
-     * @param blockResponse
-     * @return
+     * @param pe
+     *@param blockResponse  @return
      */
-    static List<CheckedBlock> asCheckedBlocks(PdlContext ctx, CheckBlocksResponseType blockResponse) {
+    static List<CheckedBlock> asCheckedBlocks(
+            PdlContext ctx,
+            PatientWithEngagements pe,
+            CheckBlocksResponseType blockResponse
+    ) {
         ArrayList<CheckedBlock> checkedBlocks = new ArrayList<CheckedBlock>();
         for (CheckResultType crt : blockResponse.getCheckBlocksResultType().getCheckResults()) {
             int i = crt.getRowNumber();
-            PatientEngagement elem = ctx.engagements.get(i);
+            Engagement elem = pe.engagements.get(i);
             switch (crt.getStatus()) {
                 case OK:
                     checkedBlocks.add(new CheckedBlock(elem, CheckedBlock.BlockStatus.OK));
