@@ -14,15 +14,16 @@
 <liferay-theme:defineObjects />
 
 <div>
-     <c:if test="${!state.report.hasRelationship}">
+     <c:if test="${!state.report.hasRelationship.value}">
          <portlet:actionURL name="establishRelationship" var="relationshipURL" />
         Du saknar patientrelation med ${state.pwe.patientDisplayName}. <a href="${relationshipURL}">Skapa relation med patient.</a>
      </c:if>
-
-
-     <c:if test="${state.report.hasRelationship}">
+    <c:if test="${state.report.hasRelationship.fallback}">
+        Ett problem uppstod vid verifiering av patientrelation. Patientrelation ignoreras.<br/>
+    </c:if>
+    <c:if test="${state.report.hasRelationship.value}">
         Välj i vilka system som du vill finna information.
-     </c:if>
+    </c:if>
 </div>
 <liferay-util:html-bottom>
     <script type="text/javascript" src="<%= request.getContextPath() %>/js/pdl-async.js"></script>

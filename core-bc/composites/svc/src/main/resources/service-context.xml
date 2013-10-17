@@ -22,17 +22,21 @@
 
   <jaxws:client id="blocksForPatient"
                 serviceClass="se.riv.ehr.blocking.accesscontrol.checkblocks.v3.rivtabp21.CheckBlocksResponderInterface"
-                address="${ws.endpoint.pdl.blocks}" />
+                address="${ws.endpoint.pdl.checkBlocks}" />
 
   <jaxws:client id="consentForPatient"
                 serviceClass="se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderInterface"
-                address="${ws.endpoint.pdl.consent}" />
+                address="${ws.endpoint.pdl.checkConsent}" />
 
   <jaxws:client id="relationshipWithPatient"
                 serviceClass="se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface"
-                address="${ws.endpoint.pdl.relationship}" />
+                address="${ws.endpoint.pdl.checkRelationship}" />
+
+  <jaxws:client id="establishRelationship"
+                serviceClass="se.riv.ehr.patientrelationship.administration.registerextendedpatientrelation.v1.rivtabp21.RegisterExtendedPatientRelationResponderInterface"
+                address="${ws.endpoint.pdl.registerRelationship}" />
 
   <jaxws:client id="logs"
                 serviceClass="se.riv.ehr.log.store.storelog.v1.rivtabp21.StoreLogResponderInterface"
-                address="${ws.endpoint.pdl.log}" />
+                address="${ws.endpoint.pdl.storeLog}" />
 </beans>

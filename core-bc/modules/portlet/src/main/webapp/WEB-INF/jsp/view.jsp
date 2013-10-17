@@ -27,13 +27,9 @@
                   <aui:field-wrapper cssClass="element-field-wrap">
                       <label for="<portlet:namespace />ssn">
                           <span>Person-/samordningsnummer</span>
-                          <span class="element-mandatory">*<span> Obligatorisk</span></span>
                       </label>
                       <aui:input name="ssn" cssClass="element-field" type="text" label="" />
                   </aui:field-wrapper>
-                  <span class="element-field-help">
-                      Skriv in personnummer eller samordningsnummer för den patient du vill ha information kring. Format som stöds ååmmdd-nnnn, ååmmdd+nnnn.
-                  </span>
               </div>
             </spring:bind>
 
@@ -42,11 +38,8 @@
                     <label for="<portlet:namespace />assignment">
                         <span>Uppdrag</span>
                     </label>
-                    ${state.ctx.assignment}
+                    ${state.ctx.assignmentDisplayName}
                 </aui:field-wrapper>
-                <span class="element-field-help">
-                    Ditt nuvarande uppdrag.
-                </span>
             </div>
         </aui:fieldset>
 

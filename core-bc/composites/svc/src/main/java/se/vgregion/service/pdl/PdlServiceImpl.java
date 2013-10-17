@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import se.riv.ehr.blocking.accesscontrol.checkblocks.v3.rivtabp21.CheckBlocksResponderInterface;
 import se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderInterface;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
+import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelation.v1.rivtabp21.RegisterExtendedPatientRelationResponderInterface;
 import se.vgregion.domain.pdl.*;
 
 import javax.annotation.Resource;
@@ -18,6 +19,8 @@ public class PdlServiceImpl implements PdlService {
     private CheckConsentResponderInterface consentForPatient;
     @Resource(name = "relationshipWithPatient")
     private CheckPatientRelationResponderInterface relationshipWithPatient;
+    @Resource(name = "establishRelationship")
+    private RegisterExtendedPatientRelationResponderInterface establishRelationship;
 
     @Override
     public PdlReport pdlReport(final PdlContext ctx, PatientWithEngagements patientEngagements) {
@@ -31,7 +34,8 @@ public class PdlServiceImpl implements PdlService {
 
     @Override
     public PdlReport patientRelationship(PdlContext ctx, PdlReport report, String patientId) {
-        return report.withRelationship(true);
+        WithFallback<Boolean> relationshipStatus = Relationship.establishRelation(ctx, patientId, establishRelationship);
+        return report.withRelationship(relationshipStatus);
     }
 
     @Override

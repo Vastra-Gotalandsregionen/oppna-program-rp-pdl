@@ -12,18 +12,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
-import se.vgregion.domain.pdl.PatientWithEngagements;
-import se.vgregion.domain.pdl.PdlContext;
+import se.vgregion.domain.pdl.*;
+import se.vgregion.service.pdl.CaregiverSystems;
 import se.vgregion.service.pdl.PatientEngagements;
 import se.vgregion.service.pdl.PdlService;
 
 import javax.portlet.ActionResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "VIEW")
 @SessionAttributes("state")
 public class PdlController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PdlController.class.getName());
+
     @Autowired
     private PatientEngagements patientEngagements;
 
@@ -33,10 +36,13 @@ public class PdlController {
     @Autowired
     private PdlUserState state;
 
+    @Autowired
+    private CaregiverSystems systems;
+
     @ModelAttribute("state")
     public PdlUserState initState() {
-        if(state.ctx == null) {
-            state.ctx = currentContext();
+        if(state.getCtx() == null) {
+            state.setCtx(currentContext());
         }
         return state;
     }
@@ -64,11 +70,25 @@ public class PdlController {
 
         LOGGER.trace("Looking for patient {}.", ssn);
         PatientWithEngagements pwe = patientEngagements.forPatient(ssn);
-        state.pwe = pwe;
+        state.setPwe( pwe );
 
-        state.report = pdl.pdlReport(state.ctx, pwe);
+        PdlReport report = pdl.pdlReport(state.getCtx(), pwe);
+
+        List<Engagement.InformationType> information = asInformationTypes( pwe.getEngagements() );
+        List<CaregiverSystemDescription> cs = systems.byInformationType(information);
+
+        state.setReport(report);
+        state.setCaregiverSystems(cs);
 
         response.setRenderParameter("view","searchResult");
+    }
+
+    private static List<Engagement.InformationType> asInformationTypes(List<Engagement> engagements) {
+        ArrayList<Engagement.InformationType> is = new ArrayList<Engagement.InformationType>();
+        for(Engagement e : engagements ) {
+            is.add( e.informationType );
+        }
+        return is;
     }
 
     @ActionMapping("establishRelationship")
@@ -77,11 +97,11 @@ public class PdlController {
     ) {
         LOGGER.trace(
                 "Request to create relationship between employee {} and patient {}.",
-                state.ctx.employeeHsaId,
-                state.pwe.patientId
+                state.getCtx().employeeHsaId,
+                state.getPwe().patientId
         );
 
-        state.report = pdl.patientRelationship(state.ctx, state.report, state.pwe.patientId);
+        state.setReport(pdl.patientRelationship(state.getCtx(), state.getReport(), state.getPwe().patientId));
 
         response.setRenderParameter("view","searchResult");
     }
@@ -97,6 +117,7 @@ public class PdlController {
                 "careProviderHsaId",
                 "careUnitHsaId",
                 "employeeHsaId",
-                "Sammanhållen Journalföring");
+                "Sammanhållen Journalföring",
+                "assignmentHsaId");
     }
 }

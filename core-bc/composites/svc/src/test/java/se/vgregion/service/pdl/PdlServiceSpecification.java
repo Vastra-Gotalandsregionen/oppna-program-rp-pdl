@@ -57,7 +57,8 @@ public class PdlServiceSpecification {
                 "careProviderHsaId",
                 "careUnitHsaId",
                 "employeeHsaId",
-                "Sammanhållen Jouralföring");
+                "Sammanhållen Jouralföring",
+                "assignmentHsaId");
 
         pe = new PatientWithEngagements(
                 "patientId",
@@ -79,7 +80,8 @@ public class PdlServiceSpecification {
 
         PdlReport pdlReport = service.pdlReport(ctx, pe);
 
-        assertTrue(pdlReport.hasBlocks);
+        assertFalse(pdlReport.hasBlocks.fallback);
+        assertTrue(pdlReport.hasBlocks.value);
         assertEquals(1, pdlReport.blocks.size());
     }
 
@@ -96,7 +98,8 @@ public class PdlServiceSpecification {
 
         PdlReport pdlReport = service.pdlReport(ctx, pe);
 
-        assertFalse(pdlReport.hasBlocks);
+        assertFalse(pdlReport.hasBlocks.fallback);
+        assertFalse(pdlReport.hasBlocks.value);
         assertEquals(1, pdlReport.blocks.size());
     }
 
@@ -114,7 +117,8 @@ public class PdlServiceSpecification {
 
         PdlReport pdlReport = service.pdlReport(ctx, pe);
 
-        assertTrue(pdlReport.hasConsent);
+        assertFalse(pdlReport.hasConsent.fallback);
+        assertTrue(pdlReport.hasConsent.value);
         assertEquals(PdlReport.ConsentType.CONSENT, pdlReport.consentType);
     }
 
@@ -131,7 +135,8 @@ public class PdlServiceSpecification {
 
         PdlReport pdlReport = service.pdlReport(ctx, pe);
 
-        assertTrue(pdlReport.hasConsent);
+        assertFalse(pdlReport.hasConsent.fallback);
+        assertTrue(pdlReport.hasConsent.value);
         assertEquals(PdlReport.ConsentType.EMERGENCY, pdlReport.consentType);
     }
 
@@ -148,7 +153,8 @@ public class PdlServiceSpecification {
 
         PdlReport pdlReport = service.pdlReport(ctx, pe);
 
-        assertFalse(pdlReport.hasConsent);
+        assertFalse(pdlReport.hasConsent.fallback);
+        assertFalse(pdlReport.hasConsent.value);
     }
 
     @Test
@@ -164,7 +170,8 @@ public class PdlServiceSpecification {
 
         PdlReport pdlReport = service.pdlReport(ctx, pe);
 
-        assertTrue(pdlReport.hasRelationship);
+        assertFalse(pdlReport.hasRelationship.fallback);
+        assertTrue(pdlReport.hasRelationship.value);
     }
 
 
@@ -181,7 +188,8 @@ public class PdlServiceSpecification {
 
         PdlReport pdlReport = service.pdlReport(ctx, pe);
 
-        assertFalse(pdlReport.hasRelationship);
+        assertFalse(pdlReport.hasRelationship.fallback);
+        assertFalse(pdlReport.hasRelationship.value);
     }
 
 

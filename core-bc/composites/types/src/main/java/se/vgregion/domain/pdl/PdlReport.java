@@ -4,30 +4,38 @@ import java.util.List;
 
 public class PdlReport {
     public enum ConsentType {
-        CONSENT, EMERGENCY, FALLBACK
+        CONSENT, EMERGENCY
     }
 
-    public final boolean hasBlocks;
+    public final WithFallback<Boolean> hasBlocks;
     public final List<CheckedBlock> blocks;
-    public final boolean hasConsent;
+    public final WithFallback<Boolean> hasConsent;
     public final ConsentType consentType;
-    public final boolean hasRelationship;
+    public final WithFallback<Boolean> hasRelationship;
 
-    public PdlReport(List<CheckedBlock> checkedBlocks, CheckedConsent checkedConsent, boolean hasRelationship) {
+    public PdlReport(
+            WithFallback<List<CheckedBlock>> checkedBlocks,
+            WithFallback<CheckedConsent> checkedConsent,
+            WithFallback<Boolean> hasRelationship
+    ) {
         this.hasRelationship = hasRelationship;
         hasBlocks = containsBlocked(checkedBlocks);
-        blocks = checkedBlocks;
-        this.hasConsent = checkedConsent.hasConsent;
-        this.consentType = checkedConsent.consentType;
+        blocks = checkedBlocks.value;
+        this.hasConsent = isConsentWithFallback(checkedConsent);
+        this.consentType = checkedConsent.value.consentType;
+    }
+
+    private WithFallback<Boolean> isConsentWithFallback(WithFallback<CheckedConsent> checkedConsent) {
+        return (checkedConsent.fallback) ? WithFallback.fallback(checkedConsent.value.hasConsent) : WithFallback.success(checkedConsent.value.hasConsent);
     }
 
     // Private, for copy only
     private PdlReport(
-            boolean hasBlocks,
+            WithFallback<Boolean> hasBlocks,
             List<CheckedBlock> blocks,
-            boolean hasConsent,
+            WithFallback<Boolean> hasConsent,
             ConsentType consentType,
-            boolean hasRelationship
+            WithFallback<Boolean> hasRelationship
     ) {
         this.hasBlocks = hasBlocks;
         this.blocks = blocks;
@@ -36,16 +44,17 @@ public class PdlReport {
         this.hasRelationship = hasRelationship;
     }
 
-    private boolean containsBlocked(List<CheckedBlock> checkedBlocks) {
-        for( CheckedBlock b : checkedBlocks ) {
+    private WithFallback<Boolean> containsBlocked(WithFallback<List<CheckedBlock>> checkedBlocks) {
+
+        for( CheckedBlock b : checkedBlocks.value ) {
             if(b.blocked == CheckedBlock.BlockStatus.BLOCKED) {
-                return true;
+                return new WithFallback(true, checkedBlocks.fallback) ;
             }
         }
-        return false;
+        return new WithFallback(false, checkedBlocks.fallback);
     }
 
-    public PdlReport withRelationship(boolean newHasRelationship) {
+    public PdlReport withRelationship(WithFallback<Boolean> newHasRelationship) {
         return new PdlReport(
                 hasBlocks,
                 blocks,
@@ -54,7 +63,8 @@ public class PdlReport {
                 newHasRelationship);
     }
 
-    public boolean isHasBlocks() {
+
+    public WithFallback<Boolean> getHasBlocks() {
         return hasBlocks;
     }
 
@@ -62,7 +72,7 @@ public class PdlReport {
         return blocks;
     }
 
-    public boolean isHasConsent() {
+    public WithFallback<Boolean> getHasConsent() {
         return hasConsent;
     }
 
@@ -70,34 +80,8 @@ public class PdlReport {
         return consentType;
     }
 
-    public boolean isHasRelationship() {
+    public WithFallback<Boolean> getHasRelationship() {
         return hasRelationship;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof PdlReport)) return false;
-
-        PdlReport pdlReport = (PdlReport) o;
-
-        if (hasBlocks != pdlReport.hasBlocks) return false;
-        if (hasConsent != pdlReport.hasConsent) return false;
-        if (hasRelationship != pdlReport.hasRelationship) return false;
-        if (!blocks.equals(pdlReport.blocks)) return false;
-        if (consentType != pdlReport.consentType) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (hasBlocks ? 1 : 0);
-        result = 31 * result + blocks.hashCode();
-        result = 31 * result + (hasConsent ? 1 : 0);
-        result = 31 * result + consentType.hashCode();
-        result = 31 * result + (hasRelationship ? 1 : 0);
-        return result;
     }
 
     @Override

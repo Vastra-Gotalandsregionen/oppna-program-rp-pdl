@@ -4,13 +4,21 @@ public class PdlContext {
     public final String careProviderHsaId;
     public final String careUnitHsaId;
     public final String employeeHsaId;
-    public final String assignment;
+    public final String assignmentDisplayName;
+    public final String assignmentHsaId;
 
-    public PdlContext(String careProviderHsaId, String careUnitHsaId, String employeeHsaId, String assignment) {
+    public PdlContext(
+            String careProviderHsaId,
+            String careUnitHsaId,
+            String employeeHsaId,
+            String assignmentDisplayName,
+            String assignmentHsaId
+    ) {
         this.careProviderHsaId = careProviderHsaId;
         this.careUnitHsaId = careUnitHsaId;
         this.employeeHsaId = employeeHsaId;
-        this.assignment = assignment;
+        this.assignmentDisplayName = assignmentDisplayName;
+        this.assignmentHsaId = assignmentHsaId;
     }
 
     public String getCareProviderHsaId() {
@@ -25,8 +33,12 @@ public class PdlContext {
         return employeeHsaId;
     }
 
-    public String getAssignment() {
-        return assignment;
+    public String getAssignmentHsaId() {
+        return assignmentHsaId;
+    }
+
+    public String getAssignmentDisplayName() {
+        return assignmentDisplayName;
     }
 
     @Override
@@ -35,7 +47,7 @@ public class PdlContext {
                 "careProviderHsaId='" + careProviderHsaId + '\'' +
                 ", careUnitHsaId='" + careUnitHsaId + '\'' +
                 ", employeeHsaId='" + employeeHsaId + '\'' +
-                ", assignment='" + assignment + '\'' +
+                ", assignmentDisplayName='" + assignmentDisplayName + '\'' +
                 '}';
     }
 }
