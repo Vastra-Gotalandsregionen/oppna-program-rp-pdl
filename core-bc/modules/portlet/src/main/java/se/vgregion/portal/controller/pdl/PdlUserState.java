@@ -3,7 +3,7 @@ package se.vgregion.portal.controller.pdl;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
-import se.vgregion.domain.pdl.CaregiverSystemDescription;
+import se.vgregion.domain.pdl.CareSystem;
 import se.vgregion.domain.pdl.PatientWithEngagements;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.pdl.PdlReport;
@@ -20,7 +20,17 @@ public class PdlUserState {
     private PdlReport report;
     private PatientWithEngagements pwe;
     private PdlContext ctx;
-    private List<CaregiverSystemDescription> caregiverSystems;
+    private List<CareSystem> careSystems;
+
+    public List<CareSystem> getSystemsSameUnit() {
+        return systemsSameUnit;
+    }
+
+    public void setSystemsSameUnit(List<CareSystem> systemsSameUnit) {
+        this.systemsSameUnit = systemsSameUnit;
+    }
+
+    private List<CareSystem> systemsSameUnit;
 
     public PdlReport getReport() {
         return report;
@@ -46,12 +56,12 @@ public class PdlUserState {
         this.ctx = ctx;
     }
 
-    public void setCaregiverSystems(List<CaregiverSystemDescription> caregiverSystems) {
-        this.caregiverSystems = caregiverSystems;
+    public void setCareSystems(List<CareSystem> careSystems) {
+        this.careSystems = careSystems;
     }
 
-    public List<CaregiverSystemDescription> getCaregiverSystems() {
-        return caregiverSystems;
+    public List<CareSystem> getCareSystems() {
+        return careSystems;
     }
 
     @Override
@@ -60,7 +70,8 @@ public class PdlUserState {
                 "report=" + report +
                 ", pwe=" + pwe +
                 ", ctx=" + ctx +
-                ", caregiverSystems=" + caregiverSystems +
+                ", careSystems=" + careSystems +
+                ", systemsSameUnit=" + systemsSameUnit +
                 '}';
     }
 

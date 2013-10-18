@@ -37,8 +37,7 @@ public class PdlServiceSpecification {
     private PdlServiceImpl service = new PdlServiceImpl();
 
     private PdlContext ctx;
-    private PatientWithEngagements pe
-            ;
+    private PatientWithEngagements pe;
 
     @Before
     public void setuUp() {

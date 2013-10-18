@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import se.vgregion.domain.pdl.*;
-import se.vgregion.service.pdl.CaregiverSystems;
+import se.vgregion.service.pdl.CareSystems;
 import se.vgregion.service.pdl.PatientEngagements;
 import se.vgregion.service.pdl.PdlService;
 
@@ -26,30 +26,29 @@ import java.util.List;
 @SessionAttributes("state")
 public class PdlController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PdlController.class.getName());
-
     @Autowired
     private PatientEngagements patientEngagements;
-
     @Autowired
     private PdlService pdl;
-
     @Autowired
     private PdlUserState state;
-
     @Autowired
-    private CaregiverSystems systems;
+    private CareSystems systems;
+
+    private static List<Engagement.InformationType> asInformationTypes(List<Engagement> engagements) {
+        ArrayList<Engagement.InformationType> is = new ArrayList<Engagement.InformationType>();
+        for (Engagement e : engagements) {
+            is.add(e.informationType);
+        }
+        return is;
+    }
 
     @ModelAttribute("state")
     public PdlUserState initState() {
-        if(state.getCtx() == null) {
+        if (state.getCtx() == null) {
             state.setCtx(currentContext());
         }
         return state;
-    }
-
-    @RenderMapping
-    public String enterSearchPatient() {
-        return "view";
     }
 
     // Matches personnummer: 900313-1245, 990313+1245 (100yrs+)
@@ -61,6 +60,11 @@ public class PdlController {
     //@RequestMapping(value = "/searchPatient/{ssn:"+personSamordningsNummerRegex+"}", method = RequestMethod.GET)
     //@PathVariable("ssn") String ssn
 
+    @RenderMapping
+    public String enterSearchPatient() {
+        return "view";
+    }
+
     @ActionMapping("searchPatient")
     public void searchPatientInformation(
             @RequestParam String ssn,
@@ -70,25 +74,37 @@ public class PdlController {
 
         LOGGER.trace("Looking for patient {}.", ssn);
         PatientWithEngagements pwe = patientEngagements.forPatient(ssn);
-        state.setPwe( pwe );
+        state.setPwe(pwe);
 
         PdlReport report = pdl.pdlReport(state.getCtx(), pwe);
 
-        List<Engagement.InformationType> information = asInformationTypes( pwe.getEngagements() );
-        List<CaregiverSystemDescription> cs = systems.byInformationType(information);
+        // Engagements belonging to patient.
+        List<Engagement.InformationType> information = asInformationTypes(pwe.engagements);
+        List<CareSystem> careSystems = systems.byInformationType(information);
 
         state.setReport(report);
-        state.setCaregiverSystems(cs);
+        state.setCareSystems(careSystems);
 
-        response.setRenderParameter("view","searchResult");
+        List<CareSystem> systemsSameUnit = filterSameUnit(
+                state.getCtx().careUnitHsaId,
+                careSystems);
+
+        state.setSystemsSameUnit(systemsSameUnit);
+
+        response.setRenderParameter("view", "searchResult");
     }
 
-    private static List<Engagement.InformationType> asInformationTypes(List<Engagement> engagements) {
-        ArrayList<Engagement.InformationType> is = new ArrayList<Engagement.InformationType>();
-        for(Engagement e : engagements ) {
-            is.add( e.informationType );
+    private List<CareSystem> filterSameUnit(
+            String careUnitHsaId,
+            List<CareSystem> careSystems
+    ) {
+        List<CareSystem> filtered = new ArrayList<CareSystem>();
+        for (CareSystem sys : careSystems) {
+            if(sys.careUnitHsaId.equals(careUnitHsaId)) {
+                filtered.add(sys);
+            }
         }
-        return is;
+        return filtered;
     }
 
     @ActionMapping("establishRelationship")
@@ -103,14 +119,13 @@ public class PdlController {
 
         state.setReport(pdl.patientRelationship(state.getCtx(), state.getReport(), state.getPwe().patientId));
 
-        response.setRenderParameter("view","searchResult");
+        response.setRenderParameter("view", "searchResult");
     }
 
     @RenderMapping(params = "view=searchResult")
     public String searchResult(final ModelMap model) {
         return "searchResult";
     }
-
 
     private PdlContext currentContext() {
         return new PdlContext(
