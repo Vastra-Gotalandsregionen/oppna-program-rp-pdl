@@ -3,12 +3,10 @@ package se.vgregion.portal.controller.pdl;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
-import se.vgregion.domain.pdl.CareSystem;
+import se.vgregion.domain.pdl.CareSystemsReport;
 import se.vgregion.domain.pdl.PatientWithEngagements;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.pdl.PdlReport;
-
-import java.util.List;
 
 /**
  * Putting things into session scope is arguably an evil thing to do...
@@ -17,23 +15,18 @@ import java.util.List;
 @Component
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class PdlUserState {
-    private PdlReport report;
+    private PdlReport pdlReport;
+    private CareSystemsReport csReport;
     private PatientWithEngagements pwe;
     private PdlContext ctx;
-    private List<CareSystem> careSystems;
+    private boolean showSameCareProvider = false;
 
-    public List<CareSystem> getSystemsSameUnit() {
-        return systemsSameUnit;
+    public PdlReport getPdlReport() {
+        return pdlReport;
     }
 
-    public void setSystemsSameUnit(List<CareSystem> systemsSameUnit) {
-        this.systemsSameUnit = systemsSameUnit;
-    }
-
-    private List<CareSystem> systemsSameUnit;
-
-    public PdlReport getReport() {
-        return report;
+    public void reset() {
+        showSameCareProvider = false;
     }
 
     public PatientWithEngagements getPwe() {
@@ -44,8 +37,16 @@ public class PdlUserState {
         return ctx;
     }
 
-    public void setReport(PdlReport report) {
-        this.report = report;
+    public void setPdlReport(PdlReport report) {
+        this.pdlReport = report;
+    }
+
+    public CareSystemsReport getCsReport() {
+        return csReport;
+    }
+
+    public void setCsReport(CareSystemsReport csReport) {
+        this.csReport = csReport;
     }
 
     public void setPwe(PatientWithEngagements pwe) {
@@ -56,22 +57,22 @@ public class PdlUserState {
         this.ctx = ctx;
     }
 
-    public void setCareSystems(List<CareSystem> careSystems) {
-        this.careSystems = careSystems;
+    public boolean isShowSameCareProvider() {
+        return showSameCareProvider;
     }
 
-    public List<CareSystem> getCareSystems() {
-        return careSystems;
+    public void setShowSameCareProvider(boolean showSameCareProvider) {
+        this.showSameCareProvider = showSameCareProvider;
     }
 
     @Override
     public String toString() {
         return "PdlUserState{" +
-                "report=" + report +
+                "pdlReport=" + pdlReport +
+                ", csReport=" + csReport +
                 ", pwe=" + pwe +
                 ", ctx=" + ctx +
-                ", careSystems=" + careSystems +
-                ", systemsSameUnit=" + systemsSameUnit +
+                ", showSameCareProvider=" + showSameCareProvider +
                 '}';
     }
 

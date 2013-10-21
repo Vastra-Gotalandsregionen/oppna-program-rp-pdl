@@ -14,15 +14,48 @@
 <liferay-theme:defineObjects />
 
 <div>
-     <c:if test="${!state.report.hasRelationship.value}">
-         <portlet:actionURL name="establishRelationship" var="relationshipURL" />
+    <c:if test="${!state.pdlReport.hasRelationship.value}">
+     <portlet:actionURL name="establishRelationship" var="relationshipURL" />
         Du saknar patientrelation med ${state.pwe.patientDisplayName}. <a href="${relationshipURL}">Skapa relation med patient.</a>
-     </c:if>
-    <c:if test="${state.report.hasRelationship.fallback}">
-        Ett problem uppstod vid verifiering av patientrelation. Patientrelation ignoreras.<br/>
     </c:if>
-    <c:if test="${state.report.hasRelationship.value}">
-        Välj i vilka system som du vill finna information.
+    <c:if test="${state.pdlReport.hasRelationship.fallback}">
+        Ett problem uppstod vid verifiering av patientrelation. Patientrelation undantas för denna sökningen.<br/>
+    </c:if>
+    <c:if test="${state.pdlReport.hasBlocks.fallback}">
+        Ett problem uppstod vid verifiering av spärrar. Spärrar ignoreras för denna sökningen.<br/>
+    </c:if>
+    <c:if test="${state.pdlReport.hasConsent.fallback}">
+        Ett problem uppstod vid verifiering av samtycke. Samtycke undantas för denna sökningen.<br/>
+    </c:if>
+
+    <c:if test="${state.pdlReport.hasRelationship.value}">
+        <c:choose>
+             <c:when test="${state.csReport.hasSameUnit}">
+                Välj i vilka system som du vill finna information.
+                <ul>
+                    <c:forEach var="sys" items="${state.csReport.sameUnit}">
+                        <li>${sys.value.displayName}</li>
+                    </c:forEach>
+                </ul>
+             </c:when>
+             <c:otherwise>
+                Inga system med patientdata kunde hittas inom din vårdenhet.
+             </c:otherwise>
+        </c:choose>
+
+        <c:if test="${state.csReport.hasSameCareProvider && !state.showSameCareProvider}">
+            <portlet:actionURL name="sameCareProvider" var="sameCareProviderURL" />
+            Det finns fler ytterligare system som innehåller patientinformation på en annan vårdenhet. ${state.pwe.patientDisplayName}. <a href="${sameCareProviderURL}">Relevant information finns i andra system hos inom vårdgivare.</a>
+        </c:if>
+
+        <c:if test="${state.showSameCareProvider}">
+            System från andra vårdenheter.
+            <ul>
+                <c:forEach var="sys" items="${state.csReport.sameCareProvider}">
+                    <li>${sys.value.displayName}</li>
+                </c:forEach>
+            </ul>
+        </c:if>
     </c:if>
 </div>
 <liferay-util:html-bottom>

@@ -62,6 +62,7 @@ public class PdlController {
 
     @RenderMapping
     public String enterSearchPatient() {
+        state.reset();
         return "view";
     }
 
@@ -76,48 +77,44 @@ public class PdlController {
         PatientWithEngagements pwe = patientEngagements.forPatient(ssn);
         state.setPwe(pwe);
 
-        PdlReport report = pdl.pdlReport(state.getCtx(), pwe);
+        PdlReport pdlReport = pdl.pdlReport(state.getCtx(), pwe);
 
         // Engagements belonging to patient.
         List<Engagement.InformationType> information = asInformationTypes(pwe.engagements);
         List<CareSystem> careSystems = systems.byInformationType(information);
 
-        state.setReport(report);
-        state.setCareSystems(careSystems);
+        CareSystemsReport csReport = new CareSystemsReport(state.getCtx(), pdlReport, careSystems);
 
-        List<CareSystem> systemsSameUnit = filterSameUnit(
-                state.getCtx().careUnitHsaId,
-                careSystems);
-
-        state.setSystemsSameUnit(systemsSameUnit);
+        state.setPdlReport(pdlReport);
+        state.setCsReport(csReport);
 
         response.setRenderParameter("view", "searchResult");
     }
 
-    private List<CareSystem> filterSameUnit(
-            String careUnitHsaId,
-            List<CareSystem> careSystems
-    ) {
-        List<CareSystem> filtered = new ArrayList<CareSystem>();
-        for (CareSystem sys : careSystems) {
-            if(sys.careUnitHsaId.equals(careUnitHsaId)) {
-                filtered.add(sys);
-            }
-        }
-        return filtered;
-    }
-
     @ActionMapping("establishRelationship")
-    public void establishRelationship(
-            ActionResponse response
-    ) {
+    public void establishRelationship(ActionResponse response) {
         LOGGER.trace(
                 "Request to create relationship between employee {} and patient {}.",
                 state.getCtx().employeeHsaId,
                 state.getPwe().patientId
         );
 
-        state.setReport(pdl.patientRelationship(state.getCtx(), state.getReport(), state.getPwe().patientId));
+        state.setPdlReport(pdl.patientRelationship(state.getCtx(), state.getPdlReport(), state.getPwe().patientId));
+
+        response.setRenderParameter("view", "searchResult");
+    }
+
+    @ActionMapping("sameCareProvider")
+    public void sameCareProvider(ActionResponse response) {
+        LOGGER.trace(
+                "Request to show more information within same care giver for employee {} and patient {}.",
+                state.getCtx().employeeHsaId,
+                state.getPwe().patientId
+        );
+
+        // LOG SERVICE CALL
+
+        state.setShowSameCareProvider(true);
 
         response.setRenderParameter("view", "searchResult");
     }

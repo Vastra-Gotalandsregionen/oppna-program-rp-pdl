@@ -17,7 +17,9 @@ public class CareSystemsImpl implements CareSystems {
                         Arrays
                                 .asList(
                                         new CareSystem("Bild- och funktionsregistret", Engagement.InformationType.LAK, "careProviderHsaId", "careUnitHsaId"),
-                                        new CareSystem("System X", Engagement.InformationType.LAK, "careProviderHsaId", "careUnitHsaId")
+                                        new CareSystem("System X", Engagement.InformationType.LAK, "careProviderHsaId", "careUnitHsaId"),
+                                        new CareSystem("Other Care Unit", Engagement.InformationType.LAK, "careProviderHsaId", "careUnitHsaId2"),
+                                        new CareSystem("Other Care Giver", Engagement.InformationType.UPP, "careProviderHsaId2", "careUnitHsaId2")
                                 )
                 );
     }
