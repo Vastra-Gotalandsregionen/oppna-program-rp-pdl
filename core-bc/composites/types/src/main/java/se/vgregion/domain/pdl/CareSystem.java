@@ -1,21 +1,27 @@
 package se.vgregion.domain.pdl;
 
+import java.util.List;
+
 public class CareSystem {
     public final String displayName;
-    public final Engagement.InformationType informationType;
+    public final List<Engagement.InformationType> informationTypes;
     public final String careProviderHsaId;
     public final String careUnitHsaId;
 
-    public String getCareUnitHsaId() {
-        return careUnitHsaId;
-    }
-
-    public CareSystem(String displayName, Engagement.InformationType informationType, String careProviderHsaId, String careUnitHsaId) {
+    public CareSystem(
+            String displayName,
+            List<Engagement.InformationType> informationTypes,
+            String careProviderHsaId,
+            String careUnitHsaId) {
         this.displayName = displayName;
-        this.informationType = informationType;
+        this.informationTypes = informationTypes;
         this.careProviderHsaId = careProviderHsaId;
         this.careUnitHsaId = careUnitHsaId;
 
+    }
+
+    public String getCareUnitHsaId() {
+        return careUnitHsaId;
     }
 
     public String getDisplayName() {
@@ -26,15 +32,15 @@ public class CareSystem {
         return careProviderHsaId;
     }
 
-    public Engagement.InformationType getInformationType() {
-        return informationType;
+    public List<Engagement.InformationType> getInformationTypes() {
+        return informationTypes;
     }
 
     @Override
     public String toString() {
         return "CareSystem{" +
                 "displayName='" + displayName + '\'' +
-                ", informationType=" + informationType +
+                ", informationTypes=" + informationTypes +
                 ", careProviderHsaId='" + careProviderHsaId + '\'' +
                 ", careUnitHsaId='" + careUnitHsaId + '\'' +
                 '}';

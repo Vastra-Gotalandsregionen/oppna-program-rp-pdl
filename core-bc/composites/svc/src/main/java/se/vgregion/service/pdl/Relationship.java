@@ -63,6 +63,6 @@ public class Relationship {
 
         RegisterExtendedPatientRelationResponseType response = establishRelationship.registerExtendedPatientRelation(ctx.careProviderHsaId, request);
 
-        return WithFallback.success(response.getResultType().getResultCode() == ResultCodeType.OK);
+        return WithFallback.success(response.getResultType().getResultCode() == ResultCodeType.OK);  // FIXME 2013-10-16: Magnus Andersson > Handle soap exceptions.
     }
 }

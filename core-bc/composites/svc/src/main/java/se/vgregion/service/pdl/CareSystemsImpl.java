@@ -16,10 +16,10 @@ public class CareSystemsImpl implements CareSystems {
                 .unmodifiableList(
                         Arrays
                                 .asList(
-                                        new CareSystem("Bild- och funktionsregistret", Engagement.InformationType.LAK, "careProviderHsaId", "careUnitHsaId"),
-                                        new CareSystem("System X", Engagement.InformationType.LAK, "careProviderHsaId", "careUnitHsaId"),
-                                        new CareSystem("Other Care Unit", Engagement.InformationType.LAK, "careProviderHsaId", "careUnitHsaId2"),
-                                        new CareSystem("Other Care Giver", Engagement.InformationType.UPP, "careProviderHsaId2", "careUnitHsaId2")
+                                        new CareSystem("Bild- och funktionsregistret", Arrays.asList(Engagement.InformationType.LAK, Engagement.InformationType.UPP), "careProviderHsaId", "careUnitHsaId"),
+                                        new CareSystem("System X", Arrays.asList(Engagement.InformationType.LAK), "careProviderHsaId", "careUnitHsaId"),
+                                        new CareSystem("Other Care Unit", Arrays.asList(Engagement.InformationType.LAK), "careProviderHsaId", "careUnitHsaId2"),
+                                        new CareSystem("Other Care Giver", Arrays.asList(Engagement.InformationType.UPP), "careProviderHsaId2", "careUnitHsaId2")
                                 )
                 );
     }

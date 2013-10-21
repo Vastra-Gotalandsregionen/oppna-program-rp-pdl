@@ -104,6 +104,22 @@ public class PdlController {
         response.setRenderParameter("view", "searchResult");
     }
 
+    @ActionMapping("establishConsent")
+    public void establishConsent(ActionResponse response) {
+        LOGGER.trace(
+                "Request to create consent between employee {} and patient {}.",
+                state.getCtx().employeeHsaId,
+                state.getPwe().patientId
+        );
+
+        // FIXME 2013-10-21 : Magnus Andersson > Should choose between consent or emergency. Also add possiblility to be represented by someone?
+        state.setPdlReport(pdl.patientConsent(state.getCtx(), state.getPdlReport(), state.getPwe().patientId, PdlReport.ConsentType.Consent));
+
+        response.setRenderParameter("view", "searchResult");
+    }
+
+
+
     @ActionMapping("sameCareProvider")
     public void sameCareProvider(ActionResponse response) {
         LOGGER.trace(
@@ -118,6 +134,23 @@ public class PdlController {
 
         response.setRenderParameter("view", "searchResult");
     }
+
+    @ActionMapping("otherCareProvider")
+    public void otherProvider(ActionResponse response) {
+        LOGGER.trace(
+                "Request to show more information within same care giver for employee {} and patient {}.",
+                state.getCtx().employeeHsaId,
+                state.getPwe().patientId
+        );
+
+        // LOG SERVICE CALL
+
+        state.setShowOtherCareProvider(true);
+
+        response.setRenderParameter("view", "searchResult");
+    }
+
+
 
     @RenderMapping(params = "view=searchResult")
     public String searchResult(final ModelMap model) {

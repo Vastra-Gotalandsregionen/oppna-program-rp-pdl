@@ -4,7 +4,7 @@ import java.util.List;
 
 public class PdlReport {
     public enum ConsentType {
-        CONSENT, EMERGENCY
+        Consent, Emergency
     }
 
     public final WithFallback<Boolean> hasBlocks;
@@ -48,10 +48,10 @@ public class PdlReport {
 
         for( CheckedBlock b : checkedBlocks.value ) {
             if(b.blocked == CheckedBlock.BlockStatus.BLOCKED) {
-                return new WithFallback(true, checkedBlocks.fallback) ;
+                return new WithFallback<Boolean>(true, checkedBlocks.fallback) ;
             }
         }
-        return new WithFallback(false, checkedBlocks.fallback);
+        return new WithFallback<Boolean>(false, checkedBlocks.fallback);
     }
 
     public PdlReport withRelationship(WithFallback<Boolean> newHasRelationship) {
@@ -62,6 +62,16 @@ public class PdlReport {
                 consentType,
                 newHasRelationship);
     }
+
+    public PdlReport withConsent(WithFallback<Boolean> newConsentStatus, ConsentType newConsentType) {
+        return new PdlReport(
+                hasBlocks,
+                blocks,
+                newConsentStatus,
+                newConsentType,
+                hasRelationship);
+    }
+
 
     public PdlReport withCaregiverSystems(WithFallback<List<CareSystem>> systems) {
 

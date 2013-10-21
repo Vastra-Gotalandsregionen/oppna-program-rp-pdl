@@ -5,4 +5,5 @@ ws.endpoint.pdl.checkBlocks=
 ws.endpoint.pdl.checkConsent=
 ws.endpoint.pdl.checkRelationship=
 ws.endpoint.pdl.registerRelationship=
+ws.endpoint.pdl.registerConsent=
 ws.endpoint.pdl.storeLog=

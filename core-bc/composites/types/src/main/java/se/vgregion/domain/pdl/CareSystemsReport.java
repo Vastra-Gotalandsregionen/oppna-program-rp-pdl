@@ -31,21 +31,23 @@ public class CareSystemsReport {
     ) {
         List<WithBlocks<CareSystem>> decorated = new ArrayList<WithBlocks<CareSystem>>();
         for( CareSystem cs : careSystems ) {
-            decorated.add(new WithBlocks<CareSystem>(cs, shouldBlock(cs, pdlReport)));
+            boolean block = shouldBlock(cs, pdlReport);
+
+            decorated.add(new WithBlocks<CareSystem>(cs, block));
         }
         return decorated;
     }
 
     private boolean shouldBlock(CareSystem cs, PdlReport pdlReport) {
-        boolean blocked = false;
         for(CheckedBlock cb : pdlReport.blocks ) {
-            if(cb.engagement.informationType == cs.informationType &&
-                    cb.blocked == CheckedBlock.BlockStatus.BLOCKED) {
-               blocked = true;
-               break;
+            boolean systemHasInformation = cs.informationTypes.contains( cb.engagement.informationType );
+            boolean isBlocked = cb.blocked == CheckedBlock.BlockStatus.BLOCKED;
+
+            if(systemHasInformation && isBlocked) {
+               return true;
             }
         }
-        return blocked;
+        return false;
     }
 
     private List<WithBlocks<CareSystem>> filterOtherCareProviders(

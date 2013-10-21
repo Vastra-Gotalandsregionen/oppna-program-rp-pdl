@@ -11,7 +11,7 @@ public interface PdlService {
 
     PdlReport pdlReport(PdlContext ctx, PatientWithEngagements patientEngagements);
 
-    PdlReport patientConsent(PdlContext ctx);
+    PdlReport patientConsent(PdlContext ctx, PdlReport report, String patientId, PdlReport.ConsentType consentType);
 
     PdlReport patientRelationship(PdlContext ctx, PdlReport report, String patientId);
 

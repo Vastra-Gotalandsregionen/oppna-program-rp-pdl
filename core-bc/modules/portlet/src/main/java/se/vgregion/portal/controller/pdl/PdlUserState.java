@@ -20,6 +20,7 @@ public class PdlUserState {
     private PatientWithEngagements pwe;
     private PdlContext ctx;
     private boolean showSameCareProvider = false;
+    private boolean showOtherCareProvider = false;
 
     public PdlReport getPdlReport() {
         return pdlReport;
@@ -27,6 +28,7 @@ public class PdlUserState {
 
     public void reset() {
         showSameCareProvider = false;
+        showOtherCareProvider = false;
     }
 
     public PatientWithEngagements getPwe() {
@@ -65,6 +67,14 @@ public class PdlUserState {
         this.showSameCareProvider = showSameCareProvider;
     }
 
+    public boolean isShowOtherCareProvider() {
+        return showOtherCareProvider;
+    }
+
+    public void setShowOtherCareProvider(boolean showOtherCareProvider) {
+        this.showOtherCareProvider = showOtherCareProvider;
+    }
+
     @Override
     public String toString() {
         return "PdlUserState{" +
@@ -73,6 +83,7 @@ public class PdlUserState {
                 ", pwe=" + pwe +
                 ", ctx=" + ctx +
                 ", showSameCareProvider=" + showSameCareProvider +
+                ", showOtherCareProvider=" + showOtherCareProvider +
                 '}';
     }
 

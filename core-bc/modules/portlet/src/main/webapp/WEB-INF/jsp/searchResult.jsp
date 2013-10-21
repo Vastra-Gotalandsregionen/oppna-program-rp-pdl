@@ -34,7 +34,7 @@
                 Välj i vilka system som du vill finna information.
                 <ul>
                     <c:forEach var="sys" items="${state.csReport.sameUnit}">
-                        <li>${sys.value.displayName}</li>
+                        <li>${sys.value.displayName} <c:if test="${sys.blocked}">(blockerat)</c:if></li>
                     </c:forEach>
                 </ul>
              </c:when>
@@ -45,16 +45,43 @@
 
         <c:if test="${state.csReport.hasSameCareProvider && !state.showSameCareProvider}">
             <portlet:actionURL name="sameCareProvider" var="sameCareProviderURL" />
-            Det finns fler ytterligare system som innehåller patientinformation på en annan vårdenhet. ${state.pwe.patientDisplayName}. <a href="${sameCareProviderURL}">Relevant information finns i andra system hos inom vårdgivare.</a>
+            <p>
+            Det finns fler ytterligare system som innehåller patientinformation på en annan vårdenhet för ${state.pwe.patientDisplayName}. <a href="${sameCareProviderURL}">Relevant information finns i andra system hos inom vårdgivare.</a>
+            </p>
         </c:if>
 
         <c:if test="${state.showSameCareProvider}">
             System från andra vårdenheter.
             <ul>
                 <c:forEach var="sys" items="${state.csReport.sameCareProvider}">
-                    <li>${sys.value.displayName}</li>
+                    <li>${sys.value.displayName} <c:if test="sys.blocked">(blockerat)</c:if></li>
                 </c:forEach>
             </ul>
+        </c:if>
+
+        <c:if test="${state.csReport.hasOtherCareProviders && !state.showOtherCareProvider}">
+            <p>
+            Det finns fler ytterligare system som innehåller patientinformation hos en annan vårdgivare för ${state.pwe.patientDisplayName}.
+                <c:choose>
+                    <c:when test="${!state.pdlReport.hasConsent.value}">
+                        <portlet:actionURL name="establishConsent" var="establishConsentURL" />
+                        Samtycke saknas för att visa mer information. <a href="${establishConsentURL}">Upprätta samtycke för patient att dela vårddata.</a>
+                    </c:when>
+                    <c:otherwise>
+                        <portlet:actionURL name="otherCareProvider" var="otherCareProviderURL" />
+                        <a href="${otherCareProviderURL}">Relevant information finns i andra system hos inom vårdgivare.</a>
+                    </c:otherwise>
+                </c:choose>
+            </p>
+        </c:if>
+
+        <c:if test="${state.showOtherCareProvider}">
+            <p>System för andra vårdgivare.</p>
+           <ul>
+               <c:forEach var="sys" items="${state.csReport.otherCareProviders}">
+                   <li>${sys.value.displayName} <c:if test="${sys.blocked}">(blockerat)</c:if></li>
+               </c:forEach>
+           </ul>
         </c:if>
     </c:if>
 </div>

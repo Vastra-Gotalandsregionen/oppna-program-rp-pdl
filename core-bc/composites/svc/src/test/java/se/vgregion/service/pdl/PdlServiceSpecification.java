@@ -118,7 +118,7 @@ public class PdlServiceSpecification {
 
         assertFalse(pdlReport.hasConsent.fallback);
         assertTrue(pdlReport.hasConsent.value);
-        assertEquals(PdlReport.ConsentType.CONSENT, pdlReport.consentType);
+        assertEquals(PdlReport.ConsentType.Consent, pdlReport.consentType);
     }
 
     @Test
@@ -136,7 +136,7 @@ public class PdlServiceSpecification {
 
         assertFalse(pdlReport.hasConsent.fallback);
         assertTrue(pdlReport.hasConsent.value);
-        assertEquals(PdlReport.ConsentType.EMERGENCY, pdlReport.consentType);
+        assertEquals(PdlReport.ConsentType.Emergency, pdlReport.consentType);
     }
 
     @Test

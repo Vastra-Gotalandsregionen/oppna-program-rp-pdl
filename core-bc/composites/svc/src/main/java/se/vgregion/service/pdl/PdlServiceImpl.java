@@ -3,6 +3,7 @@ package se.vgregion.service.pdl;
 import org.springframework.stereotype.Service;
 import se.riv.ehr.blocking.accesscontrol.checkblocks.v3.rivtabp21.CheckBlocksResponderInterface;
 import se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderInterface;
+import se.riv.ehr.patientconsent.administration.registerextendedconsent.v1.rivtabp21.RegisterExtendedConsentResponderInterface;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelation.v1.rivtabp21.RegisterExtendedPatientRelationResponderInterface;
 import se.vgregion.domain.pdl.*;
@@ -21,6 +22,8 @@ public class PdlServiceImpl implements PdlService {
     private CheckPatientRelationResponderInterface relationshipWithPatient;
     @Resource(name = "establishRelationship")
     private RegisterExtendedPatientRelationResponderInterface establishRelationship;
+    @Resource(name = "establishConsent")
+    private RegisterExtendedConsentResponderInterface establishConsent;
 
     @Override
     public PdlReport pdlReport(final PdlContext ctx, PatientWithEngagements patientEngagements) {
@@ -28,8 +31,14 @@ public class PdlServiceImpl implements PdlService {
     }
 
     @Override
-    public PdlReport patientConsent(PdlContext ctx) {
-        throw new IllegalStateException("Not implemented");
+    public PdlReport patientConsent(
+            PdlContext ctx,
+            PdlReport report,
+            String patientId,
+            PdlReport.ConsentType consentType
+    ) {
+        WithFallback<Boolean> consentStatus = Consent.establishConsent(ctx, patientId, consentType, establishConsent);
+        return report.withConsent(consentStatus, consentType);
     }
 
     @Override

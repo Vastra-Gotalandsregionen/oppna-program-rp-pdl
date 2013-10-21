@@ -20,7 +20,7 @@ public class PatientEngagementsImpl implements PatientEngagements {
                                         "careProviderHsaId",
                                         "careUnitHsaId",
                                         "employeeHsaId",
-                                        Engagement.InformationType.OTHR
+                                        Engagement.InformationType.UPP
                                 ),
                                 new Engagement(
                                         "careProviderHsaId",

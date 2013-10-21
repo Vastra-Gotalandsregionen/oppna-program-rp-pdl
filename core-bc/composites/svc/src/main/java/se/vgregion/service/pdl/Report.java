@@ -67,12 +67,12 @@ public class Report {
         } catch (InterruptedException e) {
             LOGGER.warn("Failed to fetch consent for patientId {} during report generation. Using fallback response.", patientId, e);
             checkedConsent = WithFallback.fallback(
-                    new CheckedConsent(PdlReport.ConsentType.CONSENT, true)
+                    new CheckedConsent(PdlReport.ConsentType.Consent, true)
             );
         } catch (ExecutionException e) {
             LOGGER.warn("Failed to fetch consent for patientId {} during report generation. Using fallback response.", patientId, e);
             checkedConsent = WithFallback.fallback(
-                    new CheckedConsent(PdlReport.ConsentType.CONSENT, true)
+                    new CheckedConsent(PdlReport.ConsentType.Consent, true)
             );
         }
         return checkedConsent;
