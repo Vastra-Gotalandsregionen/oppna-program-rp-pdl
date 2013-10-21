@@ -22,11 +22,11 @@ public class WithFallback<T> {
     }
 
     public static <F, F1 extends F> WithFallback<F> fallback(F1 value) {
-        return new WithFallback(value, true);
+        return new WithFallback<F>(value, true);
     }
 
     public static <S, S1 extends S> WithFallback<S> success(S1 value) {
-        return new WithFallback(value, false);
+        return new WithFallback<S>(value, false);
     }
 
     @Override
