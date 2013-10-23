@@ -2,8 +2,22 @@ package se.vgregion.domain.pdl;
 
 public class Engagement {
     public enum InformationType {
-        LAK("Läkemedel - Ordination/förskrivning"), UPP("Uppmärksamhetsinformation"),
-        OTHR("Annan information");
+        LAK("Läkemedel - Ordination/förskrivning"),
+        UPP("Uppmärksamhetsinformation"),
+        ALT("Allt"),
+        DIG("Diagnos"),
+        FUN("Funktionsnedsättning"),
+        LFÖ("Läkemedel Förskrivning"),
+        LUT("Läkemedel Utlämning"),
+        LAO("Läkemedel Ordination"),
+        PAD("PADL"),
+        VOM("Vård- och omsorgstagare"),
+        UNS("Undersökningsresultat"),
+        UPS("Uppmärksamhetssignal"),
+        VRD("Vårdbegäran"),
+        VRK("Vård- och omsorgskontakt"),
+        VRO("Vård- och omsorgsdokument (ostrukturerad)"),
+        VPO("Vård- och omsorgsplan (ostrukturerad)");
 
         private final String desc;
 

@@ -43,7 +43,7 @@ class Blocking {
             en.setInformationCareUnitId(eg.careUnitHsaId);
             en.setInformationStartDate(xmlDate());
             en.setInformationEndDate(xmlDate());
-            if (eg.informationType != Engagement.InformationType.OTHR) {
+            if (eg.informationType != Engagement.InformationType.ALT) {
                 en.setInformationType(eg.informationType.toString());
             }
             en.setRowNumber(i);

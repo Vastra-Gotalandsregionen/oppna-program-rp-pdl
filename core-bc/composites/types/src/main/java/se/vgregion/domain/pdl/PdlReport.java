@@ -72,19 +72,6 @@ public class PdlReport {
                 hasRelationship);
     }
 
-
-    public PdlReport withCaregiverSystems(WithFallback<List<CareSystem>> systems) {
-
-
-        return new PdlReport(
-                hasBlocks,
-                blocks,
-                hasConsent,
-                consentType,
-                hasRelationship);
-    }
-
-
     public WithFallback<Boolean> getHasBlocks() {
         return hasBlocks;
     }

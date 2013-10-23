@@ -48,7 +48,7 @@ public class PdlServiceSpecification {
                         "careProviderHsaId",
                         "careUnitHsaId",
                         "employeeHsaId",
-                        Engagement.InformationType.OTHR
+                        Engagement.InformationType.LAK
                 )
         );
 
