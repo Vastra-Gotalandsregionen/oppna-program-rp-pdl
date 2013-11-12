@@ -27,13 +27,6 @@ Generation time : 2013-10-08 14:16:23 CEST
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>oppna-program-rp-pdl-core-bc-module-web</artifactId>
-      <version>${project.version}</version>
-      <type>war</type>
-    </dependency>
-
-    <dependency>
-      <groupId>${project.groupId}</groupId>
       <artifactId>oppna-program-rp-pdl-core-bc-module-portlet</artifactId>
       <version>${project.version}</version>
       <type>war</type>
