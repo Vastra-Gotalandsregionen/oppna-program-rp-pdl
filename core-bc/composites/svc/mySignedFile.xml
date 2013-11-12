@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><bfrInformationTicket>
+  <accessingActor>
+    <employeeId>SE2321000131-P000000069215</employeeId>
+    <careProviderId>SE2321000131-E000000000001</careProviderId>
+    <careUnitId>SE2321000131-S000000010252</careUnitId>
+  </accessingActor>
+  <presentInformation>
+    <patientInformation>
+      <forPatient>
+        <patientId>19750214-1234</patientId>
+      </forPatient>
+      <chosenReferrals>
+        <referralId>ABC12345</referralId>
+        <referralId>ABC34345</referralId>
+        <referralId>ABC14545</referralId>
+        <referralId>ABC12345</referralId>
+        <referralId>ABC12344</referralId>
+      </chosenReferrals>
+    </patientInformation>
+  </presentInformation>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"/><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><DigestValue>U0YXwA4l8wyMygjHWVft8sMhk5s=</DigestValue></Reference></SignedInfo><SignatureValue>VWtXoeaacevSbeYB3kIufeCh53XR1QddJv0R1pBfCwHt7dm58MPjxT8gj89JJtK5eFZQmXswDAhI
+nckQhJi03UBSQ8XP5tuvCVSmQ3aM977m8eOmY4Wwl5F0EeN0vnPZHi8EIvEbenq8g0VUKKjdslI1
+ub3wC5UI+4iKRzF6BKwvwXytepS/qMo03p1rAuccIbY9kQytQG4E1yvBwZimJgeUAgiiKfJZlz9H
+K/PT4PFYaxmyTFdGS4KeDF8j7zIuJGfbGS8SB+4k3x1/Ofo5BroG7sh+h/2yt5Pa0Pk+R9tS/2r1
+gKe5CSeiGbELqU/QRsr75J592TVZHj2bAsXzEw==</SignatureValue><KeyInfo><X509Data><X509Certificate>MIIEJjCCAw6gAwIBAgIBATANBgkqhkiG9w0BAQUFADCBozELMAkGA1UEBhMCU0UxHTAbBgNVBAgT
+FFZhc3RyYSBnb3RhbGFuZHMgbGFuMRMwEQYDVQQHEwpHb3RoZW5idXJnMQwwCgYDVQQKEwNWR1Ix
+DzANBgNVBAsTBlZHUiBJVDETMBEGA1UEAxMKdmdyLXBkbC1jYTEsMCoGCSqGSIb3DQEJARYdbWFn
+bnVzLmFuZGVyc3NvbkBtb2xseXdhcmUuc2UwHhcNMTMxMDIzMTI1MjQ3WhcNMjMxMDIxMTI1MjQ3
+WjCBizELMAkGA1UEBhMCU0UxHTAbBgNVBAgTFFZhc3RyYSBnb3RhbGFuZHMgbGFuMQwwCgYDVQQK
+EwNWR1IxDzANBgNVBAsTBlZHUiBJVDEQMA4GA1UEAxMHdmdyLXBkbDEsMCoGCSqGSIb3DQEJARYd
+bWFnbnVzLmFuZGVyc3NvbkBtb2xseXdhcmUuc2UwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+AoIBAQDBX/B6xgMPTj4GJMk22iIoSKtapNachUioKsd8gLDOCZXPjAmrRKAgpOMrrHXoEAjXpehj
+iGJEPNoYhBRL811h47R7jlNbE3I2R5cxE9tOgVkqlley97A6jBqnE+SQqP7nNqEqyXq6RlI929Cz
+tpqDiRRthZOvT6v8OqxI8BYHfRGXeIEzNmH5R16niBQH2IYT/quV6MBPyHBgRTe3YqyLESqhwP3M
+k7u2lEkOiPO0Owl+0aBcHmite+P1YLGIK84wLX6fGm9X2R9dz7DyPqmOxVWUHsSjFkTfAaeHbLtp
++u6f7R5hcGvghvx3/H8VDSzo33qR+NcIN9ymwndEc1gDAgMBAAGjezB5MAkGA1UdEwQCMAAwLAYJ
+YIZIAYb4QgENBB8WHU9wZW5TU0wgR2VuZXJhdGVkIENlcnRpZmljYXRlMB0GA1UdDgQWBBSkWmWv
+L4QLq4SYo7htICrBs67A/DAfBgNVHSMEGDAWgBQb9s10deG1ysjtH+WxulQiR23C/zANBgkqhkiG
+9w0BAQUFAAOCAQEAev5hG2aDLSrwgoiAxoSqCYwtR53xpRuU2jk8Vs9HJlrc3ByBZLdnZBrPVscW
+wiGUDcklDGVZaRwaD/U0ixdX6ZWejuZNu5HNpWGMn+m/JZvsxzwT9n5M9/mxoK84R1Z/e4dxoZZq
+9tqE7E7k7ADGLGdq9DnWgLYhOEOX7DRB5CKglTJrINTKlHr1GfVZCv46r259xTeB1u4fy99FfG7V
+Q2Ea/e1md5qKvksUNfBdPO3cHfxOZCxZ5m9HFlomqFP66xsQNp1S6ey6wUx/r8YTDYfrSJc0ErD+
+SDbP2bIGm8MRHRivDF/y21Oz7Y+kq9nNRpyVI7Czh78VnFPFDrYu8g==</X509Certificate></X509Data></KeyInfo></Signature></bfrInformationTicket>

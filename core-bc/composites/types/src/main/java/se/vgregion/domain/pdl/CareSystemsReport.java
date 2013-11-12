@@ -1,11 +1,14 @@
 package se.vgregion.domain.pdl;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CareSystemsReport {
+public class CareSystemsReport implements Serializable {
+    private static final long serialVersionUID = 734432845857726758L;
+
     public final boolean hasSameUnit;
     public final List<WithBlocks<CareSystem>> sameUnit;
     public final boolean hasSameCareProvider;

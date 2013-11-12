@@ -1,0 +1,20 @@
+## Place this file with property values in ${user.home}/.pdl/ with name secure.properties
+
+# Endpoint pattern that matches the service platform where we want to add our conduits
+pdl.tjp.endpoint=
+
+# Passwords for key stores containing private keys.
+# EHR web services SSL-connection
+pdl.tjp.keystore.type=pkcs12
+pdl.tjp.keystore.name=
+pdl.tjp.keystore.password=
+# If using JKS
+pdl.tjp.keystore.keypass=
+
+pdl.tjp.trustcert.name=
+
+# Signing XML-data structures
+pdl.sign.keystore.name=
+pld.sign.keystore.password=
+
+

@@ -6,8 +6,8 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import se.riv.ehr.blocking.accesscontrol.checkblocks.v3.rivtabp21.CheckBlocksResponderInterface;
-import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v3.CheckBlocksRequestType;
+import se.riv.ehr.blocking.accesscontrol.checkblocks.v2.rivtabp21.CheckBlocksResponderInterface;
+import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v2.CheckBlocksRequestType;
 import se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderInterface;
 import se.riv.ehr.patientconsent.accesscontrol.checkconsentresponder.v1.CheckConsentRequestType;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
@@ -39,8 +39,13 @@ public class PdlServiceSpecification {
     private PdlContext ctx;
     private PatientWithEngagements pe;
 
+    private static final String serviceHsaId = "SE2321000131-E000000000001";
+
     @Before
     public void setuUp() {
+
+        service.setServicesHsaId(serviceHsaId);
+
         MockitoAnnotations.initMocks(this);
 
         List<Engagement> engagements = Arrays.asList(
@@ -68,7 +73,7 @@ public class PdlServiceSpecification {
     @Test
     public void reportHasBlocks() throws Exception {
 
-        when(blocksInterface.checkBlocks(eq(ctx.careProviderHsaId), isA(CheckBlocksRequestType.class))).
+        when(blocksInterface.checkBlocks(eq(serviceHsaId), isA(CheckBlocksRequestType.class))).
                 thenAnswer(BlockingSpec.blockingRequestAndRespond(ctx, pe, 0, true));
 
         when(consentInterface.checkConsent(anyString(), isA(CheckConsentRequestType.class))).
@@ -86,7 +91,7 @@ public class PdlServiceSpecification {
 
     @Test
     public void reportWithoutBlocks() throws Exception {
-        when(blocksInterface.checkBlocks(eq(ctx.careProviderHsaId), isA(CheckBlocksRequestType.class))).
+        when(blocksInterface.checkBlocks(eq(serviceHsaId), isA(CheckBlocksRequestType.class))).
                 thenReturn(BlockingSpec.blockedResult(0, false));
 
         when(consentInterface.checkConsent(anyString(), isA(CheckConsentRequestType.class))).
@@ -108,7 +113,7 @@ public class PdlServiceSpecification {
         when(blocksInterface.checkBlocks(anyString(), isA(CheckBlocksRequestType.class))).
                 thenReturn(BlockingSpec.blockedResult(0, true)); // Not under test, avoid null pointer
 
-        when(consentInterface.checkConsent(eq(ctx.careProviderHsaId), isA(CheckConsentRequestType.class))).
+        when(consentInterface.checkConsent(eq(serviceHsaId), isA(CheckConsentRequestType.class))).
                 thenAnswer(ConsentSpec.consentRequestAndRespond(ctx, pe, true, false));
 
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
@@ -126,7 +131,7 @@ public class PdlServiceSpecification {
         when(blocksInterface.checkBlocks(anyString(), isA(CheckBlocksRequestType.class))).
                 thenReturn(BlockingSpec.blockedResult(0, true)); // Not under test, avoid null pointer
 
-        when(consentInterface.checkConsent(eq(ctx.careProviderHsaId), isA(CheckConsentRequestType.class))).
+        when(consentInterface.checkConsent(eq(serviceHsaId), isA(CheckConsentRequestType.class))).
                 thenAnswer(ConsentSpec.consentRequestAndRespond(ctx, pe, true, true));
 
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
@@ -144,7 +149,7 @@ public class PdlServiceSpecification {
         when(blocksInterface.checkBlocks(anyString(), isA(CheckBlocksRequestType.class))).
                 thenReturn(BlockingSpec.blockedResult(0, true)); // Not under test, avoid null pointer
 
-        when(consentInterface.checkConsent(eq(ctx.careProviderHsaId), isA(CheckConsentRequestType.class))).
+        when(consentInterface.checkConsent(eq(serviceHsaId), isA(CheckConsentRequestType.class))).
                 thenAnswer(ConsentSpec.consentRequestAndRespond(ctx, pe, false, true));
 
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
@@ -164,7 +169,7 @@ public class PdlServiceSpecification {
         when(consentInterface.checkConsent(anyString(), isA(CheckConsentRequestType.class))).
                 thenReturn(ConsentSpec.consentResult(false, true)); // Not under test, avoid null pointer
 
-        when(relationshipInterface.checkPatientRelation(eq(ctx.careProviderHsaId), isA(CheckPatientRelationRequestType.class))).
+        when(relationshipInterface.checkPatientRelation(eq(serviceHsaId), isA(CheckPatientRelationRequestType.class))).
                 thenAnswer(RelationshipSpec.relationshipRequestAndResponse(ctx, pe, true));
 
         PdlReport pdlReport = service.pdlReport(ctx, pe);
@@ -182,7 +187,7 @@ public class PdlServiceSpecification {
         when(consentInterface.checkConsent(anyString(), isA(CheckConsentRequestType.class))).
                 thenReturn(ConsentSpec.consentResult(false, true)); // Not under test, avoid null pointer
 
-        when(relationshipInterface.checkPatientRelation(eq(ctx.careProviderHsaId), isA(CheckPatientRelationRequestType.class))).
+        when(relationshipInterface.checkPatientRelation(eq(serviceHsaId), isA(CheckPatientRelationRequestType.class))).
                 thenAnswer(RelationshipSpec.relationshipRequestAndResponse(ctx, pe, false));
 
         PdlReport pdlReport = service.pdlReport(ctx, pe);

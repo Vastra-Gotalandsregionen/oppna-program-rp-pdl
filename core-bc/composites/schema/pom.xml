@@ -21,12 +21,6 @@ Generation time : 2013-10-08 14:16:23 CEST
   <artifactId>oppna-program-rp-pdl-core-bc-composite-schema</artifactId>
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
-  <properties>
-    <ehr.blocking.version>2</ehr.blocking.version>
-    <ehr.patientconsent.version>1</ehr.patientconsent.version>
-    <ehr.patientrelationship.version>1</ehr.patientrelationship.version>
-    <ehr.log.version>1</ehr.log.version>
-  </properties>
 
   <dependencies>
     <dependency>

@@ -1,6 +1,10 @@
 package se.vgregion.domain.pdl;
 
-public class CheckedBlock {
+import java.io.Serializable;
+
+public class CheckedBlock implements Serializable {
+    private static final long serialVersionUID = 6334243476082447311L;
+
     public enum BlockStatus { OK, BLOCKED }
 
     public final Engagement engagement;

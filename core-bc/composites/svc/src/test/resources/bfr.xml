@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bfrInformationTicket>
+  <accessingActor>
+    <employeeId>SE2321000131-P000000069215</employeeId>
+    <careProviderId>SE2321000131-E000000000001</careProviderId>
+    <careUnitId>SE2321000131-S000000010252</careUnitId>
+  </accessingActor>
+  <presentInformation>
+    <patientInformation>
+      <forPatient>
+        <patientId>19750214-1234</patientId>
+      </forPatient>
+      <chosenReferrals>
+        <referralId>ABC12345</referralId>
+        <referralId>ABC34345</referralId>
+        <referralId>ABC14545</referralId>
+        <referralId>ABC12345</referralId>
+        <referralId>ABC12344</referralId>
+      </chosenReferrals>
+    </patientInformation>
+  </presentInformation>
+</bfrInformationTicket>

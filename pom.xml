@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-  <!--
-    This is the System-level Maven POM. Usage: Define all truly common things for the system here. For example:
-    versions of third-party dependencies used throughout the system. Template version: 1.5
-    Generation time : 2013-10-08 14:16:23 CEST
-  -->
+<!--
+  This is the System-level Maven POM. Usage: Define all truly common things for the system here. For example:
+  versions of third-party dependencies used throughout the system. Template version: 1.5
+  Generation time : 2013-10-08 14:16:23 CEST
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>se.vgregion.common</groupId>
@@ -23,11 +23,31 @@
     <module>core-bc</module>
   </modules>
 
+  <properties>
+    <apache.cxf.version>2.4.1</apache.cxf.version>
+    <ehr.blocking.version>2-RC2</ehr.blocking.version>
+    <ehr.patientconsent.version>1</ehr.patientconsent.version>
+    <ehr.patientrelationship.version>1</ehr.patientrelationship.version>
+    <ehr.log.version>1</ehr.log.version>
+  </properties>
+
   <!--NB! SCM config below assumes system name equals VGR subversion/googlecode project name! -->
   <!-- Open Source repo -->
   <scm>
     <developerConnection>scm:svn:https://oppna-program-rp-pdl.googlecode.com/svn/trunk</developerConnection>
     <url>http://oppna-program-rp-pdl.googlecode.com/svn/trunk</url>
   </scm>
-
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

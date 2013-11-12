@@ -1,6 +1,10 @@
 package se.vgregion.domain.pdl;
 
-public class CheckedConsent {
+import java.io.Serializable;
+
+public class CheckedConsent implements Serializable {
+    private static final long serialVersionUID = 7700912160877500493L;
+
     public final PdlReport.ConsentType consentType;
     public final boolean hasConsent;
 

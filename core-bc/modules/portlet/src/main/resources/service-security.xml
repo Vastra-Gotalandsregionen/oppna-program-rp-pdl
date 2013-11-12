@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:http="http://cxf.apache.org/transports/http/configuration"
+       xmlns:sec="http://cxf.apache.org/configuration/security"
+       xmlns:cxf="http://cxf.apache.org/core"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://cxf.apache.org/configuration/security http://cxf.apache.org/schemas/configuration/security.xsd
+       http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd
+       http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+  <!-- The name of each <http:conduit> configuration is matched to the url used by CXF RS. -->
+  <http:conduit name="${pdl.tjp.endpoint}">
+    <http:tlsClientParameters disableCNCheck="true">
+      <sec:trustManagers>
+        <sec:certStore file="${user.home}/.pdl/${pdl.tjp.trustcert.name}" />
+      </sec:trustManagers>
+      <sec:keyManagers>
+        <sec:keyStore type="${pdl.tjp.keystore.type}" password="${pdl.tjp.keystore.password}" resource="${user.home}/.pdl/${pdl.tjp.keystore.name}"/>
+      </sec:keyManagers>
+    </http:tlsClientParameters>
+  </http:conduit>
+
+  <import resource="classpath:META-INF/cxf/cxf.xml"/>
+  <import resource="classpath:META-INF/cxf/cxf-extension-jaxws.xml"/>
+
+  <cxf:bus>
+    <cxf:outInterceptors>
+      <ref bean="loggingOutInterceptor"/>
+    </cxf:outInterceptors>
+    <cxf:inInterceptors>
+      <ref bean="loggingInInterceptor"/>
+    </cxf:inInterceptors>
+  </cxf:bus>
+
+  <bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor">
+    <property name="prettyLogging" value="true"/>
+  </bean>
+  <bean id="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor">
+    <property name="prettyLogging" value="true"/>
+  </bean>
+
+</beans>

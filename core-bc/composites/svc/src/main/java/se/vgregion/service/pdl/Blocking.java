@@ -1,21 +1,14 @@
 package se.vgregion.service.pdl;
 
-import riv.ehr.blocking.accesscontrol._3.AccessingActorType;
-import riv.ehr.blocking.accesscontrol._3.CheckResultType;
-import riv.ehr.blocking.accesscontrol._3.InformationEntityType;
-import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v3.CheckBlocksRequestType;
-import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v3.CheckBlocksResponseType;
-import se.vgregion.domain.pdl.CheckedBlock;
-import se.vgregion.domain.pdl.Engagement;
-import se.vgregion.domain.pdl.PatientWithEngagements;
-import se.vgregion.domain.pdl.PdlContext;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
+import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v2.CheckBlocksRequestType;
+import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v2.CheckBlocksResponseType;
+import se.riv.ehr.blocking.v2.AccessingActorType;
+import se.riv.ehr.blocking.v2.CheckResultType;
+import se.riv.ehr.blocking.v2.InformationEntityType;
+import se.vgregion.domain.pdl.*;
+
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 class Blocking {
@@ -39,10 +32,12 @@ class Blocking {
             InformationEntityType en = new InformationEntityType();
             Engagement eg = pe.engagements.get(i);
 
+            XMLDuration duration = new XMLDuration(1, RoundedTimeUnit.NEAREST_HALF_HOUR);
+
             en.setInformationCareProviderId(eg.careProviderHsaId);
             en.setInformationCareUnitId(eg.careUnitHsaId);
-            en.setInformationStartDate(xmlDate());
-            en.setInformationEndDate(xmlDate());
+            en.setInformationStartDate(duration.startDate);
+            en.setInformationEndDate(duration.endDate);
             if (eg.informationType != Engagement.InformationType.ALT) {
                 en.setInformationType(eg.informationType.toString());
             }
@@ -63,7 +58,7 @@ class Blocking {
      * @param pe
      *@param blockResponse  @return
      */
-    static List<CheckedBlock> asCheckedBlocks(
+    static ArrayList<CheckedBlock> asCheckedBlocks(
             PdlContext ctx,
             PatientWithEngagements pe,
             CheckBlocksResponseType blockResponse
@@ -72,29 +67,16 @@ class Blocking {
         for (CheckResultType crt : blockResponse.getCheckBlocksResultType().getCheckResults()) {
             int i = crt.getRowNumber();
             Engagement elem = pe.engagements.get(i);
-            switch (crt.getStatus()) {
-                case OK:
-                    checkedBlocks.add(new CheckedBlock(elem, CheckedBlock.BlockStatus.OK));
-                    break;
-                case BLOCKED:
-                    checkedBlocks.add(new CheckedBlock(elem, CheckedBlock.BlockStatus.BLOCKED));
-                    break;
-                case VALIDATIONERROR:
-                    // TODO: 2013-10-10 Magnus Andersson This results in a skipped block. How to handle?
-                    break;
+            if (crt.isBlocked()) {
+                checkedBlocks.add(new CheckedBlock(elem, CheckedBlock.BlockStatus.BLOCKED));
+            } else {
+                checkedBlocks.add(new CheckedBlock(elem, CheckedBlock.BlockStatus.OK));
             }
         }
-        return Collections.unmodifiableList(checkedBlocks); // IMMUTABLE
+        return checkedBlocks;
     }
 
-    private static XMLGregorianCalendar xmlDate() {
-        try {
-            GregorianCalendar c = new GregorianCalendar();
-            return DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-        } catch (DatatypeConfigurationException e) {
-            throw new RuntimeException("Unable to create XMLDate", e);
-        }
-    }
+
 }
 
 

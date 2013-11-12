@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="bfrInformationTicket" type="bfrInformationTicketType"/>
+  <xs:complexType name="forPatientType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="patientId"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="accessingActorType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="employeeId"/>
+      <xs:element type="xs:string" name="careProviderId"/>
+      <xs:element type="xs:string" name="careUnitId"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="bfrInformationTicketType">
+    <xs:sequence>
+      <xs:element type="accessingActorType" name="accessingActor"/>
+      <xs:element type="presentInformationType" name="presentInformation"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="presentInformationType">
+    <xs:sequence>
+      <xs:element type="patientInformationType" name="patientInformation"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="patientInformationType">
+    <xs:sequence>
+      <xs:element type="forPatientType" name="forPatient"/>
+      <xs:element type="chosenReferralsType" name="chosenReferrals"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="chosenReferralsType">
+    <xs:sequence>
+      <xs:element name="referralId" type="xs:string" maxOccurs="unbounded" minOccurs="0" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

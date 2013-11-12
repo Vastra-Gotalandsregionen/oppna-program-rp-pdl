@@ -1,6 +1,10 @@
 package se.vgregion.domain.pdl;
 
-public class Engagement {
+import java.io.Serializable;
+
+public class Engagement implements Serializable {
+    private static final long serialVersionUID = -3153239171805040089L;
+
     public enum InformationType {
         LAK("Läkemedel - Ordination/förskrivning"),
         UPP("Uppmärksamhetsinformation"),

@@ -8,13 +8,18 @@ import se.vgregion.domain.pdl.PatientWithEngagements;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.pdl.PdlReport;
 
+import java.io.Serializable;
+
 /**
  * Putting things into session scope is arguably an evil thing to do...
  * This is the only mutable data structure.
  */
 @Component
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class PdlUserState {
+public class PdlUserState implements Serializable {
+
+    private static final long serialVersionUID = 3716591084727230106L;
+
     private PdlReport pdlReport;
     private CareSystemsReport csReport;
     private PatientWithEngagements pwe;

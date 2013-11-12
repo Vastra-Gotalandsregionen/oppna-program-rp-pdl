@@ -99,7 +99,16 @@ public class PdlController {
                 state.getPwe().patientId
         );
 
-        state.setPdlReport(pdl.patientRelationship(state.getCtx(), state.getPdlReport(), state.getPwe().patientId));
+        PdlReport newReport = pdl.patientRelationship(
+                state.getCtx(),
+                state.getPdlReport(),
+                state.getPwe().patientId,
+                "Reason",
+                1,
+                RoundedTimeUnit.NEAREST_HALF_HOUR
+        );
+
+        state.setPdlReport(newReport);
 
         response.setRenderParameter("view", "searchResult");
     }
@@ -113,7 +122,17 @@ public class PdlController {
         );
 
         // FIXME 2013-10-21 : Magnus Andersson > Should choose between consent or emergency. Also add possiblility to be represented by someone?
-        state.setPdlReport(pdl.patientConsent(state.getCtx(), state.getPdlReport(), state.getPwe().patientId, PdlReport.ConsentType.Consent));
+        state.setPdlReport(
+                pdl.patientConsent(
+                        state.getCtx(),
+                        state.getPdlReport(),
+                        state.getPwe().patientId,
+                        "Reason",
+                        1,
+                        RoundedTimeUnit.NEAREST_HALF_HOUR,
+                        PdlReport.ConsentType.Consent
+                )
+        );
 
         response.setRenderParameter("view", "searchResult");
     }
@@ -159,10 +178,10 @@ public class PdlController {
 
     private PdlContext currentContext() {
         return new PdlContext(
-                "careProviderHsaId",
-                "careUnitHsaId",
-                "employeeHsaId",
+                "SE2321000131-E000000000001",
+                "SE2321000131-S000000010252",
+                "SE2321000131-P000000069215",
                 "Sammanhållen Journalföring",
-                "assignmentHsaId");
+                "SE2321000131-S000000010452");
     }
 }

@@ -1,6 +1,9 @@
 package se.vgregion.domain.pdl;
 
-public class WithBlocks<T> {
+import java.io.Serializable;
+
+public class WithBlocks<T extends Serializable> implements Serializable {
+    private static final long serialVersionUID = 42917220499451811L;
 
     public final T value;
     public final boolean blocked;
@@ -10,11 +13,11 @@ public class WithBlocks<T> {
         this.blocked = blocked;
     }
 
-    public static <F, F1 extends F> WithBlocks<F> blocked(F1 value) {
+    public static <F extends Serializable, F1 extends F> WithBlocks<F> blocked(F1 value) {
         return new WithBlocks<F>(value, true);
     }
 
-    public static <S, S1 extends S> WithBlocks<S> success(S1 value) {
+    public static <S extends Serializable, S1 extends S> WithBlocks<S> success(S1 value) {
         return new WithBlocks<S>(value, false);
     }
 

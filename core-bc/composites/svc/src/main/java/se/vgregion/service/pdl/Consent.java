@@ -9,10 +9,7 @@ import se.riv.ehr.patientconsent.administration.registerextendedconsentresponder
 import se.riv.ehr.patientconsent.administration.registerextendedconsentresponder.v1.RegisterExtendedConsentResponseType;
 import se.riv.ehr.patientconsent.v1.*;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationRequestType;
-import se.vgregion.domain.pdl.CheckedConsent;
-import se.vgregion.domain.pdl.PdlContext;
-import se.vgregion.domain.pdl.PdlReport;
-import se.vgregion.domain.pdl.WithFallback;
+import se.vgregion.domain.pdl.*;
 
 import javax.xml.ws.soap.SOAPFaultException;
 
@@ -58,30 +55,36 @@ class Consent {
             PdlContext ctx,
             String patientId,
             PdlReport.ConsentType consentType,
-            RegisterExtendedConsentResponderInterface establishConsent
+            RegisterExtendedConsentResponderInterface establishConsent,
+            String reason,
+            int duration,
+            RoundedTimeUnit roundedTimeUnit
     ) {
         RegisterExtendedConsentRequestType request = new RegisterExtendedConsentRequestType();
-        request.setAssertionId("??"); // FIXME 2013-10-21: Magnus Andersson > What is assertion ID?
+        request.setAssertionId(java.util.UUID.randomUUID().toString());
         request.setAssertionType(AssertionTypeType.fromValue(consentType.name()));
         request.setCareProviderId(ctx.careProviderHsaId);
         request.setCareUnitId(ctx.getCareUnitHsaId());
         request.setEmployeeId(ctx.getEmployeeHsaId());
-        request.setEndDate(null); // FIXME 2013-10-21: Magnus Andersson > Generate a proper date!
-        request.setStartDate(null); // FIXME 2013-10-21: Magnus Andersson > Generate a proper date!
+
+        XMLDuration xmlDuration = new XMLDuration(duration, roundedTimeUnit);
+        request.setStartDate(xmlDuration.startDate);
+        request.setEndDate(xmlDuration.endDate);
         request.setPatientId(patientId);
-        request.setRepresentedBy("???"); // FIXME 2013-10-21: Magnus Andersson > Who is represented by!
         request.setScope(ScopeType.NATIONAL_LEVEL);
 
-        ActionType actionType = new ActionType();
-        actionType.setReasonText("PDL Portlet");
+        ActionType action = new ActionType();
+        action.setReasonText(reason);
+        action.setRegistrationDate(XMLDuration.currentDateAsXML());
+        action.setRequestDate(XMLDuration.currentDateAsXML());
 
         ActorType actor = new ActorType();
         actor.setAssignmentId(ctx.assignmentHsaId);
         actor.setAssignmentName(ctx.assignmentDisplayName);
         actor.setEmployeeId(ctx.employeeHsaId);
 
-        actionType.setRegisteredBy(actor);
-        request.setRegistrationAction(actionType);
+        action.setRegisteredBy(actor);
+        request.setRegistrationAction(action);
 
         try {
         RegisterExtendedConsentResponseType response = establishConsent.registerExtendedConsent(ctx.careProviderHsaId, request);

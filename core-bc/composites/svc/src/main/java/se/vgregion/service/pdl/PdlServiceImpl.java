@@ -1,7 +1,8 @@
 package se.vgregion.service.pdl;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import se.riv.ehr.blocking.accesscontrol.checkblocks.v3.rivtabp21.CheckBlocksResponderInterface;
+import se.riv.ehr.blocking.accesscontrol.checkblocks.v2.rivtabp21.CheckBlocksResponderInterface;
 import se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderInterface;
 import se.riv.ehr.patientconsent.administration.registerextendedconsent.v1.rivtabp21.RegisterExtendedConsentResponderInterface;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
@@ -24,10 +25,24 @@ public class PdlServiceImpl implements PdlService {
     private RegisterExtendedPatientRelationResponderInterface establishRelationship;
     @Resource(name = "establishConsent")
     private RegisterExtendedConsentResponderInterface establishConsent;
+    @Value("${pdl.regionalSecurityServicesHsaId}")
+    private String servicesHsaId;
+
+    // Injection seam for testing
+    void setServicesHsaId(String servicesHsaId) {
+        this.servicesHsaId = servicesHsaId;
+    }
 
     @Override
     public PdlReport pdlReport(final PdlContext ctx, PatientWithEngagements patientEngagements) {
-        return Report.generateReport(ctx, patientEngagements, blocksForPatient, consentForPatient, relationshipWithPatient);
+        return Report.generateReport(
+                servicesHsaId,
+                ctx,
+                patientEngagements,
+                blocksForPatient,
+                consentForPatient,
+                relationshipWithPatient
+        );
     }
 
     @Override
@@ -35,15 +50,43 @@ public class PdlServiceImpl implements PdlService {
             PdlContext ctx,
             PdlReport report,
             String patientId,
+            String reason,
+            int duration,
+            RoundedTimeUnit roundedTimeUnit,
             PdlReport.ConsentType consentType
     ) {
-        WithFallback<Boolean> consentStatus = Consent.establishConsent(ctx, patientId, consentType, establishConsent);
+        WithFallback<Boolean> consentStatus = Consent.establishConsent(
+                ctx,
+                patientId,
+                consentType,
+                establishConsent,
+                reason,
+                duration,
+                roundedTimeUnit
+        );
         return report.withConsent(consentStatus, consentType);
+
     }
 
     @Override
-    public PdlReport patientRelationship(PdlContext ctx, PdlReport report, String patientId) {
-        WithFallback<Boolean> relationshipStatus = Relationship.establishRelation(ctx, patientId, establishRelationship);
+    public PdlReport patientRelationship(
+            PdlContext ctx,
+            PdlReport report,
+            String patientId,
+            String reason,
+            int duration,
+            RoundedTimeUnit timeUnit
+    ) {
+        WithFallback<Boolean> relationshipStatus = Relationship
+                .establishRelation(
+                        ctx,
+                        patientId,
+                        establishRelationship,
+                        reason,
+                        duration,
+                        timeUnit
+                );
+
         return report.withRelationship(relationshipStatus);
     }
 

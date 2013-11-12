@@ -1,6 +1,10 @@
 package se.vgregion.domain.pdl;
 
-public class PdlContext {
+import java.io.Serializable;
+
+public class PdlContext implements Serializable {
+    private static final long serialVersionUID = -2298228544035658452L;
+
     public final String careProviderHsaId;
     public final String careUnitHsaId;
     public final String employeeHsaId;

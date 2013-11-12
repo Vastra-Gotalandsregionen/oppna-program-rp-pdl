@@ -1,9 +1,11 @@
 package se.vgregion.domain.pdl;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-public class PatientWithEngagements {
+public class PatientWithEngagements implements Serializable {
+    private static final long serialVersionUID = -3164297652632714945L;
 
     public final String patientId;
     public final List<Engagement> engagements;

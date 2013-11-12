@@ -1,8 +1,11 @@
 package se.vgregion.domain.pdl;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class CareSystem {
+public class CareSystem implements Serializable {
+    private static final long serialVersionUID = -8149026774965825742L;
+
     public final String displayName;
     public final List<Engagement.InformationType> informationTypes;
     public final String careProviderHsaId;

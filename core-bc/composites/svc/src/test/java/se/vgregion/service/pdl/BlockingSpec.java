@@ -2,12 +2,11 @@ package se.vgregion.service.pdl;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import riv.ehr.blocking.accesscontrol._3.AccessingActorType;
-import riv.ehr.blocking.accesscontrol._3.CheckBlocksResultType;
-import riv.ehr.blocking.accesscontrol._3.CheckResultType;
-import riv.ehr.blocking.accesscontrol._3.CheckStatusType;
-import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v3.CheckBlocksRequestType;
-import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v3.CheckBlocksResponseType;
+import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v2.CheckBlocksRequestType;
+import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v2.CheckBlocksResponseType;
+import se.riv.ehr.blocking.v2.AccessingActorType;
+import se.riv.ehr.blocking.v2.CheckBlocksResultType;
+import se.riv.ehr.blocking.v2.CheckResultType;
 import se.vgregion.domain.pdl.PatientWithEngagements;
 import se.vgregion.domain.pdl.PdlContext;
 
@@ -24,12 +23,11 @@ public class BlockingSpec {
     static CheckBlocksResponseType blockedResult(int rowNumber, boolean isBlocked) {
         CheckBlocksResponseType response = new CheckBlocksResponseType();
 
-        CheckBlocksResultType result = new riv.ehr.blocking.accesscontrol._3.CheckBlocksResultType();
+        CheckBlocksResultType result = new CheckBlocksResultType();
         List<CheckResultType> results = result.getCheckResults();
 
         CheckResultType check = new CheckResultType();
-        CheckStatusType blockStatus = (isBlocked) ? CheckStatusType.BLOCKED : CheckStatusType.OK;
-        check.setStatus(blockStatus);
+        check.setBlocked(isBlocked);
         check.setRowNumber(rowNumber);
         results.add(check);
         response.setCheckBlocksResultType(result);

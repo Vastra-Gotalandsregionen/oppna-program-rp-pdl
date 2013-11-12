@@ -1,5 +1,8 @@
 ## Place this file with property values in ${user.home}/.pdl/ with name application.properties
 
+# HsaId for the region where the security services reside
+pdl.regionalSecurityServicesHsaId=SE2321000131-E000000000001
+
 # Endpoints for security services
 ws.endpoint.pdl.checkBlocks=
 ws.endpoint.pdl.checkConsent=
@@ -7,3 +10,6 @@ ws.endpoint.pdl.checkRelationship=
 ws.endpoint.pdl.registerRelationship=
 ws.endpoint.pdl.registerConsent=
 ws.endpoint.pdl.storeLog=
+
+# Wildcard used for CXF to know when to add client certificates to requests
+ws.endpoint.pdl.wildcard=

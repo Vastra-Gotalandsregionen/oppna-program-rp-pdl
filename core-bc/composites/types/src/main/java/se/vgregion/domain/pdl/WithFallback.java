@@ -1,10 +1,14 @@
 package se.vgregion.domain.pdl;
 
+import java.io.Serializable;
+
 /**
  * This class is used to indicate if the containing value was produced from source systems
  * or via a fallback routine that sets a default value.
  */
-public class WithFallback<T> {
+public class WithFallback<T extends Serializable> implements Serializable {
+    private static final long serialVersionUID = 4546387536561257956L;
+
     public final T value;
     public final boolean fallback;
 
@@ -21,11 +25,11 @@ public class WithFallback<T> {
         return fallback;
     }
 
-    public static <F, F1 extends F> WithFallback<F> fallback(F1 value) {
+    public static <F extends Serializable, F1 extends F> WithFallback<F> fallback(F1 value) {
         return new WithFallback<F>(value, true);
     }
 
-    public static <S, S1 extends S> WithFallback<S> success(S1 value) {
+    public static <S extends Serializable, S1 extends S> WithFallback<S> success(S1 value) {
         return new WithFallback<S>(value, false);
     }
 

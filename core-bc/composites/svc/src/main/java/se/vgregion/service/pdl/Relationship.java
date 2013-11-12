@@ -1,6 +1,8 @@
 package se.vgregion.service.pdl;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationRequestType;
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelation.v1.rivtabp21.RegisterExtendedPatientRelationResponderInterface;
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelationresponder.v1.RegisterExtendedPatientRelationRequestType;
@@ -10,9 +12,13 @@ import se.riv.ehr.patientrelationship.v1.ActionType;
 import se.riv.ehr.patientrelationship.v1.ActorType;
 import se.riv.ehr.patientrelationship.v1.ResultCodeType;
 import se.vgregion.domain.pdl.PdlContext;
+import se.vgregion.domain.pdl.RoundedTimeUnit;
 import se.vgregion.domain.pdl.WithFallback;
 
 public class Relationship {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Relationship.class.getName());
+
+
     private Relationship(){
         // Utility class, no costructor!
     }
@@ -31,38 +37,42 @@ public class Relationship {
     public static WithFallback<Boolean> establishRelation(
             PdlContext ctx,
             String patientId,
-            RegisterExtendedPatientRelationResponderInterface establishRelationship
-    ) {
+            RegisterExtendedPatientRelationResponderInterface establishRelationship, String reason, int duration, RoundedTimeUnit timeUnit) {
         RegisterExtendedPatientRelationRequestType request = new RegisterExtendedPatientRelationRequestType();
         request.setCareProviderId(ctx.careProviderHsaId);
         request.setCareUnitId(ctx.careUnitHsaId);
         request.setEmployeeId(ctx.employeeHsaId);
         request.setPatientId(patientId);
-        request.setPatientRelationId("???");
+        request.setPatientRelationId(java.util.UUID.randomUUID().toString());
+
         ActionType action = new ActionType();
-        action.setReasonText("VGR PDL Portlet");
+        action.setReasonText(reason);
+        action.setRegistrationDate(XMLDuration.currentDateAsXML());
+        action.setRequestDate(XMLDuration.currentDateAsXML());
 
         ActorType registeredBy = new ActorType();
-        registeredBy.setAssignmentId(ctx.assignmentHsaId);
-        registeredBy.setAssignmentName("VGR PDL Portlet");
         registeredBy.setEmployeeId(ctx.employeeHsaId);
-
         action.setRegisteredBy(registeredBy);
 
         ActorType requestedBy = new ActorType();
-        requestedBy.setAssignmentId("VGR-PDL");
-        requestedBy.setAssignmentName("VGR PDL Portlet");
+        requestedBy.setAssignmentId(ctx.getAssignmentHsaId());
+        requestedBy.setAssignmentName(ctx.getAssignmentDisplayName());
         requestedBy.setEmployeeId(ctx.employeeHsaId);
 
         action.setRequestedBy(requestedBy);
-
         request.setRegistrationAction(action);
 
-        request.setStartDate(null);  // FIXME 2013-10-16: Magnus Andersson > Create date.
-        request.setEndDate(null);
+        XMLDuration xmlDuration = new XMLDuration(duration, timeUnit);
+
+        request.setStartDate(xmlDuration.startDate);
+        request.setEndDate(xmlDuration.endDate);
 
         RegisterExtendedPatientRelationResponseType response = establishRelationship.registerExtendedPatientRelation(ctx.careProviderHsaId, request);
 
-        return WithFallback.success(response.getResultType().getResultCode() == ResultCodeType.OK);  // FIXME 2013-10-16: Magnus Andersson > Handle soap exceptions.
+        if( response.getResultType().getResultCode() == ResultCodeType.VALIDATION_ERROR ) {
+            LOGGER.error("Validation error for register patient relationship. Message: {}", response.getResultType().getResultText() );
+        }
+
+        return WithFallback.success(response.getResultType().getResultCode() == ResultCodeType.OK);
     }
 }

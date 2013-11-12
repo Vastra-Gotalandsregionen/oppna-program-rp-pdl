@@ -61,7 +61,7 @@ public class XMLSigSpike {
         dbf.setNamespaceAware(true);
         Document doc =
                 dbf.newDocumentBuilder().
-                        parse(XMLSigSpike.class.getClassLoader().getResourceAsStream("XmlFile.xml"));
+                        parse(XMLSigSpike.class.getClassLoader().getResourceAsStream("bfr.xml"));
 
         final X509Certificate x509Cert = (X509Certificate) cert;
         List<X509Certificate> x509 = Arrays.asList(x509Cert);
@@ -92,7 +92,7 @@ public class XMLSigSpike {
                         parse(new FileInputStream("mySignedFile.xml"));
 
 
-// Find Signature element.
+        // Find Signature element.
         NodeList nl =
                 doc.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
         if (nl.getLength() == 0) {
@@ -122,6 +122,7 @@ public class XMLSigSpike {
                             throw new RuntimeException(e);
                         }
                         return cert.getPublicKey();
+
                     }
                 };
             }

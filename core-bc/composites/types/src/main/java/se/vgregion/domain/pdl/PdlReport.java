@@ -1,8 +1,12 @@
 package se.vgregion.domain.pdl;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-public class PdlReport {
+public class PdlReport implements Serializable {
+    private static final long serialVersionUID = -597284170511725549L;
+
     public enum ConsentType {
         Consent, Emergency
     }
@@ -14,7 +18,7 @@ public class PdlReport {
     public final WithFallback<Boolean> hasRelationship;
 
     public PdlReport(
-            WithFallback<List<CheckedBlock>> checkedBlocks,
+            WithFallback<ArrayList<CheckedBlock>> checkedBlocks,
             WithFallback<CheckedConsent> checkedConsent,
             WithFallback<Boolean> hasRelationship
     ) {
@@ -44,7 +48,7 @@ public class PdlReport {
         this.hasRelationship = hasRelationship;
     }
 
-    private WithFallback<Boolean> containsBlocked(WithFallback<List<CheckedBlock>> checkedBlocks) {
+    private WithFallback<Boolean> containsBlocked(WithFallback<ArrayList<CheckedBlock>> checkedBlocks) {
 
         for( CheckedBlock b : checkedBlocks.value ) {
             if(b.blocked == CheckedBlock.BlockStatus.BLOCKED) {
