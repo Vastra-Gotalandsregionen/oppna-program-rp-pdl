@@ -55,7 +55,6 @@ class XMLDuration {
                 case NEAREST_HALF_HOUR:
                     int minutes = duration * 30;
                     Date halfHourAdded = DateUtils.addMinutes(new Date(), minutes);
-                    System.out.println("Before rounding " + halfHourAdded);
                     c.setTime(halfHourAdded);
                     int currMinutes = c.get(Calendar.MINUTE);
                     if( currMinutes > 30 ) {
