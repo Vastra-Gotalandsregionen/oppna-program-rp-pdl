@@ -6,11 +6,6 @@ import java.util.List;
 
 public class PdlReport implements Serializable {
     private static final long serialVersionUID = -597284170511725549L;
-
-    public enum ConsentType {
-        Consent, Emergency
-    }
-
     public final WithFallback<Boolean> hasBlocks;
     public final List<CheckedBlock> blocks;
     public final WithFallback<Boolean> hasConsent;
@@ -29,10 +24,6 @@ public class PdlReport implements Serializable {
         this.consentType = checkedConsent.value.consentType;
     }
 
-    private WithFallback<Boolean> isConsentWithFallback(WithFallback<CheckedConsent> checkedConsent) {
-        return (checkedConsent.fallback) ? WithFallback.fallback(checkedConsent.value.hasConsent) : WithFallback.success(checkedConsent.value.hasConsent);
-    }
-
     // Private, for copy only
     private PdlReport(
             WithFallback<Boolean> hasBlocks,
@@ -48,11 +39,19 @@ public class PdlReport implements Serializable {
         this.hasRelationship = hasRelationship;
     }
 
+    private WithFallback<Boolean> isConsentWithFallback(WithFallback<CheckedConsent> checkedConsent) {
+        if (checkedConsent.fallback) {
+            return WithFallback.fallback(checkedConsent.value.hasConsent);
+        } else {
+            return WithFallback.success(checkedConsent.value.hasConsent);
+        }
+    }
+
     private WithFallback<Boolean> containsBlocked(WithFallback<ArrayList<CheckedBlock>> checkedBlocks) {
 
-        for( CheckedBlock b : checkedBlocks.value ) {
-            if(b.blocked == CheckedBlock.BlockStatus.BLOCKED) {
-                return new WithFallback<Boolean>(true, checkedBlocks.fallback) ;
+        for (CheckedBlock b : checkedBlocks.value) {
+            if (b.blocked == CheckedBlock.BlockStatus.BLOCKED) {
+                return new WithFallback<Boolean>(true, checkedBlocks.fallback);
             }
         }
         return new WithFallback<Boolean>(false, checkedBlocks.fallback);
@@ -105,5 +104,9 @@ public class PdlReport implements Serializable {
                 ", consentType=" + consentType +
                 ", hasRelationship=" + hasRelationship +
                 '}';
+    }
+
+    public enum ConsentType {
+        Consent, Emergency
     }
 }
