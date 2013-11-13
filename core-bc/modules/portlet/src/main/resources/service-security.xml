@@ -13,16 +13,21 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
   <!-- The name of each <http:conduit> configuration is matched to the url used by CXF RS. -->
-  <http:conduit name="${pdl.tjp.endpoint}">
+  <!-- The name value containing the URL pattern can NOT be loaded from a property file -->
+  <http:conduit name="https://esbtest.vgregion.se:40137/.*">
     <http:tlsClientParameters disableCNCheck="true">
+      <sec:keyManagers keyPassword="${pdl.tjp.keystore.password}">
+        <sec:keyStore
+                type="${pdl.tjp.keystore.type}"
+                password="${pdl.tjp.keystore.password}"
+                file="${user.home}/.pdl/${pdl.tjp.keystore.name}"/>
+      </sec:keyManagers>
       <sec:trustManagers>
         <sec:certStore file="${user.home}/.pdl/${pdl.tjp.trustcert.name}" />
       </sec:trustManagers>
-      <sec:keyManagers>
-        <sec:keyStore type="${pdl.tjp.keystore.type}" password="${pdl.tjp.keystore.password}" resource="${user.home}/.pdl/${pdl.tjp.keystore.name}"/>
-      </sec:keyManagers>
     </http:tlsClientParameters>
   </http:conduit>
+
 
   <import resource="classpath:META-INF/cxf/cxf.xml"/>
   <import resource="classpath:META-INF/cxf/cxf-extension-jaxws.xml"/>
