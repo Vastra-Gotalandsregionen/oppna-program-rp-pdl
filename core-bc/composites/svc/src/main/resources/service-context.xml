@@ -36,6 +36,14 @@
                 serviceClass="se.riv.ehr.patientconsent.administration.registerextendedconsent.v1.rivtabp21.RegisterExtendedConsentResponderInterface"
                 address="${ws.endpoint.pdl.registerConsent}" />
 
+  <jaxws:client id="patientBlocks"
+                serviceClass="se.riv.ehr.blocking.administration.getextendedblocksforpatient.v2.rivtabp21.GetExtendedBlocksForPatientResponderInterface"
+                address="${ws.endpoint.pdl.patientBlocks}" />
+
+  <jaxws:client id="temporaryRevoke"
+                serviceClass="se.riv.ehr.blocking.administration.registertemporaryextendedrevoke.v2.rivtabp21.RegisterTemporaryExtendedRevokeResponderInterface"
+                address="${ws.endpoint.pdl.temporaryRevoke}" />
+
   <jaxws:client id="logs"
                 serviceClass="se.riv.ehr.log.store.storelog.v1.rivtabp21.StoreLogResponderInterface"
                 address="${ws.endpoint.pdl.storeLog}" />

@@ -53,10 +53,10 @@ class Consent {
 
     public static WithFallback<Boolean> establishConsent(
             String servicesHsaId,
+            RegisterExtendedConsentResponderInterface establishConsent,
             PdlContext ctx,
             String patientId,
             PdlReport.ConsentType consentType,
-            RegisterExtendedConsentResponderInterface establishConsent,
             String reason,
             int duration,
             RoundedTimeUnit roundedTimeUnit

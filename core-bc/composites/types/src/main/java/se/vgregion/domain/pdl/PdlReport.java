@@ -57,6 +57,15 @@ public class PdlReport implements Serializable {
         return new WithFallback<Boolean>(false, checkedBlocks.fallback);
     }
 
+    public PdlReport withBlocks(WithFallback<ArrayList<CheckedBlock>> unblockedInformation) {
+        return new PdlReport(
+                containsBlocked(unblockedInformation),
+                unblockedInformation.value,
+                hasConsent,
+                consentType,
+                hasRelationship);
+    }
+
     public PdlReport withRelationship(WithFallback<Boolean> newHasRelationship) {
         return new PdlReport(
                 hasBlocks,

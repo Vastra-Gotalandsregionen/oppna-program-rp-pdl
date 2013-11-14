@@ -51,7 +51,7 @@ public interface PdlService {
      * @param reason Comment describing reason for establishing patient relationship
      * @param duration Positive integer of duration of rounded time units
      * @param roundedTimeUnit Time units that are <i>rounded up</i> to the nearest unit
-     * @return Instance of PdlReport containing after attempt to establish patient relation
+     * @return Instance of PdlReport after attempt to establish patient relation
      */
     PdlReport patientRelationship(
             PdlContext ctx,
@@ -62,7 +62,27 @@ public interface PdlService {
             RoundedTimeUnit roundedTimeUnit
     );
 
-    PdlReport unblockInformation(PdlContext ctx, String blockId, UnblockType unblockType, String unblockComment);
+    /**
+     * <p>This method will temporarily unblock <i>all blocks</i> (if overlapping blocks exist) that hinders the information from being accessed.</p>
+     *
+     * @param ctx PDL Context
+     * @param report Previous report that is missing the relationship
+     * @param engagement Engagement to unblock
+     * @param unblockType Type of temporary removal of block. With patient consent or an emergency
+     * @param reason Reason or comment
+     * @param duration Positive integer of duration of rounded time units
+     * @param roundedTimeUnit Time units that are <i>rounded up</i> to the nearest unit
+     * @return Instance of PdlReport after attempt to unblock information
+     */
+    PdlReport unblockInformation(
+            PdlContext ctx,
+            PdlReport report,
+            Engagement engagement,
+            UnblockType unblockType,
+            String reason,
+            int duration,
+            RoundedTimeUnit roundedTimeUnit
+    );
 
     PdlAssertion chooseInformation(PdlContext ctx, PdlReport report, List<Engagement> engagements);
 }

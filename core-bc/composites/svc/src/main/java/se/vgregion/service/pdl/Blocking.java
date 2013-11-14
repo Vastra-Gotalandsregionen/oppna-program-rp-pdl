@@ -3,6 +3,8 @@ package se.vgregion.service.pdl;
 
 import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v2.CheckBlocksRequestType;
 import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v2.CheckBlocksResponseType;
+import se.riv.ehr.blocking.administration.getextendedblocksforpatient.v2.rivtabp21.GetExtendedBlocksForPatientResponderInterface;
+import se.riv.ehr.blocking.administration.registertemporaryextendedrevoke.v2.rivtabp21.RegisterTemporaryExtendedRevokeResponderInterface;
 import se.riv.ehr.blocking.v2.AccessingActorType;
 import se.riv.ehr.blocking.v2.CheckResultType;
 import se.riv.ehr.blocking.v2.InformationEntityType;
@@ -77,6 +79,18 @@ class Blocking {
     }
 
 
+    public static WithFallback<ArrayList<CheckedBlock>> unblockInformation(
+            String servicesHsaId,
+            GetExtendedBlocksForPatientResponderInterface ctx,
+            RegisterTemporaryExtendedRevokeResponderInterface patientBlocks,
+            PdlContext temporaryRevoke,
+            Engagement engagement,
+            String reason,
+            int duration,
+            RoundedTimeUnit roundedTimeUnit
+    ) {
+        return null;  //To change body of created methods use File | Settings | File Templates.
+    }
 }
 
 

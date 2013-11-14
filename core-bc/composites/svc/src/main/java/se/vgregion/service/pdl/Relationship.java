@@ -35,10 +35,14 @@ public class Relationship {
     }
 
     public static WithFallback<Boolean> establishRelation(
-
-            String servicesHsaId, PdlContext ctx,
+            String servicesHsaId,
+            RegisterExtendedPatientRelationResponderInterface establishRelationship,
+            PdlContext ctx,
+            String reason,
             String patientId,
-            RegisterExtendedPatientRelationResponderInterface establishRelationship, String reason, int duration, RoundedTimeUnit timeUnit) {
+            int duration,
+            RoundedTimeUnit timeUnit
+    ) {
         RegisterExtendedPatientRelationRequestType request = new RegisterExtendedPatientRelationRequestType();
         request.setCareProviderId(ctx.careProviderHsaId);
         request.setCareUnitId(ctx.careUnitHsaId);
