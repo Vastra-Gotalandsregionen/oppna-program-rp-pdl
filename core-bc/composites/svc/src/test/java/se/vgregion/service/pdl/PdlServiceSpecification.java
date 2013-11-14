@@ -231,6 +231,24 @@ public class PdlServiceSpecification {
         PdlReport.ConsentType consentType = PdlReport.ConsentType.Consent;
         when(establishConsent.registerExtendedConsent(eq(serviceHsaId), isA(RegisterExtendedConsentRequestType.class)))
                 .thenAnswer(ConsentSpec.establishRequestAndResponse(ctx,pe,consentType,true));
+
+        PdlReport mockReport = new PdlReport(
+                WithFallback.success(new ArrayList<CheckedBlock>()),
+                WithFallback.success(new CheckedConsent(PdlReport.ConsentType.Consent, false)),
+                WithFallback.fallback(false)
+        );
+
+        PdlReport newReport = service.patientConsent(
+                ctx,
+                mockReport,
+                pe.patientId,
+                "Some reason",
+                1,
+                RoundedTimeUnit.NEAREST_HOUR,
+                consentType
+        );
+
+        assertTrue(newReport.hasConsent.value);
     }
 
 

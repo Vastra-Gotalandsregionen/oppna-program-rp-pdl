@@ -52,6 +52,7 @@ class Consent {
     }
 
     public static WithFallback<Boolean> establishConsent(
+            String servicesHsaId,
             PdlContext ctx,
             String patientId,
             PdlReport.ConsentType consentType,
@@ -84,14 +85,22 @@ class Consent {
         actor.setEmployeeId(ctx.employeeHsaId);
 
         action.setRegisteredBy(actor);
+        action.setRequestedBy(actor);
         request.setRegistrationAction(action);
 
         try {
-        RegisterExtendedConsentResponseType response = establishConsent.registerExtendedConsent(ctx.careProviderHsaId, request);
-        ResultCodeType resultCode = response.getResultType().getResultCode();
-        boolean consent = ( resultCode == ResultCodeType.OK || resultCode == ResultCodeType.ALREADYEXISTS);
+            RegisterExtendedConsentResponseType response =
+                    establishConsent
+                            .registerExtendedConsent(servicesHsaId, request);
+
+            ResultCodeType resultCode = response.getResultType().getResultCode();
+
+            boolean consent = ( resultCode == ResultCodeType.OK || resultCode == ResultCodeType.ALREADYEXISTS);
+
             LOGGER.trace("Consent established for patient {}", patientId);
+
             return new WithFallback<Boolean>(consent, false); // FIXME 2013-10-21: Magnus Andersson > Handle exceptions that generate fallback
+
         } catch( SOAPFaultException e) {
             LOGGER.error("Could not contact Consent service. Using fallback.", e);
             return new WithFallback<Boolean>(true, true);

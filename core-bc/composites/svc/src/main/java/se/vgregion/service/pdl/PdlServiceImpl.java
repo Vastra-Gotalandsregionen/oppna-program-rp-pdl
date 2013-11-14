@@ -56,6 +56,7 @@ public class PdlServiceImpl implements PdlService {
             PdlReport.ConsentType consentType
     ) {
         WithFallback<Boolean> consentStatus = Consent.establishConsent(
+                servicesHsaId,
                 ctx,
                 patientId,
                 consentType,

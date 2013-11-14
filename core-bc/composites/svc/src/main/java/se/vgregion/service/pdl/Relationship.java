@@ -51,16 +51,13 @@ public class Relationship {
         action.setRegistrationDate(XMLDuration.currentDateAsXML());
         action.setRequestDate(XMLDuration.currentDateAsXML());
 
-        ActorType registeredBy = new ActorType();
-        registeredBy.setEmployeeId(ctx.employeeHsaId);
-        action.setRegisteredBy(registeredBy);
+        ActorType actor = new ActorType();
+        actor.setAssignmentId(ctx.getAssignmentHsaId());
+        actor.setAssignmentName(ctx.getAssignmentDisplayName());
+        actor.setEmployeeId(ctx.employeeHsaId);
 
-        ActorType requestedBy = new ActorType();
-        requestedBy.setAssignmentId(ctx.getAssignmentHsaId());
-        requestedBy.setAssignmentName(ctx.getAssignmentDisplayName());
-        requestedBy.setEmployeeId(ctx.employeeHsaId);
-
-        action.setRequestedBy(requestedBy);
+        action.setRequestedBy(actor);
+        action.setRegisteredBy(actor);
         request.setRegistrationAction(action);
 
         XMLDuration xmlDuration = new XMLDuration(duration, timeUnit);

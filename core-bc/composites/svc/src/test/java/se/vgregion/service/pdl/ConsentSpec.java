@@ -65,11 +65,24 @@ public class ConsentSpec {
         };
     }
 
+    private static RegisterExtendedConsentResponseType establishResponse(boolean success) {
+        RegisterExtendedConsentResponseType resp = new RegisterExtendedConsentResponseType();
+        ResultType result = new ResultType();
+        if(success) {
+            result.setResultCode(ResultCodeType.OK);
+        } else {
+            result.setResultCode(ResultCodeType.NOTFOUND);
+        }
+        resp.setResultType(result);
+
+        return resp;
+    }
+
     public static Answer<RegisterExtendedConsentResponseType> establishRequestAndResponse(
-            PdlContext ctx,
-            PatientWithEngagements pe,
+            final PdlContext ctx,
+            final PatientWithEngagements pe,
             final PdlReport.ConsentType consentType,
-            boolean success
+            final boolean success
     ) {
         return new Answer<RegisterExtendedConsentResponseType>() {
             @Override
@@ -77,10 +90,19 @@ public class ConsentSpec {
                 RegisterExtendedConsentRequestType req =
                         (RegisterExtendedConsentRequestType) (invocationOnMock.getArguments()[1]);
 
+                assertEquals(AssertionTypeType.fromValue(consentType.name()), req.getAssertionType());
+                assertEquals(pe.getPatientId(), req.getPatientId());
+                assertEquals(ctx.careProviderHsaId, req.getCareProviderId());
+                assertEquals(ctx.careUnitHsaId, req.getCareUnitId());
+                assertEquals(ctx.employeeHsaId, req.getEmployeeId());
+                assertNotNull(req.getRegistrationAction().getRegistrationDate());
+                assertNotNull(req.getEndDate());
                 assertNotNull(req.getAssertionId());
-                assertEquals(consentType, req.getAssertionType());
-                assertEquals(req.)
-                return null;
+                assertNotNull(req.getScope());
+                assertEquals(ctx.employeeHsaId ,req.getRegistrationAction().getRegisteredBy().getEmployeeId());
+                assertEquals(ctx.employeeHsaId ,req.getRegistrationAction().getRequestedBy().getEmployeeId());
+
+                return establishResponse(success);
             }
         };
     }
