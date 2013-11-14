@@ -79,6 +79,7 @@ public class PdlServiceImpl implements PdlService {
     ) {
         WithFallback<Boolean> relationshipStatus = Relationship
                 .establishRelation(
+                        servicesHsaId,
                         ctx,
                         patientId,
                         establishRelationship,

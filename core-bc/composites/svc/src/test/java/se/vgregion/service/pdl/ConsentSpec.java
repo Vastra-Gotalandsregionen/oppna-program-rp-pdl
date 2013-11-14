@@ -5,13 +5,17 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import se.riv.ehr.patientconsent.accesscontrol.checkconsentresponder.v1.CheckConsentRequestType;
 import se.riv.ehr.patientconsent.accesscontrol.checkconsentresponder.v1.CheckConsentResponseType;
+import se.riv.ehr.patientconsent.administration.registerextendedconsentresponder.v1.RegisterExtendedConsentRequestType;
+import se.riv.ehr.patientconsent.administration.registerextendedconsentresponder.v1.RegisterExtendedConsentResponseType;
 import se.riv.ehr.patientconsent.v1.AccessingActorType;
 import se.riv.ehr.patientconsent.v1.AssertionTypeType;
 import se.riv.ehr.patientconsent.v1.ResultCodeType;
 import se.riv.ehr.patientconsent.v1.ResultType;
 import se.vgregion.domain.pdl.PatientWithEngagements;
 import se.vgregion.domain.pdl.PdlContext;
+import se.vgregion.domain.pdl.PdlReport;
 
+import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
 public class ConsentSpec {
@@ -21,7 +25,7 @@ public class ConsentSpec {
     }
 
 
-    static CheckConsentResponseType consentResult(boolean hasConsent, boolean emergency) {
+    static CheckConsentResponseType queryResult(boolean hasConsent, boolean emergency) {
         CheckConsentResponseType response = new CheckConsentResponseType();
         se.riv.ehr.patientconsent.v1.CheckResultType check = new se.riv.ehr.patientconsent.v1.CheckResultType();
 
@@ -39,7 +43,7 @@ public class ConsentSpec {
         return response;
     }
 
-    static Answer<CheckConsentResponseType> consentRequestAndRespond(
+    static Answer<CheckConsentResponseType> queryRequestAndRespond(
             final PdlContext ctx,
             final PatientWithEngagements pe,
             final boolean hasConsent,
@@ -48,15 +52,35 @@ public class ConsentSpec {
         return new Answer<CheckConsentResponseType>() {
             @Override
             public CheckConsentResponseType answer(InvocationOnMock invocationOnMock) throws Throwable {
-                CheckConsentRequestType arg2 = (CheckConsentRequestType) (invocationOnMock.getArguments()[1]);
+                CheckConsentRequestType req = (CheckConsentRequestType) (invocationOnMock.getArguments()[1]);
 
-                assertEquals(pe.patientId, arg2.getPatientId());
-                AccessingActorType actor = arg2.getAccessingActor();
+                assertEquals(pe.patientId, req.getPatientId());
+                AccessingActorType actor = req.getAccessingActor();
                 assertEquals(ctx.careProviderHsaId, actor.getCareProviderId());
                 assertEquals(ctx.careUnitHsaId, actor.getCareUnitId());
                 assertEquals(ctx.employeeHsaId, actor.getEmployeeId());
 
-                return consentResult(hasConsent, emergency);
+                return queryResult(hasConsent, emergency);
+            }
+        };
+    }
+
+    public static Answer<RegisterExtendedConsentResponseType> establishRequestAndResponse(
+            PdlContext ctx,
+            PatientWithEngagements pe,
+            final PdlReport.ConsentType consentType,
+            boolean success
+    ) {
+        return new Answer<RegisterExtendedConsentResponseType>() {
+            @Override
+            public RegisterExtendedConsentResponseType answer(InvocationOnMock invocationOnMock) throws Throwable {
+                RegisterExtendedConsentRequestType req =
+                        (RegisterExtendedConsentRequestType) (invocationOnMock.getArguments()[1]);
+
+                assertNotNull(req.getAssertionId());
+                assertEquals(consentType, req.getAssertionType());
+                assertEquals(req.)
+                return null;
             }
         };
     }

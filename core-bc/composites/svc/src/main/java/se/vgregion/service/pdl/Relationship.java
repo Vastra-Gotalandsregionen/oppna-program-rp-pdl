@@ -35,7 +35,8 @@ public class Relationship {
     }
 
     public static WithFallback<Boolean> establishRelation(
-            PdlContext ctx,
+
+            String servicesHsaId, PdlContext ctx,
             String patientId,
             RegisterExtendedPatientRelationResponderInterface establishRelationship, String reason, int duration, RoundedTimeUnit timeUnit) {
         RegisterExtendedPatientRelationRequestType request = new RegisterExtendedPatientRelationRequestType();
@@ -67,10 +68,14 @@ public class Relationship {
         request.setStartDate(xmlDuration.startDate);
         request.setEndDate(xmlDuration.endDate);
 
-        RegisterExtendedPatientRelationResponseType response = establishRelationship.registerExtendedPatientRelation(ctx.careProviderHsaId, request);
+        RegisterExtendedPatientRelationResponseType response = establishRelationship
+                .registerExtendedPatientRelation(servicesHsaId, request);
 
         if( response.getResultType().getResultCode() == ResultCodeType.VALIDATION_ERROR ) {
-            LOGGER.error("Validation error for register patient relationship. Message: {}", response.getResultType().getResultText() );
+            LOGGER.error(
+                    "Validation error for register patient relationship. Message: {}",
+                    response.getResultType().getResultText()
+            );
         }
 
         return WithFallback.success(response.getResultType().getResultCode() == ResultCodeType.OK);

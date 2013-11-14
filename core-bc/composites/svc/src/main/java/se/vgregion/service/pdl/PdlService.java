@@ -19,6 +19,8 @@ public interface PdlService {
     PdlReport pdlReport(PdlContext ctx, PatientWithEngagements patientEngagements);
 
     /**
+     * <p>Attempts to establish the patient consent for shared care provider journaling. Returns a new PdlReport containing the updated information</p>
+     * <p>Duration stipulates the duration of the relation, given from the time of the request.</p>
      *
      * @param ctx PDL Context
      * @param report Previous report where consent is not present
