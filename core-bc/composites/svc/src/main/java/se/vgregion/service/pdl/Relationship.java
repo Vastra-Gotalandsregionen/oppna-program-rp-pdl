@@ -38,8 +38,8 @@ public class Relationship {
             String servicesHsaId,
             RegisterExtendedPatientRelationResponderInterface establishRelationship,
             PdlContext ctx,
-            String reason,
             String patientId,
+            String reason,
             int duration,
             RoundedTimeUnit timeUnit
     ) {

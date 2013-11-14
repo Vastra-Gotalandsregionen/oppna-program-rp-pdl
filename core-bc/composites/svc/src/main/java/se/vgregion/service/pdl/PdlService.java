@@ -77,6 +77,7 @@ public interface PdlService {
     PdlReport unblockInformation(
             PdlContext ctx,
             PdlReport report,
+            String patientId,
             Engagement engagement,
             UnblockType unblockType,
             String reason,

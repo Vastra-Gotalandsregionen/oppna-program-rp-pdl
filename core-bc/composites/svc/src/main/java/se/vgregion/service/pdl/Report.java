@@ -31,9 +31,9 @@ public class Report {
             final PatientWithEngagements patientEngagements,
             final CheckBlocksResponderInterface blocksForPatient,
             final CheckConsentResponderInterface consentForPatient,
-            final CheckPatientRelationResponderInterface relationshipWithPatient) {
-
-        ExecutorService executorService = Executors.newFixedThreadPool(3); // TODO: 2013-10-14: Magnus Andersson > Bad Choise? Feels like a bad idea to fix a pool.
+            final CheckPatientRelationResponderInterface relationshipWithPatient,
+            final ExecutorService executorService
+    ) {
 
         // Start multiple requests
         Future<ArrayList<CheckedBlock>> blocksFuture = blocks(servicesHsaId, ctx, patientEngagements, blocksForPatient, executorService);

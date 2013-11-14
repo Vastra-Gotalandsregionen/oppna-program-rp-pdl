@@ -21,6 +21,8 @@ import se.vgregion.domain.pdl.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
@@ -49,8 +51,10 @@ public class PdlServiceSpecification {
 
     @Before
     public void setuUp() {
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
 
         service.setServicesHsaId(serviceHsaId);
+        service.setExecutorService(executorService);
 
         MockitoAnnotations.initMocks(this);
 
@@ -208,10 +212,14 @@ public class PdlServiceSpecification {
         when(establishRelationship.registerExtendedPatientRelation(eq(serviceHsaId), isA(RegisterExtendedPatientRelationRequestType.class)))
                 .thenAnswer(RelationshipSpec.establishRequestAndResponse(ctx, pe, true));
 
+        WithFallback<ArrayList<CheckedBlock>> blocks = WithFallback.success(new ArrayList<CheckedBlock>());
+        WithFallback<CheckedConsent> consent = WithFallback.success(new CheckedConsent(PdlReport.ConsentType.Consent, true));
+        WithFallback<Boolean> relationship = WithFallback.fallback(false);
+
         PdlReport mockReport = new PdlReport(
-                WithFallback.success(new ArrayList<CheckedBlock>()),
-                WithFallback.success(new CheckedConsent(PdlReport.ConsentType.Consent, true)),
-                WithFallback.fallback(false)
+                blocks,
+                consent,
+                relationship
         );
 
         PdlReport newReport = service.patientRelationship(
@@ -232,10 +240,14 @@ public class PdlServiceSpecification {
         when(establishConsent.registerExtendedConsent(eq(serviceHsaId), isA(RegisterExtendedConsentRequestType.class)))
                 .thenAnswer(ConsentSpec.establishRequestAndResponse(ctx,pe,consentType,true));
 
+        WithFallback<ArrayList<CheckedBlock>> blocks = WithFallback.success(new ArrayList<CheckedBlock>());
+        WithFallback<CheckedConsent> consent = WithFallback.success(new CheckedConsent(PdlReport.ConsentType.Consent, false));
+        WithFallback<Boolean> relationship = WithFallback.fallback(false);
+
         PdlReport mockReport = new PdlReport(
-                WithFallback.success(new ArrayList<CheckedBlock>()),
-                WithFallback.success(new CheckedConsent(PdlReport.ConsentType.Consent, false)),
-                WithFallback.fallback(false)
+                blocks,
+                consent,
+                relationship
         );
 
         PdlReport newReport = service.patientConsent(

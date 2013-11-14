@@ -3,8 +3,8 @@ package se.vgregion.service.pdl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import se.riv.ehr.blocking.accesscontrol.checkblocks.v2.rivtabp21.CheckBlocksResponderInterface;
-import se.riv.ehr.blocking.administration.getextendedblocksforpatient.v2.rivtabp21.GetExtendedBlocksForPatientResponderInterface;
 import se.riv.ehr.blocking.administration.registertemporaryextendedrevoke.v2.rivtabp21.RegisterTemporaryExtendedRevokeResponderInterface;
+import se.riv.ehr.blocking.querying.getblocksforpatient.v2.rivtabp21.GetBlocksForPatientResponderInterface;
 import se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderInterface;
 import se.riv.ehr.patientconsent.administration.registerextendedconsent.v1.rivtabp21.RegisterExtendedConsentResponderInterface;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
@@ -14,6 +14,7 @@ import se.vgregion.domain.pdl.*;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 @Service
 public class PdlServiceImpl implements PdlService {
@@ -28,7 +29,7 @@ public class PdlServiceImpl implements PdlService {
     private CheckPatientRelationResponderInterface relationshipWithPatient;
 
     @Resource(name = "patientBlocks")
-    private GetExtendedBlocksForPatientResponderInterface patientBlocks;
+    private GetBlocksForPatientResponderInterface patientBlocks;
 
     @Resource(name = "temporaryRevoke")
     private RegisterTemporaryExtendedRevokeResponderInterface temporaryRevoke;
@@ -42,9 +43,18 @@ public class PdlServiceImpl implements PdlService {
     @Value("${pdl.regionalSecurityServicesHsaId}")
     private String servicesHsaId;
 
+    @Resource(name="threadExecutor")
+    private ExecutorService executorService;
+
+
     // Injection seam for testing
     void setServicesHsaId(String servicesHsaId) {
         this.servicesHsaId = servicesHsaId;
+    }
+
+    // Injection seam for testing
+    void setExecutorService(ExecutorService executorService) {
+        this.executorService = executorService;
     }
 
     @Override
@@ -55,7 +65,8 @@ public class PdlServiceImpl implements PdlService {
                 patientEngagements,
                 blocksForPatient,
                 consentForPatient,
-                relationshipWithPatient
+                relationshipWithPatient,
+                executorService
         );
     }
 
@@ -110,6 +121,7 @@ public class PdlServiceImpl implements PdlService {
     public PdlReport unblockInformation(
             PdlContext ctx,
             PdlReport report,
+            String patientId,
             Engagement engagement,
             UnblockType unblockType,
             String reason,
@@ -122,6 +134,7 @@ public class PdlServiceImpl implements PdlService {
                     patientBlocks,
                     temporaryRevoke,
                     ctx,
+                    patientId,
                     engagement,
                     reason,
                     duration,
