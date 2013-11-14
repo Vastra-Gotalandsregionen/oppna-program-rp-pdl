@@ -5,15 +5,6 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-            <!--
-  <context:property-placeholder
-          location="file:${user.home}/.pdl/application.properties"
-          ignore-resource-not-found="false" ignore-unresolvable="false" order="1" />
-
-  <context:property-placeholder
-          location="file:${user.home}/.pdl/security.properties"
-          ignore-resource-not-found="false" ignore-unresolvable="false" order="2" />
-         -->
 
   <bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     <property name="locations">
