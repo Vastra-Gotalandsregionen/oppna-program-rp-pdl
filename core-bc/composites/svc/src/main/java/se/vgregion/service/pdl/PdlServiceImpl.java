@@ -11,41 +11,44 @@ import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivt
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelation.v1.rivtabp21.RegisterExtendedPatientRelationResponderInterface;
 import se.vgregion.domain.pdl.*;
 
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 @Service
 public class PdlServiceImpl implements PdlService {
 
+    @Resource(name = "checkBlocks")
+    private CheckBlocksResponderInterface checkBlocks;
+    @Resource(name = "checkConsent")
+    private CheckConsentResponderInterface checkConsent;
+    @Resource(name = "checkRelationship")
+    private CheckPatientRelationResponderInterface checkRelationship;
     @Resource(name = "blocksForPatient")
-    private CheckBlocksResponderInterface blocksForPatient;
-
-    @Resource(name = "consentForPatient")
-    private CheckConsentResponderInterface consentForPatient;
-
-    @Resource(name = "relationshipWithPatient")
-    private CheckPatientRelationResponderInterface relationshipWithPatient;
-
-    @Resource(name = "patientBlocks")
-    private GetBlocksForPatientResponderInterface patientBlocks;
-
+    private GetBlocksForPatientResponderInterface blocksForPatient;
     @Resource(name = "temporaryRevoke")
     private RegisterTemporaryExtendedRevokeResponderInterface temporaryRevoke;
-
     @Resource(name = "establishRelationship")
     private RegisterExtendedPatientRelationResponderInterface establishRelationship;
-
     @Resource(name = "establishConsent")
     private RegisterExtendedConsentResponderInterface establishConsent;
-
     @Value("${pdl.regionalSecurityServicesHsaId}")
     private String servicesHsaId;
 
-    @Resource(name="threadExecutor")
-    private ExecutorService executorService;
+    private ExecutorService executorService =
+            Executors.newCachedThreadPool(new ThreadFactory() {
+                private final ThreadFactory threadFactory = Executors.defaultThreadFactory();
 
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread thread = threadFactory.newThread(r);
+                    thread.setDaemon(true);
+                    return thread;
+                }
+            });
 
     // Injection seam for testing
     void setServicesHsaId(String servicesHsaId) {
@@ -63,9 +66,9 @@ public class PdlServiceImpl implements PdlService {
                 servicesHsaId,
                 ctx,
                 patientEngagements,
-                blocksForPatient,
-                consentForPatient,
-                relationshipWithPatient,
+                checkBlocks,
+                checkConsent,
+                checkRelationship,
                 executorService
         );
     }
@@ -128,22 +131,28 @@ public class PdlServiceImpl implements PdlService {
             int duration,
             RoundedTimeUnit roundedTimeUnit
     ) {
-        WithFallback<ArrayList<CheckedBlock>> unblockedInformation = Blocking
+        WithFallback<Boolean> unblockedInformation = Blocking
                 .unblockInformation(
-                    servicesHsaId,
-                    patientBlocks,
-                    temporaryRevoke,
-                    ctx,
-                    patientId,
-                    engagement,
-                    reason,
-                    duration,
-                    roundedTimeUnit
+                        servicesHsaId,
+                        blocksForPatient,
+                        temporaryRevoke,
+                        checkBlocks,
+                        ctx,
+                        patientId,
+                        engagement,
+                        reason,
+                        duration,
+                        roundedTimeUnit,
+                        executorService
                 );
 
-        return report.withBlocks(unblockedInformation);
+        return report; // FIXME  2013-11-15 : Magnus Andersson > Report not updated.
     }
 
+    @PreDestroy
+    public void destroy() {
+        executorService.shutdown();
+    }
 
     @Override
     public PdlAssertion chooseInformation(PdlContext ctx, PdlReport report, List<Engagement> engagements) {

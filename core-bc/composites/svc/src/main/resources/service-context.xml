@@ -16,21 +16,15 @@
 
   <task:annotation-driven />
 
-  <bean id="threadExecutor"
-        class="org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean">
-    <property name="corePoolSize" value="3" />
-    <property name="maxPoolSize" value="5" />
-  </bean>
-
-  <jaxws:client id="blocksForPatient"
+  <jaxws:client id="checkBlocks"
                 serviceClass="se.riv.ehr.blocking.accesscontrol.checkblocks.v2.rivtabp21.CheckBlocksResponderInterface"
                 address="${ws.endpoint.pdl.checkBlocks}" />
 
-  <jaxws:client id="consentForPatient"
+  <jaxws:client id="checkConsent"
                 serviceClass="se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderInterface"
                 address="${ws.endpoint.pdl.checkConsent}" />
 
-  <jaxws:client id="relationshipWithPatient"
+  <jaxws:client id="checkRelationship"
                 serviceClass="se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface"
                 address="${ws.endpoint.pdl.checkRelationship}" />
 
@@ -42,7 +36,7 @@
                 serviceClass="se.riv.ehr.patientconsent.administration.registerextendedconsent.v1.rivtabp21.RegisterExtendedConsentResponderInterface"
                 address="${ws.endpoint.pdl.registerConsent}" />
 
-  <jaxws:client id="patientBlocks"
+  <jaxws:client id="blocksForPatient"
                 serviceClass="se.riv.ehr.blocking.querying.getblocksforpatient.v2.rivtabp21.GetBlocksForPatientResponderInterface"
                 address="${ws.endpoint.pdl.patientBlocks}" />
 

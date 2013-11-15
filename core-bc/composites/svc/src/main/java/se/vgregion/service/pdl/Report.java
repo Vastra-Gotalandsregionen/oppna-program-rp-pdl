@@ -29,23 +29,26 @@ public class Report {
             String servicesHsaId,
             final PdlContext ctx,
             final PatientWithEngagements patientEngagements,
-            final CheckBlocksResponderInterface blocksForPatient,
-            final CheckConsentResponderInterface consentForPatient,
-            final CheckPatientRelationResponderInterface relationshipWithPatient,
+            final CheckBlocksResponderInterface checkBlocks,
+            final CheckConsentResponderInterface checkConsent,
+            final CheckPatientRelationResponderInterface checkRelationship,
             final ExecutorService executorService
     ) {
 
         // Start multiple requests
-        Future<ArrayList<CheckedBlock>> blocksFuture = blocks(servicesHsaId, ctx, patientEngagements, blocksForPatient, executorService);
-        Future<CheckedConsent> consentFuture = consent(servicesHsaId, ctx, patientEngagements.patientId, consentForPatient, executorService);
-        Future<Boolean> relationshipFuture = relationship(servicesHsaId, ctx, patientEngagements.patientId, relationshipWithPatient, executorService);
+        Future<ArrayList<CheckedBlock>> blocksFuture =
+                blocks(servicesHsaId, ctx, patientEngagements, checkBlocks, executorService);
+
+        Future<CheckedConsent> consentFuture =
+                consent(servicesHsaId, ctx, patientEngagements.patientId, checkConsent, executorService);
+
+        Future<Boolean> relationshipFuture =
+                relationship(servicesHsaId, ctx, patientEngagements.patientId, checkRelationship, executorService);
 
         // Aggreagate results
         WithFallback<ArrayList<CheckedBlock>> checkedBlocks = blocksWithFallback(blocksFuture, patientEngagements.patientId);
         WithFallback<CheckedConsent> checkedConsent = consentWithFallback(consentFuture, patientEngagements.patientId);
         WithFallback<Boolean> hasRelationship = relationshipWithFallback(relationshipFuture, patientEngagements.patientId);
-
-        executorService.shutdown();
 
         return new PdlReport(checkedBlocks, checkedConsent, hasRelationship);
     }
@@ -80,7 +83,10 @@ public class Report {
         return checkedConsent;
     }
 
-    private static WithFallback<ArrayList<CheckedBlock>> blocksWithFallback(Future<ArrayList<CheckedBlock>> blocksFuture, String patientId) {
+    private static WithFallback<ArrayList<CheckedBlock>> blocksWithFallback(
+            Future<ArrayList<CheckedBlock>> blocksFuture,
+            String patientId
+    ) {
         WithFallback<ArrayList<CheckedBlock>> checkedBlocks = null;
         try {
             checkedBlocks = WithFallback.success(blocksFuture.get());
@@ -98,12 +104,12 @@ public class Report {
             final String servicesHsaId,
             final PdlContext ctx,
             final String patientId,
-            final CheckPatientRelationResponderInterface relationshipWithPatient,
+            final CheckPatientRelationResponderInterface checkRelationship,
             ExecutorService executorService
     ) {
         Callable<Boolean> relationshipAsync = new Callable<Boolean>() {
             public Boolean call() throws Exception {
-                return checkRelationship(servicesHsaId, ctx, patientId, relationshipWithPatient);
+                return checkRelationship(servicesHsaId, ctx, patientId, checkRelationship);
             }
         };
 
@@ -114,12 +120,12 @@ public class Report {
             final String servicesHsaId,
             final PdlContext ctx,
             final String patientId,
-            final CheckConsentResponderInterface consentForPatient,
+            final CheckConsentResponderInterface checkConsent,
             ExecutorService executorService
     ) {
         Callable<CheckedConsent> consentAsync = new Callable<CheckedConsent>() {
             public CheckedConsent call() throws Exception {
-                return checkConsent(servicesHsaId, ctx, patientId, consentForPatient);
+                return checkConsent(servicesHsaId, ctx, patientId, checkConsent);
             }
         };
 
@@ -129,12 +135,12 @@ public class Report {
     static Future<ArrayList<CheckedBlock>> blocks(
             final String servicesHsaId, final PdlContext ctx,
             final PatientWithEngagements patientEngagements,
-            final CheckBlocksResponderInterface blocksForPatient,
+            final CheckBlocksResponderInterface checkBlocks,
             ExecutorService executorService
     ) {
         Callable<ArrayList<CheckedBlock>> blocksAsync = new Callable<ArrayList<CheckedBlock>>() {
             public ArrayList<CheckedBlock> call() throws Exception {
-                return checkBlocks(servicesHsaId, ctx, patientEngagements, blocksForPatient);
+                return checkBlocks(servicesHsaId, ctx, patientEngagements, checkBlocks);
             }
         };
 
@@ -145,11 +151,11 @@ public class Report {
             String regionalSecurityServicesHsaId,
             PdlContext ctx,
             String patientId,
-            CheckPatientRelationResponderInterface relationshipWithPatient
+            CheckPatientRelationResponderInterface checkRelationship
     ) {
         CheckPatientRelationRequestType reuqest = Relationship.checkRelationshipRequest(ctx, patientId);
         CheckPatientRelationResponseType relationshipResponse =
-                relationshipWithPatient.checkPatientRelation(regionalSecurityServicesHsaId, reuqest);
+                checkRelationship.checkPatientRelation(regionalSecurityServicesHsaId, reuqest);
 
         return relationshipResponse.getCheckResultType().isHasPatientrelation();
     }
@@ -158,11 +164,11 @@ public class Report {
             String regionalSecurityServicesHsaId,
             PdlContext ctx,
             PatientWithEngagements patientEngagements,
-            CheckBlocksResponderInterface blocksForPatient
+            CheckBlocksResponderInterface checkBlocks
     ) {
         CheckBlocksRequestType request = Blocking.checkBlocksRequest(ctx, patientEngagements);
         CheckBlocksResponseType blockResponse =
-                blocksForPatient.checkBlocks(regionalSecurityServicesHsaId, request);
+                checkBlocks.checkBlocks(regionalSecurityServicesHsaId, request);
 
         return Blocking.asCheckedBlocks(ctx, patientEngagements, blockResponse);
     }
@@ -171,11 +177,11 @@ public class Report {
             String regionalSecurityServicesHsaId,
             PdlContext ctx,
             String patientId,
-            CheckConsentResponderInterface consentForPatient
+            CheckConsentResponderInterface checkConsent
     ) {
         CheckConsentRequestType request = Consent.checkConsentRequest(ctx, patientId);
         CheckConsentResponseType consentResponse =
-                consentForPatient.checkConsent(regionalSecurityServicesHsaId, request);
+                checkConsent.checkConsent(regionalSecurityServicesHsaId, request);
 
         return Consent.asCheckedConsent(consentResponse);
     }
