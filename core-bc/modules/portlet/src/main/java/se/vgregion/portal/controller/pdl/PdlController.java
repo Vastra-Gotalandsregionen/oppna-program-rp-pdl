@@ -62,7 +62,7 @@ public class PdlController {
 
     @RenderMapping
     public String enterSearchPatient() {
-        state.reset();
+        state.reset(); // Make sure state is reset when user navigates to the start page.
         return "view";
     }
 
@@ -71,7 +71,7 @@ public class PdlController {
             @RequestParam String ssn,
             ActionResponse response
     ) {
-        // TODO: 2013-10-15: Magnus Andersson > Validate ssn. Existing libs available?
+        state.reset(); // Make sure reset is called here when user uses back button and submits again.
 
         LOGGER.trace("Looking for patient {}.", ssn);
         PatientWithEngagements pwe = patientEngagements.forPatient(ssn);
