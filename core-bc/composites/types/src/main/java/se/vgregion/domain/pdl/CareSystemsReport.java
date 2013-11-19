@@ -14,7 +14,7 @@ public class CareSystemsReport implements Serializable {
     private static final long serialVersionUID = 734432845857726758L;
     private static final Logger LOGGER = LoggerFactory.getLogger(CareSystemsReport.class.getName());
 
-    public final WithFallback<TreeMap<InformationType, WithVisibility<WithBlock<CareSystem>>>> systems;
+    public final WithFallback<TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> systems;
     public final EnumSet<InformationType> onlySameCareUnit;
     public final EnumSet<InformationType> includeOtherCareUnit;
     public final EnumSet<InformationType> includeOtherCareProvider;
@@ -30,25 +30,37 @@ public class CareSystemsReport implements Serializable {
         includeOtherCareProvider = infoTypeByCategory(categorizedSystems, EnumSet.allOf(Visibility.class));
 
         // Aggregate into a map by information type.
-        TreeMap<InformationType, WithVisibility<WithBlock<CareSystem>>> aggregatedSystems =
+        TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>> aggregatedSystems =
                 aggregateByInfotype(categorizedSystems);
 
         // Re-add fallback information.
         systems = pdlReport.systems.mapValue(aggregatedSystems);
     }
 
-    private static TreeMap<InformationType, WithVisibility<WithBlock<CareSystem>>> aggregateByInfotype(
+    private static TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>> aggregateByInfotype(
             ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> systemsWithBlocks
     ) {
 
-        TreeMap<InformationType, WithVisibility<WithBlock<CareSystem>>> categorizedSystems =
-                new TreeMap<InformationType, WithVisibility<WithBlock<CareSystem>>>();
+        TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems =
+                new TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>>();
 
         for (WithInfoType<WithVisibility<WithBlock<CareSystem>>> system : systemsWithBlocks) {
-            categorizedSystems.put(system.informationType, system.value);
+            ArrayList<WithVisibility<WithBlock<CareSystem>>> infoSystemList =
+                    getOrCreateList(categorizedSystems, system.informationType);
+
+            infoSystemList.add(system.value);
+            categorizedSystems.put(system.informationType, infoSystemList);
         }
 
         return categorizedSystems;
+    }
+
+    private static  ArrayList<WithVisibility<WithBlock<CareSystem>>> getOrCreateList(
+            TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems,
+            InformationType informationType
+    ) {
+        return (categorizedSystems.containsKey(informationType)) ?
+                categorizedSystems.get(informationType) : new ArrayList<WithVisibility<WithBlock<CareSystem>>>();
     }
 
     private EnumSet<InformationType> infoTypeByCategory(
@@ -76,18 +88,14 @@ public class CareSystemsReport implements Serializable {
 
         for (WithInfoType<WithBlock<CareSystem>> sys : systems) {
             boolean isSameCareProvider = ctx.careProviderHsaId.equals(sys.value.value.careProviderHsaId);
-            boolean isOtherCareUnit = !ctx.careUnitHsaId.equals(sys.value.value.careUnitHsaId);
             boolean isSameCareUnit = ctx.careUnitHsaId.equals(sys.value.value.careUnitHsaId);
-            boolean isOtherCareProvider = !ctx.careProviderHsaId.equals(sys.value.value.careProviderHsaId);
 
             if (isSameCareProvider && isSameCareUnit) {
                 withVisiblitiy(categorizedSystems, sys, Visibility.SAME_CARE_UNIT);
-            } else if (isSameCareProvider && isOtherCareUnit) {
+            } else if (isSameCareProvider) {
                 withVisiblitiy(categorizedSystems, sys, Visibility.OTHER_CARE_UNIT);
-            } else if (isOtherCareProvider) {
-                withVisiblitiy(categorizedSystems, sys, Visibility.OTHER_CARE_PROVIDER);
             } else {
-                LOGGER.error("Uncategorizable system. This is undefined behaviour. Skipping system: {}.", sys);
+                withVisiblitiy(categorizedSystems, sys, Visibility.OTHER_CARE_PROVIDER);
             }
         }
 
@@ -109,7 +117,7 @@ public class CareSystemsReport implements Serializable {
         );
     }
 
-    public WithFallback<TreeMap<InformationType, WithVisibility<WithBlock<CareSystem>>>> getSystems() {
+    public WithFallback<TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> getSystems() {
         return systems;
     }
 
