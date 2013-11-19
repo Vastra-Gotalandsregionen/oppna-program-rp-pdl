@@ -2,41 +2,21 @@ package se.vgregion.domain.pdl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class PdlReport implements Serializable {
     private static final long serialVersionUID = -597284170511725549L;
-    public final WithFallback<Boolean> hasBlocks;
-    public final List<CheckedBlock> blocks;
-    public final WithFallback<Boolean> hasConsent;
-    public final ConsentType consentType;
+    public final WithFallback<CheckedConsent> consent;
     public final WithFallback<Boolean> hasRelationship;
+    public final WithFallback<ArrayList<WithInfoType<WithBlock<CareSystem>>>> systems;
 
     public PdlReport(
-            WithFallback<ArrayList<CheckedBlock>> checkedBlocks,
+            WithFallback<ArrayList<WithInfoType<WithBlock<CareSystem>>>> checkedSystems,
             WithFallback<CheckedConsent> checkedConsent,
             WithFallback<Boolean> hasRelationship
     ) {
         this.hasRelationship = hasRelationship;
-        hasBlocks = containsBlocked(checkedBlocks);
-        blocks = checkedBlocks.value;
-        this.hasConsent = isConsentWithFallback(checkedConsent);
-        this.consentType = checkedConsent.value.consentType;
-    }
-
-    // Private, for copy only
-    private PdlReport(
-            WithFallback<Boolean> hasBlocks,
-            List<CheckedBlock> blocks,
-            WithFallback<Boolean> hasConsent,
-            ConsentType consentType,
-            WithFallback<Boolean> hasRelationship
-    ) {
-        this.hasBlocks = hasBlocks;
-        this.blocks = blocks;
-        this.hasConsent = hasConsent;
-        this.consentType = consentType;
-        this.hasRelationship = hasRelationship;
+        this.systems = checkedSystems;
+        this.consent = checkedConsent;
     }
 
     private WithFallback<Boolean> isConsentWithFallback(WithFallback<CheckedConsent> checkedConsent) {
@@ -47,58 +27,36 @@ public class PdlReport implements Serializable {
         }
     }
 
-    private WithFallback<Boolean> containsBlocked(WithFallback<ArrayList<CheckedBlock>> checkedBlocks) {
 
-        for (CheckedBlock b : checkedBlocks.value) {
-            if (b.blocked == CheckedBlock.BlockStatus.BLOCKED) {
-                return new WithFallback<Boolean>(true, checkedBlocks.fallback);
-            }
-        }
-        return new WithFallback<Boolean>(false, checkedBlocks.fallback);
-    }
-
-    public PdlReport withBlocks(WithFallback<ArrayList<CheckedBlock>> unblockedInformation) {
+    public PdlReport withBlocks(WithFallback<ArrayList<WithInfoType<WithBlock<CareSystem>>>> unblockedInformation) {
         return new PdlReport(
-                containsBlocked(unblockedInformation),
-                unblockedInformation.value,
-                hasConsent,
-                consentType,
+                unblockedInformation,
+                consent,
                 hasRelationship);
     }
 
     public PdlReport withRelationship(WithFallback<Boolean> newHasRelationship) {
         return new PdlReport(
-                hasBlocks,
-                blocks,
-                hasConsent,
-                consentType,
+                systems,
+                consent,
                 newHasRelationship);
     }
 
-    public PdlReport withConsent(WithFallback<Boolean> newConsentStatus, ConsentType newConsentType) {
+    public PdlReport withConsent(WithFallback<CheckedConsent> newConsent) {
         return new PdlReport(
-                hasBlocks,
-                blocks,
-                newConsentStatus,
-                newConsentType,
+                systems,
+                newConsent,
                 hasRelationship);
     }
 
-    public WithFallback<Boolean> getHasBlocks() {
-        return hasBlocks;
+    public WithFallback<ArrayList<WithInfoType<WithBlock<CareSystem>>>> getSystems() {
+        return systems;
     }
 
-    public List<CheckedBlock> getBlocks() {
-        return blocks;
+    public WithFallback<CheckedConsent> getConsent() {
+        return consent;
     }
 
-    public WithFallback<Boolean> getHasConsent() {
-        return hasConsent;
-    }
-
-    public ConsentType getConsentType() {
-        return consentType;
-    }
 
     public WithFallback<Boolean> getHasRelationship() {
         return hasRelationship;
@@ -107,11 +65,9 @@ public class PdlReport implements Serializable {
     @Override
     public String toString() {
         return "PdlReport{" +
-                "hasBlocks=" + hasBlocks +
-                ", blocks=" + blocks +
-                ", hasConsent=" + hasConsent +
-                ", consentType=" + consentType +
+                "consent=" + consent +
                 ", hasRelationship=" + hasRelationship +
+                ", systems=" + systems +
                 '}';
     }
 

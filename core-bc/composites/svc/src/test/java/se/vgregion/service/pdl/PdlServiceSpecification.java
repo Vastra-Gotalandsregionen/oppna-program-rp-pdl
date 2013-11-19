@@ -19,7 +19,6 @@ import se.riv.ehr.patientrelationship.administration.registerextendedpatientrela
 import se.vgregion.domain.pdl.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,7 +44,8 @@ public class PdlServiceSpecification {
     private PdlServiceImpl service = new PdlServiceImpl();
 
     private PdlContext ctx;
-    private PatientWithEngagements pe;
+    private Patient patient;
+    private List<WithInfoType<CareSystem>> careSystems;
 
     private static final String serviceHsaId = "SE2321000131-E000000000001";
 
@@ -58,33 +58,26 @@ public class PdlServiceSpecification {
 
         MockitoAnnotations.initMocks(this);
 
-        List<Engagement> engagements = Arrays.asList(
-                new Engagement(
-                        "careProviderHsaId",
-                        "careUnitHsaId",
-                        "employeeHsaId",
-                        Engagement.InformationType.LAK
-                )
+        ctx = new PdlContext(
+            "SE2321000131-E000000000001",
+            "SE2321000131-S000000010252",
+            "SE2321000131-P000000069215",
+            "Sammanhållen Journalföring",
+            "SE2321000131-S000000010452"
         );
 
-        ctx = new PdlContext(
-                "careProviderHsaId",
-                "careUnitHsaId",
-                "employeeHsaId",
-                "Sammanhållen Jouralföring",
-                "assignmentHsaId");
+        PatientRepository patients = new KivPatientRepository();
+        patient = patients.byPatientId("test");
 
-        pe = new PatientWithEngagements(
-                "patientId",
-                "Kalle Karlsson",
-                engagements);
+        CareSystems systems = new CareSystemsImpl();
+        careSystems = systems.byPatientId(ctx, patient.patientId);
     }
 
     @Test
     public void reportHasBlocks() throws Exception {
 
         when(blocksInterface.checkBlocks(eq(serviceHsaId), isA(CheckBlocksRequestType.class))).
-                thenAnswer(BlockingSpec.blockingRequestAndRespond(ctx, pe, 0, true));
+                thenAnswer(BlockingSpec.blockingRequestAndRespond(ctx, patient, 0, true));
 
         when(consentInterface.checkConsent(anyString(), isA(CheckConsentRequestType.class))).
                 thenReturn(ConsentSpec.queryResult(false, false));  // Not under test, avoid null pointer
@@ -92,11 +85,20 @@ public class PdlServiceSpecification {
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
             thenReturn(RelationshipSpec.relationshipResult(false));  // Not under test, avoid null pointer
 
-        PdlReport pdlReport = service.pdlReport(ctx, pe);
+        PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
 
-        assertFalse(pdlReport.hasBlocks.fallback);
-        assertTrue(pdlReport.hasBlocks.value);
-        assertEquals(1, pdlReport.blocks.size());
+        // Should not be a fallback result
+        assertFalse(pdlReport.systems.fallback);
+
+        // Should at least contain more than one system
+        assertTrue(pdlReport.systems.value.size() > 0);
+
+        // Should contain at least one blocked system
+        int b = 0;
+        for( WithInfoType<WithBlock<CareSystem>> system : pdlReport.systems.value ) {
+            if(system.value.blocked) b++;
+        }
+        assertTrue(b > 0);
     }
 
     @Test
@@ -110,11 +112,17 @@ public class PdlServiceSpecification {
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
                 thenReturn(RelationshipSpec.relationshipResult(false));  // Not under test, avoid null pointer
 
-        PdlReport pdlReport = service.pdlReport(ctx, pe);
+        PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
 
-        assertFalse(pdlReport.hasBlocks.fallback);
-        assertFalse(pdlReport.hasBlocks.value);
-        assertEquals(1, pdlReport.blocks.size());
+        // Should at least contain more than one system
+        assertTrue(pdlReport.systems.value.size() > 0);
+
+        // Should contain at least one blocked system
+        int b = 0;
+        for( WithInfoType<WithBlock<CareSystem>> system : pdlReport.systems.value ) {
+            if(system.value.blocked) b++;
+        }
+        assertTrue(b == 0);
     }
 
 
@@ -124,16 +132,16 @@ public class PdlServiceSpecification {
                 thenReturn(BlockingSpec.blockedResult(0, true)); // Not under test, avoid null pointer
 
         when(consentInterface.checkConsent(eq(serviceHsaId), isA(CheckConsentRequestType.class))).
-                thenAnswer(ConsentSpec.queryRequestAndRespond(ctx, pe, true, false));
+                thenAnswer(ConsentSpec.queryRequestAndRespond(ctx, patient, true, false));
 
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
                 thenReturn(RelationshipSpec.relationshipResult(false));  // Not under test, avoid null pointer
 
-        PdlReport pdlReport = service.pdlReport(ctx, pe);
+        PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
 
-        assertFalse(pdlReport.hasConsent.fallback);
-        assertTrue(pdlReport.hasConsent.value);
-        assertEquals(PdlReport.ConsentType.Consent, pdlReport.consentType);
+        assertFalse(pdlReport.consent.fallback);
+        assertTrue(pdlReport.consent.value.hasConsent);
+        assertEquals(PdlReport.ConsentType.Consent, pdlReport.consent.value.consentType);
     }
 
     @Test
@@ -142,16 +150,16 @@ public class PdlServiceSpecification {
                 thenReturn(BlockingSpec.blockedResult(0, true)); // Not under test, avoid null pointer
 
         when(consentInterface.checkConsent(eq(serviceHsaId), isA(CheckConsentRequestType.class))).
-                thenAnswer(ConsentSpec.queryRequestAndRespond(ctx, pe, true, true));
+                thenAnswer(ConsentSpec.queryRequestAndRespond(ctx, patient, true, true));
 
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
                 thenReturn(RelationshipSpec.relationshipResult(false));  // Not under test, avoid null pointer
 
-        PdlReport pdlReport = service.pdlReport(ctx, pe);
+        PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
 
-        assertFalse(pdlReport.hasConsent.fallback);
-        assertTrue(pdlReport.hasConsent.value);
-        assertEquals(PdlReport.ConsentType.Emergency, pdlReport.consentType);
+        assertFalse(pdlReport.consent.fallback);
+        assertTrue(pdlReport.consent.value.hasConsent);
+        assertEquals(PdlReport.ConsentType.Emergency, pdlReport.consent.value.consentType);
     }
 
     @Test
@@ -160,15 +168,15 @@ public class PdlServiceSpecification {
                 thenReturn(BlockingSpec.blockedResult(0, true)); // Not under test, avoid null pointer
 
         when(consentInterface.checkConsent(eq(serviceHsaId), isA(CheckConsentRequestType.class))).
-                thenAnswer(ConsentSpec.queryRequestAndRespond(ctx, pe, false, true));
+                thenAnswer(ConsentSpec.queryRequestAndRespond(ctx, patient, false, true));
 
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
                 thenReturn(RelationshipSpec.relationshipResult(false));  // Not under test, avoid null pointer
 
-        PdlReport pdlReport = service.pdlReport(ctx, pe);
+        PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
 
-        assertFalse(pdlReport.hasConsent.fallback);
-        assertFalse(pdlReport.hasConsent.value);
+        assertFalse(pdlReport.consent.fallback);
+        assertFalse(pdlReport.consent.value.hasConsent);
     }
 
     @Test
@@ -180,9 +188,9 @@ public class PdlServiceSpecification {
                 thenReturn(ConsentSpec.queryResult(false, true)); // Not under test, avoid null pointer
 
         when(relationshipInterface.checkPatientRelation(eq(serviceHsaId), isA(CheckPatientRelationRequestType.class))).
-                thenAnswer(RelationshipSpec.queryRequestAndResponse(ctx, pe, true));
+                thenAnswer(RelationshipSpec.queryRequestAndResponse(ctx, patient, true));
 
-        PdlReport pdlReport = service.pdlReport(ctx, pe);
+        PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
 
         assertFalse(pdlReport.hasRelationship.fallback);
         assertTrue(pdlReport.hasRelationship.value);
@@ -198,9 +206,9 @@ public class PdlServiceSpecification {
                 thenReturn(ConsentSpec.queryResult(false, true)); // Not under test, avoid null pointer
 
         when(relationshipInterface.checkPatientRelation(eq(serviceHsaId), isA(CheckPatientRelationRequestType.class))).
-                thenAnswer(RelationshipSpec.queryRequestAndResponse(ctx, pe, false));
+                thenAnswer(RelationshipSpec.queryRequestAndResponse(ctx, patient, false));
 
-        PdlReport pdlReport = service.pdlReport(ctx, pe);
+        PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
 
         assertFalse(pdlReport.hasRelationship.fallback);
         assertFalse(pdlReport.hasRelationship.value);
@@ -210,14 +218,19 @@ public class PdlServiceSpecification {
     @Test
     public void establishRelationship() throws Exception {
         when(establishRelationship.registerExtendedPatientRelation(eq(serviceHsaId), isA(RegisterExtendedPatientRelationRequestType.class)))
-                .thenAnswer(RelationshipSpec.establishRequestAndResponse(ctx, pe, true));
+                .thenAnswer(RelationshipSpec.establishRequestAndResponse(ctx, patient, true));
 
-        WithFallback<ArrayList<CheckedBlock>> blocks = WithFallback.success(new ArrayList<CheckedBlock>());
-        WithFallback<CheckedConsent> consent = WithFallback.success(new CheckedConsent(PdlReport.ConsentType.Consent, true));
-        WithFallback<Boolean> relationship = WithFallback.fallback(false);
+        WithFallback<ArrayList<WithInfoType<WithBlock<CareSystem>>>> systems =
+                WithFallback.success(new ArrayList <WithInfoType<WithBlock< CareSystem >>>());
+
+        WithFallback<CheckedConsent> consent =
+                WithFallback.success(new CheckedConsent(PdlReport.ConsentType.Consent, false));
+
+        WithFallback<Boolean> relationship =
+                WithFallback.fallback(false);
 
         PdlReport mockReport = new PdlReport(
-                blocks,
+                systems,
                 consent,
                 relationship
         );
@@ -225,7 +238,7 @@ public class PdlServiceSpecification {
         PdlReport newReport = service.patientRelationship(
                 ctx,
                 mockReport,
-                pe.patientId,
+                patient.patientId,
                 "Some reason",
                 1,
                 RoundedTimeUnit.NEAREST_HOUR
@@ -238,14 +251,19 @@ public class PdlServiceSpecification {
     public void establishConsent() throws Exception {
         PdlReport.ConsentType consentType = PdlReport.ConsentType.Consent;
         when(establishConsent.registerExtendedConsent(eq(serviceHsaId), isA(RegisterExtendedConsentRequestType.class)))
-                .thenAnswer(ConsentSpec.establishRequestAndResponse(ctx,pe,consentType,true));
+                .thenAnswer(ConsentSpec.establishRequestAndResponse(ctx, patient,consentType,true));
 
-        WithFallback<ArrayList<CheckedBlock>> blocks = WithFallback.success(new ArrayList<CheckedBlock>());
-        WithFallback<CheckedConsent> consent = WithFallback.success(new CheckedConsent(PdlReport.ConsentType.Consent, false));
-        WithFallback<Boolean> relationship = WithFallback.fallback(false);
+        WithFallback<ArrayList<WithInfoType<WithBlock<CareSystem>>>> systems =
+                WithFallback.success(new ArrayList <WithInfoType<WithBlock< CareSystem >>>());
+
+        WithFallback<CheckedConsent> consent =
+                WithFallback.success(new CheckedConsent(PdlReport.ConsentType.Consent, false));
+
+        WithFallback<Boolean> relationship =
+                WithFallback.fallback(false);
 
         PdlReport mockReport = new PdlReport(
-                blocks,
+                systems,
                 consent,
                 relationship
         );
@@ -253,14 +271,14 @@ public class PdlServiceSpecification {
         PdlReport newReport = service.patientConsent(
                 ctx,
                 mockReport,
-                pe.patientId,
+                patient.patientId,
                 "Some reason",
                 1,
                 RoundedTimeUnit.NEAREST_HOUR,
                 consentType
         );
 
-        assertTrue(newReport.hasConsent.value);
+        assertTrue(newReport.consent.value.hasConsent);
     }
 
 

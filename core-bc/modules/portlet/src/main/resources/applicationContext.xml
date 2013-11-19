@@ -9,11 +9,11 @@
   <bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     <property name="locations">
       <list>
-        <value>file:${user.home}/.pdl/application.properties</value>
-        <value>file:${user.home}/.pdl/security.properties</value>
+        <system>file:${user.home}/.pdl/application.properties</system>
+        <system>file:${user.home}/.pdl/security.properties</system>
       </list>
     </property>
-    <property name="ignoreResourceNotFound" value="false"/>
+    <property name="ignoreResourceNotFound" system="false"/>
   </bean>
 
   <import resource="classpath*:/service-security.xml"/> <!-- REMOVE if SSL certificates are not needed -->

@@ -5,7 +5,7 @@
 	version="2.4">
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>WEB-INF/spring-cxf-config.xml</param-value>
+		<param-system>WEB-INF/spring-cxf-config.xml</param-system>
 	</context-param>
 
 	<listener>

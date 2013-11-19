@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import se.vgregion.domain.pdl.CareSystemsReport;
-import se.vgregion.domain.pdl.PatientWithEngagements;
+import se.vgregion.domain.pdl.Patient;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.pdl.PdlReport;
 
@@ -22,7 +22,7 @@ public class PdlUserState implements Serializable {
 
     private PdlReport pdlReport;
     private CareSystemsReport csReport;
-    private PatientWithEngagements pwe;
+    private Patient patient;
     private PdlContext ctx;
     private boolean showSameCareProvider = false;
     private boolean showOtherCareProvider = false;
@@ -36,8 +36,8 @@ public class PdlUserState implements Serializable {
         showOtherCareProvider = false;
     }
 
-    public PatientWithEngagements getPwe() {
-        return pwe;
+    public Patient getPatient() {
+        return patient;
     }
 
     public PdlContext getCtx() {
@@ -56,8 +56,8 @@ public class PdlUserState implements Serializable {
         this.csReport = csReport;
     }
 
-    public void setPwe(PatientWithEngagements pwe) {
-        this.pwe = pwe;
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
     public void setCtx(PdlContext ctx) {
@@ -85,7 +85,7 @@ public class PdlUserState implements Serializable {
         return "PdlUserState{" +
                 "pdlReport=" + pdlReport +
                 ", csReport=" + csReport +
-                ", pwe=" + pwe +
+                ", patient=" + patient +
                 ", ctx=" + ctx +
                 ", showSameCareProvider=" + showSameCareProvider +
                 ", showOtherCareProvider=" + showOtherCareProvider +

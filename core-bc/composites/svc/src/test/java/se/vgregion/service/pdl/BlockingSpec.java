@@ -7,7 +7,7 @@ import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v2.CheckBlocksResp
 import se.riv.ehr.blocking.v2.AccessingActorType;
 import se.riv.ehr.blocking.v2.CheckBlocksResultType;
 import se.riv.ehr.blocking.v2.CheckResultType;
-import se.vgregion.domain.pdl.PatientWithEngagements;
+import se.vgregion.domain.pdl.Patient;
 import se.vgregion.domain.pdl.PdlContext;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class BlockingSpec {
 
     static Answer<CheckBlocksResponseType> blockingRequestAndRespond(
             final PdlContext ctx,
-            final PatientWithEngagements pe,
+            final Patient pe,
             final int rowNumber,
             final boolean isBlocked
     ) {

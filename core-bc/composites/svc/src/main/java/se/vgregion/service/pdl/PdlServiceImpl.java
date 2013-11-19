@@ -50,9 +50,9 @@ public class PdlServiceImpl implements PdlService {
                 }
             });
 
-    // Injection seam for testing
-    void setServicesHsaId(String servicesHsaId) {
-        this.servicesHsaId = servicesHsaId;
+    @PreDestroy
+    public void destroy() {
+        executorService.shutdown();
     }
 
     // Injection seam for testing
@@ -60,12 +60,22 @@ public class PdlServiceImpl implements PdlService {
         this.executorService = executorService;
     }
 
+    // Injection seam for testing
+    void setServicesHsaId(String servicesHsaId) {
+        this.servicesHsaId = servicesHsaId;
+    }
+
     @Override
-    public PdlReport pdlReport(final PdlContext ctx, PatientWithEngagements patientEngagements) {
+    public PdlReport pdlReport(
+            final PdlContext ctx,
+            Patient patient,
+            List<WithInfoType<CareSystem>> careSystems
+    ) {
         return Report.generateReport(
                 servicesHsaId,
                 ctx,
-                patientEngagements,
+                patient,
+                careSystems,
                 checkBlocks,
                 checkConsent,
                 checkRelationship,
@@ -83,7 +93,7 @@ public class PdlServiceImpl implements PdlService {
             RoundedTimeUnit roundedTimeUnit,
             PdlReport.ConsentType consentType
     ) {
-        WithFallback<Boolean> consentStatus = Consent.establishConsent(
+        WithFallback<CheckedConsent> consentStatus = Consent.establishConsent(
                 servicesHsaId,
                 establishConsent,
                 ctx,
@@ -93,8 +103,8 @@ public class PdlServiceImpl implements PdlService {
                 duration,
                 roundedTimeUnit
         );
-        return report.withConsent(consentStatus, consentType);
 
+        return report.withConsent(consentStatus);
     }
 
     @Override
@@ -125,37 +135,17 @@ public class PdlServiceImpl implements PdlService {
             PdlContext ctx,
             PdlReport report,
             String patientId,
-            Engagement engagement,
             UnblockType unblockType,
             String reason,
             int duration,
             RoundedTimeUnit roundedTimeUnit
     ) {
-        WithFallback<Boolean> unblockedInformation = Blocking
-                .unblockInformation(
-                        servicesHsaId,
-                        blocksForPatient,
-                        temporaryRevoke,
-                        checkBlocks,
-                        ctx,
-                        patientId,
-                        engagement,
-                        reason,
-                        duration,
-                        roundedTimeUnit,
-                        executorService
-                );
-
         return report; // FIXME  2013-11-15 : Magnus Andersson > Report not updated.
     }
 
-    @PreDestroy
-    public void destroy() {
-        executorService.shutdown();
-    }
 
     @Override
-    public PdlAssertion chooseInformation(PdlContext ctx, PdlReport report, List<Engagement> engagements) {
+    public PdlAssertion chooseInformation(PdlContext ctx, PdlReport report) {
         throw new IllegalStateException("Not implemented");
     }
 }

@@ -14,12 +14,11 @@ import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import se.vgregion.domain.pdl.*;
 import se.vgregion.service.pdl.CareSystems;
-import se.vgregion.service.pdl.PatientEngagements;
+import se.vgregion.service.pdl.PatientRepository;
 import se.vgregion.service.pdl.PdlService;
 
 import javax.portlet.ActionResponse;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "VIEW")
@@ -27,21 +26,15 @@ import java.util.List;
 public class PdlController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PdlController.class.getName());
     @Autowired
-    private PatientEngagements patientEngagements;
+    private Patient patient;
     @Autowired
     private PdlService pdl;
     @Autowired
     private PdlUserState state;
     @Autowired
     private CareSystems systems;
-
-    private static List<Engagement.InformationType> asInformationTypes(List<Engagement> engagements) {
-        ArrayList<Engagement.InformationType> is = new ArrayList<Engagement.InformationType>();
-        for (Engagement e : engagements) {
-            is.add(e.informationType);
-        }
-        return is;
-    }
+    @Autowired
+    PatientRepository patients;
 
     @ModelAttribute("state")
     public PdlUserState initState() {
@@ -68,22 +61,19 @@ public class PdlController {
 
     @ActionMapping("searchPatient")
     public void searchPatientInformation(
-            @RequestParam String ssn,
+            @RequestParam String patientId,
             ActionResponse response
     ) {
         state.reset(); // Make sure reset is called here when user uses back button and submits again.
+        LOGGER.trace("Searching for patient {} in care systems.", patientId);
 
-        LOGGER.trace("Looking for patient {}.", ssn);
-        PatientWithEngagements pwe = patientEngagements.forPatient(ssn);
-        state.setPwe(pwe);
+        state.setPatient(patients.byPatientId(patientId));
 
-        PdlReport pdlReport = pdl.pdlReport(state.getCtx(), pwe);
+        List<WithInfoType<CareSystem>> careSystems = systems.byPatientId(state.getCtx(), patientId);
+        //TODO 2013-11-18 : Magnus Andersson > Only do this if there are care systems!
+        PdlReport pdlReport = pdl.pdlReport(state.getCtx(), patient, careSystems);
 
-        // Engagements belonging to patient.
-        List<Engagement.InformationType> information = asInformationTypes(pwe.engagements);
-        List<CareSystem> careSystems = systems.byInformationType(information);
-
-        CareSystemsReport csReport = new CareSystemsReport(state.getCtx(), pdlReport, careSystems);
+        CareSystemsReport csReport = new CareSystemsReport(state.getCtx(), pdlReport);
 
         state.setPdlReport(pdlReport);
         state.setCsReport(csReport);
@@ -96,13 +86,13 @@ public class PdlController {
         LOGGER.trace(
                 "Request to create relationship between employee {} and patient {}.",
                 state.getCtx().employeeHsaId,
-                state.getPwe().patientId
+                state.getPatient().patientId
         );
 
         PdlReport newReport = pdl.patientRelationship(
                 state.getCtx(),
                 state.getPdlReport(),
-                state.getPwe().patientId,
+                state.getPatient().patientId,
                 "Reason",
                 1,
                 RoundedTimeUnit.NEAREST_HALF_HOUR
@@ -118,7 +108,7 @@ public class PdlController {
         LOGGER.trace(
                 "Request to create consent between employee {} and patient {}.",
                 state.getCtx().employeeHsaId,
-                state.getPwe().patientId
+                state.getPatient().patientId
         );
 
         // FIXME 2013-10-21 : Magnus Andersson > Should choose between consent or emergency. Also add possiblility to be represented by someone?
@@ -126,7 +116,7 @@ public class PdlController {
                 pdl.patientConsent(
                         state.getCtx(),
                         state.getPdlReport(),
-                        state.getPwe().patientId,
+                        state.getPatient().patientId,
                         "Reason",
                         1,
                         RoundedTimeUnit.NEAREST_HALF_HOUR,
@@ -144,7 +134,7 @@ public class PdlController {
         LOGGER.trace(
                 "Request to show more information within same care giver for employee {} and patient {}.",
                 state.getCtx().employeeHsaId,
-                state.getPwe().patientId
+                state.getPatient().patientId
         );
 
         // LOG SERVICE CALL
@@ -154,12 +144,12 @@ public class PdlController {
         response.setRenderParameter("view", "searchResult");
     }
 
-    @ActionMapping("otherCareProvider")
+    @ActionMapping("includeOtherCareProvider")
     public void otherProvider(ActionResponse response) {
         LOGGER.trace(
                 "Request to show more information within same care giver for employee {} and patient {}.",
                 state.getCtx().employeeHsaId,
-                state.getPwe().patientId
+                state.getPatient().patientId
         );
 
         // LOG SERVICE CALL

@@ -12,11 +12,16 @@ public interface PdlService {
     /**
      * <p>Generate initial PDL Report.</p>
      *
+     *
      * @param ctx PDL Context
-     * @param patientEngagements Engagements within Health Care
-     * @return Instance of PdlReport containing blocks, consent and relationship
+     * @param patient Patient information
+     * @param careSystems Care Systems to generate report for
      */
-    PdlReport pdlReport(PdlContext ctx, PatientWithEngagements patientEngagements);
+    PdlReport pdlReport(
+            PdlContext ctx,
+            Patient patient,
+            List<WithInfoType<CareSystem>> careSystems
+    );
 
     /**
      * <p>Attempts to establish the patient consent for shared care provider journaling. Returns a new PdlReport containing the updated information</p>
@@ -63,11 +68,10 @@ public interface PdlService {
     );
 
     /**
-     * <p>This method will temporarily unblock <i>all blocks</i> (if overlapping blocks exist) that hinders the information from being accessed.</p>
+     * <p>This method will temporarily unblock <i>all systmes</i> (if overlapping systmes exist) that hinders the information from being accessed.</p>
      *
      * @param ctx PDL Context
      * @param report Previous report that is missing the relationship
-     * @param engagement Engagement to unblock
      * @param unblockType Type of temporary removal of block. With patient consent or an emergency
      * @param reason Reason or comment
      * @param duration Positive integer of duration of rounded time units
@@ -78,12 +82,11 @@ public interface PdlService {
             PdlContext ctx,
             PdlReport report,
             String patientId,
-            Engagement engagement,
             UnblockType unblockType,
             String reason,
             int duration,
             RoundedTimeUnit roundedTimeUnit
     );
 
-    PdlAssertion chooseInformation(PdlContext ctx, PdlReport report, List<Engagement> engagements);
+    PdlAssertion chooseInformation(PdlContext ctx, PdlReport report);
 }

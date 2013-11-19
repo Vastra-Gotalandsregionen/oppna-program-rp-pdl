@@ -1,135 +1,137 @@
 package se.vgregion.domain.pdl;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.TreeMap;
 
 public class CareSystemsReport implements Serializable {
     private static final long serialVersionUID = 734432845857726758L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CareSystemsReport.class.getName());
 
-    public final boolean hasSameUnit;
-    public final List<WithBlocks<CareSystem>> sameUnit;
-    public final boolean hasSameCareProvider;
-    public final List<WithBlocks<CareSystem>> sameCareProvider;
-    public final boolean hasOtherCareProviders;
-    public final List<WithBlocks<CareSystem>> otherCareProviders;
+    public final WithFallback<TreeMap<InformationType, WithVisibility<WithBlock<CareSystem>>>> systems;
+    public final EnumSet<InformationType> onlySameCareUnit;
+    public final EnumSet<InformationType> includeOtherCareUnit;
+    public final EnumSet<InformationType> includeOtherCareProvider;
 
-    public CareSystemsReport(PdlContext ctx, PdlReport pdlReport, List<CareSystem> careSystems) {
+    public CareSystemsReport(PdlContext ctx, PdlReport pdlReport) {
 
-        List<WithBlocks<CareSystem>> blockedSystems = decorateCareSystems(careSystems, pdlReport);
+        ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems =
+                categorizeSystems(ctx, pdlReport.systems.value);
 
-        sameUnit = filterSameUnit(ctx.careUnitHsaId, blockedSystems);
-        hasSameUnit = sameUnit.size() > 0;
-        sameCareProvider = filterSameCareProvider( ctx.careProviderHsaId, ctx.careUnitHsaId, blockedSystems);
-        hasSameCareProvider = sameCareProvider.size() > 0;
-        otherCareProviders = filterOtherCareProviders(ctx.careProviderHsaId, blockedSystems);
-        hasOtherCareProviders = otherCareProviders.size() > 0;
+        // Sets that increasingly contains information types for different categories
+        onlySameCareUnit = infoTypeByCategory(categorizedSystems, EnumSet.of(Visibility.SAME_CARE_UNIT));
+        includeOtherCareUnit = infoTypeByCategory(categorizedSystems, EnumSet.of(Visibility.SAME_CARE_UNIT, Visibility.OTHER_CARE_UNIT));
+        includeOtherCareProvider = infoTypeByCategory(categorizedSystems, EnumSet.allOf(Visibility.class));
+
+        // Aggregate into a map by information type.
+        TreeMap<InformationType, WithVisibility<WithBlock<CareSystem>>> aggregatedSystems =
+                aggregateByInfotype(categorizedSystems);
+
+        // Re-add fallback information.
+        systems = pdlReport.systems.mapValue(aggregatedSystems);
     }
 
-    private List<WithBlocks<CareSystem>> decorateCareSystems(
-            List<CareSystem> careSystems,
-            PdlReport pdlReport
+    private static TreeMap<InformationType, WithVisibility<WithBlock<CareSystem>>> aggregateByInfotype(
+            ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> systemsWithBlocks
     ) {
-        List<WithBlocks<CareSystem>> decorated = new ArrayList<WithBlocks<CareSystem>>();
-        for( CareSystem cs : careSystems ) {
-            boolean block = shouldBlock(cs, pdlReport);
 
-            decorated.add(new WithBlocks<CareSystem>(cs, block));
+        TreeMap<InformationType, WithVisibility<WithBlock<CareSystem>>> categorizedSystems =
+                new TreeMap<InformationType, WithVisibility<WithBlock<CareSystem>>>();
+
+        for (WithInfoType<WithVisibility<WithBlock<CareSystem>>> system : systemsWithBlocks) {
+            categorizedSystems.put(system.informationType, system.value);
         }
-        return decorated;
+
+        return categorizedSystems;
     }
 
-    private boolean shouldBlock(CareSystem cs, PdlReport pdlReport) {
-        for(CheckedBlock cb : pdlReport.blocks ) {
-            boolean systemHasInformation = cs.informationTypes.contains( cb.engagement.informationType );
-            boolean isBlocked = cb.blocked == CheckedBlock.BlockStatus.BLOCKED;
+    private EnumSet<InformationType> infoTypeByCategory(
+            ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems,
+            EnumSet<Visibility> categories
+    ) {
+        List<InformationType> infoTypes = new ArrayList<InformationType>();
 
-            if(systemHasInformation && isBlocked) {
-               return true;
+        for (WithInfoType<WithVisibility<WithBlock<CareSystem>>> sys : categorizedSystems) {
+            if (categories.contains(sys.value.visibility)) {
+                infoTypes.add(sys.informationType);
             }
         }
-        return false;
+
+        return EnumSet.copyOf(infoTypes);
     }
 
-    private List<WithBlocks<CareSystem>> filterOtherCareProviders(
-            String careProviderHsaId,
-            List<WithBlocks<CareSystem>> careSystems
+    private ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizeSystems(
+            PdlContext ctx,
+            ArrayList<WithInfoType<WithBlock<CareSystem>>> systems
     ) {
-        List<WithBlocks<CareSystem>> filtered = new ArrayList<WithBlocks<CareSystem>>();
-        for (WithBlocks<CareSystem> sys : careSystems) {
-            if(!sys.value.careProviderHsaId.equals(careProviderHsaId)){
-                filtered.add(sys);
+
+        ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems =
+                new ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>>();
+
+        for (WithInfoType<WithBlock<CareSystem>> sys : systems) {
+            boolean isSameCareProvider = ctx.careProviderHsaId.equals(sys.value.value.careProviderHsaId);
+            boolean isOtherCareUnit = !ctx.careUnitHsaId.equals(sys.value.value.careUnitHsaId);
+            boolean isSameCareUnit = ctx.careUnitHsaId.equals(sys.value.value.careUnitHsaId);
+            boolean isOtherCareProvider = !ctx.careProviderHsaId.equals(sys.value.value.careProviderHsaId);
+
+            if (isSameCareProvider && isSameCareUnit) {
+                withVisiblitiy(categorizedSystems, sys, Visibility.SAME_CARE_UNIT);
+            } else if (isSameCareProvider && isOtherCareUnit) {
+                withVisiblitiy(categorizedSystems, sys, Visibility.OTHER_CARE_UNIT);
+            } else if (isOtherCareProvider) {
+                withVisiblitiy(categorizedSystems, sys, Visibility.OTHER_CARE_PROVIDER);
+            } else {
+                LOGGER.error("Uncategorizable system. This is undefined behaviour. Skipping system: {}.", sys);
             }
         }
-        return Collections.unmodifiableList(filtered);
 
+        return categorizedSystems;
     }
 
-    private List<WithBlocks<CareSystem>> filterSameCareProvider(
-            String careProviderHsaId,
-            String careUnitHsaId,
-            List<WithBlocks<CareSystem>> careSystems
+    private void withVisiblitiy(
+            ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems,
+            WithInfoType<WithBlock<CareSystem>> sys,
+            Visibility visibility
     ) {
-        List<WithBlocks<CareSystem>> filtered = new ArrayList<WithBlocks<CareSystem>>();
-        for (WithBlocks<CareSystem> sys : careSystems) {
-            boolean sameCareProvider = sys.value.careProviderHsaId.equals(careProviderHsaId);
-            boolean otherCareUnit = !sys.value.careUnitHsaId.equals(careUnitHsaId);
-
-            if( sameCareProvider && otherCareUnit ) {
-                filtered.add(sys);
-            }
-        }
-        return Collections.unmodifiableList(filtered);
+        categorizedSystems.add(
+                sys.mapValue(
+                        new WithVisibility<WithBlock<CareSystem>>(
+                            visibility,
+                            sys.value
+                        )
+                )
+        );
     }
 
-    private List<WithBlocks<CareSystem>> filterSameUnit(
-            String careUnitHsaId,
-            List<WithBlocks<CareSystem>> careSystems
-    ) {
-        List<WithBlocks<CareSystem>> filtered = new ArrayList<WithBlocks<CareSystem>>();
-        for (WithBlocks<CareSystem> sys : careSystems) {
-            if(sys.value.careUnitHsaId.equals(careUnitHsaId)) {
-                filtered.add(sys);
-            }
-        }
-        return Collections.unmodifiableList(filtered);
+    public WithFallback<TreeMap<InformationType, WithVisibility<WithBlock<CareSystem>>>> getSystems() {
+        return systems;
     }
 
-    public boolean isHasSameUnit() {
-        return hasSameUnit;
+    public EnumSet<InformationType> getOnlySameCareUnit() {
+        return onlySameCareUnit;
     }
 
-    public List<WithBlocks<CareSystem>> getSameUnit() {
-        return sameUnit;
+    public EnumSet<InformationType> getIncludeOtherCareUnit() {
+        return includeOtherCareUnit;
     }
 
-    public boolean isHasSameCareProvider() {
-        return hasSameCareProvider;
-    }
-
-    public List<WithBlocks<CareSystem>> getSameCareProvider() {
-        return sameCareProvider;
-    }
-
-    public boolean isHasOtherCareProviders() {
-        return hasOtherCareProviders;
-    }
-
-    public List<WithBlocks<CareSystem>> getOtherCareProviders() {
-        return otherCareProviders;
+    public EnumSet<InformationType> getIncludeOtherCareProvider() {
+        return includeOtherCareProvider;
     }
 
     @Override
     public String toString() {
         return "CareSystemsReport{" +
-                "hasSameUnit=" + hasSameUnit +
-                ", sameUnit=" + sameUnit +
-                ", hasSameCareProvider=" + hasSameCareProvider +
-                ", sameCareProvider=" + sameCareProvider +
-                ", hasOtherCareProviders=" + hasOtherCareProviders +
-                ", otherCareProviders=" + otherCareProviders +
+                "systems=" + systems +
+                ", onlySameCareUnit=" + onlySameCareUnit +
+                ", includeOtherCareUnit=" + includeOtherCareUnit +
+                ", includeOtherCareProvider=" + includeOtherCareProvider +
                 '}';
     }
 }

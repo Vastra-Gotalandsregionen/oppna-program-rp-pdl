@@ -28,10 +28,10 @@
   <context:component-scan base-package="se.vgregion.portal.controller.pdl"/>
 
   <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-    <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
-    <property name="prefix" value="/WEB-INF/jsp/"/>
-    <property name="suffix" value=".jsp"/>
-    <property name="contentType" value="text/html;charset=UTF-8"/>
+    <property name="viewClass" system="org.springframework.web.servlet.view.JstlView"/>
+    <property name="prefix" system="/WEB-INF/jsp/"/>
+    <property name="suffix" system=".jsp"/>
+    <property name="contentType" system="text/html;charset=UTF-8"/>
   </bean>
 
 

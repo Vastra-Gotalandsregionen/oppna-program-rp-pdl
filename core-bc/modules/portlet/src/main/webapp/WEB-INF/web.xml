@@ -32,9 +32,9 @@
 
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>
+    <param-system>
       classpath*:/applicationContext.xml /*-portlet.xml
-    </param-value>
+    </param-system>
   </context-param>
 
   <servlet>

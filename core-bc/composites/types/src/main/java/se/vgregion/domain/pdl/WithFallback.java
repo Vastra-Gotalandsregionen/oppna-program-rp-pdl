@@ -12,7 +12,7 @@ public class WithFallback<T extends Serializable> implements Serializable {
     public final T value;
     public final boolean fallback;
 
-    public WithFallback(T value, boolean isFallback) {
+    private WithFallback(boolean isFallback, T value) {
         this.value = value;
         fallback = isFallback;
     }
@@ -25,12 +25,20 @@ public class WithFallback<T extends Serializable> implements Serializable {
         return fallback;
     }
 
+    public WithFallback<T> mapFallback(boolean newFallback) {
+        return new WithFallback<T>(newFallback, value);
+    }
+
+    public <N extends Serializable> WithFallback<N> mapValue(N newValue) {
+        return new WithFallback<N>(fallback, newValue);
+    }
+
     public static <F extends Serializable, F1 extends F> WithFallback<F> fallback(F1 value) {
-        return new WithFallback<F>(value, true);
+        return new WithFallback<F>(true, value);
     }
 
     public static <S extends Serializable, S1 extends S> WithFallback<S> success(S1 value) {
-        return new WithFallback<S>(value, false);
+        return new WithFallback<S>(false, value);
     }
 
     @Override

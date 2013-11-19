@@ -3,7 +3,6 @@ package se.vgregion.service.pdl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.riv.ehr.blocking.accesscontrol.checkblocks.v2.rivtabp21.CheckBlocksResponderInterface;
 import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v2.CheckBlocksRequestType;
 import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v2.CheckBlocksResponseType;
 import se.riv.ehr.blocking.administration.registertemporaryextendedrevoke.v2.rivtabp21.RegisterTemporaryExtendedRevokeResponderInterface;
@@ -15,20 +14,73 @@ import se.riv.ehr.blocking.querying.getblocksforpatientresponder.v2.GetBlocksFor
 import se.riv.ehr.blocking.v2.*;
 import se.vgregion.domain.pdl.*;
 
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
 
 class Blocking {
     private static final Logger LOGGER = LoggerFactory.getLogger(Blocking.class.getName());
+
+
+
+    private static class RequestEntity {
+        public final InformationType informationType;
+        public final String careProviderHsaId;
+        public final String careUnitHsaId;
+
+        private RequestEntity(
+                InformationType informationType,
+                String careProviderHsaId,
+                String careUnitHsaId
+        ) {
+            this.informationType = informationType;
+            this.careProviderHsaId = careProviderHsaId;
+            this.careUnitHsaId = careUnitHsaId;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof RequestEntity)) return false;
+
+            RequestEntity that = (RequestEntity) o;
+
+            if (careProviderHsaId != null ? !careProviderHsaId.equals(that.careProviderHsaId) : that.careProviderHsaId != null)
+                return false;
+            if (careUnitHsaId != null ? !careUnitHsaId.equals(that.careUnitHsaId) : that.careUnitHsaId != null)
+                return false;
+            if (informationType != that.informationType) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = informationType != null ? informationType.hashCode() : 0;
+            result = 31 * result + (careProviderHsaId != null ? careProviderHsaId.hashCode() : 0);
+            result = 31 * result + (careUnitHsaId != null ? careUnitHsaId.hashCode() : 0);
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "RequestEntity{" +
+                    "informationType=" + informationType +
+                    ", careProviderHsaId='" + careProviderHsaId + '\'' +
+                    ", careUnitHsaId='" + careUnitHsaId + '\'' +
+                    '}';
+        }
+    }
 
     private Blocking() {
         // Utility class, no constructor!
     }
 
-    static CheckBlocksRequestType checkBlocksRequest(PdlContext ctx, PatientWithEngagements pe) {
+    static CheckBlocksRequestType checkBlocksRequest(
+            PdlContext ctx,
+            Patient pe,
+            List<WithInfoType<CareSystem>> careSystems
+    ) {
         CheckBlocksRequestType req = new CheckBlocksRequestType();
         req.setPatientId(pe.patientId);
         AccessingActorType actor = new AccessingActorType();
@@ -38,20 +90,17 @@ class Blocking {
         req.setAccessingActor(actor);
 
         List<InformationEntityType> entities = req.getInformationEntities();
+        XMLDuration duration = new XMLDuration(1, RoundedTimeUnit.NEAREST_HALF_HOUR); // FIXME 2013-11-18 : Magnus Andersson > Should this be a config value?
 
-        for (int i = 0; i < pe.engagements.size(); i++) {
+        for (int i = 0; i < careSystems.size(); i++) {
+            WithInfoType<CareSystem> cs = careSystems.get(i);
             InformationEntityType en = new InformationEntityType();
-            Engagement eg = pe.engagements.get(i);
 
-            XMLDuration duration = new XMLDuration(1, RoundedTimeUnit.NEAREST_HALF_HOUR);
-
-            en.setInformationCareProviderId(eg.careProviderHsaId);
-            en.setInformationCareUnitId(eg.careUnitHsaId);
+            en.setInformationCareProviderId(cs.value.careProviderHsaId);
+            en.setInformationCareUnitId(cs.value.careUnitHsaId);
             en.setInformationStartDate(duration.startDate);
             en.setInformationEndDate(duration.endDate);
-            if (eg.informationType != Engagement.InformationType.ALT) {
-                en.setInformationType(eg.informationType.toString());
-            }
+            en.setInformationType(cs.informationType.name().toLowerCase());
             en.setRowNumber(i);
 
             entities.add(en);
@@ -60,30 +109,46 @@ class Blocking {
         return req;
     }
 
+
     /**
      * The WSDL-contract for some unfathomable reason requires the client to remember what row numbers were used when
      * sending the request. Therefore it is necessary to keep track of the request state and later enrich the answer.
      *
-     * @param ctx
-     * @param pe
+     * @param careSystems
      * @param blockResponse @return
      */
-    static ArrayList<CheckedBlock> asCheckedBlocks(
-            PdlContext ctx,
-            PatientWithEngagements pe,
+    static ArrayList<WithInfoType<WithBlock<CareSystem>>> decorateCareSystems(
+            List<WithInfoType<CareSystem>> careSystems,
             CheckBlocksResponseType blockResponse
     ) {
-        ArrayList<CheckedBlock> checkedBlocks = new ArrayList<CheckedBlock>();
+        ArrayList<WithInfoType<WithBlock<CareSystem>>> careSystemsWithBlocks = new ArrayList<WithInfoType<WithBlock<CareSystem>>>();
         for (CheckResultType crt : blockResponse.getCheckBlocksResultType().getCheckResults()) {
-            int i = crt.getRowNumber();
-            Engagement elem = pe.engagements.get(i);
-            if (crt.isBlocked()) {
-                checkedBlocks.add(new CheckedBlock(elem, CheckedBlock.BlockStatus.BLOCKED));
+
+            int row = crt.getRowNumber();
+
+            if(-1 < row && row < careSystems.size()) { // Bounds check because we don't trust the EHR service. :)
+
+                // Get the care system that the response corresponds to
+                WithInfoType<CareSystem> careSystem = careSystems.get(row);
+
+                // Encapsulate care system with block
+                WithBlock<CareSystem> withBlock = null;
+                if(crt.isBlocked()) {
+                    withBlock = WithBlock.blocked(careSystem.value);
+                } else {
+                    withBlock = WithBlock.unblocked(careSystem.value);
+                }
+
+                // Map current info type container, keeping the info type but changing the value to a care system with block.
+                WithInfoType<WithBlock<CareSystem>> careSystemBlock = careSystem.mapValue(withBlock);
+
+                careSystemsWithBlocks.add(careSystemBlock);
             } else {
-                checkedBlocks.add(new CheckedBlock(elem, CheckedBlock.BlockStatus.OK));
+                LOGGER.error("Block service returned a row index {} that is out of bounds in the care systems list ({}). Skipping block information for this index. The user may not see all available information.", row, careSystemsWithBlocks.size());
             }
+
         }
-        return checkedBlocks;
+        return careSystemsWithBlocks;
     }
 
     private static GetBlocksForPatientRequestType patientBlocksRequest(String servicesHsaId, String patientId) {
@@ -93,21 +158,20 @@ class Blocking {
         return request;
     }
 
-    public static WithFallback<Boolean> unblockInformation(
+    /*public static WithFallback<Boolean> unblockInformation(
             String servicesHsaId,
             GetBlocksForPatientResponderInterface patientBlocks,
             RegisterTemporaryExtendedRevokeResponderInterface temporaryRevoke,
             CheckBlocksResponderInterface checkBlocks,
             PdlContext ctx,
             String patientId,
-            Engagement engagement,
             String reason,
             int duration,
             RoundedTimeUnit roundedTimeUnit,
             ExecutorService executorService
     ) {
         GetBlocksForPatientResponseType blocks = patientBlocks(servicesHsaId, patientBlocks, patientId);
-        List<BlockType> activeBlocks = filterActiveBlocks(ctx, engagement, blocks);
+        List<BlockType> activeBlocks = filterActiveBlocks(ctx, blocks);
 
         if (activeBlocks.size() > 0) {
             List<Callable<Boolean>> revokationList = new ArrayList<Callable<Boolean>>();
@@ -147,15 +211,15 @@ class Blocking {
             }
 
             if( !revokeResult.isFallback() ) {
-                // Finally check that we no longer have blocks for this information.
+                // Finally check that we no longer have systmes for this information.
                 CheckBlocksRequestType checkedRequest = checkBlocksRequest(
                         ctx,
-                        new PatientWithEngagements(
+                        new Patient(
                                 patientId,
                                 "PATIENT NAME PLACEHOLDER", // Patient name not needed for request.
                                 Arrays.asList(engagement)
-                        )
-                );
+                        ),
+                        informationTypes);
 
                 boolean containBlocks = checkBlocks
                         .checkBlocks(servicesHsaId, checkedRequest)
@@ -167,7 +231,7 @@ class Blocking {
         }
 
         return null;  //To change body of created methods use File | Settings | File Templates.
-    }
+    }*/
 
     private static GetBlocksForPatientResponseType patientBlocks(String servicesHsaId, GetBlocksForPatientResponderInterface patientBlocks, String patientId) {
         GetBlocksForPatientRequestType request = patientBlocksRequest(servicesHsaId, patientId);
@@ -214,9 +278,8 @@ class Blocking {
         return request;
     }
 
-    private static List<BlockType> filterActiveBlocks(
+   /* private static List<BlockType> filterActiveBlocks(
             PdlContext ctx,
-                Engagement engagement,
             GetBlocksForPatientResponseType blocks
     ) {
 
@@ -263,7 +326,7 @@ class Blocking {
             }
         }
         return activeBlocks;
-    }
+    }*/
 }
 
 

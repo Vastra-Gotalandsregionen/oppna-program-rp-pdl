@@ -14,7 +14,11 @@ import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponde
 import se.vgregion.domain.pdl.*;
 
 import java.util.ArrayList;
-import java.util.concurrent.*;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 public class Report {
 
@@ -28,7 +32,8 @@ public class Report {
     static PdlReport generateReport(
             String servicesHsaId,
             final PdlContext ctx,
-            final PatientWithEngagements patientEngagements,
+            final Patient patient,
+            List<WithInfoType<CareSystem>> careSystems,
             final CheckBlocksResponderInterface checkBlocks,
             final CheckConsentResponderInterface checkConsent,
             final CheckPatientRelationResponderInterface checkRelationship,
@@ -36,21 +41,21 @@ public class Report {
     ) {
 
         // Start multiple requests
-        Future<ArrayList<CheckedBlock>> blocksFuture =
-                blocks(servicesHsaId, ctx, patientEngagements, checkBlocks, executorService);
+        Future<ArrayList<WithInfoType<WithBlock<CareSystem>>>> blocksFuture =
+                blocks(servicesHsaId, ctx, patient, careSystems, checkBlocks, executorService);
 
         Future<CheckedConsent> consentFuture =
-                consent(servicesHsaId, ctx, patientEngagements.patientId, checkConsent, executorService);
+                consent(servicesHsaId, ctx, patient.patientId, checkConsent, executorService);
 
         Future<Boolean> relationshipFuture =
-                relationship(servicesHsaId, ctx, patientEngagements.patientId, checkRelationship, executorService);
+                relationship(servicesHsaId, ctx, patient.patientId, checkRelationship, executorService);
 
         // Aggreagate results
-        WithFallback<ArrayList<CheckedBlock>> checkedBlocks = blocksWithFallback(blocksFuture, patientEngagements.patientId);
-        WithFallback<CheckedConsent> checkedConsent = consentWithFallback(consentFuture, patientEngagements.patientId);
-        WithFallback<Boolean> hasRelationship = relationshipWithFallback(relationshipFuture, patientEngagements.patientId);
+        WithFallback<ArrayList<WithInfoType<WithBlock<CareSystem>>>> checkedSystems = blocksWithFallback(blocksFuture, careSystems, patient.patientId);
+        WithFallback<CheckedConsent> checkedConsent = consentWithFallback(consentFuture, patient.patientId);
+        WithFallback<Boolean> hasRelationship = relationshipWithFallback(relationshipFuture, patient.patientId);
 
-        return new PdlReport(checkedBlocks, checkedConsent, hasRelationship);
+        return new PdlReport(checkedSystems, checkedConsent, hasRelationship);
     }
 
     private static WithFallback<Boolean> relationshipWithFallback(Future<Boolean> relationshipFuture, String patientId) {
@@ -83,21 +88,41 @@ public class Report {
         return checkedConsent;
     }
 
-    private static WithFallback<ArrayList<CheckedBlock>> blocksWithFallback(
-            Future<ArrayList<CheckedBlock>> blocksFuture,
-            String patientId
+    private static WithFallback<ArrayList<WithInfoType<WithBlock<CareSystem>>>> blocksWithFallback(
+            Future<ArrayList<WithInfoType<WithBlock<CareSystem>>>> blocksFuture,
+            List<WithInfoType<CareSystem>> careSystems, String patientId
     ) {
-        WithFallback<ArrayList<CheckedBlock>> checkedBlocks = null;
+        WithFallback<ArrayList<WithInfoType<WithBlock<CareSystem>>>> checkedBlocks = null;
         try {
             checkedBlocks = WithFallback.success(blocksFuture.get());
         } catch (InterruptedException e) {
-            LOGGER.warn("Failed to fetch blocks for patientId {} during report generation. Using fallback response.", patientId, e);
-            checkedBlocks = WithFallback.fallback(new ArrayList<CheckedBlock>());
+            LOGGER.warn("Failed to fetch systmes for patientId {} during report generation. Using fallback response.", patientId, e);
+            checkedBlocks = WithFallback.fallback(mapCareSystemsFallback(careSystems));
         } catch (ExecutionException e) {
-            LOGGER.warn("Failed to fetch blocks for patientId {} during report generation. Using fallback response.", patientId, e);
-            checkedBlocks = WithFallback.fallback(new ArrayList<CheckedBlock>());
+            LOGGER.warn("Failed to fetch systmes for patientId {} during report generation. Using fallback response.", patientId, e);
+            checkedBlocks = WithFallback.fallback(mapCareSystemsFallback(careSystems));
         }
         return checkedBlocks;
+    }
+
+    /**
+     * <p>Maps List&lt;WithInfoType&lt;CareSystem&gt;&gt; to List&lt;WithInfoType&lt;WithBlock&lt;CareSystem&gt;&gt;&gt;.</p>
+     * <p>None of the mapped care systems will have a block.</p>
+     * @param careSystems Care systems to map
+     * @return
+     */
+    private static ArrayList<WithInfoType<WithBlock<CareSystem>>> mapCareSystemsFallback(
+            List<WithInfoType<CareSystem>> careSystems
+    ) {
+        ArrayList<WithInfoType<WithBlock<CareSystem>>> fallbackSystems = new ArrayList<WithInfoType<WithBlock<CareSystem>>>();
+
+        for(WithInfoType<CareSystem> cs : careSystems) {
+            WithBlock<CareSystem> unblockedSystem = WithBlock.unblocked(cs.value);
+            WithInfoType<WithBlock<CareSystem>> infotypeWithFallbackBlock = cs.mapValue(unblockedSystem);
+            fallbackSystems.add(infotypeWithFallbackBlock);
+        }
+
+        return fallbackSystems;
     }
 
     static Future<Boolean> relationship(
@@ -132,15 +157,16 @@ public class Report {
         return executorService.submit(consentAsync);
     }
 
-    static Future<ArrayList<CheckedBlock>> blocks(
+    static Future<ArrayList<WithInfoType<WithBlock<CareSystem>>>> blocks(
             final String servicesHsaId, final PdlContext ctx,
-            final PatientWithEngagements patientEngagements,
+            final Patient patient,
+            final List<WithInfoType<CareSystem>> careSystems,
             final CheckBlocksResponderInterface checkBlocks,
-            ExecutorService executorService
+            final ExecutorService executorService
     ) {
-        Callable<ArrayList<CheckedBlock>> blocksAsync = new Callable<ArrayList<CheckedBlock>>() {
-            public ArrayList<CheckedBlock> call() throws Exception {
-                return checkBlocks(servicesHsaId, ctx, patientEngagements, checkBlocks);
+        Callable<ArrayList<WithInfoType<WithBlock<CareSystem>>>> blocksAsync = new Callable<ArrayList<WithInfoType<WithBlock<CareSystem>>>>() {
+            public ArrayList<WithInfoType<WithBlock<CareSystem>>> call() throws Exception {
+                return checkBlocks(servicesHsaId, ctx, patient, careSystems, checkBlocks);
             }
         };
 
@@ -160,18 +186,20 @@ public class Report {
         return relationshipResponse.getCheckResultType().isHasPatientrelation();
     }
 
-    static ArrayList<CheckedBlock> checkBlocks(
+    static ArrayList<WithInfoType<WithBlock<CareSystem>>> checkBlocks(
             String regionalSecurityServicesHsaId,
             PdlContext ctx,
-            PatientWithEngagements patientEngagements,
+            Patient patient,
+            List<WithInfoType<CareSystem>> careSystems,
             CheckBlocksResponderInterface checkBlocks
     ) {
-        CheckBlocksRequestType request = Blocking.checkBlocksRequest(ctx, patientEngagements);
+        CheckBlocksRequestType request = Blocking.checkBlocksRequest(ctx, patient, careSystems);
         CheckBlocksResponseType blockResponse =
                 checkBlocks.checkBlocks(regionalSecurityServicesHsaId, request);
 
-        return Blocking.asCheckedBlocks(ctx, patientEngagements, blockResponse);
+        return Blocking.decorateCareSystems(careSystems, blockResponse);
     }
+
 
     static CheckedConsent checkConsent(
             String regionalSecurityServicesHsaId,

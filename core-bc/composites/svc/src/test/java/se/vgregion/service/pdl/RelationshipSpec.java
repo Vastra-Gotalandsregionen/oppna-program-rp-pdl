@@ -11,7 +11,7 @@ import se.riv.ehr.patientrelationship.v1.AccessingActorType;
 import se.riv.ehr.patientrelationship.v1.CheckResultType;
 import se.riv.ehr.patientrelationship.v1.ResultCodeType;
 import se.riv.ehr.patientrelationship.v1.ResultType;
-import se.vgregion.domain.pdl.PatientWithEngagements;
+import se.vgregion.domain.pdl.Patient;
 import se.vgregion.domain.pdl.PdlContext;
 
 import static org.junit.Assert.assertEquals;
@@ -33,7 +33,7 @@ public class RelationshipSpec {
 
     public static Answer<CheckPatientRelationResponseType> queryRequestAndResponse(
             final PdlContext ctx,
-            final PatientWithEngagements pe,
+            final Patient pe,
             final boolean hasRelationship
     ) {
         return new Answer<CheckPatientRelationResponseType>() {
@@ -65,7 +65,7 @@ public class RelationshipSpec {
         return resp;
     }
 
-    public static Answer<RegisterExtendedPatientRelationResponseType> establishRequestAndResponse(final PdlContext ctx, final PatientWithEngagements pe, final boolean success) {
+    public static Answer<RegisterExtendedPatientRelationResponseType> establishRequestAndResponse(final PdlContext ctx, final Patient pe, final boolean success) {
 
         return new Answer<RegisterExtendedPatientRelationResponseType>() {
             @Override

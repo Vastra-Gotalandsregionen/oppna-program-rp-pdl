@@ -11,7 +11,7 @@ import se.riv.ehr.patientconsent.v1.AccessingActorType;
 import se.riv.ehr.patientconsent.v1.AssertionTypeType;
 import se.riv.ehr.patientconsent.v1.ResultCodeType;
 import se.riv.ehr.patientconsent.v1.ResultType;
-import se.vgregion.domain.pdl.PatientWithEngagements;
+import se.vgregion.domain.pdl.Patient;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.pdl.PdlReport;
 
@@ -45,7 +45,7 @@ public class ConsentSpec {
 
     static Answer<CheckConsentResponseType> queryRequestAndRespond(
             final PdlContext ctx,
-            final PatientWithEngagements pe,
+            final Patient pe,
             final boolean hasConsent,
             final boolean emergency
     ) {
@@ -80,7 +80,7 @@ public class ConsentSpec {
 
     public static Answer<RegisterExtendedConsentResponseType> establishRequestAndResponse(
             final PdlContext ctx,
-            final PatientWithEngagements pe,
+            final Patient pe,
             final PdlReport.ConsentType consentType,
             final boolean success
     ) {
