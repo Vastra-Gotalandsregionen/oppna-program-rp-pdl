@@ -129,7 +129,7 @@ public class PdlController {
 
 
 
-    @ActionMapping("sameCareProvider")
+    @ActionMapping("otherCareUnits")
     public void sameCareProvider(ActionResponse response) {
         LOGGER.trace(
                 "Request to show more information within same care giver for employee {} and patient {}.",
@@ -139,7 +139,7 @@ public class PdlController {
 
         // LOG SERVICE CALL
 
-        state.setShowSameCareProvider(true);
+        state.setShowOtherCareUnits(true);
 
         response.setRenderParameter("view", "searchResult");
     }

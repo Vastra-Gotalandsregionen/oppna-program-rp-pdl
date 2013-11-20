@@ -24,7 +24,7 @@ public class PdlUserState implements Serializable {
     private CareSystemsReport csReport;
     private Patient patient;
     private PdlContext ctx;
-    private boolean showSameCareProvider = false;
+    private boolean showOtherCareUnits = false;
     private boolean showOtherCareProvider = false;
 
     public PdlReport getPdlReport() {
@@ -32,7 +32,7 @@ public class PdlUserState implements Serializable {
     }
 
     public void reset() {
-        showSameCareProvider = false;
+        showOtherCareUnits = false;
         showOtherCareProvider = false;
     }
 
@@ -64,12 +64,12 @@ public class PdlUserState implements Serializable {
         this.ctx = ctx;
     }
 
-    public boolean isShowSameCareProvider() {
-        return showSameCareProvider;
+    public boolean isShowOtherCareUnits() {
+        return showOtherCareUnits;
     }
 
-    public void setShowSameCareProvider(boolean showSameCareProvider) {
-        this.showSameCareProvider = showSameCareProvider;
+    public void setShowOtherCareUnits(boolean showOtherCareUnits) {
+        this.showOtherCareUnits = showOtherCareUnits;
     }
 
     public boolean isShowOtherCareProvider() {
@@ -87,7 +87,7 @@ public class PdlUserState implements Serializable {
                 ", csReport=" + csReport +
                 ", patient=" + patient +
                 ", ctx=" + ctx +
-                ", showSameCareProvider=" + showSameCareProvider +
+                ", showOtherCareUnits=" + showOtherCareUnits +
                 ", showOtherCareProvider=" + showOtherCareProvider +
                 '}';
     }
