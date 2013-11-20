@@ -10,6 +10,8 @@ import se.riv.ehr.patientconsent.administration.registerextendedconsent.v1.rivta
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelation.v1.rivtabp21.RegisterExtendedPatientRelationResponderInterface;
 import se.vgregion.domain.pdl.*;
+import se.vgregion.domain.pdl.decorators.WithFallback;
+import se.vgregion.domain.pdl.decorators.WithInfoType;
 
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;

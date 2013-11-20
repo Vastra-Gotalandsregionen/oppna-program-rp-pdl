@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import se.vgregion.domain.pdl.CareSystem;
 import se.vgregion.domain.pdl.InformationType;
 import se.vgregion.domain.pdl.PdlContext;
-import se.vgregion.domain.pdl.WithInfoType;
+import se.vgregion.domain.pdl.decorators.WithInfoType;
 
 import java.util.Arrays;
 import java.util.Collections;

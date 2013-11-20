@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import se.vgregion.domain.pdl.*;
+import se.vgregion.domain.pdl.decorators.WithInfoType;
 import se.vgregion.service.pdl.CareSystems;
 import se.vgregion.service.pdl.PatientRepository;
 import se.vgregion.service.pdl.PdlService;
@@ -73,6 +74,7 @@ public class PdlController {
         //TODO 2013-11-18 : Magnus Andersson > Only do this if there are care systems!
         PdlReport pdlReport = pdl.pdlReport(state.getCtx(), patient, careSystems);
 
+        // Reformat systems list into a format that we can display
         CareSystemsReport csReport = new CareSystemsReport(state.getCtx(), pdlReport);
 
         state.setPdlReport(pdlReport);

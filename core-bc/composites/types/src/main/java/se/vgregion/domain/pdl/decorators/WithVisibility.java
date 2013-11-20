@@ -1,4 +1,6 @@
-package se.vgregion.domain.pdl;
+package se.vgregion.domain.pdl.decorators;
+
+import se.vgregion.domain.pdl.Visibility;
 
 import java.io.Serializable;
 

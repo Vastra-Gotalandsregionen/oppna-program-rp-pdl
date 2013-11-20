@@ -13,7 +13,7 @@ import se.riv.ehr.patientrelationship.v1.ActorType;
 import se.riv.ehr.patientrelationship.v1.ResultCodeType;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.pdl.RoundedTimeUnit;
-import se.vgregion.domain.pdl.WithFallback;
+import se.vgregion.domain.pdl.decorators.WithFallback;
 
 public class Relationship {
     private static final Logger LOGGER = LoggerFactory.getLogger(Relationship.class.getName());

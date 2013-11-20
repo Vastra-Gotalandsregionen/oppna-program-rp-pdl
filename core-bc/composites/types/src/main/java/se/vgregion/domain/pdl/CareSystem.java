@@ -8,6 +8,7 @@ public class CareSystem implements Serializable {
     public final String displayName;
     public final String careProviderHsaId;
     public final String careUnitHsaId;
+    public final String displayId = java.util.UUID.randomUUID().toString(); // Used to keep track of Care System between requests.
 
     public CareSystem(
             String displayName,
@@ -31,12 +32,17 @@ public class CareSystem implements Serializable {
         return careProviderHsaId;
     }
 
+    public String getDisplayId() {
+        return displayId;
+    }
+
     @Override
     public String toString() {
         return "CareSystem{" +
                 "displayName='" + displayName + '\'' +
                 ", careProviderHsaId='" + careProviderHsaId + '\'' +
                 ", careUnitHsaId='" + careUnitHsaId + '\'' +
+                ", displayId='" + displayId + '\'' +
                 '}';
     }
 }

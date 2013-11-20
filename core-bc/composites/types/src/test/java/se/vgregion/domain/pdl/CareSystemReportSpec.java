@@ -1,6 +1,9 @@
 package se.vgregion.domain.pdl;
 
 import org.junit.Test;
+import se.vgregion.domain.pdl.decorators.WithBlock;
+import se.vgregion.domain.pdl.decorators.WithFallback;
+import se.vgregion.domain.pdl.decorators.WithInfoType;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -39,7 +42,7 @@ public class CareSystemReportSpec {
         sourceSystems.add(wrapSystem(InformationType.LAK, false, otherProvider1));
         sourceSystems.add(wrapSystem(InformationType.FUN, true, otherProvider2));
 
-        WithFallback <ArrayList<WithInfoType<WithBlock<CareSystem>>>> systems =
+        WithFallback<ArrayList<WithInfoType<WithBlock<CareSystem>>>> systems =
                 WithFallback.success(sourceSystems);
 
         WithFallback<CheckedConsent> consent =

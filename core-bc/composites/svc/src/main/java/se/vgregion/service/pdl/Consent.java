@@ -10,6 +10,7 @@ import se.riv.ehr.patientconsent.administration.registerextendedconsentresponder
 import se.riv.ehr.patientconsent.v1.*;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationRequestType;
 import se.vgregion.domain.pdl.*;
+import se.vgregion.domain.pdl.decorators.WithFallback;
 
 import javax.xml.ws.soap.SOAPFaultException;
 

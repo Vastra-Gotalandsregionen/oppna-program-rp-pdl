@@ -3,6 +3,10 @@ package se.vgregion.domain.pdl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.vgregion.domain.pdl.decorators.WithBlock;
+import se.vgregion.domain.pdl.decorators.WithFallback;
+import se.vgregion.domain.pdl.decorators.WithInfoType;
+import se.vgregion.domain.pdl.decorators.WithVisibility;
 
 import java.io.Serializable;
 import java.util.ArrayList;

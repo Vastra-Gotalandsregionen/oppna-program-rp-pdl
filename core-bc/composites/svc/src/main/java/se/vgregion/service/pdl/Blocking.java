@@ -13,6 +13,8 @@ import se.riv.ehr.blocking.querying.getblocksforpatientresponder.v2.GetBlocksFor
 import se.riv.ehr.blocking.querying.getblocksforpatientresponder.v2.GetBlocksForPatientResponseType;
 import se.riv.ehr.blocking.v2.*;
 import se.vgregion.domain.pdl.*;
+import se.vgregion.domain.pdl.decorators.WithBlock;
+import se.vgregion.domain.pdl.decorators.WithInfoType;
 
 import java.util.ArrayList;
 import java.util.List;

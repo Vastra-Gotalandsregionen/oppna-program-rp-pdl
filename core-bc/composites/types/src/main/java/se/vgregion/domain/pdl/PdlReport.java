@@ -1,5 +1,9 @@
 package se.vgregion.domain.pdl;
 
+import se.vgregion.domain.pdl.decorators.WithBlock;
+import se.vgregion.domain.pdl.decorators.WithFallback;
+import se.vgregion.domain.pdl.decorators.WithInfoType;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 

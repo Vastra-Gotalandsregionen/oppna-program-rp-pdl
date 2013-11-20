@@ -12,6 +12,9 @@ import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivt
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationRequestType;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationResponseType;
 import se.vgregion.domain.pdl.*;
+import se.vgregion.domain.pdl.decorators.WithBlock;
+import se.vgregion.domain.pdl.decorators.WithFallback;
+import se.vgregion.domain.pdl.decorators.WithInfoType;
 
 import java.util.ArrayList;
 import java.util.List;
