@@ -18,10 +18,10 @@
       Boston, MA 02111-1307  USA
 
 -->
-<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
-  version="2.4">
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+  version="3.0">
 
   <display-name>Patient information PDL</display-name>
   <description>Search for patient information with PDL</description>
@@ -30,11 +30,15 @@
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
 
+
+  <context-param>
+    <param-name>test</param-name>
+    <param-value>testar</param-value>
+  </context-param>
+
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-system>
-      classpath*:/applicationContext.xml /*-portlet.xml
-    </param-system>
+    <param-value>classpath*:/applicationContext.xml /*-portlet.xml</param-value>
   </context-param>
 
   <servlet>

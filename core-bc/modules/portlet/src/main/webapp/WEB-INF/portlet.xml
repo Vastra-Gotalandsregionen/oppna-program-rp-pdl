@@ -19,7 +19,7 @@
     <portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
     <init-param>
       <name>check-auth-token</name>
-      <system>false</system>
+      <value>false</value>
     </init-param>
     <expiration-cache>0</expiration-cache>
     <supports>
@@ -36,7 +36,7 @@
     <portlet-preferences>
       <preference>
         <name>portlet-setup-show-borders</name>
-        <system>false</system>
+        <value>false</value>
       </preference>
     </portlet-preferences>
     <security-role-ref>

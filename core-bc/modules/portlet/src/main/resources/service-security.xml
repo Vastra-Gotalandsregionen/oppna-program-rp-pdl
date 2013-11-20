@@ -42,10 +42,10 @@
   </cxf:bus>
 
   <bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor">
-    <property name="prettyLogging" system="true"/>
+    <property name="prettyLogging" value="true"/>
   </bean>
   <bean id="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor">
-    <property name="prettyLogging" system="true"/>
+    <property name="prettyLogging" value="true"/>
   </bean>
 
 </beans>

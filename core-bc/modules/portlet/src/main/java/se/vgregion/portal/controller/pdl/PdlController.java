@@ -26,8 +26,7 @@ import java.util.*;
 @SessionAttributes("state")
 public class PdlController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PdlController.class.getName());
-    @Autowired
-    private Patient patient;
+
     @Autowired
     private PdlService pdl;
     @Autowired
@@ -72,7 +71,7 @@ public class PdlController {
 
         List<WithInfoType<CareSystem>> careSystems = systems.byPatientId(state.getCtx(), patientId);
         //TODO 2013-11-18 : Magnus Andersson > Only do this if there are care systems!
-        PdlReport pdlReport = pdl.pdlReport(state.getCtx(), patient, careSystems);
+        PdlReport pdlReport = pdl.pdlReport(state.getCtx(), state.getPatient(), careSystems);
 
         // Reformat systems list into a format that we can display
         CareSystemsReport csReport = new CareSystemsReport(state.getCtx(), pdlReport);
@@ -80,7 +79,7 @@ public class PdlController {
         state.setPdlReport(pdlReport);
         state.setCsReport(csReport);
 
-        response.setRenderParameter("view", "searchResult");
+        response.setRenderParameter("view", "pickInfoResource");
     }
 
     @ActionMapping("establishRelationship")
@@ -102,7 +101,7 @@ public class PdlController {
 
         state.setPdlReport(newReport);
 
-        response.setRenderParameter("view", "searchResult");
+        response.setRenderParameter("view", "pickInfoResource");
     }
 
     @ActionMapping("establishConsent")
@@ -126,7 +125,7 @@ public class PdlController {
                 )
         );
 
-        response.setRenderParameter("view", "searchResult");
+        response.setRenderParameter("view", "pickInfoResource");
     }
 
 
@@ -143,7 +142,7 @@ public class PdlController {
 
         state.setShowOtherCareUnits(true);
 
-        response.setRenderParameter("view", "searchResult");
+        response.setRenderParameter("view", "pickInfoResource");
     }
 
     @ActionMapping("includeOtherCareProvider")
@@ -158,14 +157,14 @@ public class PdlController {
 
         state.setShowOtherCareProvider(true);
 
-        response.setRenderParameter("view", "searchResult");
+        response.setRenderParameter("view", "pickInfoResource");
     }
 
 
 
-    @RenderMapping(params = "view=searchResult")
+    @RenderMapping(params = "view=pickInfoResource")
     public String searchResult(final ModelMap model) {
-        return "searchResult";
+        return "pickInfoResource";
     }
 
     private PdlContext currentContext() {

@@ -18,17 +18,17 @@
 <div>
     <aui:form action="${searchPatientURL}" name="searchPatientForm" cssClass="pdl-patient-form" method="post">
         <aui:fieldset label="Sök patientinformation">
-            <spring:bind path="ssn">
+            <spring:bind path="patientId">
               <c:set var="elementWrapCssClass" scope="page" value="element-wrap" />
               <c:if test="${status.error}">
                   <c:set var="elementWrapCssClass" scope="page" value="element-wrap element-has-errors" />
               </c:if>
               <div class="${elementWrapCssClass}">
                   <aui:field-wrapper cssClass="element-field-wrap">
-                      <label for="<portlet:namespace />ssn">
-                          <span>Person-/samordningsnummer</span>
+                      <label for="<portlet:namespace />patientId">
+                          <span>Patient-ID</span>
                       </label>
-                      <aui:input name="ssn" cssClass="element-field" type="text" label="" />
+                      <aui:input name="patientId" cssClass="element-field" type="text" />
                   </aui:field-wrapper>
               </div>
             </spring:bind>
