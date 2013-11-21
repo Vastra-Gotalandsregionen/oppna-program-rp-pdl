@@ -14,7 +14,9 @@ import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import se.vgregion.domain.pdl.*;
 import se.vgregion.domain.pdl.decorators.WithInfoType;
+import se.vgregion.domain.pdl.logging.Log;
 import se.vgregion.service.pdl.CareSystems;
+import se.vgregion.service.pdl.ObjectRepo;
 import se.vgregion.service.pdl.PatientRepository;
 import se.vgregion.service.pdl.PdlService;
 
@@ -35,6 +37,8 @@ public class PdlController {
     private CareSystems systems;
     @Autowired
     PatientRepository patients;
+    @Autowired
+    private ObjectRepo objectRepo;
 
     @ModelAttribute("state")
     public PdlUserState initState() {
@@ -56,6 +60,7 @@ public class PdlController {
     @RenderMapping
     public String enterSearchPatient() {
         state.reset(); // Make sure state is reset when user navigates to the start page.
+        objectRepo.persist(new Log());
         return "view";
     }
 
