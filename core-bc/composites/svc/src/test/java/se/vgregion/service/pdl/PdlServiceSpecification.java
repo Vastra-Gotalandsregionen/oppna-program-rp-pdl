@@ -17,8 +17,8 @@ import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponde
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelation.v1.rivtabp21.RegisterExtendedPatientRelationResponderInterface;
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelationresponder.v1.RegisterExtendedPatientRelationRequestType;
 import se.vgregion.domain.pdl.*;
+import se.vgregion.domain.pdl.decorators.WithOutcome;
 import se.vgregion.domain.pdl.decorators.WithBlock;
-import se.vgregion.domain.pdl.decorators.WithFallback;
 import se.vgregion.domain.pdl.decorators.WithInfoType;
 
 import java.util.ArrayList;
@@ -91,7 +91,7 @@ public class PdlServiceSpecification {
         PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
 
         // Should not be a fallback result
-        assertFalse(pdlReport.systems.fallback);
+        assertEquals(Outcome.SUCCESS, pdlReport.systems.outcome);
 
         // Should at least contain more than one system
         assertTrue(pdlReport.systems.value.size() > 0);
@@ -142,7 +142,7 @@ public class PdlServiceSpecification {
 
         PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
 
-        assertFalse(pdlReport.consent.fallback);
+        assertEquals(Outcome.SUCCESS, pdlReport.consent.outcome);
         assertTrue(pdlReport.consent.value.hasConsent);
         assertEquals(PdlReport.ConsentType.Consent, pdlReport.consent.value.consentType);
     }
@@ -160,7 +160,7 @@ public class PdlServiceSpecification {
 
         PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
 
-        assertFalse(pdlReport.consent.fallback);
+        assertEquals(Outcome.SUCCESS, pdlReport.consent.outcome);
         assertTrue(pdlReport.consent.value.hasConsent);
         assertEquals(PdlReport.ConsentType.Emergency, pdlReport.consent.value.consentType);
     }
@@ -178,7 +178,7 @@ public class PdlServiceSpecification {
 
         PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
 
-        assertFalse(pdlReport.consent.fallback);
+        assertEquals(Outcome.SUCCESS, pdlReport.consent.outcome);
         assertFalse(pdlReport.consent.value.hasConsent);
     }
 
@@ -195,7 +195,7 @@ public class PdlServiceSpecification {
 
         PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
 
-        assertFalse(pdlReport.hasRelationship.fallback);
+        assertEquals(Outcome.SUCCESS, pdlReport.hasRelationship.outcome);
         assertTrue(pdlReport.hasRelationship.value);
     }
 
@@ -213,7 +213,7 @@ public class PdlServiceSpecification {
 
         PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
 
-        assertFalse(pdlReport.hasRelationship.fallback);
+        assertEquals(Outcome.SUCCESS, pdlReport.hasRelationship.outcome);
         assertFalse(pdlReport.hasRelationship.value);
     }
 
@@ -223,14 +223,14 @@ public class PdlServiceSpecification {
         when(establishRelationship.registerExtendedPatientRelation(eq(serviceHsaId), isA(RegisterExtendedPatientRelationRequestType.class)))
                 .thenAnswer(RelationshipSpec.establishRequestAndResponse(ctx, patient, true));
 
-        WithFallback<ArrayList<WithInfoType<WithBlock<CareSystem>>>> systems =
-                WithFallback.success(new ArrayList <WithInfoType<WithBlock< CareSystem >>>());
+        WithOutcome<ArrayList<WithInfoType<WithBlock<CareSystem>>>> systems =
+                WithOutcome.success(new ArrayList<WithInfoType<WithBlock<CareSystem>>>());
 
-        WithFallback<CheckedConsent> consent =
-                WithFallback.success(new CheckedConsent(PdlReport.ConsentType.Consent, false));
+        WithOutcome<CheckedConsent> consent =
+                WithOutcome.success(new CheckedConsent(PdlReport.ConsentType.Consent, false));
 
-        WithFallback<Boolean> relationship =
-                WithFallback.fallback(false);
+        WithOutcome<Boolean> relationship =
+                WithOutcome.commFailure(false);
 
         PdlReport mockReport = new PdlReport(
                 systems,
@@ -256,14 +256,14 @@ public class PdlServiceSpecification {
         when(establishConsent.registerExtendedConsent(eq(serviceHsaId), isA(RegisterExtendedConsentRequestType.class)))
                 .thenAnswer(ConsentSpec.establishRequestAndResponse(ctx, patient,consentType,true));
 
-        WithFallback<ArrayList<WithInfoType<WithBlock<CareSystem>>>> systems =
-                WithFallback.success(new ArrayList <WithInfoType<WithBlock< CareSystem >>>());
+        WithOutcome<ArrayList<WithInfoType<WithBlock<CareSystem>>>> systems =
+                WithOutcome.success(new ArrayList<WithInfoType<WithBlock<CareSystem>>>());
 
-        WithFallback<CheckedConsent> consent =
-                WithFallback.success(new CheckedConsent(PdlReport.ConsentType.Consent, false));
+        WithOutcome<CheckedConsent> consent =
+                WithOutcome.success(new CheckedConsent(PdlReport.ConsentType.Consent, false));
 
-        WithFallback<Boolean> relationship =
-                WithFallback.fallback(false);
+        WithOutcome<Boolean> relationship =
+                WithOutcome.commFailure(false);
 
         PdlReport mockReport = new PdlReport(
                 systems,

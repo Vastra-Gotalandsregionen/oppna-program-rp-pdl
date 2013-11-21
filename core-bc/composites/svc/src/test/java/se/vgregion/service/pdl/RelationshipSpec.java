@@ -26,6 +26,11 @@ public class RelationshipSpec {
     public static CheckPatientRelationResponseType relationshipResult(boolean hasRelationship) {
         CheckPatientRelationResponseType response = new CheckPatientRelationResponseType();
         CheckResultType result = new CheckResultType();
+
+        ResultType r = new ResultType();
+        r.setResultCode(ResultCodeType.OK);
+
+        result.setResult(r);
         result.setHasPatientrelation(hasRelationship);
         response.setCheckResultType(result);
         return response;

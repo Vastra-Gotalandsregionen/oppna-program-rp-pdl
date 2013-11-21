@@ -70,6 +70,7 @@ public class PdlController {
         state.setPatient(patients.byPatientId(patientId));
 
         List<WithInfoType<CareSystem>> careSystems = systems.byPatientId(state.getCtx(), patientId);
+
         //TODO 2013-11-18 : Magnus Andersson > Only do this if there are care systems!
         PdlReport pdlReport = pdl.pdlReport(state.getCtx(), state.getPatient(), careSystems);
 

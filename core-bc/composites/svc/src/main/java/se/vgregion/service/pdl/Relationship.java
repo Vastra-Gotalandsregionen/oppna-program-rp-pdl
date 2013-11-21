@@ -7,13 +7,12 @@ import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponde
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelation.v1.rivtabp21.RegisterExtendedPatientRelationResponderInterface;
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelationresponder.v1.RegisterExtendedPatientRelationRequestType;
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelationresponder.v1.RegisterExtendedPatientRelationResponseType;
-import se.riv.ehr.patientrelationship.v1.AccessingActorType;
-import se.riv.ehr.patientrelationship.v1.ActionType;
-import se.riv.ehr.patientrelationship.v1.ActorType;
-import se.riv.ehr.patientrelationship.v1.ResultCodeType;
+import se.riv.ehr.patientrelationship.v1.*;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.pdl.RoundedTimeUnit;
-import se.vgregion.domain.pdl.decorators.WithFallback;
+import se.vgregion.domain.pdl.decorators.WithOutcome;
+
+import java.io.Serializable;
 
 public class Relationship {
     private static final Logger LOGGER = LoggerFactory.getLogger(Relationship.class.getName());
@@ -34,7 +33,7 @@ public class Relationship {
         return request;
     }
 
-    public static WithFallback<Boolean> establishRelation(
+    public static WithOutcome<Boolean> establishRelation(
             String servicesHsaId,
             RegisterExtendedPatientRelationResponderInterface establishRelationship,
             PdlContext ctx,
@@ -79,6 +78,30 @@ public class Relationship {
             );
         }
 
-        return WithFallback.success(response.getResultType().getResultCode() == ResultCodeType.OK);
+        return WithOutcome.success(response.getResultType().getResultCode() == ResultCodeType.OK);
+    }
+
+    public static <T extends Serializable> WithOutcome<T> decideOutcome(
+            ResultType result,
+            T value
+    ) {
+        ResultCodeType resultCode = result.getResultCode();
+        String resultText = result.getResultText();
+
+        if(ResultCodeType.OK == resultCode) {
+            return WithOutcome.success(value);
+        } else {
+            LOGGER.error(
+                    "Patient relationship service returned something else than 'OK'. Continuing anyways. \nResult code was {}. \nMessage was {}.",
+                    resultCode,
+                    resultText
+            );
+
+            if(ResultCodeType.VALIDATION_ERROR == resultCode) {
+                return WithOutcome.clientError(value);
+            } else {
+                return WithOutcome.remoteFailure(value);
+            }
+        }
     }
 }

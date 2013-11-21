@@ -3,8 +3,8 @@ package se.vgregion.domain.pdl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.vgregion.domain.pdl.decorators.WithOutcome;
 import se.vgregion.domain.pdl.decorators.WithBlock;
-import se.vgregion.domain.pdl.decorators.WithFallback;
 import se.vgregion.domain.pdl.decorators.WithInfoType;
 import se.vgregion.domain.pdl.decorators.WithVisibility;
 
@@ -18,7 +18,7 @@ public class CareSystemsReport implements Serializable {
     private static final long serialVersionUID = 734432845857726758L;
     private static final Logger LOGGER = LoggerFactory.getLogger(CareSystemsReport.class.getName());
 
-    public final WithFallback<TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> systems;
+    public final WithOutcome<TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> systems;
     public final EnumSet<InformationType> onlySameCareUnit;
     public final EnumSet<InformationType> includeOtherCareUnit;
     public final EnumSet<InformationType> includeOtherCareProvider;
@@ -29,9 +29,9 @@ public class CareSystemsReport implements Serializable {
                 categorizeSystems(ctx, pdlReport.systems.value);
 
         // Sets that increasingly contains information types for different categories
-        onlySameCareUnit = infoTypeByCategory(categorizedSystems, EnumSet.of(Visibility.SAME_CARE_UNIT));
-        includeOtherCareUnit = infoTypeByCategory(categorizedSystems, EnumSet.of(Visibility.SAME_CARE_UNIT, Visibility.OTHER_CARE_UNIT));
-        includeOtherCareProvider = infoTypeByCategory(categorizedSystems, EnumSet.allOf(Visibility.class));
+        onlySameCareUnit = infoTypeByVisibility(categorizedSystems, EnumSet.of(Visibility.SAME_CARE_UNIT));
+        includeOtherCareUnit = infoTypeByVisibility(categorizedSystems, EnumSet.of(Visibility.SAME_CARE_UNIT, Visibility.OTHER_CARE_UNIT));
+        includeOtherCareProvider = infoTypeByVisibility(categorizedSystems, EnumSet.allOf(Visibility.class));
 
         // Aggregate into a map by information type.
         TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>> aggregatedSystems =
@@ -67,19 +67,22 @@ public class CareSystemsReport implements Serializable {
                 categorizedSystems.get(informationType) : new ArrayList<WithVisibility<WithBlock<CareSystem>>>();
     }
 
-    private EnumSet<InformationType> infoTypeByCategory(
+    private EnumSet<InformationType> infoTypeByVisibility(
             ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems,
-            EnumSet<Visibility> categories
+            EnumSet<Visibility> visibility
     ) {
         List<InformationType> infoTypes = new ArrayList<InformationType>();
 
         for (WithInfoType<WithVisibility<WithBlock<CareSystem>>> sys : categorizedSystems) {
-            if (categories.contains(sys.value.visibility)) {
+            if (visibility.contains(sys.value.visibility)) {
                 infoTypes.add(sys.informationType);
             }
         }
-
-        return EnumSet.copyOf(infoTypes);
+        if( infoTypes.size() > 0 ) {
+            return EnumSet.copyOf(infoTypes);
+        } else {
+            return EnumSet.noneOf(InformationType.class);
+        }
     }
 
     private ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizeSystems(
@@ -121,7 +124,7 @@ public class CareSystemsReport implements Serializable {
         );
     }
 
-    public WithFallback<TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> getSystems() {
+    public WithOutcome<TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> getSystems() {
         return systems;
     }
 

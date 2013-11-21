@@ -1,15 +1,14 @@
 package se.vgregion.domain.pdl;
 
 import org.junit.Test;
+import se.vgregion.domain.pdl.decorators.WithOutcome;
 import se.vgregion.domain.pdl.decorators.WithBlock;
-import se.vgregion.domain.pdl.decorators.WithFallback;
 import se.vgregion.domain.pdl.decorators.WithInfoType;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 public class CareSystemReportSpec {
 
@@ -42,19 +41,16 @@ public class CareSystemReportSpec {
         sourceSystems.add(wrapSystem(InformationType.LAK, false, otherProvider1));
         sourceSystems.add(wrapSystem(InformationType.FUN, true, otherProvider2));
 
-        WithFallback<ArrayList<WithInfoType<WithBlock<CareSystem>>>> systems =
-                WithFallback.success(sourceSystems);
+        WithOutcome<ArrayList<WithInfoType<WithBlock<CareSystem>>>> systems = WithOutcome.success(sourceSystems);
 
-        WithFallback<CheckedConsent> consent =
-                WithFallback.success(
-                    new CheckedConsent(
+        WithOutcome<CheckedConsent> consent = WithOutcome.remoteFailure(
+                new CheckedConsent(
                         PdlReport.ConsentType.Consent,
                         false
-                    )
-                );
+                )
+        );
 
-        WithFallback<Boolean> relationship =
-                WithFallback.fallback(false);
+        WithOutcome<Boolean> relationship = WithOutcome.clientError(false);
 
         PdlReport mockReport = new PdlReport(
             systems,
@@ -64,7 +60,7 @@ public class CareSystemReportSpec {
 
         CareSystemsReport report = new CareSystemsReport(ctx, mockReport);
 
-        assertFalse(report.systems.fallback);
+        assertEquals(Outcome.SUCCESS, report.systems.outcome);
         assertEquals(3, report.systems.value.size());
         assertEquals(4, report.systems.value.get(InformationType.LAK).size());
         assertEquals(1, report.systems.value.get(InformationType.UPP).size());

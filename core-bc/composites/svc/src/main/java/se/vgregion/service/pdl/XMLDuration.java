@@ -71,7 +71,7 @@ class XMLDuration {
                 default:
                     XMLGregorianCalendar currentDate = currentDateAsXML();
                     LOGGER.error("Unknown time unit {}, fallback to date {}. This requires code a change to be corrected.", timeUnit, currentDate );
-                    return  currentDateAsXML(); // Fallback to make java compiler happy.
+                    return currentDateAsXML(); // To make the java compiler happy
             }
         } catch (DatatypeConfigurationException e) {
             throw new RuntimeException("Unable to create XMLDate", e);

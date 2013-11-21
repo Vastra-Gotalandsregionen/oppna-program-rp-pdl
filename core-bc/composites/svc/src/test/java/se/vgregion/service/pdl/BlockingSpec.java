@@ -4,9 +4,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v2.CheckBlocksRequestType;
 import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v2.CheckBlocksResponseType;
-import se.riv.ehr.blocking.v2.AccessingActorType;
-import se.riv.ehr.blocking.v2.CheckBlocksResultType;
-import se.riv.ehr.blocking.v2.CheckResultType;
+import se.riv.ehr.blocking.v2.*;
 import se.vgregion.domain.pdl.Patient;
 import se.vgregion.domain.pdl.PdlContext;
 
@@ -26,6 +24,10 @@ public class BlockingSpec {
         CheckBlocksResultType result = new CheckBlocksResultType();
         List<CheckResultType> results = result.getCheckResults();
 
+        ResultType r = new ResultType();
+        r.setResultCode(ResultCodeType.OK);
+
+        result.setResult(r);
         CheckResultType check = new CheckResultType();
         check.setBlocked(isBlocked);
         check.setRowNumber(rowNumber);

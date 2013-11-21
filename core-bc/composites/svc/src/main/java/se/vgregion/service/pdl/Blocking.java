@@ -15,17 +15,21 @@ import se.riv.ehr.blocking.v2.*;
 import se.vgregion.domain.pdl.*;
 import se.vgregion.domain.pdl.decorators.WithBlock;
 import se.vgregion.domain.pdl.decorators.WithInfoType;
+import se.vgregion.domain.pdl.decorators.WithOutcome;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import static se.riv.ehr.blocking.v2.ResultCodeType.OK;
+import static se.riv.ehr.blocking.v2.ResultCodeType.VALIDATIONERROR;
+
 class Blocking {
     private static final Logger LOGGER = LoggerFactory.getLogger(Blocking.class.getName());
 
-
-
     private static class RequestEntity {
+
         public final InformationType informationType;
         public final String careProviderHsaId;
         public final String careUnitHsaId;
@@ -47,10 +51,8 @@ class Blocking {
 
             RequestEntity that = (RequestEntity) o;
 
-            if (careProviderHsaId != null ? !careProviderHsaId.equals(that.careProviderHsaId) : that.careProviderHsaId != null)
-                return false;
-            if (careUnitHsaId != null ? !careUnitHsaId.equals(that.careUnitHsaId) : that.careUnitHsaId != null)
-                return false;
+            if (!careProviderHsaId.equals(that.careProviderHsaId)) return false;
+            if (!careUnitHsaId.equals(that.careUnitHsaId)) return false;
             if (informationType != that.informationType) return false;
 
             return true;
@@ -58,9 +60,9 @@ class Blocking {
 
         @Override
         public int hashCode() {
-            int result = informationType != null ? informationType.hashCode() : 0;
-            result = 31 * result + (careProviderHsaId != null ? careProviderHsaId.hashCode() : 0);
-            result = 31 * result + (careUnitHsaId != null ? careUnitHsaId.hashCode() : 0);
+            int result = informationType.hashCode();
+            result = 31 * result + careProviderHsaId.hashCode();
+            result = 31 * result + careUnitHsaId.hashCode();
             return result;
         }
 
@@ -72,8 +74,8 @@ class Blocking {
                     ", careUnitHsaId='" + careUnitHsaId + '\'' +
                     '}';
         }
-    }
 
+    }
     private Blocking() {
         // Utility class, no constructor!
     }
@@ -110,7 +112,6 @@ class Blocking {
 
         return req;
     }
-
 
     /**
      * The WSDL-contract for some unfathomable reason requires the client to remember what row numbers were used when
@@ -153,87 +154,13 @@ class Blocking {
         return careSystemsWithBlocks;
     }
 
+
     private static GetBlocksForPatientRequestType patientBlocksRequest(String servicesHsaId, String patientId) {
         GetBlocksForPatientRequestType request = new GetBlocksForPatientRequestType();
         request.setCareProviderId(servicesHsaId);
         request.setPatientId(patientId);
         return request;
     }
-
-    /*public static WithFallback<Boolean> unblockInformation(
-            String servicesHsaId,
-            GetBlocksForPatientResponderInterface patientBlocks,
-            RegisterTemporaryExtendedRevokeResponderInterface temporaryRevoke,
-            CheckBlocksResponderInterface checkBlocks,
-            PdlContext ctx,
-            String patientId,
-            String reason,
-            int duration,
-            RoundedTimeUnit roundedTimeUnit,
-            ExecutorService executorService
-    ) {
-        GetBlocksForPatientResponseType blocks = patientBlocks(servicesHsaId, patientBlocks, patientId);
-        List<BlockType> activeBlocks = filterActiveBlocks(ctx, blocks);
-
-        if (activeBlocks.size() > 0) {
-            List<Callable<Boolean>> revokationList = new ArrayList<Callable<Boolean>>();
-
-            for(BlockType block : activeBlocks ) {
-                revokationList.add(
-                        temporarilyRevoke(
-                                ctx,
-                                temporaryRevoke,
-                                servicesHsaId,
-                                block,
-                                reason,
-                                duration,
-                                roundedTimeUnit
-                        )
-                );
-            }
-
-            List<Future<Boolean>> responses = new ArrayList<Future<Boolean>>();
-            WithFallback<Boolean> revokeResult = WithFallback.fallback(true);
-            try {
-                responses = executorService.invokeAll(revokationList);
-                boolean result = true;
-                for( Future<Boolean> response : responses ) {
-                    result &= response.get(5L, TimeUnit.SECONDS);
-                }
-                revokeResult = WithFallback.success(result);
-            } catch (InterruptedException e) {
-                LOGGER.error("Unable to finish calling temporary revoke service. One or more calls failed. Using fallback.", e);  //To change body of catch statement use File | Settings | File Templates.
-                return WithFallback.fallback(true);
-            } catch (ExecutionException e) {
-                LOGGER.error("Unable to finish calling temporary revoke service. One or more calls failed. Using fallback.", e);  //To change body of catch statement use File | Settings | File Templates.
-                return WithFallback.fallback(true);
-            } catch (TimeoutException e) {
-                LOGGER.error("Unable to finish calling temporary revoke service. One or more calls failed. Using fallback.", e);  //To change body of catch statement use File | Settings | File Templates.
-                return WithFallback.fallback(true);
-            }
-
-            if( !revokeResult.isFallback() ) {
-                // Finally check that we no longer have systmes for this information.
-                CheckBlocksRequestType checkedRequest = checkBlocksRequest(
-                        ctx,
-                        new Patient(
-                                patientId,
-                                "PATIENT NAME PLACEHOLDER", // Patient name not needed for request.
-                                Arrays.asList(engagement)
-                        ),
-                        informationTypes);
-
-                boolean containBlocks = checkBlocks
-                        .checkBlocks(servicesHsaId, checkedRequest)
-                        .getCheckBlocksResultType()
-                        .getCheckResults().size() > 0;
-
-                return WithFallback.success( containBlocks );
-            }
-        }
-
-        return null;  //To change body of created methods use File | Settings | File Templates.
-    }*/
 
     private static GetBlocksForPatientResponseType patientBlocks(String servicesHsaId, GetBlocksForPatientResponderInterface patientBlocks, String patientId) {
         GetBlocksForPatientRequestType request = patientBlocksRequest(servicesHsaId, patientId);
@@ -255,7 +182,7 @@ class Blocking {
             @Override
             public Boolean call() throws Exception {
                 RegisterTemporaryExtendedRevokeResponseType response = temporaryRevoke.registerTemporaryExtendedRevoke(servicesHsaId, request);
-                return response.getResultType().getResultCode() == ResultCodeType.OK;
+                return response.getResultType().getResultCode() == OK;
             }
         };
     }
@@ -280,55 +207,28 @@ class Blocking {
         return request;
     }
 
-   /* private static List<BlockType> filterActiveBlocks(
-            PdlContext ctx,
-            GetBlocksForPatientResponseType blocks
-    ) {
+    static <T extends Serializable> WithOutcome<T> decideOutcome(
+            ResultType result,
+            T value)
+    {
+        ResultCodeType resultCode = result.getResultCode();
+        String resultText = result.getResultText();
 
-        List<BlockType> blockList = blocks.getBlockHeaderType().getBlocks();
-        List<BlockType> activeBlocks = new ArrayList<BlockType>();
-
-        for (BlockType block : blockList) {
-            InformationTypeType infoType = new InformationTypeType();
-            infoType.setInfoTypeId(engagement.informationType.name().toLowerCase());
-
-            XMLGregorianCalendar currentDate = XMLDuration.currentDateAsXML();
-
-            final boolean isInnerBlock        = block.getBlockType() == BlockTypeType.INNER;
-            final boolean notExcludedInfoType = !block.getExcludedInformationTypes().contains(infoType);
-            final boolean sameCareProvider    = block.getInformationCareProviderId().equals(ctx.careProviderHsaId);
-            final boolean sameCareUnit        = block.getInformationCareUnitId().equals(ctx.careUnitHsaId);
-            final boolean withinDuration      = currentDate.compare(block.getInformationStartDate()) > -1 &&
-                                                currentDate.compare(block.getInformationEndDate()) < 1;
-
-            if (
-                isInnerBlock &&
-                notExcludedInfoType &&
-                sameCareProvider &&
-                sameCareUnit &&
-                withinDuration
-            ) {
-
-                if (block.getTemporaryRevokes().size() > 0) {
-                    for (TemporaryRevokeType revoke : block.getTemporaryRevokes()) {
-
-                        final boolean sameRevokeCareProvider = revoke.getRevokedForEmployeeId().equals(ctx.employeeHsaId);
-                        final boolean sameRevokeCareUnit     = revoke.getRevokedForCareUnitId().equals(ctx.careUnitHsaId);
-                        final boolean beforeEndDate          = currentDate.compare(revoke.getEndDate()) < 1;
-
-                        // Temporary revoke was not applicable for this employee, still add the block
-                        if (!(sameRevokeCareProvider && sameRevokeCareUnit && beforeEndDate)) {
-                            activeBlocks.add(block);
-                        }
-                    }
-                } else {
-                    // Temporary block is applicable for this employee, add the block
-                    activeBlocks.add(block);
-                }
+        if(ResultCodeType.OK == resultCode) {
+            return WithOutcome.success(value);
+        } else {
+            LOGGER.error(
+                    "Check blocks returned something else than 'OK'. Continuing anyways. \nResult code was {}. \nMessage was {}.",
+                    resultCode,
+                    resultText
+            );
+            if(VALIDATIONERROR == resultCode) {
+                return WithOutcome.clientError(value);
+            } else {
+                return WithOutcome.remoteFailure(value);
             }
         }
-        return activeBlocks;
-    }*/
+    }
 }
 
 

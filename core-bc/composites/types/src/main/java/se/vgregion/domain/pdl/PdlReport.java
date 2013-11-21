@@ -1,7 +1,7 @@
 package se.vgregion.domain.pdl;
 
+import se.vgregion.domain.pdl.decorators.WithOutcome;
 import se.vgregion.domain.pdl.decorators.WithBlock;
-import se.vgregion.domain.pdl.decorators.WithFallback;
 import se.vgregion.domain.pdl.decorators.WithInfoType;
 
 import java.io.Serializable;
@@ -9,60 +9,51 @@ import java.util.ArrayList;
 
 public class PdlReport implements Serializable {
     private static final long serialVersionUID = -597284170511725549L;
-    public final WithFallback<CheckedConsent> consent;
-    public final WithFallback<Boolean> hasRelationship;
-    public final WithFallback<ArrayList<WithInfoType<WithBlock<CareSystem>>>> systems;
+    public final WithOutcome<CheckedConsent> consent;
+    public final WithOutcome<Boolean> hasRelationship;
+    public final WithOutcome<ArrayList<WithInfoType<WithBlock<CareSystem>>>> systems;
 
     public PdlReport(
-            WithFallback<ArrayList<WithInfoType<WithBlock<CareSystem>>>> checkedSystems,
-            WithFallback<CheckedConsent> checkedConsent,
-            WithFallback<Boolean> hasRelationship
+            WithOutcome<ArrayList<WithInfoType<WithBlock<CareSystem>>>> checkedSystems,
+            WithOutcome<CheckedConsent> checkedConsent,
+            WithOutcome<Boolean> hasRelationship
     ) {
         this.hasRelationship = hasRelationship;
         this.systems = checkedSystems;
         this.consent = checkedConsent;
     }
 
-    private WithFallback<Boolean> isConsentWithFallback(WithFallback<CheckedConsent> checkedConsent) {
-        if (checkedConsent.fallback) {
-            return WithFallback.fallback(checkedConsent.value.hasConsent);
-        } else {
-            return WithFallback.success(checkedConsent.value.hasConsent);
-        }
-    }
-
-
-    public PdlReport withBlocks(WithFallback<ArrayList<WithInfoType<WithBlock<CareSystem>>>> unblockedInformation) {
+    public PdlReport withBlocks(WithOutcome<ArrayList<WithInfoType<WithBlock<CareSystem>>>> unblockedInformation) {
         return new PdlReport(
                 unblockedInformation,
                 consent,
                 hasRelationship);
     }
 
-    public PdlReport withRelationship(WithFallback<Boolean> newHasRelationship) {
+    public PdlReport withRelationship(WithOutcome<Boolean> newHasRelationship) {
         return new PdlReport(
                 systems,
                 consent,
                 newHasRelationship);
     }
 
-    public PdlReport withConsent(WithFallback<CheckedConsent> newConsent) {
+    public PdlReport withConsent(WithOutcome<CheckedConsent> newConsent) {
         return new PdlReport(
                 systems,
                 newConsent,
                 hasRelationship);
     }
 
-    public WithFallback<ArrayList<WithInfoType<WithBlock<CareSystem>>>> getSystems() {
+    public WithOutcome<ArrayList<WithInfoType<WithBlock<CareSystem>>>> getSystems() {
         return systems;
     }
 
-    public WithFallback<CheckedConsent> getConsent() {
+    public WithOutcome<CheckedConsent> getConsent() {
         return consent;
     }
 
 
-    public WithFallback<Boolean> getHasRelationship() {
+    public WithOutcome<Boolean> getHasRelationship() {
         return hasRelationship;
     }
 

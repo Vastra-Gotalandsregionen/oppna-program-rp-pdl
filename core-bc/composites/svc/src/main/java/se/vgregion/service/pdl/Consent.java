@@ -9,10 +9,14 @@ import se.riv.ehr.patientconsent.administration.registerextendedconsentresponder
 import se.riv.ehr.patientconsent.administration.registerextendedconsentresponder.v1.RegisterExtendedConsentResponseType;
 import se.riv.ehr.patientconsent.v1.*;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationRequestType;
-import se.vgregion.domain.pdl.*;
-import se.vgregion.domain.pdl.decorators.WithFallback;
+import se.vgregion.domain.pdl.CheckedConsent;
+import se.vgregion.domain.pdl.PdlContext;
+import se.vgregion.domain.pdl.PdlReport;
+import se.vgregion.domain.pdl.RoundedTimeUnit;
+import se.vgregion.domain.pdl.decorators.WithOutcome;
 
 import javax.xml.ws.soap.SOAPFaultException;
+import java.io.Serializable;
 
 class Consent {
     private static final Logger LOGGER = LoggerFactory.getLogger(Consent.class.getName());
@@ -52,7 +56,7 @@ class Consent {
         return new CheckPatientRelationRequestType();
     }
 
-    public static WithFallback<CheckedConsent> establishConsent(
+    public static WithOutcome<CheckedConsent> establishConsent(
             String servicesHsaId,
             RegisterExtendedConsentResponderInterface establishConsent,
             PdlContext ctx,
@@ -99,12 +103,37 @@ class Consent {
             boolean hasConsent = ( resultCode == ResultCodeType.OK || resultCode == ResultCodeType.ALREADYEXISTS);
             LOGGER.trace("Consent established for patient {}", patientId);
 
-            return WithFallback.success(new CheckedConsent(consentType, hasConsent));
+            return WithOutcome.success(new CheckedConsent(consentType, hasConsent));
 
-        } catch( SOAPFaultException e) {
+        } catch(SOAPFaultException e) {
             LOGGER.error("Could not contact Consent service. Using fallback.", e);
-            return WithFallback.fallback(new CheckedConsent(consentType, true));
+            return WithOutcome.commFailure(new CheckedConsent(consentType, true));
         }
 
+    }
+
+    public static <T extends Serializable> WithOutcome<T> decideOutcome(
+            ResultType result,
+            T value
+    ) {
+
+        ResultCodeType resultCode = result.getResultCode();
+        String resultText = result.getResultText();
+
+        if(ResultCodeType.OK == resultCode) {
+            return WithOutcome.success(value);
+        } else {
+            LOGGER.error(
+                    "Patient consent service returned something else than 'OK'. Continuing anyways. \nResult code was {}. \nMessage was {}.",
+                    resultCode,
+                    resultText
+            );
+
+            if(ResultCodeType.VALIDATION_ERROR == resultCode) {
+                return WithOutcome.clientError(value);
+            } else {
+                return WithOutcome.remoteFailure(value);
+            }
+        }
     }
 }

@@ -10,7 +10,7 @@ import se.riv.ehr.patientconsent.administration.registerextendedconsent.v1.rivta
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelation.v1.rivtabp21.RegisterExtendedPatientRelationResponderInterface;
 import se.vgregion.domain.pdl.*;
-import se.vgregion.domain.pdl.decorators.WithFallback;
+import se.vgregion.domain.pdl.decorators.WithOutcome;
 import se.vgregion.domain.pdl.decorators.WithInfoType;
 
 import javax.annotation.PreDestroy;
@@ -95,7 +95,7 @@ public class PdlServiceImpl implements PdlService {
             RoundedTimeUnit roundedTimeUnit,
             PdlReport.ConsentType consentType
     ) {
-        WithFallback<CheckedConsent> consentStatus = Consent.establishConsent(
+        WithOutcome<CheckedConsent> consentStatus = Consent.establishConsent(
                 servicesHsaId,
                 establishConsent,
                 ctx,
@@ -118,7 +118,7 @@ public class PdlServiceImpl implements PdlService {
             int duration,
             RoundedTimeUnit timeUnit
     ) {
-        WithFallback<Boolean> relationshipStatus = Relationship
+        WithOutcome<Boolean> relationshipStatus = Relationship
                 .establishRelation(
                         servicesHsaId,
                         establishRelationship,
