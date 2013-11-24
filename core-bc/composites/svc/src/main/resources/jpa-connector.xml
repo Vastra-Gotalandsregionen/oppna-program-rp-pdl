@@ -1,44 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Copyright 2010 Västra Götalandsregionen
+
+      This library is free software; you can redistribute it and/or modify
+      it under the terms of version 2.1 of the GNU Lesser General Public
+      License as published by the Free Software Foundation.
+
+      This library is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU Lesser General Public License for more details.
+
+      You should have received a copy of the GNU Lesser General Public
+      License along with this library; if not, write to the
+      Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+      Boston, MA 02111-1307  USA
+-->
+
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-		http://www.springframework.org/schema/context
-		http://www.springframework.org/schema/context/spring-context-3.1.xsd
-		http://www.springframework.org/schema/tx
-		http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 
-    <context:annotation-config/>
+    <context:annotation-config />
 
-    <tx:annotation-driven/>
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+
+    <!-- Uses by default transaction bean with name transactionManager -->
+    <tx:annotation-driven />
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
     </bean>
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
+        <property name="dataSource" ref="dataSource" />
         <property name="persistenceXmlLocation" value="classpath*:META-INF/persistence.xml"/>
-        <property name="jpaVendorAdapter" ref="jpaVendor"/>
-
+        <property name="jpaVendorAdapter" ref="jpaVendor" />
         <property name="jpaPropertyMap">
-        <map>
-          <entry key="hibernate.hbm2ddl.auto" value="create" />
-        </map>
-      </property>
+            <map>
+                <entry key="hibernate.format_sql" value="${hibernate.vendor.showsql}" />
+            </map>
+        </property>
     </bean>
 
     <bean id="jpaVendor" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-        <property name="database" value="${hibernate.vendor.database}"/>
-        <!--<property name="databasePlatform" value="${hibernate.vendor.databaseDialect}" />-->
+        <property name="database" value="${hibernate.vendor.database}" />
+        <property name="databasePlatform" value="${hibernate.vendor.databaseDialect}" />
         <property name="generateDdl" value="${hibernate.vendor.generateDdl}" />
-        <property name="showSql" value="${hibernate.vendor.showsql}"/>
+        <property name="showSql" value="${hibernate.vendor.showsql}" />
     </bean>
 
-    <!-- Used to be more explicit in what we need to set up the jpa context. The real datasource is configured in a separate
-      config file (jpa-connector-jndi.xml or jpa-connector-direct.xml) -->
-    <!--   <bean id="dataSource" abstract="true" /> -->
-
-    <bean id="dataSource" abstract="true"/>
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/jdbc/pdl" />
+    </bean>
 
 </beans>

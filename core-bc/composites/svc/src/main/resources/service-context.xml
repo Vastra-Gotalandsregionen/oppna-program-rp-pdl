@@ -8,8 +8,7 @@
        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
        http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 
-    <import resource="classpath:/jpa-connector.xml"/>
-    <import resource="classpath:/datasource-direct.xml"/>
+  <import resource="classpath:/jpa-connector.xml"/>
 
   <context:mbean-export />
 

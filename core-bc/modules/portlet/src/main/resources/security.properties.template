@@ -15,22 +15,12 @@ pld.sign.keystore.password=
 
 
 #Db-settings.
-database.user=liferay
-database.password=liferay
 database.driver=org.postgresql.Driver
-database.url=jdbc:postgresql://localhost:5432/liferay
-hibernate.database.showsql=false
+
+hibernate.vendor.showsql=false
 hibernate.vendor.generateDdl=true
 hibernate.vendor.databasePlatform=org.hibernate.dialect.PostgreSQLDialect
 hibernate.vendor.database=POSTGRESQL
-
-hibernate.vendor.showsql=true
-hibernate.vendor.generateDdl=true
 hibernate.vendor.databaseDialect=org.hibernate.dialect.PostgreSQLDialect
-hibernate.vendor.database=POSTGRESQL
-
 datasource.connector.direct.driverClassName=org.postgresql.Driver
-datasource.connector.direct.url=jdbc:postgresql://localhost:5432/liferay
-datasource.connector.direct.username=
-datasource.connector.direct.password=
 

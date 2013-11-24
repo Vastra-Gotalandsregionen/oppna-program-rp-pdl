@@ -1,6 +1,7 @@
 package se.vgregion.domain.pdl.logging;
 
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.lang.*;
 
@@ -11,6 +12,7 @@ import java.lang.*;
  * Time: 21:17
  * To change this template use File | Settings | File Templates.
  */
+@MappedSuperclass
 public class NamedAndHsaIdBase implements Serializable {
 
     @Id

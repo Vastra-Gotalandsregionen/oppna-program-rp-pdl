@@ -149,16 +149,4 @@ public class ObjectRepo {
         return query.getResultList();
     }
 
-    /*
-    public <V> List<V> findAllLazy(Class<V> clazz) {
-        String queryString = "select t from " + clazz.getSimpleName() + " t";
-        Query query = entityManager.createQuery(queryString);
-        return query.getResultList();
-    }
-    */
-
-    //use with caution
-//    public void deleteAll(Class clazz) {
-//        entityManager.createQuery("delete from " + clazz.getSimpleName()).executeUpdate();
-//    }
 }

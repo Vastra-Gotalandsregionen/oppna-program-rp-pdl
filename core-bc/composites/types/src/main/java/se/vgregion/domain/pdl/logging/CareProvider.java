@@ -10,8 +10,8 @@ import java.util.Date;
  * Time: 19:58
  * To change this template use File | Settings | File Templates.
  */
-@Entity
-@Table(name = "pdl_log_care_provider")
+//@Entity
+//@Table(name = "pdl_log_care_provider")
 public class CareProvider extends NamedAndHsaIdBase {
 
 }
