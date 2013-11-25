@@ -32,7 +32,6 @@ public class Log {
     @Column(name = "patient_id")
     private String patientId;
 
-
     @Column(name = "care_unit_hsa_id")
     private String careUnitHsaId;
 
@@ -42,11 +41,17 @@ public class Log {
     @Column(name = "user_action")
     private String userAction;
 
+    @Column(name = "comment")
+    private String comment;
+
+    public static enum UserAction {
+        LOOKS_UP_PATIENT
+    }
+
     public Log() {
         super();
         setDate(new Date());
     }
-
 
     public Date getDate() {
         return date;

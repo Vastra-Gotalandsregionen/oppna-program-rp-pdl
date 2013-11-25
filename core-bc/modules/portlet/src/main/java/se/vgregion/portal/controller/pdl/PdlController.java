@@ -60,7 +60,6 @@ public class PdlController {
     @RenderMapping
     public String enterSearchPatient() {
         state.reset(); // Make sure state is reset when user navigates to the start page.
-        objectRepo.persist(new Log());
         return "view";
     }
 
@@ -78,6 +77,13 @@ public class PdlController {
 
         //TODO 2013-11-18 : Magnus Andersson > Only do this if there are care systems!
         PdlReport pdlReport = pdl.pdlReport(state.getCtx(), state.getPatient(), careSystems);
+
+        // Log action taken.
+        Log log = new Log();
+        log.setPatientId(patientId);
+        log.setUserAction(String.format("Searching for patient %s in care systems.", patientId));
+        log.setUserHsaId("Does not have access to hsa-id for loged in user.");
+        objectRepo.persist(log);
 
         // Reformat systems list into a format that we can display
         CareSystemsReport csReport = new CareSystemsReport(state.getCtx(), pdlReport);
