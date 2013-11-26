@@ -14,7 +14,8 @@ import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import se.vgregion.domain.pdl.*;
 import se.vgregion.domain.pdl.decorators.WithInfoType;
-import se.vgregion.domain.pdl.logging.Log;
+import se.vgregion.domain.pdl.logging.PdlEventLog;
+import se.vgregion.domain.pdl.logging.UserAction;
 import se.vgregion.service.pdl.CareSystems;
 import se.vgregion.service.pdl.ObjectRepo;
 import se.vgregion.service.pdl.PatientRepository;
@@ -63,6 +64,18 @@ public class PdlController {
         return "view";
     }
 
+    PdlEventLog getPdlEventLog() {
+        PdlEventLog log = new PdlEventLog();
+        Patient patient = state.getPatient();
+        log.setPatientDisplayName(patient.getPatientDisplayName());
+        log.setPatientId(patient.getPatientId());
+        log.setEmployeeId(state.getCtx().employeeHsaId);
+        log.setAssignmentId(state.getCtx().assignmentHsaId);
+        log.setCareProviderId(state.getCtx().getCareProviderHsaId());
+        log.setCareUnitId(state.getCtx().getCareUnitHsaId());
+        return log;
+    }
+
     @ActionMapping("searchPatient")
     public void searchPatientInformation(
             @RequestParam String patientId,
@@ -78,12 +91,7 @@ public class PdlController {
         //TODO 2013-11-18 : Magnus Andersson > Only do this if there are care systems!
         PdlReport pdlReport = pdl.pdlReport(state.getCtx(), state.getPatient(), careSystems);
 
-        // Log action taken.
-        Log log = new Log();
-        log.setPatientId(patientId);
-        log.setUserAction(String.format("Searching for patient %s in care systems.", patientId));
-        log.setUserHsaId("Does not have access to hsa-id for loged in user.");
-        objectRepo.persist(log);
+        log(UserAction.SEARCH);
 
         // Reformat systems list into a format that we can display
         CareSystemsReport csReport = new CareSystemsReport(state.getCtx(), pdlReport);
@@ -113,6 +121,8 @@ public class PdlController {
 
         state.setPdlReport(newReport);
 
+        log(UserAction.RELATION);
+
         response.setRenderParameter("view", "pickInfoResource");
     }
 
@@ -137,10 +147,16 @@ public class PdlController {
                 )
         );
 
+        log(UserAction.CONSENT);
+
         response.setRenderParameter("view", "pickInfoResource");
     }
 
-
+    void log(UserAction action) {
+        PdlEventLog log = getPdlEventLog();
+        log.setUserAction(action);
+        objectRepo.persist(log);
+    }
 
     @ActionMapping("otherCareUnits")
     public void sameCareProvider(ActionResponse response) {
@@ -153,6 +169,8 @@ public class PdlController {
         // LOG SERVICE CALL
 
         state.setShowOtherCareUnits(true);
+
+        log(UserAction.OTHER_CARE_UNITS);
 
         response.setRenderParameter("view", "pickInfoResource");
     }
@@ -168,6 +186,8 @@ public class PdlController {
         // LOG SERVICE CALL
 
         state.setShowOtherCareProvider(true);
+
+        log(UserAction.OTHER_CARE_PROVIDERS);
 
         response.setRenderParameter("view", "pickInfoResource");
     }
