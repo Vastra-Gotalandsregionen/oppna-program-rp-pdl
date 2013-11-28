@@ -30,8 +30,8 @@
                 <h2>${state.patient.patientDisplayName} (${state.patient.patientId}) har ej medgivit samtycke för sammanhållen journalföring</h2>
             </c:when>
             <c:when test="${!state.pdlReport.hasRelationship.value}">
+                <portlet:actionURL name="establishRelationship" var="relationshipUrl" />
                 <h2>Du saknar patientrelation med ${state.patient.patientDisplayName} (${state.patient.patientId})</h2>
-                <portlet:actionURL name="establishRelationship" var="relationshipURL" />
             </c:when>
         </c:choose>
     </div>

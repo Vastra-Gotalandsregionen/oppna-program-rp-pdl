@@ -1,20 +1,27 @@
 package se.vgregion.domain.pdl;
 
+import org.junit.Before;
 import org.junit.Test;
-import se.vgregion.domain.pdl.decorators.WithOutcome;
+import se.vgregion.domain.pdl.decorators.WithAccess;
 import se.vgregion.domain.pdl.decorators.WithBlock;
 import se.vgregion.domain.pdl.decorators.WithInfoType;
+import se.vgregion.domain.pdl.decorators.WithOutcome;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 public class CareSystemReportSpec {
 
-    @Test
-    public void CareSystemReportShouldSegmentSystems() throws Exception {
-        PdlContext ctx = new PdlContext(
+    private PdlReport mockReport;
+
+    private PdlContext ctx;
+
+    @Before
+    public void setup() throws Exception
+    {
+        ctx = new PdlContext(
                 "SE2321000131-E000000000001",
                 "SE2321000131-S000000010252",
                 "SE2321000131-P000000069215",
@@ -52,13 +59,18 @@ public class CareSystemReportSpec {
 
         WithOutcome<Boolean> relationship = WithOutcome.clientError(false);
 
-        PdlReport mockReport = new PdlReport(
-            systems,
-            consent,
-            relationship
+        mockReport = new PdlReport(
+                systems,
+                consent,
+                relationship
         );
+    }
 
-        CareSystemsReport report = new CareSystemsReport(ctx, mockReport);
+    @Test
+    public void CareSystemReportShouldSegmentSystems() throws Exception {
+
+        WithAccess<PdlContext> c = WithAccess.withOtherProviders(ctx);
+        CareSystemsReport report = new CareSystemsReport(c, mockReport);
 
         assertEquals(Outcome.SUCCESS, report.systems.outcome);
         assertEquals(3, report.systems.value.size());
@@ -69,6 +81,19 @@ public class CareSystemReportSpec {
         assertEquals(EnumSet.of(InformationType.LAK, InformationType.UPP), report.includeOtherCareUnit);
         assertEquals(EnumSet.of(InformationType.LAK, InformationType.UPP, InformationType.FUN), report.includeOtherCareProvider);
 
+    }
+
+    @Test
+    public void CareSystemReportShouldRemoveOtherProviders() throws Exception {
+
+        WithAccess<PdlContext> c = WithAccess.sameProvider(ctx);
+        CareSystemsReport report = new CareSystemsReport(c, mockReport);
+
+        assertEquals(Outcome.SUCCESS, report.systems.outcome);
+        assertEquals(2, report.systems.value.size());
+        assertEquals(EnumSet.of(InformationType.LAK), report.onlySameCareUnit);
+        assertEquals(EnumSet.of(InformationType.LAK, InformationType.UPP), report.includeOtherCareUnit);
+        assertEquals(report.includeOtherCareUnit, report.includeOtherCareProvider);
     }
 
     private WithInfoType<WithBlock<CareSystem>> wrapSystem(

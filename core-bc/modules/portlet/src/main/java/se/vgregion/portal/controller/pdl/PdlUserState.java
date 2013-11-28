@@ -7,6 +7,7 @@ import se.vgregion.domain.pdl.CareSystemsReport;
 import se.vgregion.domain.pdl.Patient;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.pdl.PdlReport;
+import se.vgregion.domain.pdl.decorators.WithAccess;
 
 import java.io.Serializable;
 
@@ -23,7 +24,7 @@ public class PdlUserState implements Serializable {
     private PdlReport pdlReport;
     private CareSystemsReport csReport;
     private Patient patient;
-    private PdlContext ctx;
+    private WithAccess<PdlContext> ctx;
     private boolean showOtherCareUnits = false;
     private boolean showOtherCareProvider = false;
 
@@ -42,7 +43,7 @@ public class PdlUserState implements Serializable {
         return patient;
     }
 
-    public PdlContext getCtx() {
+    public WithAccess<PdlContext> getCtx() {
         return ctx;
     }
 
@@ -62,7 +63,7 @@ public class PdlUserState implements Serializable {
         this.patient = patient;
     }
 
-    public void setCtx(PdlContext ctx) {
+    public void setCtx(WithAccess<PdlContext> ctx) {
         this.ctx = ctx;
     }
 

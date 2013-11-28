@@ -3,10 +3,7 @@ package se.vgregion.domain.pdl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.vgregion.domain.pdl.decorators.WithOutcome;
-import se.vgregion.domain.pdl.decorators.WithBlock;
-import se.vgregion.domain.pdl.decorators.WithInfoType;
-import se.vgregion.domain.pdl.decorators.WithVisibility;
+import se.vgregion.domain.pdl.decorators.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,10 +20,13 @@ public class CareSystemsReport implements Serializable {
     public final EnumSet<InformationType> includeOtherCareUnit;
     public final EnumSet<InformationType> includeOtherCareProvider;
 
-    public CareSystemsReport(PdlContext ctx, PdlReport pdlReport) {
+    public CareSystemsReport(WithAccess<PdlContext> ctx, PdlReport pdlReport) {
 
-        ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems =
-                categorizeSystems(ctx, pdlReport.systems.value);
+        ArrayList<WithInfoType<WithBlock<CareSystem>>> careSystems = (ctx.otherProviders) ?
+                pdlReport.systems.value : removeOtherProviders(ctx.value, pdlReport.systems.value) ;
+
+        ArrayList <WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems =
+                categorizeSystems(ctx.value, careSystems);
 
         // Sets that increasingly contains information types for different categories
         onlySameCareUnit = infoTypeByVisibility(categorizedSystems, EnumSet.of(Visibility.SAME_CARE_UNIT));
@@ -41,8 +41,18 @@ public class CareSystemsReport implements Serializable {
         systems = pdlReport.systems.mapValue(aggregatedSystems);
     }
 
+    private ArrayList<WithInfoType<WithBlock<CareSystem>>> removeOtherProviders(PdlContext ctx, ArrayList<WithInfoType<WithBlock<CareSystem>>> systems) {
+        ArrayList<WithInfoType<WithBlock<CareSystem>>> filtered = new ArrayList<WithInfoType<WithBlock<CareSystem>>>();
+        for( WithInfoType<WithBlock<CareSystem>> system : systems ){
+            if(ctx.careProviderHsaId.equals(system.value.value.careProviderHsaId)) {
+                filtered.add(system);
+            }
+        }
+        return filtered;
+    }
+
     private static TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>> aggregateByInfotype(
-            ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> systemsWithBlocks
+            ArrayList <WithInfoType<WithVisibility<WithBlock<CareSystem>>>> systemsWithBlocks
     ) {
 
         TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems =

@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import se.vgregion.domain.pdl.*;
+import se.vgregion.domain.pdl.decorators.WithAccess;
 import se.vgregion.domain.pdl.decorators.WithInfoType;
 import se.vgregion.domain.pdl.logging.PdlEventLog;
 import se.vgregion.domain.pdl.logging.UserAction;
+import se.vgregion.service.pdl.AccessControl;
 import se.vgregion.service.pdl.CareSystems;
 import se.vgregion.service.pdl.ObjectRepo;
 import se.vgregion.service.pdl.PatientRepository;
@@ -37,14 +39,19 @@ public class PdlController {
     @Autowired
     private CareSystems systems;
     @Autowired
-    PatientRepository patients;
+    private PatientRepository patients;
     @Autowired
     private ObjectRepo objectRepo;
+    @Autowired
+    private PatientRepository patients;
+    @Autowired
+    private AccessControl access;
 
     @ModelAttribute("state")
     public PdlUserState initState() {
         if (state.getCtx() == null) {
-            state.setCtx(currentContext());
+            WithAccess<PdlContext> ctx = access.authorize(currentContext());
+            state.setCtx(ctx);
         }
         return state;
     }
@@ -86,10 +93,11 @@ public class PdlController {
 
         state.setPatient(patients.byPatientId(patientId));
 
-        List<WithInfoType<CareSystem>> careSystems = systems.byPatientId(state.getCtx(), patientId);
+        List<WithInfoType<CareSystem>> careSystems = systems.byPatientId(state.getCtx().value, patientId);
 
         //TODO 2013-11-18 : Magnus Andersson > Only do this if there are care systems!
-        PdlReport pdlReport = pdl.pdlReport(state.getCtx(), state.getPatient(), careSystems);
+        //TODO 2013-11-22 : Magnus Andersson > Should handle WithAccess and filter out unavailable systems.
+        PdlReport pdlReport = pdl.pdlReport(state.getCtx().value, state.getPatient(), careSystems);
 
         log(UserAction.SEARCH);
 
@@ -106,12 +114,12 @@ public class PdlController {
     public void establishRelationship(ActionResponse response) {
         LOGGER.trace(
                 "Request to create relationship between employee {} and patient {}.",
-                state.getCtx().employeeHsaId,
+                state.getCtx().value.employeeHsaId,
                 state.getPatient().patientId
         );
 
         PdlReport newReport = pdl.patientRelationship(
-                state.getCtx(),
+                state.getCtx().value,
                 state.getPdlReport(),
                 state.getPatient().patientId,
                 "Reason",
@@ -130,14 +138,14 @@ public class PdlController {
     public void establishConsent(ActionResponse response) {
         LOGGER.trace(
                 "Request to create consent between employee {} and patient {}.",
-                state.getCtx().employeeHsaId,
+                state.getCtx().value.employeeHsaId,
                 state.getPatient().patientId
         );
 
         // FIXME 2013-10-21 : Magnus Andersson > Should choose between consent or emergency. Also add possiblility to be represented by someone?
         state.setPdlReport(
                 pdl.patientConsent(
-                        state.getCtx(),
+                        state.getCtx().value,
                         state.getPdlReport(),
                         state.getPatient().patientId,
                         "Reason",
@@ -162,7 +170,7 @@ public class PdlController {
     public void sameCareProvider(ActionResponse response) {
         LOGGER.trace(
                 "Request to show more information within same care giver for employee {} and patient {}.",
-                state.getCtx().employeeHsaId,
+                state.getCtx().value.employeeHsaId,
                 state.getPatient().patientId
         );
 
@@ -179,7 +187,7 @@ public class PdlController {
     public void otherProvider(ActionResponse response) {
         LOGGER.trace(
                 "Request to show more information within same care giver for employee {} and patient {}.",
-                state.getCtx().employeeHsaId,
+                state.getCtx().value.employeeHsaId,
                 state.getPatient().patientId
         );
 

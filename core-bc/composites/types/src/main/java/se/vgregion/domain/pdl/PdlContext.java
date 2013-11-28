@@ -23,6 +23,7 @@ public class PdlContext implements Serializable {
         this.employeeHsaId = employeeHsaId;
         this.assignmentDisplayName = assignmentDisplayName;
         this.assignmentHsaId = assignmentHsaId;
+
     }
 
     public String getCareProviderHsaId() {
