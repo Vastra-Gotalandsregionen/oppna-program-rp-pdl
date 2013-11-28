@@ -15,20 +15,25 @@
 
 <ul class="infotypes">
     <c:forEach var="infotype" items="${state.csReport.onlySameCareUnit}">
-        <li><h3>${infotype.desc}</h3></li>
+        <li><h3>${infotype.desc} (${infotype.selected})</h3></li>
         <li>
-            <ul>
-                <c:forEach var="system" items="${state.csReport.systems.value[infotype]}">
-                        <c:if test="${system.visibility == 'SAME_CARE_UNIT' || system.visibility == 'OTHER_CARE_UNIT'}">
-                            <li>${system.value.value.careProviderDisplayName} - ${system.value.value.careUnitDisplayName}</li>
-                        </c:if>
-                </c:forEach>
-            </ul>
+            <c:if test="${infotype}">
+                <ul>
+                    <c:forEach var="system" items="${state.csReport.systems.value[infotype]}">
+                            <c:if test="${system.visibility == 'SAME_CARE_UNIT' || system.visibility == 'OTHER_CARE_UNIT'}">
+                                <li>${system.value.value.careProviderDisplayName} - ${system.value.value.careUnitDisplayName}</li>
+                            </c:if>
+                    </c:forEach>
+                </ul>
+            </c:if>
         </li>
     </c:forEach>
 </ul>
 <br/>
-<c:if test="${state.ctx.otherProviders}">
+<c:if test="${!state.pdlReport.consent.value.hasConsent}">
+    <jsp:include page="establishConsent.jsp" />
+</c:if>
+<c:if test="${!state.showOtherCareProviders && state.pdlReport.consent.value.hasConsent}">
     <portlet:actionURL name="showOtherCareProviders" var="showOtherCareProvidersUrl" />
     <a href="${showOtherCareProvidersUrl}" class="link-button-mod">Visa information för andra vårdgivare</a>
 </c:if>

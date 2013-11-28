@@ -18,30 +18,31 @@
         <p>En eller flera frågor mot de bakomliggade säkerhetstjänsterna misslyckades. Var noggran när du väljer ut vilken information du tar del av eftersom du kan få tillgång till mer information än normalt.</p>
         <p>De tjänster som påverkades är följande system:</p>
         <ul>
-            <c:if test="${state.pdlReport.systems.outcome != Outcome.SUCCESS}">
+            <c:if test="${state.pdlReport.systems.outcome != 'SUCCESS'}">
                 <li>Tjänst för spärrar
                     <c:choose>
-                        <c:when test="state.pdlReport.systems.outcome == Outcome.CLIENT_FAILURE">misslyckades på grund av ett klientfel.</c:when>
-                        <c:when test="state.pdlReport.systems.outcome == Outcome.COMMUNICATION_FAILURE">misslyckades på grund av ett kommunikationsfel.</c:when>
-                        <c:when test="state.pdlReport.systems.outcome == Outcome.REMOTE_FAILURE">misslyckades på grund av ett fel i tjänsten.</c:when>
+                        <c:when test="${state.pdlReport.systems.outcome == 'CLIENT_FAILURE'}">misslyckades på grund av ett klientfel.</c:when>
+                        <c:when test="${state.pdlReport.systems.outcome == 'COMMUNICATION_FAILURE'}">misslyckades på grund av ett kommunikationsfel.</c:when>
+                        <c:when test="${state.pdlReport.systems.outcome == 'REMOTE_FAILURE'}">misslyckades på grund av ett fel i tjänsten.</c:when>
                     </c:choose></li>
             </c:if>
-            <c:if test="${state.pdlReport.hasRelationship.outcome != Outcome.SUCCESS}">
+            <c:if test="${state.pdlReport.hasRelationship.outcome != 'SUCCESS'}">
                 <li>Tjänst för patientrelation
                         <c:choose>
-                            <c:when test="state.pdlReport.hasRelationship.outcome == Outcome.CLIENT_FAILURE">misslyckades på grund av ett klientfel.</c:when>
-                            <c:when test="state.pdlReport.hasRelationship.outcome == Outcome.COMMUNICATION_FAILURE">misslyckades på grund av ett kommunikationsfel.</c:when>
-                            <c:when test="state.pdlReport.hasRelationship.outcome == Outcome.REMOTE_FAILURE">misslyckades på grund av ett fel i tjänsten.</c:when>
+                            <c:when test="${state.pdlReport.hasRelationship.outcome == 'CLIENT_FAILURE'}">misslyckades på grund av ett klientfel.</c:when>
+                            <c:when test="${state.pdlReport.hasRelationship.outcome == 'COMMUNICATION_FAILURE'}">misslyckades på grund av ett kommunikationsfel.</c:when>
+                            <c:when test="${state.pdlReport.hasRelationship.outcome == 'REMOTE_FAILURE'}">misslyckades på grund av ett fel i tjänsten.</c:when>
                         </c:choose></li>
                 </c:if>
             <c:if test="${state.pdlReport.consent.outcome != Outcome.SUCCESS}">
             <li>Tjänst för samtycke till sammanhållen journalföring
                     <c:choose>
-                        <c:when test="state.pdlReport.hasRelationship.outcome == Outcome.CLIENT_FAILURE">misslyckades på grund av ett klientfel.</c:when>
-                        <c:when test="state.pdlReport.hasRelationship.outcome == Outcome.COMMUNICATION_FAILURE">misslyckades på grund av ett kommunikationsfel.</c:when>
-                        <c:when test="state.pdlReport.hasRelationship.outcome == Outcome.REMOTE_FAILURE">misslyckades på grund av ett fel i tjänsten.</c:when>
+                        <c:when test="${state.pdlReport.hasRelationship.outcome == 'CLIENT_FAILURE'}">misslyckades på grund av ett klientfel.</c:when>
+                        <c:when test="${state.pdlReport.hasRelationship.outcome == 'COMMUNICATION_FAILURE'}">misslyckades på grund av ett kommunikationsfel.</c:when>
+                        <c:when test="${state.pdlReport.hasRelationship.outcome == 'REMOTE_FAILURE'}">misslyckades på grund av ett fel i tjänsten.</c:when>
                 </c:choose></li>
             </c:if>
         </ul>
+        <p>Alla dina val kommer att loggföras.</p>
     </div>
 </c:if>

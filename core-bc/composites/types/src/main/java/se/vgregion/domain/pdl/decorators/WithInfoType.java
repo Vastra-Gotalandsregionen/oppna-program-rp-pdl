@@ -22,8 +22,16 @@ public class WithInfoType<T extends Serializable> implements Serializable {
         return new WithInfoType<N>(informationType, newValue);
     }
 
-    public WithInfoType<T> mapInfoType(InformationType newInfoType) {
-        return new WithInfoType<T>(newInfoType, value);
+    public WithInfoType<T> mapInformationType(InformationType newInformationType) {
+        return new WithInfoType<T>(newInformationType, value);
+    }
+
+    public InformationType getInformationType() {
+        return informationType;
+    }
+
+    public T getValue() {
+        return value;
     }
 
     @Override

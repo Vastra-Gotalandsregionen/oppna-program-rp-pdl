@@ -10,7 +10,7 @@
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
-<h3 class="legend">Att intyga samtycke för sammanhållen journalföring</h3>
+<h3 class="legend">Det finns ytterligare information hos andra vårdgivare</h3>
 <p>
     Vill du se patientinformation från andra vårdgivare än din egen måste du intyga att patienten har gett sitt Samtycke för sammanhållen journalföring.
 </p>

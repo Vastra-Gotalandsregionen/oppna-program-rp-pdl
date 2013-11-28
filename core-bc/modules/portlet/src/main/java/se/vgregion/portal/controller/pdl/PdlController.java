@@ -116,9 +116,9 @@ public class PdlController {
             @RequestParam String emergency
     ) {
         LOGGER.trace(
-                "Request to create both consent and relationship between employee {} and patient {}.",
-                state.getCtx().value.employeeHsaId,
-                state.getPatient().patientId
+            "Request to create both consent and relationship between employee {} and patient {}.",
+            state.getCtx().value.employeeHsaId,
+            state.getPatient().patientId
         );
 
         establishConsent(response);
@@ -130,18 +130,18 @@ public class PdlController {
     @ActionMapping("establishRelation")
     public void establishRelationship(ActionResponse response) {
         LOGGER.trace(
-                "Request to create relationship between employee {} and patient {}.",
-                state.getCtx().value.employeeHsaId,
-                state.getPatient().patientId
+            "Request to create relationship between employee {} and patient {}.",
+            state.getCtx().value.employeeHsaId,
+            state.getPatient().patientId
         );
 
         PdlReport newReport = pdl.patientRelationship(
-                state.getCtx().value,
-                state.getPdlReport(),
-                state.getPatient().patientId,
-                "Reason",
-                1,
-                RoundedTimeUnit.NEAREST_HALF_HOUR
+            state.getCtx().value,
+            state.getPdlReport(),
+            state.getPatient().patientId,
+            "Reason",
+            1,
+            RoundedTimeUnit.NEAREST_HALF_HOUR
         );
 
         state.setPdlReport(newReport);
@@ -154,22 +154,22 @@ public class PdlController {
     @ActionMapping("establishConsent")
     public void establishConsent(ActionResponse response) {
         LOGGER.trace(
-                "Request to create consent between employee {} and patient {}.",
-                state.getCtx().value.employeeHsaId,
-                state.getPatient().patientId
+            "Request to create consent between employee {} and patient {}.",
+            state.getCtx().value.employeeHsaId,
+            state.getPatient().patientId
         );
 
         // FIXME 2013-10-21 : Magnus Andersson > Should choose between consent or emergency. Also add possiblility to be represented by someone?
         state.setPdlReport(
-                pdl.patientConsent(
-                        state.getCtx().value,
-                        state.getPdlReport(),
-                        state.getPatient().patientId,
-                        "Reason",
-                        1,
-                        RoundedTimeUnit.NEAREST_HALF_HOUR,
-                        PdlReport.ConsentType.Consent
-                )
+            pdl.patientConsent(
+                state.getCtx().value,
+                state.getPdlReport(),
+                state.getPatient().patientId,
+                "Reason",
+                1,
+                RoundedTimeUnit.NEAREST_HALF_HOUR,
+                PdlReport.ConsentType.Consent
+            )
         );
 
         log(UserAction.CONSENT);

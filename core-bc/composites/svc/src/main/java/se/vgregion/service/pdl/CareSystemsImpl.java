@@ -27,7 +27,7 @@ public class CareSystemsImpl implements CareSystems {
                                             "SE2321000131-E000000000001",
                                             "VGR",
                                             "SE2321000131-S000000010252",
-                                            "Sahlgrenska, Radiologi"
+                                            "Sahlgrenska, Radiologi 13"
                                         )
                                     ),
                                     new WithInfoType<CareSystem>(
@@ -37,7 +37,7 @@ public class CareSystemsImpl implements CareSystems {
                                             "SE2321000131-E000000000001",
                                             "VGR",
                                             "SE2321000131-S000000010252",
-                                            "Östra Sjukhuset, Hud"
+                                            "Östra Sjukhuset, Hud 32"
                                         )
                                     ),
                                     new WithInfoType<CareSystem>(
@@ -47,7 +47,7 @@ public class CareSystemsImpl implements CareSystems {
                                             "SE2321000131-E000000000001",
                                             "VGR",
                                             "SE2321000131-S000000010252",
-                                            "NU-Sjukvården, Psykiatri"
+                                            "NU-Sjukvården, Psykiatri 65"
                                         )
                                     ),
                                     new WithInfoType<CareSystem>(
@@ -57,7 +57,7 @@ public class CareSystemsImpl implements CareSystems {
                                             "SE2321000131-E000000000001",
                                             "VGR",
                                             "SE2321000131-S000000010254",
-                                            "Östra Sjukhuset, Barn- och Ungdomspsykiatri"
+                                            "Östra Sjukhuset, Barn- och Ungdomspsykiatri 23"
                                         )
                                     ),
                                     new WithInfoType<CareSystem>(
@@ -67,7 +67,7 @@ public class CareSystemsImpl implements CareSystems {
                                             "SE2321000132-E000000000001",
                                             "Capio Axess",
                                             "SE2321000132-S000000010254",
-                                            "Lundby Sjukhus, Radiologi"
+                                            "Lundby Sjukhus, Radiologi 54"
                                         )
                                     )
                             )
