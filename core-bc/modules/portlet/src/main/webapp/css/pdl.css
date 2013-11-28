@@ -29,6 +29,55 @@
     color: #3a87ad;
 }
 
+.pdl ul.infotypes {
+    list-style: none;
+    border: 1px solid #c4ced5;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.pdl ul.infotypes > li {
+    padding: 0px 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #c4ced5;
+}
+
+.pdl ul.infotypes > li.active {
+    background-color: #eef5fa;
+}
+
+.pdl ul.infotypes > li > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pdl ul.infotypes > li > ul li {
+    margin: 17px 0;
+    padding-right: 15px;
+    padding-left: 0px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #c4ced5;
+}
+
+.pdl ul.infotypes > li > ul > li:last-child {
+    margin: 17px 0;
+    margin-bottom: 5px;
+    padding-right: 15px;
+    padding-left: 0px;
+    padding-bottom: 0px;
+    border-bottom: 0px;
+}
+
+
+
+.pdl ul.infotypes > li:last-child {
+    border-bottom: 0px;
+}
 
 /*------- Link button mod -------*/
 
@@ -92,6 +141,8 @@
 
 .pdl .intro .element-mandatory-desc {
   font-size: 0.9em;
+  font-family: Ubuntu, Arial, Verdana, Helvetica, sans-serif;
+
 }
 
 .pdl .intro .element-mandatory {

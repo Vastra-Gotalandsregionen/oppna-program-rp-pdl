@@ -13,13 +13,19 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 
-<c:forEach var="infotype" items="${state.csReport.includeOtherCareProvider}">
-  <h3 class="legend">${infotype.desc}</h3>
-  <c:forEach var="system" items="${state.csReport.systems.value[infotype]}">
-      <ul>
-          <c:if test="${system.visibility == 'SAME_CARE_UNIT' || system.visibility == 'OTHER_CARE_UNIT' || system.visibility == 'OTHER_CARE_PROVIDER'}">
-              <li>${system.value.value.displayName}</li>
-          </c:if>
-      </ul>
-  </c:forEach>
-</c:forEach>
+<ul class="infotypes">
+    <c:forEach var="infotype" items="${state.csReport.onlySameCareUnit}">
+        <li><h3>${infotype.desc}</h3></li>
+        <li>
+            <ul>
+                <c:forEach var="system" items="${state.csReport.systems.value[infotype]}">
+                        <c:if test="${system.visibility == 'SAME_CARE_UNIT' || system.visibility == 'OTHER_CARE_UNIT' || system.visibility == 'OTHER_CARE_PROVIDER'}">
+                            <li>${system.value.value.careProviderDisplayName} - ${system.value.value.careUnitDisplayName}</li>
+                        </c:if>
+                </c:forEach>
+            </ul>
+        </li>
+    </c:forEach>
+</ul>
+<br/>
+

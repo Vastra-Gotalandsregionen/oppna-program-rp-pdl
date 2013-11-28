@@ -23,6 +23,8 @@ public class WithVisibility<T extends Serializable> implements Serializable {
         return new WithVisibility<N>(visibility, newValue);
     }
 
+    // TODO: 2013-11-27 : Magnus Andersson > Add static methods to describe ENUM
+
     public Visibility getVisibility() {
         return visibility;
     }

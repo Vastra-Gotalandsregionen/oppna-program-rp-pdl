@@ -37,7 +37,7 @@ public class CareSystemsImpl implements CareSystems {
                                             "SE2321000131-E000000000001",
                                             "VGR",
                                             "SE2321000131-S000000010252",
-                                            "Östra Sjukhuset, Undersökning"
+                                            "Östra Sjukhuset, Hud"
                                         )
                                     ),
                                     new WithInfoType<CareSystem>(
@@ -47,7 +47,7 @@ public class CareSystemsImpl implements CareSystems {
                                             "SE2321000131-E000000000001",
                                             "VGR",
                                             "SE2321000131-S000000010252",
-                                            "careUnitDisplayName"
+                                            "NU-Sjukvården, Psykiatri"
                                         )
                                     ),
                                     new WithInfoType<CareSystem>(
@@ -57,7 +57,7 @@ public class CareSystemsImpl implements CareSystems {
                                             "SE2321000131-E000000000001",
                                             "VGR",
                                             "SE2321000131-S000000010254",
-                                            "careUnitDisplayName"
+                                            "Östra Sjukhuset, Barn- och Ungdomspsykiatri"
                                         )
                                     ),
                                     new WithInfoType<CareSystem>(
@@ -67,7 +67,7 @@ public class CareSystemsImpl implements CareSystems {
                                             "SE2321000132-E000000000001",
                                             "Capio Axess",
                                             "SE2321000132-S000000010254",
-                                            "Radiologi Lundby Sjukhus"
+                                            "Lundby Sjukhus, Radiologi"
                                         )
                                     )
                             )

@@ -52,7 +52,7 @@ public class CareSystemsReport implements Serializable {
     }
 
     private static TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>> aggregateByInfotype(
-            ArrayList <WithInfoType<WithVisibility<WithBlock<CareSystem>>>> systemsWithBlocks
+            ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> systemsWithBlocks
     ) {
 
         TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems =

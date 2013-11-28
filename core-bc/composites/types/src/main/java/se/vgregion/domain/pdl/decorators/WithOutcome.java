@@ -43,7 +43,6 @@ public class WithOutcome<T extends Serializable> implements Serializable {
         return new WithOutcome<V>(Outcome.REMOTE_FAILURE, value);
     }
 
-
     public static<V extends Serializable, V1 extends V> WithOutcome<V> commFailure(V value) {
         return new WithOutcome<V>(Outcome.COMMUNICATION_FAILURE, value);
     }
