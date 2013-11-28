@@ -1,9 +1,79 @@
-/* Clearfix style clearing */
-.clearfix:after{clear:both;content:'.';display:block;visibility:hidden;height:0}
-.clearfix{display:inline-block}
-* html .clearfix{height:1%}
-.clearfix{display:block}
 
+/* Originall bootstrap callouts */
+.pdl .callout {
+    margin: 20px 0;
+    padding: 20px;
+    border-left: 3px solid #eee;
+}
+.pdl .callout-info {
+    background-color: #f4f8fa;
+    border-color: #bce8f1;
+}
+
+.pdl .callout-danger {
+    background-color: #fdf7f7;
+    border-color: #eed3d7;
+}
+
+.pdl .callout-warning {
+    background-color: #faf8f0;
+    border-color: #faebcc;
+}
+
+.pdl .callout-info {
+    background-color: #f4f8fa;
+    border-color: #bce8f1;
+}
+
+.pdl .callout-info h4 {
+    color: #3a87ad;
+}
+
+
+/*------- Link button mod -------*/
+
+.link-button-mod:visited,
+.link-button-mod {
+    background: #2f6ea1 url('../images/buttons/button-bg-normal.png') top left repeat-x;
+    border: 1px solid #29699e;
+    border-bottom-color: #245780;
+    color: #fff;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    display: inline-block;
+    float: left;
+    font-family: Ubuntu, Arial, Verdana, Helvetica, sans-serif;
+    font-size: 1.1em;
+    font-weight: normal;
+    line-height: 1.1em;
+    margin: 0 10px 10px 0;
+    padding: 10px 15px;
+    position: relative;
+    text-decoration: none;
+}
+
+.link-button-mod span {
+
+}
+
+.link-button-mod:hover {
+    border: 1px solid #245780;
+    color: #fff;
+    text-decoration: none;
+}
+
+.link-button-mod:hover,
+.link-button-mod:hover span {
+    cursor: pointer;
+}
+
+.link-button-mod-danger:visited,
+.link-button-mod-danger:hover,
+.link-button-mod-danger {
+    background: #b6383e url('../images/buttons/button-bg-danger.png') top left repeat-x;
+    border: 1px solid #872220;
+}
 
 /*------- Create Idea portlet -------*/
 .pdl > .outcome {
@@ -37,18 +107,20 @@
   padding-top: 10px;
 }
 
-.pdl-form .aui-fieldset-legend {
+.pdl h3.legend, .pdl-form .aui-fieldset-legend {
   color: #666;
   font-family: Ubuntu, Arial, Verdana, Helvetica, sans-serif;
   font-size: 1.4em;
   font-weight: normal;
 }
 
-.pdl-form .aui-legend {
+.pdl h3.legend, .pdl-form .aui-legend {
   border-bottom: 1px solid #d5e3ee;
   padding-bottom: 5px;
   width: 100%;
+  display:block;
 }
+
 
 /* Clearfix style clearing */
 .pdl-form .element-wrap:after{clear:both;content:'.';display:block;visibility:hidden;height:0}
@@ -152,3 +224,5 @@
 .ie7 .pdl-form .rp-button input[type="submit"] {
   display: inline;
 }
+
+

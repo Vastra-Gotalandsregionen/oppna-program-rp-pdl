@@ -25,7 +25,9 @@ public class CareSystemsImpl implements CareSystems {
                                         new CareSystem(
                                             "Bild- och funktionsregistret",
                                             "SE2321000131-E000000000001",
-                                            "SE2321000131-S000000010252"
+                                            "VGR",
+                                            "SE2321000131-S000000010252",
+                                            "Sahlgrenska, Radiologi"
                                         )
                                     ),
                                     new WithInfoType<CareSystem>(
@@ -33,7 +35,9 @@ public class CareSystemsImpl implements CareSystems {
                                         new CareSystem(
                                             "Bild- och funktionsregistret",
                                             "SE2321000131-E000000000001",
-                                            "SE2321000131-S000000010252"
+                                            "VGR",
+                                            "SE2321000131-S000000010252",
+                                            "Östra Sjukhuset, Undersökning"
                                         )
                                     ),
                                     new WithInfoType<CareSystem>(
@@ -41,7 +45,9 @@ public class CareSystemsImpl implements CareSystems {
                                         new CareSystem(
                                             "System X",
                                             "SE2321000131-E000000000001",
-                                            "SE2321000131-S000000010252"
+                                            "VGR",
+                                            "SE2321000131-S000000010252",
+                                            "careUnitDisplayName"
                                         )
                                     ),
                                     new WithInfoType<CareSystem>(
@@ -49,7 +55,9 @@ public class CareSystemsImpl implements CareSystems {
                                         new CareSystem(
                                             "Other Care Unit",
                                             "SE2321000131-E000000000001",
-                                            "SE2321000131-S000000010254"
+                                            "VGR",
+                                            "SE2321000131-S000000010254",
+                                            "careUnitDisplayName"
                                         )
                                     ),
                                     new WithInfoType<CareSystem>(
@@ -57,7 +65,9 @@ public class CareSystemsImpl implements CareSystems {
                                         new CareSystem(
                                             "Other Care Giver System",
                                             "SE2321000132-E000000000001",
-                                            "SE2321000132-S000000010254"
+                                            "Capio Axess",
+                                            "SE2321000132-S000000010254",
+                                            "Radiologi Lundby Sjukhus"
                                         )
                                     )
                             )

@@ -29,16 +29,16 @@ public class CareSystemReportSpec {
                 "SE2321000131-S000000010452"
         );
 
-        CareSystem sameUnit1 = new CareSystem("Same Unit 1", ctx.careProviderHsaId, ctx.careUnitHsaId);
-        CareSystem sameUnit2 = new CareSystem("Same Unit 2", ctx.careProviderHsaId, ctx.careUnitHsaId);
+        CareSystem sameUnit1 = new CareSystem("Same Unit 1", ctx.careProviderHsaId, "VGR", ctx.careUnitHsaId, "Unit 1");
+        CareSystem sameUnit2 = new CareSystem("Same Unit 2", ctx.careProviderHsaId, "VGR", ctx.careUnitHsaId, "Unit 1");
 
         String otherCareUnitHsaId = "SE2321000131-S000000010251";
-        CareSystem otherUnit1 = new CareSystem("Other Unit 1", ctx.careProviderHsaId, otherCareUnitHsaId);
-        CareSystem otherUnit2 = new CareSystem("Other Unit 2", ctx.careProviderHsaId, otherCareUnitHsaId);
+        CareSystem otherUnit1 = new CareSystem("Other Unit 1", ctx.careProviderHsaId, "VGR", otherCareUnitHsaId, "Unit 2");
+        CareSystem otherUnit2 = new CareSystem("Other Unit 2", ctx.careProviderHsaId, "VGR", otherCareUnitHsaId, "Unit 2");
 
         String otherCareProviderHsaId = "SE2321000131-E000000000011";
-        CareSystem otherProvider1 = new CareSystem("Other Provider 1", otherCareProviderHsaId, ctx.careUnitHsaId);
-        CareSystem otherProvider2 = new CareSystem("Other Provider 2", otherCareProviderHsaId, otherCareUnitHsaId);
+        CareSystem otherProvider1 = new CareSystem("Other Provider 1", otherCareProviderHsaId, "Capio Axess Lundby", ctx.careUnitHsaId, "Unit 3");
+        CareSystem otherProvider2 = new CareSystem("Other Provider 2", otherCareProviderHsaId, "Capio Axess Lundby", otherCareUnitHsaId, "Unit 4");
 
         ArrayList<WithInfoType<WithBlock<CareSystem>>> sourceSystems = new ArrayList<WithInfoType<WithBlock<CareSystem>>>();
         sourceSystems.add(wrapSystem(InformationType.LAK, false, sameUnit1));

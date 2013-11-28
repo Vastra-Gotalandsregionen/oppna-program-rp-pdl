@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/portlet" prefix="portlet" %>
@@ -16,9 +16,9 @@
 
 <jsp:include page="common.jsp" />
 
-<portlet:actionURL name="searchPatient" var="searchPatientURL" />
-<div>
-    <aui:form action="${searchPatientURL}" name="searchPatientForm" cssClass="pdl-form" method="post">
+<portlet:actionURL name="searchPatient" var="searchPatientUrl" />
+<div class="clearfix">
+    <aui:form action="${searchPatientUrl}" name="searchPatientForm" cssClass="pdl-form" method="post">
         <aui:fieldset label="S&ouml;k patientinformation">
                 <c:set var="elementWrapCssClass" scope="page" value="element-wrap" />
                 <c:if test="${status.error}">

@@ -24,8 +24,12 @@ public enum InformationType {
         this.desc = desc;
     }
 
+    public String getDesc() {
+        return desc;
+    }
+
     @Override
     public String toString() {
-        return this.getClass().getSimpleName().toLowerCase();
+        return name() + "("+desc+")";
     }
 }

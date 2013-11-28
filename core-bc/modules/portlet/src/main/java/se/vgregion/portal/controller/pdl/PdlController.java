@@ -110,7 +110,24 @@ public class PdlController {
         response.setRenderParameter("view", "pickInfoResource");
     }
 
-    @ActionMapping("establishRelationship")
+    @ActionMapping("establishRelationConsent")
+    public void establishRelationConsent(
+            ActionResponse response,
+            @RequestParam String emergency
+    ) {
+        LOGGER.trace(
+                "Request to create both consent and relationship between employee {} and patient {}.",
+                state.getCtx().value.employeeHsaId,
+                state.getPatient().patientId
+        );
+
+        establishConsent(response);
+        establishRelationship(response);
+
+        response.setRenderParameter("view", "pickInfoResource");
+    }
+
+    @ActionMapping("establishRelation")
     public void establishRelationship(ActionResponse response) {
         LOGGER.trace(
                 "Request to create relationship between employee {} and patient {}.",
@@ -166,8 +183,8 @@ public class PdlController {
         objectRepo.persist(log);
     }
 
-    @ActionMapping("otherCareUnits")
-    public void sameCareProvider(ActionResponse response) {
+    @ActionMapping("showOtherCareUnits")
+    public void showOtherCareUnits(ActionResponse response) {
         LOGGER.trace(
                 "Request to show more information within same care giver for employee {} and patient {}.",
                 state.getCtx().value.employeeHsaId,
@@ -183,17 +200,17 @@ public class PdlController {
         response.setRenderParameter("view", "pickInfoResource");
     }
 
-    @ActionMapping("includeOtherCareProvider")
-    public void otherProvider(ActionResponse response) {
+    @ActionMapping("showOtherCareProviders")
+    public void showOtherCareProviders(ActionResponse response) {
         LOGGER.trace(
-                "Request to show more information within same care giver for employee {} and patient {}.",
-                state.getCtx().value.employeeHsaId,
-                state.getPatient().patientId
+            "Request to show more information within same care giver for employee {} and patient {}.",
+            state.getCtx().value.employeeHsaId,
+            state.getPatient().patientId
         );
 
         // LOG SERVICE CALL
 
-        state.setShowOtherCareProvider(true);
+        state.setShowOtherCareProviders(true);
 
         log(UserAction.OTHER_CARE_PROVIDERS);
 

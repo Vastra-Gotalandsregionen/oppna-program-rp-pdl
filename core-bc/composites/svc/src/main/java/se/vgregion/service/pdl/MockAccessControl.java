@@ -9,6 +9,6 @@ import se.vgregion.domain.pdl.decorators.WithAccess;
 public class MockAccessControl implements AccessControl {
     @Override
     public WithAccess<PdlContext> authorize(PdlContext ctx) {
-        return WithAccess.sameProvider(ctx);
+        return WithAccess.withOtherProviders(ctx);
     }
 }

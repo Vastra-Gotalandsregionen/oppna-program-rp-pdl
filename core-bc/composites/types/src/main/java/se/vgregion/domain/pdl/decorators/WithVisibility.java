@@ -23,6 +23,14 @@ public class WithVisibility<T extends Serializable> implements Serializable {
         return new WithVisibility<N>(visibility, newValue);
     }
 
+    public Visibility getVisibility() {
+        return visibility;
+    }
+
+    public T getValue() {
+        return value;
+    }
+
     @Override
     public String toString() {
         return "WithVisibility{" +
