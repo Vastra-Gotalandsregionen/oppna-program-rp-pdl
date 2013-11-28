@@ -12,4 +12,20 @@ public class CheckedConsent implements Serializable {
         this.consentType = consentType;
         this.hasConsent = hasConsent;
     }
+
+    public PdlReport.ConsentType getConsentType() {
+        return consentType;
+    }
+
+    public Boolean getHasConsent() {
+        return hasConsent;
+    }
+
+    @Override
+    public String toString() {
+        return "CheckedConsent{" +
+                "consentType=" + consentType +
+                ", hasConsent=" + hasConsent +
+                '}';
+    }
 }

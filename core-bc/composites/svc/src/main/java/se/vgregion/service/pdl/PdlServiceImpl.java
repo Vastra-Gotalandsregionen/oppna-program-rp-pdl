@@ -47,6 +47,7 @@ public class PdlServiceImpl implements PdlService {
                 @Override
                 public Thread newThread(Runnable r) {
                     Thread thread = threadFactory.newThread(r);
+                    thread.setName("PDL-threadpool-" + thread.getName());
                     thread.setDaemon(true);
                     return thread;
                 }

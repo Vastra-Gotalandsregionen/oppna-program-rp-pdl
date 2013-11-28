@@ -10,41 +10,36 @@
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
+<link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/css/pdl.css" />
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 
+<jsp:include page="common.jsp" />
+
 <portlet:actionURL name="searchPatient" var="searchPatientURL" />
-
 <div>
-    <aui:form action="${searchPatientURL}" name="searchPatientForm" cssClass="pdl-patient-form" method="post">
-        <aui:fieldset label="Sök patientinformation">
-            <spring:bind path="patientId">
-              <c:set var="elementWrapCssClass" scope="page" value="element-wrap" />
-              <c:if test="${status.error}">
-                  <c:set var="elementWrapCssClass" scope="page" value="element-wrap element-has-errors" />
-              </c:if>
-              <div class="${elementWrapCssClass}">
-                  <aui:field-wrapper cssClass="element-field-wrap">
-                      <label for="<portlet:namespace />patientId">
-                          <span>Patient-ID</span>
-                      </label>
-                      <aui:input name="patientId" cssClass="element-field" type="text" />
-                  </aui:field-wrapper>
-              </div>
-            </spring:bind>
-
+    <aui:form action="${searchPatientURL}" name="searchPatientForm" cssClass="pdl-form" method="post">
+        <aui:fieldset label="S&ouml;k patientinformation">
+                <c:set var="elementWrapCssClass" scope="page" value="element-wrap" />
+                <c:if test="${status.error}">
+                    <c:set var="elementWrapCssClass" scope="page" value="element-wrap element-has-errors" />
+                </c:if>
             <div class="${elementWrapCssClass}">
                 <aui:field-wrapper cssClass="element-field-wrap">
-                    <label for="<portlet:namespace />assignment">
-                        <span>Uppdrag</span>
+                    <label for="<portlet:namespace />title">
+                        <span>Patient-ID</span>
+                        <!--span class="element-mandatory">*<span> Obligatorisk</span></span-->
                     </label>
-                    ${state.ctx.assignmentDisplayName}
+                    <aui:input name="patientId" cssClass="element-field" type="text" label="" />
                 </aui:field-wrapper>
+                <span class="element-field-help">
+                    Patient-ID ska anges på formatet ÅÅÅÅMMDDXXXX.
+                </span>
             </div>
-        </aui:fieldset>
+       </aui:fieldset>
 
         <aui:button-row>
-            <aui:button type="submit" value="Sök patientinformation" cssClass="rp-button" />
+            <aui:button type="submit" value="S&ouml;k &raquo;" cssClass="rp-button" />
         </aui:button-row>
     </aui:form>
 </div>

@@ -34,6 +34,8 @@ public class PdlUserState implements Serializable {
     public void reset() {
         showOtherCareUnits = false;
         showOtherCareProvider = false;
+        pdlReport = null;
+        csReport = null;
     }
 
     public Patient getPatient() {

@@ -6,7 +6,7 @@
   <portlet>
     <portlet-name>patientinformation-pdl</portlet-name>
     <instanceable>true</instanceable>
-    <css-class-wrapper>patientinformation-pdl</css-class-wrapper>
+    <css-class-wrapper>pdl</css-class-wrapper>
   </portlet>
   <role-mapper>
     <role-name>administrator</role-name>

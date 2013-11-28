@@ -12,6 +12,9 @@ public class PdlReport implements Serializable {
     public final WithOutcome<CheckedConsent> consent;
     public final WithOutcome<Boolean> hasRelationship;
     public final WithOutcome<ArrayList<WithInfoType<WithBlock<CareSystem>>>> systems;
+    public final boolean hasNonSuccessOutcome;
+    public final boolean missingBothRelationConsent;
+    private final boolean hasPatientInformation;
 
     public PdlReport(
             WithOutcome<ArrayList<WithInfoType<WithBlock<CareSystem>>>> checkedSystems,
@@ -21,6 +24,17 @@ public class PdlReport implements Serializable {
         this.hasRelationship = hasRelationship;
         this.systems = checkedSystems;
         this.consent = checkedConsent;
+
+        this.hasPatientInformation = systems.value.size() > 0;
+
+        this.hasNonSuccessOutcome =
+                this.hasRelationship.outcome != Outcome.SUCCESS ||
+                this.systems.outcome != Outcome.SUCCESS ||
+                this.consent.outcome != Outcome.SUCCESS;
+
+        this.missingBothRelationConsent =
+                !this.hasRelationship.value &&
+                !this.consent.value.hasConsent;
     }
 
     public PdlReport withBlocks(WithOutcome<ArrayList<WithInfoType<WithBlock<CareSystem>>>> unblockedInformation) {
@@ -57,12 +71,27 @@ public class PdlReport implements Serializable {
         return hasRelationship;
     }
 
+    public boolean isHasNonSuccessOutcome() {
+        return hasNonSuccessOutcome;
+    }
+
+    public boolean isMissingBothRelationConsent() {
+        return missingBothRelationConsent;
+    }
+
+    public boolean isHasPatientInformation() {
+        return hasPatientInformation;
+    }
+
     @Override
     public String toString() {
         return "PdlReport{" +
                 "consent=" + consent +
                 ", hasRelationship=" + hasRelationship +
                 ", systems=" + systems +
+                ", hasNonSuccessOutcome=" + hasNonSuccessOutcome +
+                ", missingBothRelationConsent=" + missingBothRelationConsent +
+                ", hasPatientInformation=" + hasPatientInformation +
                 '}';
     }
 

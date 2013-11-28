@@ -67,7 +67,7 @@ public class Report {
     }
 
     private static WithOutcome<Boolean> relationshipWithFallback(Future<WithOutcome<Boolean>> relationshipFuture, String patientId) {
-        WithOutcome<Boolean> hasRelationship = WithOutcome.clientError(false);
+        WithOutcome<Boolean> hasRelationship = WithOutcome.clientError(true);
         try {
             hasRelationship = relationshipFuture.get();
         } catch (InterruptedException e) {

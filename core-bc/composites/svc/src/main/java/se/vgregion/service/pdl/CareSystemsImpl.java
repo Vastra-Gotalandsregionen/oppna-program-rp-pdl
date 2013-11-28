@@ -15,6 +15,7 @@ public class CareSystemsImpl implements CareSystems {
 
     @Override
     public List<WithInfoType<CareSystem>> byPatientId(PdlContext ctx, String patientId) {
+        //noinspection unchecked
         return Collections
                 .unmodifiableList(
                         Arrays
