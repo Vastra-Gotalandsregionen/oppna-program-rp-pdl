@@ -43,8 +43,6 @@ public class PdlController {
     @Autowired
     private ObjectRepo objectRepo;
     @Autowired
-    private PatientRepository patients;
-    @Autowired
     private AccessControl access;
 
     @ModelAttribute("state")
@@ -76,10 +74,10 @@ public class PdlController {
         Patient patient = state.getPatient();
         log.setPatientDisplayName(patient.getPatientDisplayName());
         log.setPatientId(patient.getPatientId());
-        log.setEmployeeId(state.getCtx().employeeHsaId);
-        log.setAssignmentId(state.getCtx().assignmentHsaId);
-        log.setCareProviderId(state.getCtx().getCareProviderHsaId());
-        log.setCareUnitId(state.getCtx().getCareUnitHsaId());
+        log.setEmployeeId(state.getCtx().value.employeeHsaId);
+        log.setAssignmentId(state.getCtx().value.assignmentHsaId);
+        log.setCareProviderId(state.getCtx().value.getCareProviderHsaId());
+        log.setCareUnitId(state.getCtx().value.getCareUnitHsaId());
         return log;
     }
 
