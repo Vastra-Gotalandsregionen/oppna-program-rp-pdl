@@ -1,6 +1,6 @@
 package se.vgregion.domain.pdl.logging;
 
-import org.apache.commons.collections.BeanMap;
+import org.apache.commons.beanutils.BeanMap;
 
 import javax.persistence.*;
 import java.util.Date;
