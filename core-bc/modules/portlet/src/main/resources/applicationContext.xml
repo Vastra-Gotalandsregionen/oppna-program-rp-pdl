@@ -11,6 +11,7 @@
       <list>
         <value>file:${user.home}/.pdl/application.properties</value>
         <value>file:${user.home}/.pdl/security.properties</value>
+        <value>file:${user.home}/.pdl/datasource.properties</value>
       </list>
     </property>
     <property name="ignoreResourceNotFound" value="false"/>

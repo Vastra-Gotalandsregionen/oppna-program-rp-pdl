@@ -10,10 +10,16 @@ public class PdlContext implements Serializable {
     public final String employeeHsaId;
     public final String assignmentDisplayName;
     public final String assignmentHsaId;
+    public final String careProviderDisplayName;
+    public final String careUnitDisplayName;
+    public final String employeeDisplayName;
 
     public PdlContext(
+            String careProviderDisplayName,
             String careProviderHsaId,
+            String careUnitDisplayName,
             String careUnitHsaId,
+            String employeeDisplayName,
             String employeeHsaId,
             String assignmentDisplayName,
             String assignmentHsaId
@@ -24,6 +30,9 @@ public class PdlContext implements Serializable {
         this.assignmentDisplayName = assignmentDisplayName;
         this.assignmentHsaId = assignmentHsaId;
 
+        this.careProviderDisplayName = careProviderDisplayName;
+        this.careUnitDisplayName = careUnitDisplayName;
+        this.employeeDisplayName = employeeDisplayName;
     }
 
     public String getCareProviderHsaId() {
@@ -46,6 +55,18 @@ public class PdlContext implements Serializable {
         return assignmentDisplayName;
     }
 
+    public String getCareProviderDisplayName() {
+        return careProviderDisplayName;
+    }
+
+    public String getCareUnitDisplayName() {
+        return careUnitDisplayName;
+    }
+
+    public String getEmployeeDisplayName() {
+        return employeeDisplayName;
+    }
+
     @Override
     public String toString() {
         return "PdlContext{" +
@@ -53,6 +74,10 @@ public class PdlContext implements Serializable {
                 ", careUnitHsaId='" + careUnitHsaId + '\'' +
                 ", employeeHsaId='" + employeeHsaId + '\'' +
                 ", assignmentDisplayName='" + assignmentDisplayName + '\'' +
+                ", assignmentHsaId='" + assignmentHsaId + '\'' +
+                ", careProviderDisplayName='" + careProviderDisplayName + '\'' +
+                ", careUnitDisplayName='" + careUnitDisplayName + '\'' +
+                ", employeeDisplayName='" + employeeDisplayName + '\'' +
                 '}';
     }
 }

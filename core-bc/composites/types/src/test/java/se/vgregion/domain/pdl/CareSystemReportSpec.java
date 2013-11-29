@@ -22,8 +22,11 @@ public class CareSystemReportSpec {
     public void setup() throws Exception
     {
         ctx = new PdlContext(
+                "VGR",
                 "SE2321000131-E000000000001",
+                "Sahlgrenska, Radiologi 32",
                 "SE2321000131-S000000010252",
+                "Ludvig Läkare",
                 "SE2321000131-P000000069215",
                 "Sammanhållen Journalföring",
                 "SE2321000131-S000000010452"

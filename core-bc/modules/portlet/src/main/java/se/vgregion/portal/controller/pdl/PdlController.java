@@ -74,9 +74,12 @@ public class PdlController {
         Patient patient = state.getPatient();
         log.setPatientDisplayName(patient.getPatientDisplayName());
         log.setPatientId(patient.getPatientId());
+        log.setEmployeeDisplayName(state.getCtx().value.employeeDisplayName);
         log.setEmployeeId(state.getCtx().value.employeeHsaId);
         log.setAssignmentId(state.getCtx().value.assignmentHsaId);
+        log.setCareProviderDisplayName(state.getCtx().value.getCareProviderDisplayName());
         log.setCareProviderId(state.getCtx().value.getCareProviderHsaId());
+        log.setCareUnitDisplayName(state.getCtx().value.getCareUnitDisplayName());
         log.setCareUnitId(state.getCtx().value.getCareUnitHsaId());
         return log;
     }
@@ -189,8 +192,6 @@ public class PdlController {
                 state.getPatient().patientId
         );
 
-        // LOG SERVICE CALL
-
         state.setShowOtherCareUnits(true);
 
         log(UserAction.OTHER_CARE_UNITS);
@@ -206,7 +207,6 @@ public class PdlController {
             state.getPatient().patientId
         );
 
-        // LOG SERVICE CALL
 
         state.setShowOtherCareProviders(true);
 
@@ -224,10 +224,14 @@ public class PdlController {
 
     private PdlContext currentContext() {
         return new PdlContext(
-                "SE2321000131-E000000000001",
-                "SE2321000131-S000000010252",
-                "SE2321000131-P000000069215",
-                "Sammanhållen Journalföring",
-                "SE2321000131-S000000010452");
+                    "VGR",
+                    "SE2321000131-E000000000001",
+                    "Sahlgrenska, Radiologi 32",
+                    "SE2321000131-S000000010252",
+                    "Ludvig Läkare",
+                    "SE2321000131-P000000069215",
+                    "Sammanhållen Journalföring",
+                    "SE2321000131-S000000010452"
+                );
     }
 }

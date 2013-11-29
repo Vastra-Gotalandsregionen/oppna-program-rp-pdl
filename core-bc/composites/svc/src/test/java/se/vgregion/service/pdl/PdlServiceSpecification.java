@@ -62,11 +62,14 @@ public class PdlServiceSpecification {
         MockitoAnnotations.initMocks(this);
 
         ctx = new PdlContext(
-            "SE2321000131-E000000000001",
-            "SE2321000131-S000000010252",
-            "SE2321000131-P000000069215",
-            "Sammanhållen Journalföring",
-            "SE2321000131-S000000010452"
+                "VGR",
+                "SE2321000131-E000000000001",
+                "Sahlgrenska, Radiologi 32",
+                "SE2321000131-S000000010252",
+                "Ludvig Läkare",
+                "SE2321000131-P000000069215",
+                "Sammanhållen Journalföring",
+                "SE2321000131-S000000010452"
         );
 
         PatientRepository patients = new KivPatientRepository();
