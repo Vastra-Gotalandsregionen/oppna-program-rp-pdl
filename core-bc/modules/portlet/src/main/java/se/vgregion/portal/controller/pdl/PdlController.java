@@ -81,6 +81,8 @@ public class PdlController {
         log.setCareProviderId(state.getCtx().value.getCareProviderHsaId());
         log.setCareUnitDisplayName(state.getCtx().value.getCareUnitDisplayName());
         log.setCareUnitId(state.getCtx().value.getCareUnitHsaId());
+        log.setCreationTime(new Date());
+        log.setSystemId("Regionportalen");
         return log;
     }
 

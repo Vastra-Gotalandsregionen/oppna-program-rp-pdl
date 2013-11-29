@@ -47,6 +47,7 @@ public class PdlEventLog extends ActorsLog {
     private String assignmentId; // HsaId
 
     @Column(name = "user_action", updatable = false)
+    @Enumerated(EnumType.STRING)
     private UserAction userAction;
 
     @Column(name = "log_text", updatable = false)
