@@ -14,19 +14,10 @@
 <liferay-theme:defineObjects />
 
 <ul class="infotypes">
-    <c:forEach var="infotype" items="${state.csReport.onlySameCareUnit}">
-        <li><h3>${infotype.desc} (${infotype.selected})</h3></li>
-        <li>
-            <c:if test="${infotype}">
-                <ul>
-                    <c:forEach var="system" items="${state.csReport.systems.value[infotype]}">
-                            <c:if test="${system.visibility == 'SAME_CARE_UNIT' || system.visibility == 'OTHER_CARE_UNIT'}">
-                                <li>${system.value.value.careProviderDisplayName} - ${system.value.value.careUnitDisplayName}</li>
-                            </c:if>
-                    </c:forEach>
-                </ul>
-            </c:if>
-        </li>
+    <c:forEach var="systemsEntry" items="${state.csReport.systems.value}">
+        <c:if test="${state.csReport.onlySameCareUnit.contains(systemsEntry.key.value)}">
+            <li><h3>${systemsEntry.key.value.desc} (${systemsEntry.key.selected})</h3></li>
+        </c:if>
     </c:forEach>
 </ul>
 <br/>

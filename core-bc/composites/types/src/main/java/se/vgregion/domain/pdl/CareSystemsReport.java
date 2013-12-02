@@ -6,19 +6,15 @@ import org.slf4j.LoggerFactory;
 import se.vgregion.domain.pdl.decorators.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 public class CareSystemsReport implements Serializable {
     private static final long serialVersionUID = 734432845857726758L;
     private static final Logger LOGGER = LoggerFactory.getLogger(CareSystemsReport.class.getName());
 
-    public final WithOutcome<TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> systems;
-    public final EnumSet<InformationType> onlySameCareUnit;
-    public final EnumSet<InformationType> includeOtherCareUnit;
-    public final EnumSet<InformationType> includeOtherCareProvider;
+    public final WithOutcome<TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> onlySameCareUnit;
+    public final WithOutcome<TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> includeOtherCareUnit;
+    public final WithOutcome<TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> includeOtherCareProvider;
 
     public CareSystemsReport(WithAccess<PdlContext> ctx, PdlReport pdlReport) {
 
@@ -28,17 +24,34 @@ public class CareSystemsReport implements Serializable {
         ArrayList <WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems =
                 categorizeSystems(ctx.value, careSystems);
 
-        // Sets that increasingly contains information types for different categories
-        onlySameCareUnit = infoTypeByVisibility(categorizedSystems, EnumSet.of(Visibility.SAME_CARE_UNIT));
-        includeOtherCareUnit = infoTypeByVisibility(categorizedSystems, EnumSet.of(Visibility.SAME_CARE_UNIT, Visibility.OTHER_CARE_UNIT));
-        includeOtherCareProvider = infoTypeByVisibility(categorizedSystems, EnumSet.allOf(Visibility.class));
-
         // Aggregate into a map by information type.
-        TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>> aggregatedSystems =
+        TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>> aggregatedSystems =
                 aggregateByInfotype(categorizedSystems);
 
+        // Sets that increasingly contains information types for different categories
+        onlySameCareUnit = pdlReport.systems.mapValue(
+                infoTypeByVisibility(
+                        aggregatedSystems,
+                        EnumSet.of(Visibility.SAME_CARE_UNIT)
+                )
+        );
+
+        includeOtherCareUnit = pdlReport.systems.mapValue(
+                infoTypeByVisibility(
+                        aggregatedSystems,
+                        EnumSet.of(Visibility.SAME_CARE_UNIT, Visibility.OTHER_CARE_UNIT)
+                )
+        );
+
+        includeOtherCareProvider = pdlReport.systems.mapValue(
+                infoTypeByVisibility(
+                        aggregatedSystems,
+                        EnumSet.allOf(Visibility.class)
+                )
+        );
+
         // Re-add fallback information.
-        systems = pdlReport.systems.mapValue(aggregatedSystems);
+        //systems = pdlReport.systems.mapValue(aggregatedSystems);
     }
 
     private ArrayList<WithInfoType<WithBlock<CareSystem>>> removeOtherProviders(PdlContext ctx, ArrayList<WithInfoType<WithBlock<CareSystem>>> systems) {
@@ -51,48 +64,75 @@ public class CareSystemsReport implements Serializable {
         return filtered;
     }
 
-    private static TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>> aggregateByInfotype(
+    private static Comparator infoTypeComparator = new Comparator() {
+        @Override
+        public int compare(Object o1, Object o2) {
+            if (o1 instanceof WithSelection && o2 instanceof WithSelection) {
+                WithSelection<InformationType> ws1 = (WithSelection<InformationType>) o1;
+                WithSelection<InformationType> ws2 = (WithSelection<InformationType>) o2;
+                return ws1.value.compareTo(ws2.value);
+            }
+
+            if(o1 instanceof InformationType || o2 instanceof WithSelection) {
+                InformationType it1 = (InformationType)o1;
+                WithSelection<InformationType>ws2 =  (WithSelection<InformationType>) o2;
+                return it1.compareTo(ws2.value);
+            }
+
+            throw new ClassCastException();
+        }
+    };
+
+    private static TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>> aggregateByInfotype(
             ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> systemsWithBlocks
     ) {
 
-        TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems =
-                new TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>>();
+        TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems =
+                new TreeMap<WithSelection<InformationType>, ArrayList <WithVisibility<WithBlock<CareSystem>>>>(infoTypeComparator);
 
         for (WithInfoType<WithVisibility<WithBlock<CareSystem>>> system : systemsWithBlocks) {
+            WithSelection<InformationType> deselectedInfoType = WithSelection.getDeselected(system.informationType);
             ArrayList<WithVisibility<WithBlock<CareSystem>>> infoSystemList =
-                    getOrCreateList(categorizedSystems, system.informationType);
+                    getOrCreateList(categorizedSystems, deselectedInfoType);
 
             infoSystemList.add(system.value);
-            categorizedSystems.put(system.informationType, infoSystemList);
+            categorizedSystems.put(deselectedInfoType, infoSystemList);
         }
 
         return categorizedSystems;
     }
 
     private static  ArrayList<WithVisibility<WithBlock<CareSystem>>> getOrCreateList(
-            TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems,
-            InformationType informationType
+            TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems,
+            WithSelection<InformationType> informationType
     ) {
         return (categorizedSystems.containsKey(informationType)) ?
                 categorizedSystems.get(informationType) : new ArrayList<WithVisibility<WithBlock<CareSystem>>>();
     }
 
-    private EnumSet<InformationType> infoTypeByVisibility(
-            ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems,
+    private TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>> infoTypeByVisibility(
+            TreeMap<
+                    WithSelection<InformationType>,
+                    ArrayList<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems,
             EnumSet<Visibility> visibility
     ) {
-        List<InformationType> infoTypes = new ArrayList<InformationType>();
+        TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>> filtered =
+                new TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>>();
 
-        for (WithInfoType<WithVisibility<WithBlock<CareSystem>>> sys : categorizedSystems) {
-            if (visibility.contains(sys.value.visibility)) {
-                infoTypes.add(sys.informationType);
+        for(WithSelection<InformationType> sysKey : categorizedSystems.keySet()) {
+            ArrayList<WithVisibility<WithBlock<CareSystem>>> list = categorizedSystems.get(sysKey);
+            ArrayList<WithVisibility<WithBlock<CareSystem>>> filteredList = new ArrayList<WithVisibility<WithBlock<CareSystem>>>();
+            for(WithVisibility<WithBlock<CareSystem>> sys : list) {
+                if(visibility.contains(sys.visibility)) {
+                    filteredList.add(sys);
+                }
+            }
+            if(filteredList.size() > 0) {
+                filtered.put(sysKey, filteredList);
             }
         }
-        if( infoTypes.size() > 0 ) {
-            return EnumSet.copyOf(infoTypes);
-        } else {
-            return EnumSet.noneOf(InformationType.class);
-        }
+
+        return filtered;
     }
 
     private ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizeSystems(
@@ -134,27 +174,22 @@ public class CareSystemsReport implements Serializable {
         );
     }
 
-    public WithOutcome<TreeMap<InformationType, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> getSystems() {
-        return systems;
-    }
-
-    public EnumSet<InformationType> getOnlySameCareUnit() {
+    public WithOutcome<TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> getOnlySameCareUnit() {
         return onlySameCareUnit;
     }
 
-    public EnumSet<InformationType> getIncludeOtherCareUnit() {
+    public WithOutcome<TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> getIncludeOtherCareUnit() {
         return includeOtherCareUnit;
     }
 
-    public EnumSet<InformationType> getIncludeOtherCareProvider() {
+    public WithOutcome<TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> getIncludeOtherCareProvider() {
         return includeOtherCareProvider;
     }
 
     @Override
     public String toString() {
         return "CareSystemsReport{" +
-                "systems=" + systems +
-                ", onlySameCareUnit=" + onlySameCareUnit +
+                "onlySameCareUnit=" + onlySameCareUnit +
                 ", includeOtherCareUnit=" + includeOtherCareUnit +
                 ", includeOtherCareProvider=" + includeOtherCareProvider +
                 '}';

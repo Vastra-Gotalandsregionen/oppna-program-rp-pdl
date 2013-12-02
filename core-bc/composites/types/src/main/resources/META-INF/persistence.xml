@@ -4,13 +4,5 @@
 
     <persistence-unit name="default">
         <class>se.vgregion.domain.pdl.logging.PdlEventLog</class>
-        <!--
-        <class>se.vgregion.domain.pdl.logging.Activity</class>
-        <class>se.vgregion.domain.pdl.logging.CareProvider</class>
-        <class>se.vgregion.domain.pdl.logging.CareUnit</class>
-        <class>se.vgregion.domain.pdl.logging.Patient</class>
-        <class>se.vgregion.domain.pdl.logging.User</class>
-        <class>se.vgregion.domain.pdl.logging.System</class>
-        -->
     </persistence-unit>
 </persistence>
