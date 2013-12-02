@@ -3,10 +3,7 @@ package se.vgregion.portal.controller.pdl;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
-import se.vgregion.domain.pdl.CareSystemsReport;
-import se.vgregion.domain.pdl.Patient;
-import se.vgregion.domain.pdl.PdlContext;
-import se.vgregion.domain.pdl.PdlReport;
+import se.vgregion.domain.pdl.*;
 import se.vgregion.domain.pdl.decorators.WithAccess;
 
 import java.io.Serializable;
@@ -37,6 +34,14 @@ public class PdlUserState implements Serializable {
         showOtherCareProviders = false;
         pdlReport = null;
         csReport = null;
+    }
+
+    public boolean getCheckVisibility(Visibility visibility) {
+        boolean same = visibility == Visibility.SAME_CARE_UNIT;
+        boolean otherUnit = visibility == Visibility.OTHER_CARE_UNIT && showOtherCareUnits;
+        boolean otherProvider = visibility == Visibility.OTHER_CARE_PROVIDER && showOtherCareProviders;
+
+        return same || otherUnit || otherProvider;
     }
 
     public Patient getPatient() {

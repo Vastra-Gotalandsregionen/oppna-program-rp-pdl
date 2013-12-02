@@ -74,12 +74,8 @@ public class CareSystemReportSpec {
         WithAccess<PdlContext> c = WithAccess.withOtherProviders(ctx);
         CareSystemsReport report = new CareSystemsReport(c, mockReport);
 
-        assertEquals(Outcome.SUCCESS, report.onlySameCareUnit.outcome);
-        assertEquals(Outcome.SUCCESS, report.includeOtherCareUnit.outcome);
-        assertEquals(Outcome.SUCCESS, report.includeOtherCareProvider.outcome);
-        assertEquals(1, report.onlySameCareUnit.value.size());
-        assertEquals(2, report.includeOtherCareUnit.value.size());
-        assertEquals(3, report.includeOtherCareProvider.value.size());
+        assertEquals(Outcome.SUCCESS, report.aggregatedSystems.outcome);
+        assertEquals(3, report.aggregatedSystems.value.size());
 
     }
 
@@ -89,11 +85,8 @@ public class CareSystemReportSpec {
         WithAccess<PdlContext> c = WithAccess.sameProvider(ctx);
         CareSystemsReport report = new CareSystemsReport(c, mockReport);
 
-        assertEquals(Outcome.SUCCESS, report.includeOtherCareProvider.outcome);
-        assertEquals(1, report.onlySameCareUnit.value.size());
-        assertEquals(2, report.includeOtherCareUnit.value.size());
-        assertEquals(2, report.includeOtherCareProvider.value.size());
-        //assertEquals(report.includeOtherCareUnit, report.includeOtherCareProvider); // FIXME 2013-12-02 : Magnus Andersson > This is not working, something messed up in compareTo?
+        assertEquals(Outcome.SUCCESS, report.aggregatedSystems.outcome);
+        assertEquals(2, report.aggregatedSystems.value.size());
     }
 
     private WithInfoType<WithBlock<CareSystem>> wrapSystem(

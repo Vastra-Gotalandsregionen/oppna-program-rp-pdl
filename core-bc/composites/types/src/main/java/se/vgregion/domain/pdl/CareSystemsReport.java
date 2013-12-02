@@ -6,15 +6,16 @@ import org.slf4j.LoggerFactory;
 import se.vgregion.domain.pdl.decorators.*;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.EnumSet;
+import java.util.TreeMap;
 
 public class CareSystemsReport implements Serializable {
     private static final long serialVersionUID = 734432845857726758L;
     private static final Logger LOGGER = LoggerFactory.getLogger(CareSystemsReport.class.getName());
 
-    public final WithOutcome<TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> onlySameCareUnit;
-    public final WithOutcome<TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> includeOtherCareUnit;
-    public final WithOutcome<TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> includeOtherCareProvider;
+    public final WithOutcome<TreeMap<WithSelection<InformationType>, ArrayList<UserInteractionState<CareSystem>>>> aggregatedSystems;
 
     public CareSystemsReport(WithAccess<PdlContext> ctx, PdlReport pdlReport) {
 
@@ -25,36 +26,53 @@ public class CareSystemsReport implements Serializable {
                 categorizeSystems(ctx.value, careSystems);
 
         // Aggregate into a map by information type.
-        TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>> aggregatedSystems =
+        TreeMap<WithSelection<InformationType>, ArrayList<UserInteractionState<CareSystem>>> aggregatedSystems =
                 aggregateByInfotype(categorizedSystems);
 
-        // Sets that increasingly contains information types for different categories
-        onlySameCareUnit = pdlReport.systems.mapValue(
-                infoTypeByVisibility(
-                        aggregatedSystems,
-                        EnumSet.of(Visibility.SAME_CARE_UNIT)
-                )
-        );
-
-        includeOtherCareUnit = pdlReport.systems.mapValue(
-                infoTypeByVisibility(
-                        aggregatedSystems,
-                        EnumSet.of(Visibility.SAME_CARE_UNIT, Visibility.OTHER_CARE_UNIT)
-                )
-        );
-
-        includeOtherCareProvider = pdlReport.systems.mapValue(
-                infoTypeByVisibility(
-                        aggregatedSystems,
-                        EnumSet.allOf(Visibility.class)
-                )
-        );
-
-        // Re-add fallback information.
-        //systems = pdlReport.systems.mapValue(aggregatedSystems);
+        this.aggregatedSystems = pdlReport.systems.mapValue(aggregatedSystems);
     }
 
-    private ArrayList<WithInfoType<WithBlock<CareSystem>>> removeOtherProviders(PdlContext ctx, ArrayList<WithInfoType<WithBlock<CareSystem>>> systems) {
+    private CareSystemsReport(WithOutcome<TreeMap<WithSelection<InformationType>, ArrayList<UserInteractionState<CareSystem>>>> aggregatedSystems) {
+        this.aggregatedSystems = aggregatedSystems;
+    }
+
+    public CareSystemsReport selectInfoResource(String id) {
+        TreeMap<WithSelection<InformationType>, ArrayList<UserInteractionState<CareSystem>>> newSystems =
+                new TreeMap<WithSelection<InformationType>, ArrayList<UserInteractionState<CareSystem>>>();
+
+        for(WithSelection<InformationType> key : aggregatedSystems.value.keySet()) {
+            if(key.id.equals(id)) {
+                newSystems.put(key.select(), aggregatedSystems.value.get(key));
+            } else {
+                newSystems.put(key, aggregatedSystems.value.get(key));
+            }
+        }
+        return new CareSystemsReport(aggregatedSystems.mapValue(newSystems));
+    }
+
+    public CareSystemsReport toggleInformation(String id) {
+        TreeMap<WithSelection<InformationType>, ArrayList<UserInteractionState<CareSystem>>> newSystems =
+                new TreeMap<WithSelection<InformationType>, ArrayList<UserInteractionState<CareSystem>>>();
+
+        for(WithSelection<InformationType> key : aggregatedSystems.value.keySet()) {
+            ArrayList<UserInteractionState<CareSystem>> sysList =
+                    new ArrayList<UserInteractionState<CareSystem>>();
+
+            for(UserInteractionState<CareSystem> uis : aggregatedSystems.value.get(key)) {
+                if(uis.id.equals(id)){
+                    UserInteractionState<CareSystem> newSelection = (uis.selected) ? uis.deselect() : uis.select();
+                    sysList.add(newSelection);
+                } else {
+                    sysList.add(uis);
+                }
+            }
+
+            newSystems.put(key, sysList);
+        }
+        return new CareSystemsReport(aggregatedSystems.mapValue(newSystems));
+    }
+
+    private ArrayList<WithInfoType<WithBlock<CareSystem>>> removeOtherProviders(PdlContext ctx, ArrayList <WithInfoType<WithBlock<CareSystem>>> systems) {
         ArrayList<WithInfoType<WithBlock<CareSystem>>> filtered = new ArrayList<WithInfoType<WithBlock<CareSystem>>>();
         for( WithInfoType<WithBlock<CareSystem>> system : systems ){
             if(ctx.careProviderHsaId.equals(system.value.value.careProviderHsaId)) {
@@ -83,46 +101,47 @@ public class CareSystemsReport implements Serializable {
         }
     };
 
-    private static TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>> aggregateByInfotype(
+    private static TreeMap<WithSelection<InformationType>, ArrayList<UserInteractionState<CareSystem>>> aggregateByInfotype(
             ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> systemsWithBlocks
     ) {
 
-        TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems =
-                new TreeMap<WithSelection<InformationType>, ArrayList <WithVisibility<WithBlock<CareSystem>>>>(infoTypeComparator);
+        TreeMap<WithSelection<InformationType>, ArrayList<UserInteractionState<CareSystem>>> categorizedSystems =
+                new TreeMap<WithSelection<InformationType>, ArrayList<UserInteractionState<CareSystem>>>(infoTypeComparator);
 
         for (WithInfoType<WithVisibility<WithBlock<CareSystem>>> system : systemsWithBlocks) {
+            UserInteractionState<CareSystem> sysState = UserInteractionState.flattenAddSelection(system.value);
             WithSelection<InformationType> deselectedInfoType = WithSelection.getDeselected(system.informationType);
-            ArrayList<WithVisibility<WithBlock<CareSystem>>> infoSystemList =
-                    getOrCreateList(categorizedSystems, deselectedInfoType);
 
-            infoSystemList.add(system.value);
+            ArrayList<UserInteractionState<CareSystem>> infoSystemList = getOrCreateList(categorizedSystems, deselectedInfoType);
+
+            infoSystemList.add(sysState);
             categorizedSystems.put(deselectedInfoType, infoSystemList);
         }
 
         return categorizedSystems;
     }
 
-    private static  ArrayList<WithVisibility<WithBlock<CareSystem>>> getOrCreateList(
-            TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems,
+    private static  ArrayList<UserInteractionState<CareSystem>> getOrCreateList(
+            TreeMap<WithSelection<InformationType>, ArrayList<UserInteractionState<CareSystem>>> categorizedSystems,
             WithSelection<InformationType> informationType
     ) {
         return (categorizedSystems.containsKey(informationType)) ?
-                categorizedSystems.get(informationType) : new ArrayList<WithVisibility<WithBlock<CareSystem>>>();
+                categorizedSystems.get(informationType) : new ArrayList<UserInteractionState<CareSystem>>();
     }
 
-    private TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>> infoTypeByVisibility(
+    private TreeMap<WithSelection<InformationType>, ArrayList<UserInteractionState<CareSystem>>> infoTypeByVisibility(
             TreeMap<
                     WithSelection<InformationType>,
-                    ArrayList<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems,
+                    ArrayList<UserInteractionState<CareSystem>>> categorizedSystems,
             EnumSet<Visibility> visibility
     ) {
-        TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>> filtered =
-                new TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>>();
+        TreeMap<WithSelection<InformationType>, ArrayList<UserInteractionState<CareSystem>>> filtered =
+                new TreeMap<WithSelection<InformationType>, ArrayList<UserInteractionState<CareSystem>>>();
 
         for(WithSelection<InformationType> sysKey : categorizedSystems.keySet()) {
-            ArrayList<WithVisibility<WithBlock<CareSystem>>> list = categorizedSystems.get(sysKey);
-            ArrayList<WithVisibility<WithBlock<CareSystem>>> filteredList = new ArrayList<WithVisibility<WithBlock<CareSystem>>>();
-            for(WithVisibility<WithBlock<CareSystem>> sys : list) {
+            ArrayList<UserInteractionState<CareSystem>> list = categorizedSystems.get(sysKey);
+            ArrayList<UserInteractionState<CareSystem>> filteredList = new ArrayList<UserInteractionState<CareSystem>>();
+            for(UserInteractionState<CareSystem> sys : list) {
                 if(visibility.contains(sys.visibility)) {
                     filteredList.add(sys);
                 }
@@ -174,24 +193,14 @@ public class CareSystemsReport implements Serializable {
         );
     }
 
-    public WithOutcome<TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> getOnlySameCareUnit() {
-        return onlySameCareUnit;
-    }
-
-    public WithOutcome<TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> getIncludeOtherCareUnit() {
-        return includeOtherCareUnit;
-    }
-
-    public WithOutcome<TreeMap<WithSelection<InformationType>, ArrayList<WithVisibility<WithBlock<CareSystem>>>>> getIncludeOtherCareProvider() {
-        return includeOtherCareProvider;
+    public WithOutcome<TreeMap<WithSelection<InformationType>, ArrayList<UserInteractionState<CareSystem>>>> getAggregatedSystems() {
+        return aggregatedSystems;
     }
 
     @Override
     public String toString() {
         return "CareSystemsReport{" +
-                "onlySameCareUnit=" + onlySameCareUnit +
-                ", includeOtherCareUnit=" + includeOtherCareUnit +
-                ", includeOtherCareProvider=" + includeOtherCareProvider +
+                "aggregatedSystems=" + aggregatedSystems +
                 '}';
     }
 }

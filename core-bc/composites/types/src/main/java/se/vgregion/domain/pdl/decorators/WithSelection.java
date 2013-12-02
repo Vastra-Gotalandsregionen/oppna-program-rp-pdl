@@ -23,21 +23,21 @@ public class WithSelection<T extends Serializable> implements Serializable, Comp
         return new WithSelection<T>(id, true, newValue);
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public T getValue() {
-        return value;
-    }
-
     public WithSelection<T> deselect(T newValue) {
 
         return new WithSelection<T>(id, false, newValue);
+    }
+
+    public WithSelection<T> select() {
+        return new WithSelection<T>(id, true, value);
+    }
+
+    public WithSelection<T> deselect() {
+        return new WithSelection<T>(id, true, value);
+    }
+
+    public WithSelection<T> toggle() {
+        return (selected) ? this.deselect() : this.select();
     }
 
     public static <N extends Serializable, N1 extends N> WithSelection<N> getDeselected(N1 value) {
@@ -61,8 +61,21 @@ public class WithSelection<T extends Serializable> implements Serializable, Comp
         return new WithSelection<T>(id, selected, newValue);
     }
 
+    public T getValue() {
+        return value;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (!(o instanceof WithSelection)) return false;
 

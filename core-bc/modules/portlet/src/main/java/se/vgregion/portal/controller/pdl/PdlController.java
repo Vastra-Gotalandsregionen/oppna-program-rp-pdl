@@ -119,9 +119,9 @@ public class PdlController {
             @RequestParam String emergency
     ) {
         LOGGER.trace(
-            "Request to create both consent and relationship between employee {} and patient {}.",
-            state.getCtx().value.employeeHsaId,
-            state.getPatient().patientId
+                "Request to create both consent and relationship between employee {} and patient {}.",
+                state.getCtx().value.employeeHsaId,
+                state.getPatient().patientId
         );
 
         establishConsent(response);
@@ -197,6 +197,52 @@ public class PdlController {
         state.setShowOtherCareUnits(true);
 
         log(UserAction.OTHER_CARE_UNITS);
+
+        response.setRenderParameter("view", "pickInfoResource");
+    }
+
+    @ActionMapping("selectInfoResource")
+    public void selectInfoResource(
+            @RequestParam String id,
+            ActionResponse response
+    ) {
+       LOGGER.trace(
+               "Request to select information type with id {} for patient {}",
+               id,
+               state.getPatient().patientId
+       );
+
+        CareSystemsReport newCsReport =
+                state.getCsReport().selectInfoResource(id);
+
+        state.setCsReport(newCsReport);
+
+        state.setShowOtherCareProviders(true);
+
+        log(UserAction.INFORMATION_CHOICE);
+
+        response.setRenderParameter("view", "pickInfoResource");
+    }
+
+    @ActionMapping("toggleInformation")
+    public void toggleInformation(
+            @RequestParam String id,
+            ActionResponse response
+    ) {
+        LOGGER.trace(
+                "Request to select information type with id {} for patient {}",
+                id,
+                state.getPatient().patientId
+        );
+
+        CareSystemsReport newCsReport =
+                state.getCsReport().toggleInformation(id);
+
+        state.setCsReport(newCsReport);
+
+        state.setShowOtherCareProviders(true);
+
+        log(UserAction.INFORMATION_CHOICE);
 
         response.setRenderParameter("view", "pickInfoResource");
     }
