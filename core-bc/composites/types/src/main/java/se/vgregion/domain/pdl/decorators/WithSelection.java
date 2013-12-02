@@ -23,7 +23,20 @@ public class WithSelection<T extends Serializable> implements Serializable, Comp
         return new WithSelection<T>(id, true, newValue);
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public T getValue() {
+        return value;
+    }
+
     public WithSelection<T> deselect(T newValue) {
+
         return new WithSelection<T>(id, false, newValue);
     }
 
