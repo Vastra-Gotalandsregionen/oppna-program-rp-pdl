@@ -35,8 +35,8 @@
         <c:forEach items="${state.csReport.aggregatedSystems.value}" var="infoSelection">
             <c:choose>
                 <c:when test="${infoSelection.key.selected}">
-                    <li><h3>${infoSelection.key.value.desc}</h3></li>
-                    <li>
+                    <li class="active">${infoSelection.key.value.desc}</li>
+                    <li class="sublist">
                         <ul>
                             <c:forEach var="system" items="${infoSelection.value}">
                                 <portlet:actionURL name="toggleInformation" var="toggleInformationUrl">
@@ -62,7 +62,7 @@
                     <portlet:actionURL name="selectInfoResource" var="selectInfoResourceUrl">
                         <portlet:param name="id" value="${infoSelection.key.id}" />
                     </portlet:actionURL>
-                    <li><h3><a href="${selectInfoResourceUrl}">${infoSelection.key.value.desc}</a></h3></li>
+                    <li><a href="${selectInfoResourceUrl}">${infoSelection.key.value.desc}</a></li>
                 </c:otherwise>
             </c:choose>
         </c:forEach>
