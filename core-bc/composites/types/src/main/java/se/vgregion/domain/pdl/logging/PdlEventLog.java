@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "pdl_event_log")
+@Table(name = "vgr_pdl_event_log")
 public class PdlEventLog extends ActorsLog {
 
     public PdlEventLog() {
@@ -24,7 +24,7 @@ public class PdlEventLog extends ActorsLog {
     @Column(name = "id", updatable = false)
     private String uuid = java.util.UUID.randomUUID().toString();
 
-    @Column(name = "creation_time", updatable = false)
+    @Column(name = "creation_time", updatable = false, columnDefinition = "timestamp with time zone not null")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;
 

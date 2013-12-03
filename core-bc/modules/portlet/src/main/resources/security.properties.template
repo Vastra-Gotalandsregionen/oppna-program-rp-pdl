@@ -3,24 +3,11 @@
 # Passwords for key stores containing private keys.
 # EHR web services SSL-connection
 pdl.tjp.keystore.type=pkcs12
-pdl.tjp.keystore.name=
-pdl.tjp.keystore.password=
-pdl.tjp.keystore.keypass=
+pdl.tjp.keystore.name=<your.keystore>.p12
+pdl.tjp.keystore.password=<your.store.password>
+pdl.tjp.keystore.keypass=<your.key.password>
 
-pdl.tjp.trustcert.name=
+# Used when client certificates are needed to connect to security services
+pdl.tjp.trustcert.name=<your.client.cert>.pem
 
-# Signing XML-data structures
-pdl.sign.keystore.name=
-pld.sign.keystore.password=
-
-
-#Db-settings.
-database.driver=org.postgresql.Driver
-
-hibernate.vendor.showsql=false
-hibernate.vendor.generateDdl=true
-hibernate.vendor.databasePlatform=org.hibernate.dialect.PostgreSQLDialect
-hibernate.vendor.database=POSTGRESQL
-hibernate.vendor.databaseDialect=org.hibernate.dialect.PostgreSQLDialect
-datasource.connector.direct.driverClassName=org.postgresql.Driver
 

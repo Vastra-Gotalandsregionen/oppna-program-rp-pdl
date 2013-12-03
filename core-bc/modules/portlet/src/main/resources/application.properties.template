@@ -1,17 +1,21 @@
 ## Place this file with property values in ${user.home}/.pdl/ with name application.properties
 
+# Global
+TP_HOST=<your.host.se>
+TP_PORT=<your.port>
+TP_BASE_URI=<your.base.path>
+
 # HsaId for the region where the security services reside
 pdl.regionalSecurityServicesHsaId=SE2321000131-E000000000001
 
 # Endpoints for security services
-ws.endpoint.pdl.checkBlocks=
-ws.endpoint.pdl.checkConsent=
-ws.endpoint.pdl.checkRelationship=
-ws.endpoint.pdl.patientBlocks=
-ws.endpoint.pdl.temporaryRevoke=
-ws.endpoint.pdl.registerRelationship=
-ws.endpoint.pdl.registerConsent=
+ws.endpoint.pdl.checkBlocks=https://${TP_HOST}:${TP_PORT}/${TP_BASE_URI}/ehr/blocking/accesscontrol/CheckBlocks/2/rivtabp21
+ws.endpoint.pdl.checkConsent=https://${TP_HOST}:${TP_PORT}/${TP_BASE_URI}/ehr/patientconsent/accesscontrol/CheckConsent/1/rivtabp21
+ws.endpoint.pdl.checkRelationship=https://${TP_HOST}:${TP_PORT}/${TP_BASE_URI}/ehr/patientrelationship/accesscontrol/CheckPatientRelation/1/rivtabp21
+ws.endpoint.pdl.patientBlocks=https://${TP_HOST}:${TP_PORT}/${TP_BASE_URI}/ehr/blocking/administration/GetExtendedBlocksForPatient/2/rivtabp21
+ws.endpoint.pdl.temporaryRevoke=https://${TP_HOST}:${TP_PORT}/${TP_BASE_URI}/ehr/blocking/administration/RegisterTemporaryExtendedRevoke/2/rivtabp21
+ws.endpoint.pdl.registerConsent=https://${TP_HOST}:${TP_PORT}/${TP_BASE_URI}/ehr/patientconsent/administration/RegisterExtendedConsent/1/rivtabp21
+ws.endpoint.pdl.registerRelationship=https://${TP_HOST}:${TP_PORT}/${TP_BASE_URI}/ehr/patientrelationship/administration/RegisterExtendedPatientRelation/1/rivtabp21
 ws.endpoint.pdl.storeLog=
 
-# Wildcard used for CXF to know when to add client certificates to requests
-ws.endpoint.pdl.wildcard=
+
