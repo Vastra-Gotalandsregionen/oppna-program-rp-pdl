@@ -23,7 +23,7 @@
                 <jsp:include page="hasInformation.jsp" />
             </c:when>
             <c:otherwise>
-                <h2>Det finns ingen patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientId})</h2>
+                <h2>Det finns ingen patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h2>
             </c:otherwise>
         </c:choose>
 

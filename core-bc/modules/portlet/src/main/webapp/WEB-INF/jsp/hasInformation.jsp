@@ -15,7 +15,7 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 
-<h2>Patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientId})</h2>
+<h2>Patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h2>
 <c:choose>
     <c:when test="${state.pdlReport.missingBothRelationConsent}">
         <c:choose>
@@ -46,10 +46,19 @@
                                     <li>
                                         <c:choose>
                                             <c:when test="${system.selected}">
-                                                <a href="${toggleInformationUrl}">${system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}</a> - SELECTED
+                                                <i class="icon checked"></i><a href="${toggleInformationUrl}">${system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}</a>
+                                                <c:if test="${system.initiallyBlocked && !system.blocked}">
+                                                    <i class="icon unlocked"></i>
+                                                </c:if>
                                             </c:when>
                                             <c:otherwise>
-                                                <a href="${toggleInformationUrl}">${system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}</a> - NOT SELECTED
+                                                <i class="icon unchecked"></i><a href="${toggleInformationUrl}">${system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}</a>
+                                                <c:if test="${system.blocked}">
+                                                    <i class="icon locked"></i>
+                                                </c:if>
+                                                <c:if test="${system.initiallyBlocked && !system.blocked}">
+                                                    <i class="icon unlocked"></i>
+                                                </c:if>
                                             </c:otherwise>
                                         </c:choose>
                                     </li>
@@ -62,7 +71,7 @@
                     <portlet:actionURL name="selectInfoResource" var="selectInfoResourceUrl">
                         <portlet:param name="id" value="${infoSelection.key.id}" />
                     </portlet:actionURL>
-                    <li><a href="${selectInfoResourceUrl}">${infoSelection.key.value.desc}</a></li>
+                    <li><a href="${selectInfoResourceUrl}">${infoSelection.key.value.desc}</a><i class="icon arrow_right"></i></li>
                 </c:otherwise>
             </c:choose>
         </c:forEach>

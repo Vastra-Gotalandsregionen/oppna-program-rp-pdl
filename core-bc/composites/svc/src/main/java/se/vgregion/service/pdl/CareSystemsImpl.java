@@ -36,7 +36,7 @@ public class CareSystemsImpl implements CareSystems {
                                             "Bild- och funktionsregistret",
                                             "SE2321000131-E000000000001",
                                             "VGR",
-                                            "SE2321000131-S000000010252",
+                                            "SE2321000131-S000000010251",
                                             "Östra Sjukhuset, Hud 32"
                                         )
                                     ),

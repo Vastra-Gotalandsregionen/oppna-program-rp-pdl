@@ -21,6 +21,11 @@ public class Patient implements Serializable {
         return patientDisplayName;
     }
 
+    // Format 193404231234 into 19340423-1234
+    public String getPatientIdFormatted() {
+        return new StringBuilder(patientId).insert(patientId.length()-4, "-").toString();
+    }
+
     @Override
     public String toString() {
         return "Patient{" +

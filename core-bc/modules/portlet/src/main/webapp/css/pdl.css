@@ -55,6 +55,7 @@
     padding-top: 0px;
 }
 
+
 .pdl ul.infotypes > li > ul {
     padding-top: 0px;
     font-weight: 1.4em;
@@ -66,25 +67,53 @@
 .pdl ul.infotypes > li > ul li {
     font-size: 0.8em;
     margin: 17px 0;
-    padding-right: 15px;
+    padding-right: 0px;
     padding-left: 0px;
     padding-bottom: 15px;
     border-bottom: 1px solid #c4ced5;
 }
 
 .pdl ul.infotypes > li > ul > li:last-child {
-    margin: 17px 0;
-    margin-bottom: 5px;
-    padding-right: 15px;
-    padding-left: 0px;
-    padding-bottom: 0px;
     border-bottom: 0px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
 }
-
-
 
 .pdl ul.infotypes > li:last-child {
     border-bottom: 0px;
+}
+
+.pdl i.icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    vertical-align: text-top;
+}
+
+.pdl i.unchecked {
+    background-image: url('../images/icon_checkbox.png');
+    margin-right: 7px;
+}
+
+.pdl i.checked {
+    background-image: url('../images/icon_checkbox_checked.png');
+    margin-right: 7px;
+}
+
+.pdl i.arrow_right {
+    background-image: url('../images/icon_arrow_right_blue.png');
+    float: right;
+}
+
+.pdl i.locked {
+    background-image: url('../images/icon_padlock.png');
+    float: right;
+}
+
+.pdl i.unlocked {
+    background-image: url('../images/icon_padlock_open.png');
+    float: right;
 }
 
 /*------- Link button mod -------*/
@@ -140,13 +169,6 @@
     border-left: 3px solid #a38342;
 }
 
-.pdl > .info > h2 {
-    color: #999;
-    margin: 15px 0 15px 0;
-    padding: 0 0 2px 0;
-    text-align: center;
-}
-
 .pdl .intro .element-mandatory-desc {
   font-size: 0.9em;
   font-family: Ubuntu, Arial, Verdana, Helvetica, sans-serif;
@@ -162,7 +184,7 @@
 
 .pdl-form fieldset,
 .pdl-form fieldset:last-child {
-  margin-bottom: 2em;
+  margin-bottom: 0;
   padding-top: 10px;
 }
 
