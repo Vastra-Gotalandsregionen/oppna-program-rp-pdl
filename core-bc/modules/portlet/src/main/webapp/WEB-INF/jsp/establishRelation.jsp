@@ -10,14 +10,7 @@
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
-<h2>Du saknar patientrelation med ${state.patient.patientDisplayName} (${state.patient.patientId})</h2>
-<br/>
-<h3 class="legend">Att intyga patientrelation</h3>
-<p>
-    För att få se patientinformation måste det finnas en registrerad patientrelation. Du kan själv intyga och registrera en patientrelation nedan.
-</p>
-<jsp:include page="pdlInfoCallout.jsp" />
-<div>
+<div class="clearfix">
     <portlet:actionURL name="establishRelation" var="establishRelationUrl" />
 
     <a href="${establishRelationUrl}" class="link-button-mod">Intyga patientrelation</a>

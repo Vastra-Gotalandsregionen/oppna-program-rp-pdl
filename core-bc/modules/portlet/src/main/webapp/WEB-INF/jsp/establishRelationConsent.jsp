@@ -10,20 +10,7 @@
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
-<h2>För ${state.patient.patientDisplayName} (${state.patient.patientId}) finns varken samtycke för sammanhållen journalföring eller patientrelation registrerat</h2>
-<br/>
-<h3 class="legend">Att intyga patientrelation eller samtycke för sammanhållen journalföring</h3>
-<p>
-    För att få se patientinformation måste det finnas en registrerad patientrelation. Du kan själv intyga och registrera en patientrelation nedan.
-</p>
-<p>
-    Vill du se patientinformation från andra vårdgivare än din egen måste du även intyga att patienten har gett sitt Samtycke för sammanhållen journalföring.
-</p>
-<p>
-    Vid nödsituation så kan ett akut Samtycke för sammanhållen journalföring upprättas.
-<p/>
-<jsp:include page="pdlInfoCallout.jsp" />
-<div>
+<div class="clearfix">
     <portlet:actionURL name="establishRelation" var="establishRelationUrl" />
 
     <portlet:actionURL name="establishRelationConsent" var="relationConsentUrl">

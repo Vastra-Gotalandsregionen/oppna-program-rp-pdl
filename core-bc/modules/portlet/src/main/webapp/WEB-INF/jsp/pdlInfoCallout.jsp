@@ -10,7 +10,7 @@
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
-<div class="callout callout-info">
+<div class="clearfix callout callout-info">
     <h4>Dina val loggförs och du behöver kunna stödja att patienten har gett sitt medgivande</h4>
     Dessa kommer att i efterhand <a href="http://www.socialstyrelsen.se/regelverk/handbocker/handbokominformationshanteringochjournalforing">granskas löpande enligt Patientdatalagen.</a>
 </div>
