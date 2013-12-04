@@ -105,15 +105,18 @@ public class CareSystemReportSpec {
         WithAccess<PdlContext> c = WithAccess.sameProvider(ctx);
         CareSystemsReport report = new CareSystemsReport(c, mockReport);
 
-        assertTrue(report.containsBlockedInfoTypes);
+        assertTrue(report.containsBlockedInfoTypes.get(Visibility.OTHER_CARE_UNIT));
 
-        boolean test = false;
-
+        int i = 0;
         for(InfoTypeState<InformationType> ss : report.aggregatedSystems.value.keySet()) {
             if(ss.value == InformationType.UPP) {
-                test = ss.containsOnlyBlocked;
+                Boolean test = ss.containsOnlyBlocked.get(ss.lowestVisibility);
+                assertTrue(test);
+                i++;
             }
         }
-        assertTrue(test);
+
+        assertEquals(1, i);
+
     }
 }

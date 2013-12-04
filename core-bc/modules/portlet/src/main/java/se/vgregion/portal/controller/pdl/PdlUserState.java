@@ -7,6 +7,8 @@ import se.vgregion.domain.pdl.*;
 import se.vgregion.domain.pdl.decorators.WithAccess;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Putting things into session scope is arguably an evil thing to do...
@@ -25,6 +27,31 @@ public class PdlUserState implements Serializable {
     private boolean showOtherCareUnits = false;
     private boolean showOtherCareProviders = false;
     private String searchSession = java.util.UUID.randomUUID().toString();
+    private Visibility currentVisibility = Visibility.SAME_CARE_UNIT;
+    private final Map<Visibility, Boolean> shouldBeVisible = new HashMap<Visibility, Boolean>();
+
+    private void calcVisibility() {
+        shouldBeVisible.clear();
+        shouldBeVisible.put(Visibility.SAME_CARE_UNIT, pdlReport.hasRelationship.value);
+        shouldBeVisible.put(Visibility.OTHER_CARE_UNIT, showOtherCareUnits && pdlReport.hasRelationship.value);
+        shouldBeVisible.put(Visibility.OTHER_CARE_PROVIDER, showOtherCareUnits && showOtherCareProviders && pdlReport.consent.value.hasConsent && pdlReport.hasRelationship.value);
+
+        if(pdlReport.hasRelationship.value) {
+            currentVisibility = Visibility.SAME_CARE_UNIT;
+
+            if(showOtherCareUnits) {
+                currentVisibility = Visibility.OTHER_CARE_UNIT;
+
+                if(
+                    showOtherCareProviders &&
+                    pdlReport.consent.value.hasConsent
+                ) {
+                    currentVisibility = Visibility.OTHER_CARE_PROVIDER;
+                }
+            }
+        }
+
+    }
 
     public PdlReport getPdlReport() {
         return pdlReport;
@@ -36,18 +63,16 @@ public class PdlUserState implements Serializable {
         pdlReport = null;
         csReport = null;
         searchSession = java.util.UUID.randomUUID().toString();
-    }
-
-    public boolean getCheckVisibility(Visibility visibility) {
-        boolean same = visibility == Visibility.SAME_CARE_UNIT;
-        boolean otherUnit = visibility == Visibility.OTHER_CARE_UNIT && showOtherCareUnits;
-        boolean otherProvider = visibility == Visibility.OTHER_CARE_PROVIDER && showOtherCareProviders;
-
-        return same || otherUnit || otherProvider;
+        currentVisibility = Visibility.SAME_CARE_UNIT;
+        shouldBeVisible.clear();
     }
 
     public String getSearchSession() {
         return searchSession;
+    }
+
+    public Visibility getCurrentVisibility() {
+        return currentVisibility;
     }
 
     public Patient getPatient() {
@@ -60,6 +85,7 @@ public class PdlUserState implements Serializable {
 
     public void setPdlReport(PdlReport report) {
         this.pdlReport = report;
+        calcVisibility();
     }
 
     public CareSystemsReport getCsReport() {
@@ -84,6 +110,11 @@ public class PdlUserState implements Serializable {
 
     public void setShowOtherCareUnits(boolean showOtherCareUnits) {
         this.showOtherCareUnits = showOtherCareUnits;
+        calcVisibility();
+    }
+
+    public Map<Visibility, Boolean> getShouldBeVisible() {
+        return shouldBeVisible;
     }
 
     public boolean isShowOtherCareProviders() {
@@ -92,6 +123,7 @@ public class PdlUserState implements Serializable {
 
     public void setShowOtherCareProviders(boolean showOtherCareProviders) {
         this.showOtherCareProviders = showOtherCareProviders;
+        calcVisibility();
     }
 
     @Override
@@ -104,6 +136,8 @@ public class PdlUserState implements Serializable {
                 ", showOtherCareUnits=" + showOtherCareUnits +
                 ", showOtherCareProviders=" + showOtherCareProviders +
                 ", searchSession='" + searchSession + '\'' +
+                ", currentVisibility=" + currentVisibility +
+                ", shouldBeVisible=" + shouldBeVisible +
                 '}';
     }
 

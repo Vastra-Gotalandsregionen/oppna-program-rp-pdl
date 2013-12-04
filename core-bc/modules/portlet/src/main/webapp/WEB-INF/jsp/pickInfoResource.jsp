@@ -33,6 +33,7 @@
         <!-- state.showOtherCareUnits = ${state.showOtherCareUnits} -->
         <!-- state.showOtherCareProviders = ${state.showOtherCareProviders} -->
         <!-- state.searchSession = ${state.searchSession} -->
-
+        <!-- state.shouldBeVisible = ${state.shouldBeVisible} -->
+        <!-- state.currentVisibility = ${state.currentVisibility} -->
     </div>
 </div>

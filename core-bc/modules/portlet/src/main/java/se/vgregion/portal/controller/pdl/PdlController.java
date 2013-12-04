@@ -125,7 +125,7 @@ public class PdlController {
                 state.getPatient().patientId
         );
 
-        establishConsent(response);
+        establishConsent(response, emergency);
         establishRelationship(response);
 
         response.setRenderParameter("view", "pickInfoResource");
@@ -156,7 +156,10 @@ public class PdlController {
     }
 
     @ActionMapping("establishConsent")
-    public void establishConsent(ActionResponse response) {
+    public void establishConsent(
+            ActionResponse response,
+            @RequestParam String emergency
+    ) {
         LOGGER.trace(
             "Request to create consent between employee {} and patient {}.",
             state.getCtx().value.employeeHsaId,
@@ -172,7 +175,7 @@ public class PdlController {
                 "Reason",
                 1,
                 RoundedTimeUnit.NEAREST_HALF_HOUR,
-                PdlReport.ConsentType.Consent
+                ("true".equals(emergency)) ? PdlReport.ConsentType.Emergency : PdlReport.ConsentType.Consent
             )
         );
 
@@ -246,6 +249,25 @@ public class PdlController {
         response.setRenderParameter("view", "pickInfoResource");
     }
 
+    @ActionMapping("showBlockedInformationTypes")
+    public void showBlockedInformationTypes(
+            @RequestParam Visibility visibility,
+            ActionResponse response
+    ) {
+        LOGGER.trace(
+                "Request to show blocked information types for visibility {}",
+                visibility
+        );
+
+        CareSystemsReport newCsReport =
+                state.getCsReport().showBlocksForInfoType(visibility);
+
+        state.setCsReport(newCsReport);
+
+        log(UserAction.SHOW_BLOCKED_INFORMATION);
+
+        response.setRenderParameter("view", "pickInfoResource");
+    }
 
     @ActionMapping("toggleInformation")
     public void toggleInformation(

@@ -3,6 +3,8 @@ package se.vgregion.domain.pdl.decorators;
 import se.vgregion.domain.pdl.Visibility;
 
 import java.io.Serializable;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class InfoTypeState<T extends Serializable> implements Serializable, Comparable<InfoTypeState> {
 
@@ -11,17 +13,16 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
     public final Visibility lowestVisibility;
     public final boolean selected;
     public final boolean containsBlocked;
-    public final boolean containsOnlyBlocked;
+    public final Map<Visibility, Boolean> containsOnlyBlocked;
     public final boolean viewBlocked;
     public final String id;
     public final T value;
-
 
     private InfoTypeState(
             Visibility lowestVisibility,
             boolean selected,
             boolean containsBlocked,
-            boolean containsOnlyBlocked,
+            Map<Visibility, Boolean> containsOnlyBlocked,
             boolean viewBlocked,
             T value
     ) {
@@ -36,11 +37,12 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
         );
     }
 
+
     private InfoTypeState(
             Visibility lowestVisibility,
             boolean selected,
             boolean containsBlocked,
-            boolean containsOnlyBlocked,
+            Map<Visibility, Boolean> containsOnlyBlocked,
             boolean viewBlocked,
             String id,
             T value
@@ -78,10 +80,34 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
         );
     }
 
+    public InfoTypeState<T> showBlockedInfoType(
+            Visibility visibility
+    ) {
+
+        Map<Visibility, Boolean> newContainsOnlyBlocked = new TreeMap<Visibility, Boolean>();
+        for(Visibility v : containsOnlyBlocked.keySet()) {
+            if(v == visibility) {
+                newContainsOnlyBlocked.put(v, false);
+            } else {
+                newContainsOnlyBlocked.put(v, containsOnlyBlocked.get(v));
+            }
+        }
+
+        return new InfoTypeState<T>(
+                lowestVisibility,
+                selected,
+                containsBlocked,
+                newContainsOnlyBlocked,
+                true,
+                id,
+                value
+        );
+    }
+
     public static <N extends Serializable, N1 extends N> InfoTypeState<N> init(
             Visibility visibility,
             boolean containsBlocked,
-            boolean containsOnlyBlocked,
+            Map<Visibility, Boolean> containsOnlyBlocked,
             N1 value
     ) {
         return new InfoTypeState<N>(
@@ -96,6 +122,10 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
 
     public Visibility getLowestVisibility() {
         return lowestVisibility;
+    }
+
+    public Map<Visibility, Boolean> getContainsOnlyBlocked() {
+        return containsOnlyBlocked;
     }
 
     public boolean isSelected() {
@@ -119,19 +149,20 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
     }
 
     @Override
+    public int compareTo(InfoTypeState o) {
+        return id.compareTo(o.id);
+    }
+
+    @Override
     public String toString() {
         return "InfoTypeState{" +
                 "lowestVisibility=" + lowestVisibility +
                 ", selected=" + selected +
                 ", containsBlocked=" + containsBlocked +
+                ", containsOnlyBlocked=" + containsOnlyBlocked +
                 ", viewBlocked=" + viewBlocked +
                 ", id='" + id + '\'' +
                 ", value=" + value +
                 '}';
-    }
-
-    @Override
-    public int compareTo(InfoTypeState o) {
-        return id.compareTo(o.id);
     }
 }

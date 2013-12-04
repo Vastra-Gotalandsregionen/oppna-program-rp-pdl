@@ -116,6 +116,13 @@
     float: right;
 }
 
+.pdl .showCareUnits {
+    float: right;
+    font-size: 0.85em;
+    color: #2f72a9;
+    padding-right: 5px;
+}
+
 /*------- Link button mod -------*/
 
 .link-button-mod:visited,

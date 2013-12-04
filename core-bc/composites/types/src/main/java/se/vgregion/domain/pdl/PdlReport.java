@@ -14,7 +14,7 @@ public class PdlReport implements Serializable {
     public final WithOutcome<ArrayList<WithInfoType<WithBlock<CareSystem>>>> systems;
     public final boolean hasNonSuccessOutcome;
     public final boolean missingBothRelationConsent;
-    private final boolean hasPatientInformation;
+    public final boolean hasPatientInformation;
 
     public PdlReport(
             WithOutcome<ArrayList<WithInfoType<WithBlock<CareSystem>>>> checkedSystems,
