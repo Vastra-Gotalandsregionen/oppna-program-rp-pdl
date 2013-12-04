@@ -224,6 +224,30 @@ public class PdlController {
         response.setRenderParameter("view", "pickInfoResource");
     }
 
+    @ActionMapping("showBlockedInformation")
+    public void showBlockedInformation(
+            @RequestParam String id,
+            ActionResponse response
+    ) {
+        LOGGER.trace(
+                "Request to show blocked information categorized with information type with id {} for patient {}",
+                id,
+                state.getPatient().patientId
+        );
+
+        CareSystemsReport newCsReport =
+                state.getCsReport().showBlocksForInfoResource(id);
+
+        state.setCsReport(newCsReport);
+
+        state.setShowOtherCareProviders(true);
+
+        log(UserAction.SHOW_BLOCKED_INFORMATION);
+
+        response.setRenderParameter("view", "pickInfoResource");
+    }
+
+
     @ActionMapping("toggleInformation")
     public void toggleInformation(
             @RequestParam String id,

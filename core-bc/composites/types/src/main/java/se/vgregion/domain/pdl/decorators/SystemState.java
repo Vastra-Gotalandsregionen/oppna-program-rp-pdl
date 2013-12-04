@@ -4,7 +4,7 @@ import se.vgregion.domain.pdl.Visibility;
 
 import java.io.Serializable;
 
-public class UserInteractionState<T extends Serializable> implements Serializable {
+public class SystemState<T extends Serializable> implements Serializable {
     private static final long serialVersionUID = 4032223817595569992L;
 
     public final String id;
@@ -14,7 +14,7 @@ public class UserInteractionState<T extends Serializable> implements Serializabl
     public final Visibility visibility;
     public final T value;
 
-    private UserInteractionState(String id, boolean initiallyBlocked, boolean blocked, boolean selected, Visibility visibility, T value) {
+    private SystemState(String id, boolean initiallyBlocked, boolean blocked, boolean selected, Visibility visibility, T value) {
         this.id = id;
         this.initiallyBlocked = initiallyBlocked;
         this.blocked = blocked;
@@ -23,12 +23,12 @@ public class UserInteractionState<T extends Serializable> implements Serializabl
         this.value = value;
     }
 
-    public static <N extends Serializable, N1 extends N> UserInteractionState<N> flattenAddSelection(WithVisibility<WithBlock<N1>> hierarchy) {
+    public static <N extends Serializable, N1 extends N> SystemState<N> flattenAddSelection(WithVisibility<WithBlock<N1>> hierarchy) {
         WithSelection<N1> ws = WithSelection.getDeselected(hierarchy.value.value);
         WithBlock<WithSelection<N1>> wb = hierarchy.value.mapValue(ws);
         WithVisibility<WithBlock<WithSelection<N1>>> vs = hierarchy.mapValue(wb);
 
-        return new UserInteractionState<N>(
+        return new SystemState<N>(
             vs.value.value.id,
             vs.value.initiallyBlocked,
             vs.value.blocked,
@@ -38,8 +38,8 @@ public class UserInteractionState<T extends Serializable> implements Serializabl
         );
     }
 
-    public UserInteractionState<T> select() {
-        return new UserInteractionState<T>(
+    public SystemState<T> select() {
+        return new SystemState<T>(
             id,
             initiallyBlocked,
             blocked,
@@ -49,8 +49,8 @@ public class UserInteractionState<T extends Serializable> implements Serializabl
         );
     }
 
-    public UserInteractionState<T> deselect() {
-        return new UserInteractionState<T>(
+    public SystemState<T> deselect() {
+        return new SystemState<T>(
                 id,
                 initiallyBlocked,
                 blocked,
@@ -60,8 +60,8 @@ public class UserInteractionState<T extends Serializable> implements Serializabl
         );
     }
 
-    public UserInteractionState<T> unblock() {
-        return new UserInteractionState<T>(
+    public SystemState<T> unblock() {
+        return new SystemState<T>(
                 id,
                 initiallyBlocked,
                 false,
@@ -97,12 +97,12 @@ public class UserInteractionState<T extends Serializable> implements Serializabl
 
     @Override
     public String toString() {
-        return "UserInteractionState{" +
+        return "SystemState{" +
                 "id='" + id + '\'' +
                 ", initiallyBlocked=" + initiallyBlocked +
                 ", blocked=" + blocked +
                 ", selected=" + selected +
-                ", visibility=" + visibility +
+                ", lowestVisibility=" + visibility +
                 ", value=" + value +
                 '}';
     }

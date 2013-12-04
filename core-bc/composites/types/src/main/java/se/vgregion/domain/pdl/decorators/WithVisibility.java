@@ -36,7 +36,7 @@ public class WithVisibility<T extends Serializable> implements Serializable {
     @Override
     public String toString() {
         return "WithVisibility{" +
-                "visibility=" + visibility +
+                "lowestVisibility=" + visibility +
                 ", value=" + value +
                 '}';
     }

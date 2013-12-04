@@ -2,14 +2,12 @@ package se.vgregion.domain.pdl;
 
 import org.junit.Before;
 import org.junit.Test;
-import se.vgregion.domain.pdl.decorators.WithAccess;
-import se.vgregion.domain.pdl.decorators.WithBlock;
-import se.vgregion.domain.pdl.decorators.WithInfoType;
-import se.vgregion.domain.pdl.decorators.WithOutcome;
+import se.vgregion.domain.pdl.decorators.*;
 
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CareSystemReportSpec {
 
@@ -100,5 +98,22 @@ public class CareSystemReportSpec {
         else blockSystem = WithBlock.unblocked(system);
 
         return new WithInfoType<WithBlock<CareSystem>>(informationType, blockSystem);
+    }
+
+    @Test
+    public void CareSystemsReportShouldIndicateBlockedInfoType() throws Exception {
+        WithAccess<PdlContext> c = WithAccess.sameProvider(ctx);
+        CareSystemsReport report = new CareSystemsReport(c, mockReport);
+
+        assertTrue(report.containsBlockedInfoTypes);
+
+        boolean test = false;
+
+        for(InfoTypeState<InformationType> ss : report.aggregatedSystems.value.keySet()) {
+            if(ss.value == InformationType.UPP) {
+                test = ss.containsOnlyBlocked;
+            }
+        }
+        assertTrue(test);
     }
 }

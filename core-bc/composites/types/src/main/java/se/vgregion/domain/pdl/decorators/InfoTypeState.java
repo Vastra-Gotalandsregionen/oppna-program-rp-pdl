@@ -1,0 +1,137 @@
+package se.vgregion.domain.pdl.decorators;
+
+import se.vgregion.domain.pdl.Visibility;
+
+import java.io.Serializable;
+
+public class InfoTypeState<T extends Serializable> implements Serializable, Comparable<InfoTypeState> {
+
+    private static final long serialVersionUID = -5813956332644812360L;
+
+    public final Visibility lowestVisibility;
+    public final boolean selected;
+    public final boolean containsBlocked;
+    public final boolean containsOnlyBlocked;
+    public final boolean viewBlocked;
+    public final String id;
+    public final T value;
+
+
+    private InfoTypeState(
+            Visibility lowestVisibility,
+            boolean selected,
+            boolean containsBlocked,
+            boolean containsOnlyBlocked,
+            boolean viewBlocked,
+            T value
+    ) {
+        this(
+            lowestVisibility,
+            selected,
+            containsBlocked,
+            containsOnlyBlocked,
+            viewBlocked,
+            java.util.UUID.randomUUID().toString(),
+            value
+        );
+    }
+
+    private InfoTypeState(
+            Visibility lowestVisibility,
+            boolean selected,
+            boolean containsBlocked,
+            boolean containsOnlyBlocked,
+            boolean viewBlocked,
+            String id,
+            T value
+    ) {
+        this.lowestVisibility = lowestVisibility;
+        this.selected = selected;
+        this.containsBlocked = containsBlocked;
+        this.containsOnlyBlocked = containsOnlyBlocked;
+        this.viewBlocked = viewBlocked;
+        this.id = id;
+        this.value = value;
+    }
+
+    public InfoTypeState<T> select() {
+       return new InfoTypeState<T>(
+               lowestVisibility,
+               true,
+               containsBlocked,
+               containsOnlyBlocked,
+               viewBlocked,
+               id,
+               value
+       );
+    }
+
+    public InfoTypeState<T> viewBlocked() {
+        return new InfoTypeState<T>(
+                lowestVisibility,
+                selected,
+                containsBlocked,
+                containsOnlyBlocked,
+                true,
+                id,
+                value
+        );
+    }
+
+    public static <N extends Serializable, N1 extends N> InfoTypeState<N> init(
+            Visibility visibility,
+            boolean containsBlocked,
+            boolean containsOnlyBlocked,
+            N1 value
+    ) {
+        return new InfoTypeState<N>(
+                visibility,
+                false,
+                containsBlocked,
+                containsOnlyBlocked,
+                false,
+                value
+        );
+    }
+
+    public Visibility getLowestVisibility() {
+        return lowestVisibility;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public boolean isContainsBlocked() {
+        return containsBlocked;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public boolean isViewBlocked() {
+        return viewBlocked;
+    }
+
+    public T getValue() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return "InfoTypeState{" +
+                "lowestVisibility=" + lowestVisibility +
+                ", selected=" + selected +
+                ", containsBlocked=" + containsBlocked +
+                ", viewBlocked=" + viewBlocked +
+                ", id='" + id + '\'' +
+                ", value=" + value +
+                '}';
+    }
+
+    @Override
+    public int compareTo(InfoTypeState o) {
+        return id.compareTo(o.id);
+    }
+}
