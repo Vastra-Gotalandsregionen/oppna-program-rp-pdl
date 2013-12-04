@@ -24,6 +24,7 @@ public class PdlUserState implements Serializable {
     private WithAccess<PdlContext> ctx;
     private boolean showOtherCareUnits = false;
     private boolean showOtherCareProviders = false;
+    private String searchSession = java.util.UUID.randomUUID().toString();
 
     public PdlReport getPdlReport() {
         return pdlReport;
@@ -34,6 +35,8 @@ public class PdlUserState implements Serializable {
         showOtherCareProviders = false;
         pdlReport = null;
         csReport = null;
+        searchSession = java.util.UUID.randomUUID().toString();
+
     }
 
     public boolean getCheckVisibility(Visibility visibility) {
@@ -42,6 +45,10 @@ public class PdlUserState implements Serializable {
         boolean otherProvider = visibility == Visibility.OTHER_CARE_PROVIDER && showOtherCareProviders;
 
         return same || otherUnit || otherProvider;
+    }
+
+    public String getSearchSession() {
+        return searchSession;
     }
 
     public Patient getPatient() {
@@ -97,6 +104,7 @@ public class PdlUserState implements Serializable {
                 ", ctx=" + ctx +
                 ", showOtherCareUnits=" + showOtherCareUnits +
                 ", showOtherCareProviders=" + showOtherCareProviders +
+                ", searchSession='" + searchSession + '\'' +
                 '}';
     }
 
