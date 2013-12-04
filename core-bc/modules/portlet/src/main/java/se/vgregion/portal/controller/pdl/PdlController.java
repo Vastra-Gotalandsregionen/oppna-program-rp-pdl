@@ -69,7 +69,7 @@ public class PdlController {
         return "view";
     }
 
-    PdlEventLog getPdlEventLog() {
+    PdlEventLog newPdlEventLog() {
         PdlEventLog log = new PdlEventLog();
         Patient patient = state.getPatient();
         log.setPatientDisplayName(patient.getPatientDisplayName());
@@ -82,6 +82,7 @@ public class PdlController {
         log.setCareUnitDisplayName(state.getCtx().value.getCareUnitDisplayName());
         log.setCareUnitId(state.getCtx().value.getCareUnitHsaId());
         log.setCreationTime(new Date());
+        log.setSearchSession(state.getSearchSession());
         log.setSystemId("Regionportalen");
         return log;
     }
@@ -181,7 +182,7 @@ public class PdlController {
     }
 
     void log(UserAction action) {
-        PdlEventLog log = getPdlEventLog();
+        PdlEventLog log = newPdlEventLog();
         log.setUserAction(action);
         objectRepo.persist(log);
     }

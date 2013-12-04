@@ -4,6 +4,7 @@ import org.apache.commons.beanutils.BeanMap;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.TreeMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,6 +29,9 @@ public class ActorsLog {
     @Column(name = "patient_display_name")
     private String patientDisplayName;
 
+    @Column(name = "search_session")
+    private String searchSession;
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -44,6 +48,11 @@ public class ActorsLog {
     @Override
     public int hashCode() {
         return new BeanMap(this).hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new TreeMap(new BeanMap()).toString();
     }
 
     public String getEmployeeId() {
@@ -78,4 +87,11 @@ public class ActorsLog {
         this.patientDisplayName = patientDisplayName;
     }
 
+    public String getSearchSession() {
+        return searchSession;
+    }
+
+    public void setSearchSession(String searchSession) {
+        this.searchSession = searchSession;
+    }
 }
