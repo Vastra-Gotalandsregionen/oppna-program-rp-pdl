@@ -36,7 +36,6 @@ public class PdlUserState implements Serializable {
         pdlReport = null;
         csReport = null;
         searchSession = java.util.UUID.randomUUID().toString();
-
     }
 
     public boolean getCheckVisibility(Visibility visibility) {

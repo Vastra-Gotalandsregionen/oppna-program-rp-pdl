@@ -32,6 +32,7 @@
         <!-- state.ctx.otherProviders = ${state.ctx.otherProviders} -->
         <!-- state.showOtherCareUnits = ${state.showOtherCareUnits} -->
         <!-- state.showOtherCareProviders = ${state.showOtherCareProviders} -->
+        <!-- state.searchSession = ${state.searchSession} -->
 
     </div>
 </div>

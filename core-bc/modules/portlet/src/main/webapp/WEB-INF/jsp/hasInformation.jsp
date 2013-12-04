@@ -33,57 +33,59 @@
     <c:when test="${state.pdlReport.hasRelationship.value}">
     <ul class="infotypes">
         <c:forEach items="${state.csReport.aggregatedSystems.value}" var="infoSelection">
-            <c:choose>
-                <c:when test="${infoSelection.key.selected}">
-                    <li class="active">${infoSelection.key.value.desc}</li>
-                    <li class="sublist">
-                        <ul>
-                            <c:forEach var="system" items="${infoSelection.value}">
-                                <portlet:actionURL name="toggleInformation" var="toggleInformationUrl">
-                                    <portlet:param name="id" value="${system.id}" />
-                                </portlet:actionURL>
-                                <c:if test="${(system.visibility == 'SAME_CARE_UNIT') || (state.showOtherCareProviders && state.pdlReport.consent.value.hasConsent && system.visibility == 'OTHER_CARE_PROVIDER') || (state.showOtherCareUnits && system.visibility == 'OTHER_CARE_UNIT') }">
-                                    <c:if test="${(system.blocked && infoSelection.key.viewBlocked) || !system.blocked}">
-                                        <li>
-                                            <c:choose>
-                                                <c:when test="${system.selected}">
-                                                    <i class="icon checked"></i><a href="${toggleInformationUrl}">${system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}</a>
-                                                    <c:if test="${system.initiallyBlocked && !system.blocked}">
-                                                        <i class="icon unlocked"></i>
-                                                    </c:if>
-                                                </c:when>
-                                                <c:when test="${!system.selected}">
-                                                    <i class="icon unchecked"></i><a href="${toggleInformationUrl}">${system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}</a>
-                                                    <c:if test="${system.blocked}">
-                                                        <i class="icon locked"></i>
-                                                    </c:if>
-                                                    <c:if test="${system.initiallyBlocked && !system.blocked}">
-                                                        <i class="icon unlocked"></i>
-                                                    </c:if>
-                                                </c:when>
-                                            </c:choose>
-                                        </li>
-                                    </c:if>
-                                </c:if>
-                            </c:forEach>
-                            <c:if test="${infoSelection.key.containsBlocked && !infoSelection.key.viewBlocked}">
-                                <li>
-                                    <portlet:actionURL name="showBlockedInformation" var="showBlockedInformationUrl">
-                                        <portlet:param name="id" value="${infoSelection.key.id}" />
+            <c:if test="${(infoSelection.key.lowestVisibility == 'SAME_CARE_UNIT') || (state.showOtherCareProviders && state.pdlReport.consent.value.hasConsent && infoSelection.key.lowestVisibility == 'OTHER_CARE_PROVIDER') || (state.showOtherCareUnits && infoSelection.key.lowestVisibility == 'OTHER_CARE_UNIT') }">
+                <c:choose>
+                    <c:when test="${infoSelection.key.selected}">
+                        <li class="active">${infoSelection.key.value.desc}</li>
+                        <li class="sublist">
+                            <ul>
+                                <c:forEach var="system" items="${infoSelection.value}">
+                                    <portlet:actionURL name="toggleInformation" var="toggleInformationUrl">
+                                        <portlet:param name="id" value="${system.id}" />
                                     </portlet:actionURL>
-                                    <a href="${showBlockedInformationUrl}">Visa ytterligare spärrad information</a>
-                                </li>
-                            </c:if>
-                        </ul>
-                    </li>
-                </c:when>
-                <c:otherwise>
-                    <portlet:actionURL name="selectInfoResource" var="selectInfoResourceUrl">
-                        <portlet:param name="id" value="${infoSelection.key.id}" />
-                    </portlet:actionURL>
-                    <li><a href="${selectInfoResourceUrl}">${infoSelection.key.value.desc}</a><i class="icon arrow_right"></i></li>
-                </c:otherwise>
-            </c:choose>
+                                    <c:if test="${(system.visibility == 'SAME_CARE_UNIT') || (state.showOtherCareProviders && state.pdlReport.consent.value.hasConsent && system.visibility == 'OTHER_CARE_PROVIDER') || (state.showOtherCareUnits && system.visibility == 'OTHER_CARE_UNIT') }">
+                                        <c:if test="${(system.blocked && infoSelection.key.viewBlocked) || !system.blocked}">
+                                            <li>
+                                                <c:choose>
+                                                    <c:when test="${system.selected}">
+                                                        <i class="icon checked"></i><a href="${toggleInformationUrl}">${system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}</a>
+                                                        <c:if test="${system.initiallyBlocked && !system.blocked}">
+                                                            <i class="icon unlocked"></i>
+                                                        </c:if>
+                                                    </c:when>
+                                                    <c:when test="${!system.selected}">
+                                                        <i class="icon unchecked"></i><a href="${toggleInformationUrl}">${system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}</a>
+                                                        <c:if test="${system.blocked}">
+                                                            <i class="icon locked"></i>
+                                                        </c:if>
+                                                        <c:if test="${system.initiallyBlocked && !system.blocked}">
+                                                            <i class="icon unlocked"></i>
+                                                        </c:if>
+                                                    </c:when>
+                                                </c:choose>
+                                            </li>
+                                        </c:if>
+                                    </c:if>
+                                </c:forEach>
+                                <c:if test="${infoSelection.key.containsBlocked && !infoSelection.key.viewBlocked}">
+                                    <li>
+                                        <portlet:actionURL name="showBlockedInformation" var="showBlockedInformationUrl">
+                                            <portlet:param name="id" value="${infoSelection.key.id}" />
+                                        </portlet:actionURL>
+                                        <a href="${showBlockedInformationUrl}">Visa ytterligare spärrad information</a>
+                                    </li>
+                                </c:if>
+                            </ul>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <portlet:actionURL name="selectInfoResource" var="selectInfoResourceUrl">
+                            <portlet:param name="id" value="${infoSelection.key.id}" />
+                        </portlet:actionURL>
+                        <li><a href="${selectInfoResourceUrl}">${infoSelection.key.value.desc}</a><i class="icon arrow_right"></i></li>
+                    </c:otherwise>
+                </c:choose>
+            </c:if>
         </c:forEach>
         </ul>
         <c:if test="${state.csReport.containsBlockedInfoTypes}">

@@ -176,6 +176,8 @@ public class PdlController {
             )
         );
 
+        state.setShowOtherCareProviders(true);
+
         log(UserAction.CONSENT);
 
         response.setRenderParameter("view", "pickInfoResource");
@@ -218,8 +220,6 @@ public class PdlController {
 
         state.setCsReport(newCsReport);
 
-        state.setShowOtherCareProviders(true);
-
         log(UserAction.INFORMATION_CHOICE);
 
         response.setRenderParameter("view", "pickInfoResource");
@@ -240,8 +240,6 @@ public class PdlController {
                 state.getCsReport().showBlocksForInfoResource(id);
 
         state.setCsReport(newCsReport);
-
-        state.setShowOtherCareProviders(true);
 
         log(UserAction.SHOW_BLOCKED_INFORMATION);
 
