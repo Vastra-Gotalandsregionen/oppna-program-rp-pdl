@@ -85,9 +85,10 @@
                             <portlet:param name="id" value="${infoSelection.key.id}" />
                         </portlet:actionURL>
                         <li>
-                            <a href="${selectInfoResourceUrl}">${infoSelection.key.value.desc}
-                                <i class="icon arrow_right"></i>
-                                <span class="showCareUnits">Visa vårdenheter</span>
+                            <a href="${selectInfoResourceUrl}">${infoSelection.key.value.desc}</a>
+                            <a href="${selectInfoResourceUrl}">
+                            <i class="icon arrow_right_blue"></i>
+                            <span class="showCareUnits">Visa vårdenheter</span>
                             </a>
                         </li>
                     </c:otherwise>
@@ -99,8 +100,12 @@
             <portlet:actionURL name="showBlockedInformationTypes" var="showBlockedInformationTypesUrl">
                 <portlet:param name="visibility" value="${state.currentVisibility}" />
             </portlet:actionURL>
-            <div>
-                <a href="${showBlockedInformationTypesUrl}">Visa spärrade informationstyper</a>
+            <div class="blocked">
+                <a href="${showBlockedInformationTypesUrl}">Ytterligare informationstyper med spärrad information finns</a>
+                <a href="${showBlockedInformationTypesUrl}">
+                <i class="icon arrow_right_red"></i>
+                <span class="showInformationType">Visa spärrade informationstyper</span>
+                </a>
             </div>
         </c:if>
         <div class="clearfix">

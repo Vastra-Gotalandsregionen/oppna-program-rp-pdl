@@ -101,8 +101,13 @@
     margin-right: 7px;
 }
 
-.pdl i.arrow_right {
+.pdl i.arrow_right_blue {
     background-image: url('../images/icon_arrow_right_blue.png');
+    float: right;
+}
+
+.pdl i.arrow_right_red {
+    background-image: url('../images/icon_arrow_right_red.png');
     float: right;
 }
 
@@ -121,6 +126,30 @@
     font-size: 0.85em;
     color: #2f72a9;
     padding-right: 5px;
+    text-decoration: none;
+}
+
+.pdl .showInformationType, .pdl .showInformationType {
+    float: right;
+    font-size: 1em;
+    padding-right: 5px;
+    text-decoration: none;
+}
+
+.pdl .blocked  {
+    font-family: Ubuntu,Arial,Verdana,Helvetica,sans-serif;
+    font-size: 1.2em;
+    background-color: #f2dede;
+    color: #bd5856;
+    padding: 1em;
+    border: 1px solid #ebccd1;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    margin-top: 1em;
+}
+
+.pdl .blocked a {
+    color: #bd5856;
 }
 
 /*------- Link button mod -------*/
