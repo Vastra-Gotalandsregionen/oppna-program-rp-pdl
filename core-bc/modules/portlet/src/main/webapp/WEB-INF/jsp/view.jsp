@@ -37,10 +37,11 @@
                 <span class="element-field-help">
                     Patient-ID ska anges på formatet ÅÅÅÅMMDDXXXX.
                 </span>
+                <aui:input type="hidden" name="reset" value="true" />
             </div>
        </aui:fieldset>
         <aui:button-row>
-            <aui:button type="submit" value="S&ouml;k" cssClass="rp-button" />
+            <aui:button type="submit" value="S&ouml;k" cssClass="rp-button rp-button-proceed" />
         </aui:button-row>
     </aui:form>
 </div>

@@ -18,6 +18,30 @@ ul.rp-progress-bar li {
     text-align: center;
 }
 
+ul.rp-progress-bar li a,
+ul.rp-progress-bar li a:visited,
+ul.rp-progress-bar li a:hover {
+    text-decoration: none;
+}
+
+ul.rp-progress-bar li a,
+ul.rp-progress-bar li a:visited,
+ul.rp-progress-bar li a:hover {
+    color: #80868b;
+}
+
+ul.rp-progress-bar li.done-done a,
+ul.rp-progress-bar li.done-done a:visited,
+ul.rp-progress-bar li.done-done a:hover,
+ul.rp-progress-bar li.done-current a,
+ul.rp-progress-bar li.done-current a:visited,
+ul.rp-progress-bar li.done-current a:hover,
+ul.rp-progress-bar li.current-unstarted a,
+ul.rp-progress-bar li.current-unstarted a:visited,
+ul.rp-progress-bar li.current-unstarted a:hover {
+    color: #fff;
+}
+
 ul.rp-progress-bar li.done-done,
 ul.rp-progress-bar li.done-current {
     background-color: #3582c0;

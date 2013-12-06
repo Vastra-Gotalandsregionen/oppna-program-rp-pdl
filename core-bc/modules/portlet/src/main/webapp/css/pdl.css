@@ -160,6 +160,27 @@
     color: #bd5856;
 }
 
+.pdl .unlock {
+    font-family: Ubuntu,Arial,Verdana,Helvetica,sans-serif;
+    background-color: #fcf8e3;
+    color: #c09853;
+    border: 1px solid #faebcc;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    padding: 0.5em;
+    margin-top: 1em;
+}
+
+.pdl .unlock a {
+    text-decoration: none;
+}
+
+.pdl .unlock .link-button-mod {
+    font-size: 0.9em;
+    padding: 10px 10px;
+    margin-top: 1em;
+}
+
 /*------- Link button mod -------*/
 
 .link-button-mod:visited,
@@ -203,6 +224,20 @@
 .link-button-mod-danger {
     background: #b6383e url('../images/buttons/button-bg-danger.png') top left repeat-x;
     border: 1px solid #872220;
+}
+
+.link-button-mod-proceed:visited,
+.link-button-mod-proceed:hover,
+.link-button-mod-proceed {
+    background: #6264ac url('../images/buttons/button-bg-proceed.png') top left repeat-x;
+    border: 1px solid #4b4692;
+}
+
+.link-button-mod-warn:visited,
+.link-button-mod-warn:hover,
+.link-button-mod-warn {
+    background: #cbb85d url('../images/buttons/button-bg-warn.png') top left repeat-x;
+    border: 1px solid #938542;
 }
 
 /*------- Create Idea portlet -------*/
@@ -348,6 +383,11 @@
   float: left;
   font-size: 1.4em;
   padding: 10px 15px;
+}
+
+.pdl-form .rp-button-proceed input[type="submit"] {
+    background: #6264ac url('../images/buttons/button-bg-proceed.png') top left repeat-x;
+    border: 1px solid #4b4692;
 }
 
 .ie7 .pdl-form .rp-button input[type="submit"] {

@@ -17,13 +17,38 @@
 <div>
     <ul class="rp-progress-bar clearfix">
         <li class="first <c:choose><c:when test="${state.currentProgress == 'SEARCH'}">current-unstarted</c:when><c:when test="${state.currentProgress == 'CHOOSE'}">done-current</c:when></c:choose>">
-            S&ouml;k patientinformation
+            <portlet:renderURL var="startUrl">
+                <portlet:param name="jspPage" value="/WEB-INF/jsp/view.jsp" />
+            </portlet:renderURL>
+            <a href="${startUrl}">S&ouml;k patientinformation</a>
         </li>
         <li class="first <c:choose><c:when test="${state.currentProgress == 'CHOOSE'}">current-unstarted</c:when><c:when test="${state.currentProgress == 'SYSTEMS'}">done-current</c:when></c:choose>">
-            V&auml;lj informationsresurs
+            <c:choose>
+                <c:when test="${state.currentProgress == 'CHOOSE' || state.currentProgress == 'SYSTEMS'}">
+                    <portlet:actionURL name="searchPatient" var="searchPatientUrl">
+                        <portlet:param name="patientId" value="${state.patient.patientId}" />
+                        <portlet:param name="reset" value="false" />
+                    </portlet:actionURL>
+                    <a href="${searchPatientUrl}">V&auml;lj vårdenheter</a>
+                </c:when>
+                <c:otherwise>
+                    V&auml;lj vårdenheter
+                </c:otherwise>
+            </c:choose>
         </li>
         <li class="first <c:choose><c:when test="${state.currentProgress == 'SYSTEMS'}">current-unstarted</c:when></c:choose>">
-            V&auml;lj informationsk&auml;lla
+            <c:choose>
+                <c:when test="${state.currentProgress == 'CHOOSE' || state.currentProgress == 'SYSTEMS'}">
+                    <portlet:actionURL name="searchPatient" var="searchPatientUrl">
+                        <portlet:param name="patientId" value="${state.patient.patientId}" />
+                        <portlet:param name="reset" value="false" />
+                    </portlet:actionURL>
+                    <a href="${searchPatientUrl}">V&auml;lj informationsresurs</a>
+                </c:when>
+                <c:otherwise>
+                    V&auml;lj informationsk&auml;lla
+                </c:otherwise>
+            </c:choose>
         </li>
     </ul>
 </div>

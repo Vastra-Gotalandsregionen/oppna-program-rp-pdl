@@ -43,6 +43,7 @@
                                     <portlet:actionURL name="toggleInformation" var="toggleInformationUrl">
                                         <portlet:param name="id" value="${system.id}" />
                                         <portlet:param name="blocked" value="${system.blocked}" />
+                                        <portlet:param name="revokeEmergency" value="false" />
                                     </portlet:actionURL>
                                     <c:if test="${state.shouldBeVisible[system.visibility] && ((system.blocked && infoSelection.key.viewBlocked) || !system.blocked)}">
                                         <li>
@@ -67,6 +68,25 @@
                                                     </c:if>
                                                 </c:when>
                                             </c:choose>
+                                            <c:if test="${system.blocked}">
+                                                <portlet:actionURL name="toggleInformation" var="toggleInformationEmergencyUrl">
+                                                    <portlet:param name="id" value="${system.id}" />
+                                                    <portlet:param name="blocked" value="${system.blocked}" />
+                                                    <portlet:param name="revokeEmergency" value="true" />
+                                                </portlet:actionURL>
+                                                <portlet:actionURL name="toggleInformation" var="toggleInformationConsentUrl">
+                                                    <portlet:param name="id" value="${system.id}" />
+                                                    <portlet:param name="blocked" value="${system.blocked}" />
+                                                    <portlet:param name="revokeEmergency" value="false" />
+                                                </portlet:actionURL>
+                                                <div class="unlock">
+                                                    <b>Passera spärr</b> för ${system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}
+                                                    <div class="clearfix">
+                                                        <a href="${toggleInformationConsentUrl}" class="link-button-mod link-button-mod-warn">Passera spärr med medgivande</a>
+                                                        <a href="${toggleInformationEmergencyUrl}" class="link-button-mod link-button-mod-danger">Nödöppna information</a>
+                                                    </div>
+                                                </div>
+                                            </c:if>
                                         </li>
                                     </c:if>
                                 </c:forEach>
@@ -91,7 +111,7 @@
                         <portlet:actionURL name="selectInfoResource" var="selectInfoResourceUrl">
                             <portlet:param name="id" value="${infoSelection.key.id}" />
                         </portlet:actionURL>
-                        <li>
+                        <li class="active">
                             <a href="${selectInfoResourceUrl}">${infoSelection.key.value.desc}</a>
                             <a href="${selectInfoResourceUrl}">
                             <i class="icon arrow_right_blue"></i>
@@ -115,38 +135,15 @@
                 </a>
             </div>
         </c:if>
-        <div class="clearfix">
-        <c:choose>
-           <c:when test="${!state.showOtherCareUnits}">
-                <p>
-                    <portlet:actionURL name="showOtherCareUnits" var="showOtherCareUnitsUrl" />
-                    <a href="${showOtherCareUnitsUrl}" class="link-button-mod">Visa information för andra vårdenheter</a>
-                </p>
-           </c:when>
-           <c:when test="${state.showOtherCareProviders && state.pdlReport.consent.value.hasConsent}">
-               <p>
-                   <c:if test="${!state.pdlReport.consent.value.hasConsent}">
-                       <jsp:include page="establishConsent.jsp" />
-                   </c:if>
-                   <c:if test="${!state.showOtherCareProviders && state.pdlReport.consent.value.hasConsent}">
-                       <portlet:actionURL name="showOtherCareProviders" var="showOtherCareProvidersUrl" />
-                       <a href="${showOtherCareProvidersUrl}" class="link-button-mod">Visa information för andra vårdgivare</a>
-                   </c:if>
-               </p>
-           </c:when>
-           <c:when test="${state.showOtherCareUnits}">
-                <p>
-                    <c:if test="${!state.pdlReport.consent.value.hasConsent}">
-                        <jsp:include page="establishConsent.jsp" />
-                    </c:if>
-                    <c:if test="${!state.showOtherCareProviders && state.pdlReport.consent.value.hasConsent}">
-                        <portlet:actionURL name="showOtherCareProviders" var="showOtherCareProvidersUrl" />
-                        <a href="${showOtherCareProvidersUrl}" class="link-button-mod">Visa information för andra vårdgivare</a>
-                    </c:if>
-                </p>
-           </c:when>
-        </c:choose>
-        </div>
+        <jsp:include page="pdlScopeControls.jsp"/>
         <jsp:include page="pdlInfoCallout.jsp" />
+        </div class="clearfix">
+            <portlet:actionURL name="showSummary" var="showSummaryUrl" />
+            <a href="${showSummaryUrl}" class="link-button-mod link-button-mod-proceed">Färdigställ val av vårdenheter</a>
+            <portlet:renderURL var="startUrl">
+                <portlet:param name="jspPage" value="/WEB-INF/jsp/view.jsp" />
+            </portlet:renderURL>
+            <a href="${startUrl}" class="link-button-mod">Ny sökning</a>
+        </div>
     </c:when>
 </c:choose>

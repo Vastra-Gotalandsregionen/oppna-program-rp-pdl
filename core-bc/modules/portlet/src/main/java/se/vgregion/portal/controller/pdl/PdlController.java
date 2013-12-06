@@ -87,30 +87,34 @@ public class PdlController {
     @ActionMapping("searchPatient")
     public void searchPatientInformation(
             @RequestParam String patientId,
+            @RequestParam boolean reset,
             ActionResponse response
     ) {
-        state.reset(); // Make sure reset is called here when user uses back button and submits again.
-        LOGGER.trace("Searching for patient {} in care systems.", patientId);
+        if(reset){ // Support for going back without redoing the search
+            state.reset(); // Make sure reset is called here when user uses back button and submits again.
+            PdlProgress now = state.getCurrentProgress();
+            state.setCurrentProgress(now.nextStep());
 
-        state.setPatient(patients.byPatientId(patientId));
+            LOGGER.trace("Searching for patient {} in care systems.", patientId);
 
-        List<WithInfoType<CareSystem>> careSystems = systems.byPatientId(state.getCtx().value, patientId);
+            state.setPatient(patients.byPatientId(patientId));
 
-        //TODO 2013-11-18 : Magnus Andersson > Only do this if there are care systems!
-        //TODO 2013-11-22 : Magnus Andersson > Should handle WithAccess and filter out unavailable systems.
-        PdlReport pdlReport = pdl.pdlReport(state.getCtx().value, state.getPatient(), careSystems);
+            List<WithInfoType<CareSystem>> careSystems = systems.byPatientId(state.getCtx().value, patientId);
 
-        log(UserAction.SEARCH);
+            //TODO 2013-11-18 : Magnus Andersson > Only do this if there are care systems!
+            //TODO 2013-11-22 : Magnus Andersson > Should handle WithAccess and filter out unavailable systems.
+            PdlReport pdlReport = pdl.pdlReport(state.getCtx().value, state.getPatient(), careSystems);
 
-        // Reformat systems list into a format that we can display
-        CareSystemsReport csReport = new CareSystemsReport(state.getCtx(), pdlReport);
+            log(UserAction.SEARCH);
 
-        state.setPdlReport(pdlReport);
-        state.setCsReport(csReport);
+            // Reformat systems list into a format that we can display
+            CareSystemsReport csReport = new CareSystemsReport(state.getCtx(), pdlReport);
 
-        PdlProgress now = state.getCurrentProgress();
-        state.setCurrentProgress(now.nextStep());
-
+            state.setPdlReport(pdlReport);
+            state.setCsReport(csReport);
+        } else {
+            state.setCurrentProgress(PdlProgress.firstStep().nextStep());
+        }
         response.setRenderParameter("view", "pickInfoResource");
     }
 
@@ -229,7 +233,7 @@ public class PdlController {
     @ActionMapping("selectInfoResource")
     public void selectInfoResource(
             @RequestParam String id,
-                ActionResponse response
+            ActionResponse response
     ) {
         if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
@@ -304,6 +308,7 @@ public class PdlController {
     public void toggleInformation(
             @RequestParam String id,
             @RequestParam boolean blocked,
+            @RequestParam boolean revokeEmergency,
             ActionResponse response
     ) {
         if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
@@ -322,7 +327,13 @@ public class PdlController {
 
             state.setShowOtherCareProviders(true);
 
-            log(UserAction.INFORMATION_CHOICE);
+            if(blocked && revokeEmergency) {
+                log(UserAction.BLOCK);
+            } else if (blocked && !revokeEmergency) {
+                log(UserAction.BLOCK_EMERGENCY);
+            } else {
+                log(UserAction.INFORMATION_CHOICE);
+            }
 
             response.setRenderParameter("view", "pickInfoResource");
         }
@@ -348,6 +359,22 @@ public class PdlController {
         }
     }
 
+    @ActionMapping("showSummary")
+    public void showSummary(ActionResponse response) {
+        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+            response.setRenderParameter("view", "view");
+        } else {
+            state.setCurrentProgress(state.getCurrentProgress().nextStep());
+
+            LOGGER.trace(
+                    "Request to show summary employee {} and patient {}.",
+                    state.getCtx().value.employeeHsaId,
+                    state.getPatient().patientId
+            );
+
+            response.setRenderParameter("view", "showSummary");
+        }
+    }
 
 
     @RenderMapping(params = "view=pickInfoResource")
