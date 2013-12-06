@@ -72,10 +72,16 @@
                                 </c:forEach>
                                 <c:if test="${infoSelection.key.containsBlocked && !infoSelection.key.viewBlocked}">
                                     <li>
-                                        <portlet:actionURL name="showBlockedInformation" var="showBlockedInformationUrl">
-                                            <portlet:param name="id" value="${infoSelection.key.id}" />
-                                        </portlet:actionURL>
-                                        <a href="${showBlockedInformationUrl}">Visa ytterligare spärrad information</a>
+                                        <div class="blocked blockedCareUnit">
+                                            <portlet:actionURL name="showBlockedInformation" var="showBlockedInformationUrl">
+                                                <portlet:param name="id" value="${infoSelection.key.id}" />
+                                            </portlet:actionURL>
+                                            <a href="${showBlockedInformationUrl}">Ytterligare vårdenheter med spärrad information finns</a>
+                                            <a href="${showBlockedInformationUrl}">
+                                                <i class="icon arrow_right_red"></i>
+                                                <span class="showInformationType">Visa spärrade vårdenheter</span>
+                                            </a>
+                                        <div>
                                     </li>
                                 </c:if>
                             </ul>
@@ -101,11 +107,11 @@
             <portlet:actionURL name="showBlockedInformationTypes" var="showBlockedInformationTypesUrl">
                 <portlet:param name="visibility" value="${state.currentVisibility}" />
             </portlet:actionURL>
-            <div class="blocked">
+            <div class="blocked blockedInfoTypes">
                 <a href="${showBlockedInformationTypesUrl}">Ytterligare informationstyper med spärrad information finns</a>
                 <a href="${showBlockedInformationTypesUrl}">
-                <i class="icon arrow_right_red"></i>
-                <span class="showInformationType">Visa informationstyper</span>
+                    <i class="icon arrow_right_red"></i>
+                    <span class="showInformationType">Visa spärrade informationstyper</span>
                 </a>
             </div>
         </c:if>

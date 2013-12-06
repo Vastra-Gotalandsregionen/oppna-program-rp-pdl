@@ -138,14 +138,22 @@
 
 .pdl .blocked  {
     font-family: Ubuntu,Arial,Verdana,Helvetica,sans-serif;
-    font-size: 1.2em;
     background-color: #f2dede;
     color: #bd5856;
-    padding: 1em;
     border: 1px solid #ebccd1;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
+
+}
+
+.pdl .blockedInfoTypes {
+    font-size: 1.2em;
+    padding: 1em;
     margin-top: 1em;
+}
+
+.pdl .blockedCareUnit {
+    padding: 0.5em;
 }
 
 .pdl .blocked a {
