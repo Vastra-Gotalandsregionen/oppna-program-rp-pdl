@@ -1,0 +1,60 @@
+/*------- RP Progressbar -------*/
+
+ul.rp-progress-bar {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul.rp-progress-bar li {
+    background: transparent url(../images/rp-progressbar/arrow-white-white.png) center right no-repeat;
+    border: 1px solid #c4ced5;
+    border-width: 1px 0 1px 0;
+    color: #80868b;
+    float: left;
+    font-family: Ubuntu, Arial, Verdana, Helvetica, sans-serif;
+    font-size: 1.0em;
+    padding: 10px 20px 10px 15px;
+    text-align: center;
+}
+
+ul.rp-progress-bar li.done-done,
+ul.rp-progress-bar li.done-current {
+    background-color: #3582c0;
+    background-image: url(../images/rp-progressbar/arrow-blue-blue.png);
+    color: #fff;
+}
+
+ul.rp-progress-bar li.current-unstarted {
+    background-color: #3582c0;
+    background-image: url(../images/rp-progressbar/arrow-blue-white.png);
+    color: #fff;
+}
+
+ul.rp-progress-bar li:first-child {
+    -moz-border-radius: 4px 0 0 4px;
+    -webkit-border-radius: 4px 0 0 4px;
+    border-radius: 4px 0 0 4px;
+    border-left-width: 1px;
+}
+
+/* Needed for ie7+ie8 */
+.ie7 ul.rp-progress-bar li.first,
+.ie8 ul.rp-progress-bar li.first {
+    border-left-width: 1px;
+}
+
+ul.rp-progress-bar li:last-child {
+    background-image: none;
+    -moz-border-radius: 0 4px 4px 0;
+    -webkit-border-radius: 0 4px 4px 0;
+    border-radius: 0 4px 4px 0;
+    border-right-width: 1px;
+}
+
+/* Needed for ie7+ie8 */
+.ie7 ul.rp-progress-bar li.last,
+.ie8 ul.rp-progress-bar li.last {
+    background-image: none;
+    border-right-width: 1px;
+}

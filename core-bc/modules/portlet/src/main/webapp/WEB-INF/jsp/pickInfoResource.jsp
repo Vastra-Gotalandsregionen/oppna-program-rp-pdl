@@ -16,6 +16,8 @@
 <liferay-theme:defineObjects />
 
 <div class="pdl clearfix">
+    <jsp:include page="progress.jsp" />
+
     <jsp:include page="outcomeInfo.jsp" />
     <div class="info">
         <c:choose>

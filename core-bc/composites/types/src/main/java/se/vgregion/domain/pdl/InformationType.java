@@ -1,22 +1,20 @@
 package se.vgregion.domain.pdl;
 
 public enum InformationType {
-    LAK("Läkemedel - Ordination/förskrivning"),
-    UPP("Uppmärksamhetsinformation"),
     //ALT("Allt"),
     DIG("Diagnos"),
     FUN("Funktionsnedsättning"),
-    LFÖ("Läkemedel Förskrivning"),
+    LAK("Läkemedel Förskrivning"),
     LUT("Läkemedel Utlämning"),
     LAO("Läkemedel Ordination"),
     PAD("PADL"),
-    VOM("Vård- och omsorgstagare"),
-    UNS("Undersökningsresultat"),
-    UPS("Uppmärksamhetssignal"),
-    VRD("Vårdbegäran"),
-    VRK("Vård- och omsorgskontakt"),
-    VRO("Vård- och omsorgsdokument (ostrukturerad)"),
-    VPO("Vård- och omsorgsplan (ostrukturerad)");
+    VOT("Vård- och omsorgstagare"),
+    UNR("Undersökningsresultat"),
+    UPP("Uppmärksamhetssignal"),
+    VBR("Vårdbegäran"),
+    VOK("Vård- och omsorgskontakt"),
+    VOD("Vård- och omsorgsdokument (ostrukturerad)"),
+    VOP("Vård- och omsorgsplan (ostrukturerad)");
 
     private final String desc;
 

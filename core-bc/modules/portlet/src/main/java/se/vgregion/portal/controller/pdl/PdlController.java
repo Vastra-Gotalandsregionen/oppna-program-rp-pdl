@@ -17,14 +17,11 @@ import se.vgregion.domain.pdl.decorators.WithAccess;
 import se.vgregion.domain.pdl.decorators.WithInfoType;
 import se.vgregion.domain.pdl.logging.PdlEventLog;
 import se.vgregion.domain.pdl.logging.UserAction;
-import se.vgregion.service.pdl.AccessControl;
-import se.vgregion.service.pdl.CareSystems;
-import se.vgregion.service.pdl.ObjectRepo;
-import se.vgregion.service.pdl.PatientRepository;
-import se.vgregion.service.pdl.PdlService;
+import se.vgregion.service.pdl.*;
 
 import javax.portlet.ActionResponse;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "VIEW")
@@ -111,6 +108,9 @@ public class PdlController {
         state.setPdlReport(pdlReport);
         state.setCsReport(csReport);
 
+        PdlProgress now = state.getCurrentProgress();
+        state.setCurrentProgress(now.nextStep());
+
         response.setRenderParameter("view", "pickInfoResource");
     }
 
@@ -119,11 +119,17 @@ public class PdlController {
             ActionResponse response,
             @RequestParam String emergency
     ) {
+        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+            response.setRenderParameter("view", "view");
+            return;
+        }
+
         LOGGER.trace(
                 "Request to create both consent and relationship between employee {} and patient {}.",
                 state.getCtx().value.employeeHsaId,
                 state.getPatient().patientId
         );
+
 
         establishConsent(response, emergency);
         establishRelationship(response);
@@ -133,26 +139,31 @@ public class PdlController {
 
     @ActionMapping("establishRelation")
     public void establishRelationship(ActionResponse response) {
-        LOGGER.trace(
-            "Request to create relationship between employee {} and patient {}.",
-            state.getCtx().value.employeeHsaId,
-            state.getPatient().patientId
-        );
+        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+            response.setRenderParameter("view", "view");
+        } else {
 
-        PdlReport newReport = pdl.patientRelationship(
-            state.getCtx().value,
-            state.getPdlReport(),
-            state.getPatient().patientId,
-            "Reason",
-            1,
-            RoundedTimeUnit.NEAREST_HALF_HOUR
-        );
+            LOGGER.trace(
+                "Request to create relationship between employee {} and patient {}.",
+                state.getCtx().value.employeeHsaId,
+                state.getPatient().patientId
+            );
 
-        state.setPdlReport(newReport);
+            PdlReport newReport = pdl.patientRelationship(
+                state.getCtx().value,
+                state.getPdlReport(),
+                state.getPatient().patientId,
+                "Reason",
+                1,
+                RoundedTimeUnit.NEAREST_HALF_HOUR
+            );
 
-        log(UserAction.RELATION);
+            state.setPdlReport(newReport);
 
-        response.setRenderParameter("view", "pickInfoResource");
+            log(UserAction.RELATION);
+
+            response.setRenderParameter("view", "pickInfoResource");
+        }
     }
 
     @ActionMapping("establishConsent")
@@ -160,30 +171,34 @@ public class PdlController {
             ActionResponse response,
             @RequestParam String emergency
     ) {
-        LOGGER.trace(
-            "Request to create consent between employee {} and patient {}.",
-            state.getCtx().value.employeeHsaId,
-            state.getPatient().patientId
-        );
+        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+            response.setRenderParameter("view", "view");
+        } else {
+            LOGGER.trace(
+                "Request to create consent between employee {} and patient {}.",
+                state.getCtx().value.employeeHsaId,
+                state.getPatient().patientId
+            );
 
-        // FIXME 2013-10-21 : Magnus Andersson > Should choose between consent or emergency. Also add possiblility to be represented by someone?
-        state.setPdlReport(
-            pdl.patientConsent(
-                state.getCtx().value,
-                state.getPdlReport(),
-                state.getPatient().patientId,
-                "Reason",
-                1,
-                RoundedTimeUnit.NEAREST_HALF_HOUR,
-                ("true".equals(emergency)) ? PdlReport.ConsentType.Emergency : PdlReport.ConsentType.Consent
-            )
-        );
+            // FIXME 2013-10-21 : Magnus Andersson > Should choose between consent or emergency. Also add possiblility to be represented by someone?
+            state.setPdlReport(
+                pdl.patientConsent(
+                    state.getCtx().value,
+                    state.getPdlReport(),
+                    state.getPatient().patientId,
+                    "Reason",
+                    1,
+                    RoundedTimeUnit.NEAREST_HALF_HOUR,
+                    ("true".equals(emergency)) ? PdlReport.ConsentType.Emergency : PdlReport.ConsentType.Consent
+                )
+            );
 
-        state.setShowOtherCareProviders(true);
+            state.setShowOtherCareProviders(true);
 
-        log(UserAction.CONSENT);
+            log(UserAction.CONSENT);
 
-        response.setRenderParameter("view", "pickInfoResource");
+            response.setRenderParameter("view", "pickInfoResource");
+        }
     }
 
     void log(UserAction action) {
@@ -194,118 +209,142 @@ public class PdlController {
 
     @ActionMapping("showOtherCareUnits")
     public void showOtherCareUnits(ActionResponse response) {
-        LOGGER.trace(
-                "Request to show more information within same care giver for employee {} and patient {}.",
-                state.getCtx().value.employeeHsaId,
-                state.getPatient().patientId
-        );
+        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+            response.setRenderParameter("view", "view");
+        } else {
+            LOGGER.trace(
+                    "Request to show more information within same care giver for employee {} and patient {}.",
+                    state.getCtx().value.employeeHsaId,
+                    state.getPatient().patientId
+            );
 
-        state.setShowOtherCareUnits(true);
+            state.setShowOtherCareUnits(true);
 
-        log(UserAction.OTHER_CARE_UNITS);
+            log(UserAction.OTHER_CARE_UNITS);
 
-        response.setRenderParameter("view", "pickInfoResource");
+            response.setRenderParameter("view", "pickInfoResource");
+        }
     }
 
     @ActionMapping("selectInfoResource")
     public void selectInfoResource(
             @RequestParam String id,
-            ActionResponse response
+                ActionResponse response
     ) {
-       LOGGER.trace(
-               "Request to select information type with id {} for patient {}",
-               id,
-               state.getPatient().patientId
-       );
+        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+            response.setRenderParameter("view", "view");
+        } else {
+           LOGGER.trace(
+                   "Request to select information type with id {} for patient {}",
+                   id,
+                   state.getPatient().patientId
+           );
 
-        CareSystemsReport newCsReport =
-                state.getCsReport().selectInfoResource(id);
+            CareSystemsReport newCsReport =
+                    state.getCsReport().selectInfoResource(id);
 
-        state.setCsReport(newCsReport);
+            state.setCsReport(newCsReport);
 
-        log(UserAction.INFORMATION_CHOICE);
+            log(UserAction.INFORMATION_CHOICE);
 
-        response.setRenderParameter("view", "pickInfoResource");
+            response.setRenderParameter("view", "pickInfoResource");
+        }
     }
 
     @ActionMapping("showBlockedInformation")
     public void showBlockedInformation(
             @RequestParam String id,
-            ActionResponse response
+                ActionResponse response
     ) {
-        LOGGER.trace(
-                "Request to show blocked information categorized with information type with id {} for patient {}",
-                id,
-                state.getPatient().patientId
-        );
+        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+            response.setRenderParameter("view", "view");
+        } else {
+            LOGGER.trace(
+                    "Request to show blocked information categorized with information type with id {} for patient {}",
+                    id,
+                    state.getPatient().patientId
+            );
 
-        CareSystemsReport newCsReport =
-                state.getCsReport().showBlocksForInfoResource(id);
+            CareSystemsReport newCsReport =
+                    state.getCsReport().showBlocksForInfoResource(id);
 
-        state.setCsReport(newCsReport);
+            state.setCsReport(newCsReport);
 
-        log(UserAction.SHOW_BLOCKED_INFORMATION);
+            log(UserAction.SHOW_BLOCKED_INFORMATION);
 
-        response.setRenderParameter("view", "pickInfoResource");
+            response.setRenderParameter("view", "pickInfoResource");
+        }
     }
 
     @ActionMapping("showBlockedInformationTypes")
     public void showBlockedInformationTypes(
             @RequestParam Visibility visibility,
-            ActionResponse response
+                ActionResponse response
     ) {
-        LOGGER.trace(
-                "Request to show blocked information types for visibility {}",
-                visibility
-        );
+        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+            response.setRenderParameter("view", "view");
+        } else {
+            LOGGER.trace(
+                    "Request to show blocked information types for visibility {}",
+                    visibility
+            );
 
-        CareSystemsReport newCsReport =
-                state.getCsReport().showBlocksForInfoType(visibility);
+            CareSystemsReport newCsReport =
+                    state.getCsReport().showBlocksForInfoType(visibility);
 
-        state.setCsReport(newCsReport);
+            state.setCsReport(newCsReport);
 
-        log(UserAction.SHOW_BLOCKED_INFORMATION);
+            log(UserAction.SHOW_BLOCKED_INFORMATION);
 
-        response.setRenderParameter("view", "pickInfoResource");
+            response.setRenderParameter("view", "pickInfoResource");
+        }
     }
 
     @ActionMapping("toggleInformation")
     public void toggleInformation(
             @RequestParam String id,
-            ActionResponse response
+                ActionResponse response
     ) {
-        LOGGER.trace(
-                "Request to select information type with id {} for patient {}",
-                id,
-                state.getPatient().patientId
-        );
+        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+            response.setRenderParameter("view", "view");
+        } else {
+            LOGGER.trace(
+                    "Request to select information type with id {} for patient {}",
+                    id,
+                    state.getPatient().patientId
+            );
 
-        CareSystemsReport newCsReport =
-                state.getCsReport().toggleInformation(id);
+            CareSystemsReport newCsReport =
+                    state.getCsReport().toggleInformation(id);
 
-        state.setCsReport(newCsReport);
+            state.setCsReport(newCsReport);
 
-        state.setShowOtherCareProviders(true);
+            state.setShowOtherCareProviders(true);
 
-        log(UserAction.INFORMATION_CHOICE);
+            log(UserAction.INFORMATION_CHOICE);
 
-        response.setRenderParameter("view", "pickInfoResource");
+            response.setRenderParameter("view", "pickInfoResource");
+        }
     }
 
     @ActionMapping("showOtherCareProviders")
     public void showOtherCareProviders(ActionResponse response) {
-        LOGGER.trace(
-            "Request to show more information within same care giver for employee {} and patient {}.",
-            state.getCtx().value.employeeHsaId,
-            state.getPatient().patientId
-        );
+        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+            response.setRenderParameter("view", "view");
+        } else {
+            LOGGER.trace(
+                "Request to show more information within same care giver for employee {} and patient {}.",
+                state.getCtx().value.employeeHsaId,
+                state.getPatient().patientId
+            );
 
 
-        state.setShowOtherCareProviders(true);
+            state.setShowOtherCareProviders(true);
 
-        log(UserAction.OTHER_CARE_PROVIDERS);
+            log(UserAction.OTHER_CARE_PROVIDERS);
 
-        response.setRenderParameter("view", "pickInfoResource");
+            response.setRenderParameter("view", "pickInfoResource");
+        }
     }
 
 
