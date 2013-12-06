@@ -303,7 +303,8 @@ public class PdlController {
     @ActionMapping("toggleInformation")
     public void toggleInformation(
             @RequestParam String id,
-                ActionResponse response
+            @RequestParam boolean blocked,
+            ActionResponse response
     ) {
         if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
@@ -315,7 +316,7 @@ public class PdlController {
             );
 
             CareSystemsReport newCsReport =
-                    state.getCsReport().toggleInformation(id);
+                    state.getCsReport().toggleInformation(id, blocked);
 
             state.setCsReport(newCsReport);
 

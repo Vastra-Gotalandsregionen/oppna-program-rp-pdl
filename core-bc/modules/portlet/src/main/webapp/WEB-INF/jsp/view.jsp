@@ -31,7 +31,6 @@
                 <aui:field-wrapper cssClass="element-field-wrap">
                     <label for="<portlet:namespace />title">
                         <span>Patient-ID</span>
-                        <!--span class="element-mandatory">*<span> Obligatorisk</span></span-->
                     </label>
                     <aui:input name="patientId" cssClass="element-field" type="text" label="" />
                 </aui:field-wrapper>
@@ -40,9 +39,8 @@
                 </span>
             </div>
        </aui:fieldset>
-
         <aui:button-row>
-            <aui:button type="submit" value="S&ouml;k &raquo;" cssClass="rp-button" />
+            <aui:button type="submit" value="S&ouml;k" cssClass="rp-button" />
         </aui:button-row>
     </aui:form>
 </div>

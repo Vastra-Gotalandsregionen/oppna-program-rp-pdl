@@ -143,7 +143,7 @@ public class CareSystemsReport implements Serializable {
         return new CareSystemsReport(aggregatedSystems.mapValue(newSystems), containsBlockedInfoTypes);
     }
 
-    public CareSystemsReport toggleInformation(String id) {
+    public CareSystemsReport toggleInformation(String id, boolean blocked) {
         TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> newSystems =
                 new TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>();
 
@@ -153,8 +153,11 @@ public class CareSystemsReport implements Serializable {
 
             for(SystemState<CareSystem> uis : aggregatedSystems.value.get(key)) {
                 if(uis.id.equals(id)){
-                    SystemState<CareSystem> newSelection = (uis.selected) ? uis.deselect() : uis.select();
-                    sysList.add(newSelection);
+                    SystemState<CareSystem> newState = (uis.selected) ? uis.deselect() : uis.select();
+                    if(blocked) {
+                        newState = newState.unblock();
+                    }
+                    sysList.add(newState);
                 } else {
                     sysList.add(uis);
                 }

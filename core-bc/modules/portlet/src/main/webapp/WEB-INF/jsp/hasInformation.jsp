@@ -42,6 +42,7 @@
                                 <c:forEach var="system" items="${infoSelection.value}">
                                     <portlet:actionURL name="toggleInformation" var="toggleInformationUrl">
                                         <portlet:param name="id" value="${system.id}" />
+                                        <portlet:param name="blocked" value="${system.blocked}" />
                                     </portlet:actionURL>
                                     <c:if test="${state.shouldBeVisible[system.visibility] && ((system.blocked && infoSelection.key.viewBlocked) || !system.blocked)}">
                                         <li>
@@ -104,7 +105,7 @@
                 <a href="${showBlockedInformationTypesUrl}">Ytterligare informationstyper med spärrad information finns</a>
                 <a href="${showBlockedInformationTypesUrl}">
                 <i class="icon arrow_right_red"></i>
-                <span class="showInformationType">Visa spärrade informationstyper</span>
+                <span class="showInformationType">Visa informationstyper</span>
                 </a>
             </div>
         </c:if>
