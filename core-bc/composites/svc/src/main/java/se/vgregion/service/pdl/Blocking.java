@@ -104,7 +104,9 @@ class Blocking {
             en.setInformationCareUnitId(cs.value.careUnitHsaId);
             en.setInformationStartDate(duration.startDate);
             en.setInformationEndDate(duration.endDate);
-            en.setInformationType(cs.informationType.name().toLowerCase());
+            if(cs.informationType == InformationType.UPP || cs.informationType == InformationType.LAK) {
+                en.setInformationType(cs.informationType.name().toLowerCase());
+            }
             en.setRowNumber(i);
 
             entities.add(en);

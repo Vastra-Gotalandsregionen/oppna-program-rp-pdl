@@ -4,6 +4,7 @@ package se.vgregion.portal.controller.pdl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -38,6 +39,7 @@ public class PdlController {
     @Autowired
     private PdlUserState state;
     @Autowired
+    @Qualifier("CareSystemsImpl")
     private CareSystems systems;
     @Autowired
     private PatientRepository patients;
@@ -411,9 +413,9 @@ public class PdlController {
         assignments.put("SE2321000131-S000000020452", new AssignmentAccess("Vård och behandling", sameProviders) );
 
         return new PdlContext(
-                    "VGR",
+                    "Capio",
                     "SE2321000131-E000000000001",
-                    "Sahlgrenska, Radiologi 32",
+                    "Lundby närsjukhus",
                     "SE2321000131-S000000010252",
                     "Ludvig Läkare",
                     "SE2321000131-P000000069215",

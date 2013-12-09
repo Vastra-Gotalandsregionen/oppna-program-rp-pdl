@@ -15,13 +15,13 @@
 
 <div class="clearfix">
     <c:choose>
-       <c:when test="${!state.showOtherCareUnits}">
+       <c:when test="${!state.showOtherCareUnits && state.csReport.containsOtherCareUnits}">
             <p>
                 <portlet:actionURL name="showOtherCareUnits" var="showOtherCareUnitsUrl" />
                 <a href="${showOtherCareUnitsUrl}" class="link-button-mod button-simple">Visa information för andra vårdenheter</a>
             </p>
        </c:when>
-       <c:when test="${state.showOtherCareProviders && state.pdlReport.consent.value.hasConsent}">
+       <c:when test="${state.showOtherCareProviders && state.pdlReport.consent.value.hasConsent && state.csReport.containsOtherCareProviders}">
            <p>
                <c:if test="${!state.pdlReport.consent.value.hasConsent}">
                    <jsp:include page="establishConsent.jsp" />

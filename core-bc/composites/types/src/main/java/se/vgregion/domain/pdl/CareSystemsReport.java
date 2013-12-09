@@ -14,6 +14,8 @@ public class CareSystemsReport implements Serializable {
 
     public final WithOutcome<TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>> aggregatedSystems;
     public final Map<Visibility, Boolean> containsBlockedInfoTypes;
+    public final boolean containsOtherCareUnits;
+    public final boolean containsOtherCareProviders;
 
     public CareSystemsReport(PdlContext ctx, String currentAssignment, PdlReport pdlReport) {
 
@@ -36,11 +38,13 @@ public class CareSystemsReport implements Serializable {
         TreeMap<InfoTypeState<InformationType>,ArrayList<SystemState<CareSystem>>> lowestOpenedUp =
                 lowestOpenedUp(infoTypeStateMap);
 
-
+        containsOtherCareUnits = containsOtherCareUnits(lowestOpenedUp);
+        containsOtherCareProviders = containsOtherCareProviders(lowestOpenedUp);
         containsBlockedInfoTypes = containsOnlyBlockedInfoTypes(lowestOpenedUp);
 
         this.aggregatedSystems = pdlReport.systems.mapValue(lowestOpenedUp);
     }
+
 
     private TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> lowestOpenedUp(
             TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> infoTypeStateMap
@@ -60,11 +64,14 @@ public class CareSystemsReport implements Serializable {
     }
 
     private CareSystemsReport(
-            WithOutcome <TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>> aggregatedSystems,
+            WithOutcome <TreeMap<InfoTypeState<InformationType>,
+            ArrayList<SystemState<CareSystem>>>> aggregatedSystems,
             Map<Visibility, Boolean> containsBlockedInfoTypes
     ) {
         this.aggregatedSystems = aggregatedSystems;
         this.containsBlockedInfoTypes = containsBlockedInfoTypes;
+        this.containsOtherCareProviders = containsOtherCareProviders(aggregatedSystems.value);
+        this.containsOtherCareUnits = containsOtherCareUnits(aggregatedSystems.value);
     }
 
     /**
@@ -91,6 +98,27 @@ public class CareSystemsReport implements Serializable {
         }
 
         return result;
+    }
+
+
+    private boolean containsOtherCareUnits(TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> systems) {
+        for(InfoTypeState<InformationType> key : systems.keySet()) {
+            if(key.lowestVisibility == Visibility.OTHER_CARE_UNIT) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean containsOtherCareProviders(TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> systems) {
+        for(InfoTypeState<InformationType> key : systems.keySet()) {
+            if(key.lowestVisibility == Visibility.OTHER_CARE_PROVIDER) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> calcInfoTypeState(
@@ -374,11 +402,21 @@ public class CareSystemsReport implements Serializable {
         return containsBlockedInfoTypes;
     }
 
+    public boolean isContainsOtherCareUnits() {
+        return containsOtherCareUnits;
+    }
+
+    public boolean isContainsOtherCareProviders() {
+        return containsOtherCareProviders;
+    }
+
     @Override
     public String toString() {
         return "CareSystemsReport{" +
                 "aggregatedSystems=" + aggregatedSystems +
                 ", containsBlockedInfoTypes=" + containsBlockedInfoTypes +
+                ", containsOtherCareUnits=" + containsOtherCareUnits +
+                ", containsOtherCareProviders=" + containsOtherCareProviders +
                 '}';
     }
 }

@@ -87,7 +87,7 @@ public class PdlServiceSpecification {
         PatientRepository patients = new KivPatientRepository();
         patient = patients.byPatientId("test");
 
-        CareSystems systems = new CareSystemsImpl();
+        CareSystems systems = new CareSystemsMock();
         careSystems = systems.byPatientId(ctx, patient.patientId);
     }
 

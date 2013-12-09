@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-@Service
+@Service("CareSystemsImpl")
 public class CareSystemsImpl implements CareSystems {
 
     @Override
@@ -21,53 +21,33 @@ public class CareSystemsImpl implements CareSystems {
                         Arrays
                             .asList(
                                     new WithInfoType<CareSystem>(
-                                        InformationType.LAK,
+                                        InformationType.UNR,
                                         new CareSystem(
                                             "Bild- och funktionsregistret",
                                             "SE2321000131-E000000000001",
-                                            "VGR",
+                                            "Capio",
                                             "SE2321000131-S000000010252",
-                                            "Sahlgrenska, Radiologi 13"
+                                            "Lundby närsjukhus"
                                         )
                                     ),
                                     new WithInfoType<CareSystem>(
-                                        InformationType.UPP,
+                                        InformationType.UNR,
                                         new CareSystem(
                                             "Bild- och funktionsregistret",
-                                            "SE2321000131-E000000000001",
-                                            "VGR",
-                                            "SE2321000131-S000000010251",
-                                            "Östra Sjukhuset, Hud 32"
-                                        )
-                                    ),
-                                    new WithInfoType<CareSystem>(
-                                        InformationType.LAK,
-                                        new CareSystem(
-                                            "System X",
-                                            "SE2321000131-E000000000001",
-                                            "VGR",
-                                            "SE2321000131-S000000010252",
-                                            "NU-Sjukvården, Psykiatri 65"
-                                        )
-                                    ),
-                                    new WithInfoType<CareSystem>(
-                                        InformationType.LAK,
-                                        new CareSystem(
-                                            "Other Care Unit",
-                                            "SE2321000131-E000000000001",
-                                            "VGR",
-                                            "SE2321000131-S000000010254",
-                                            "Östra Sjukhuset, Barn- och Ungdomspsykiatri 23"
-                                        )
-                                    ),
-                                    new WithInfoType<CareSystem>(
-                                        InformationType.UPP,
-                                        new CareSystem(
-                                            "Other Care Giver System",
                                             "SE2321000132-E000000000001",
-                                            "Capio Axess",
+                                            "VGR",
+                                            "SE2321000132-S000000010251",
+                                            "SU Sahlgrenska, Ortopedi 11"
+                                        )
+                                    ),
+                                    new WithInfoType<CareSystem>(
+                                        InformationType.UNR,
+                                        new CareSystem(
+                                            "Bild- och funktionsregistret",
+                                            "SE2321000132-E000000000001",
+                                            "VGR",
                                             "SE2321000132-S000000010254",
-                                            "Lundby Sjukhus, Radiologi 54"
+                                            "NU-sjukvården, Kirurgi 12"
                                         )
                                     )
                             )
