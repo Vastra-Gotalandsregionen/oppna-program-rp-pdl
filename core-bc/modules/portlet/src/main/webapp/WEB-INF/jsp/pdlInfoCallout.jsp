@@ -11,6 +11,6 @@
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <div class="clearfix callout callout-info">
-    <h4>Dina val loggförs och du behöver kunna stödja att patienten har gett sitt medgivande</h4>
-    Dessa kommer att i efterhand <a href="http://www.vgregion.se/sv/Vastra-Gotalandsregionen/startsida/Vard-och-halsa/Sa-styrs-varden/Halso--och-sjukvardsavdelningen/Patientdatalagen/">granskas enligt patientdatalagen.</a>
+    <h4>Alla dina val i systemet loggförs</h4>
+    Dessa val kommer att i efterhand <a href="http://www.vgregion.se/sv/Vastra-Gotalandsregionen/startsida/Vard-och-halsa/Sa-styrs-varden/Halso--och-sjukvardsavdelningen/Patientdatalagen/">granskas enligt patientdatalagen.</a>
 </div>

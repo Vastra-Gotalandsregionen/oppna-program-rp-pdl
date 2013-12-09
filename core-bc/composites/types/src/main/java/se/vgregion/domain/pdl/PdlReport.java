@@ -13,7 +13,6 @@ public class PdlReport implements Serializable {
     public final WithOutcome<Boolean> hasRelationship;
     public final WithOutcome<ArrayList<WithInfoType<WithBlock<CareSystem>>>> systems;
     public final boolean hasNonSuccessOutcome;
-    public final boolean missingBothRelationConsent;
     public final boolean hasPatientInformation;
 
     public PdlReport(
@@ -31,10 +30,6 @@ public class PdlReport implements Serializable {
                 this.hasRelationship.outcome != Outcome.SUCCESS ||
                 this.systems.outcome != Outcome.SUCCESS ||
                 this.consent.outcome != Outcome.SUCCESS;
-
-        this.missingBothRelationConsent =
-                !this.hasRelationship.value &&
-                !this.consent.value.hasConsent;
     }
 
     public PdlReport withBlocks(WithOutcome<ArrayList<WithInfoType<WithBlock<CareSystem>>>> unblockedInformation) {
@@ -75,9 +70,6 @@ public class PdlReport implements Serializable {
         return hasNonSuccessOutcome;
     }
 
-    public boolean isMissingBothRelationConsent() {
-        return missingBothRelationConsent;
-    }
 
     public boolean isHasPatientInformation() {
         return hasPatientInformation;
@@ -90,7 +82,6 @@ public class PdlReport implements Serializable {
                 ", hasRelationship=" + hasRelationship +
                 ", systems=" + systems +
                 ", hasNonSuccessOutcome=" + hasNonSuccessOutcome +
-                ", missingBothRelationConsent=" + missingBothRelationConsent +
                 ", hasPatientInformation=" + hasPatientInformation +
                 '}';
     }

@@ -16,10 +16,6 @@
 <liferay-theme:defineObjects />
 
 <c:choose>
-    <c:when test="${state.pdlReport.missingBothRelationConsent && !state.confirmRelation && !state.confirmConsent && state.ctx.otherProviders}">
-        <jsp:include page="establishRelationConsent.jsp" />
-        <jsp:include page="newSearch.jsp" />
-    </c:when>
     <c:when test="${!state.pdlReport.hasRelationship.value && !state.confirmRelation}">
         <jsp:include page="establishRelation.jsp" />
         <jsp:include page="newSearch.jsp" />
@@ -134,8 +130,7 @@
             </div>
         </c:if>
         <jsp:include page="pdlScopeControls.jsp"/>
-        <jsp:include page="pdlInfoCallout.jsp" />
-        </div class="clearfix">
+        <div class="clearfix" style="margin-top: 1.2em;">
             <portlet:actionURL name="goToSummary" var="goToSummaryUrl" />
             <a href="${goToSummaryUrl}" class="link-button-mod link-button-mod-proceed">Gå vidare</a>
             <portlet:renderURL var="startUrl">
