@@ -415,7 +415,7 @@ public class PdlController {
         return new PdlContext(
                     "Capio",
                     "SE2321000131-E000000000001",
-                    "Lundby närsjukhus",
+                    "Lundby Närsjukhus",
                     "SE2321000131-S000000010252",
                     "Ludvig Läkare",
                     "SE2321000131-P000000069215",
