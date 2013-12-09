@@ -12,5 +12,5 @@
 
 <div class="clearfix callout callout-info">
     <h4>Dina val loggförs och du behöver kunna stödja att patienten har gett sitt medgivande</h4>
-    Dessa kommer att i efterhand <a href="http://www.socialstyrelsen.se/regelverk/handbocker/handbokominformationshanteringochjournalforing">granskas löpande enligt Patientdatalagen.</a>
+    Dessa kommer att i efterhand <a href="http://www.vgregion.se/sv/Vastra-Gotalandsregionen/startsida/Vard-och-halsa/Sa-styrs-varden/Halso--och-sjukvardsavdelningen/Patientdatalagen/">granskas enligt patientdatalagen.</a>
 </div>

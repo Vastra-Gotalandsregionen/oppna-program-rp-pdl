@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import se.vgregion.domain.pdl.*;
-import se.vgregion.domain.pdl.decorators.WithAccess;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -23,11 +22,12 @@ public class PdlUserState implements Serializable {
     private PdlReport pdlReport;
     private CareSystemsReport csReport;
     private Patient patient;
-    private WithAccess<PdlContext> ctx;
+    private PdlContext ctx;
+    private String currentAssignment;
     private boolean showOtherCareUnits = false;
     private boolean showOtherCareProviders = false;
     private boolean confirmConsent = false;
-    private boolean confirmRelation = false;
+    private boolean confirmRelation = true;
     private boolean confirmEmergency = false;
     private String searchSession = java.util.UUID.randomUUID().toString();
     private Visibility currentVisibility = Visibility.SAME_CARE_UNIT;
@@ -73,16 +73,14 @@ public class PdlUserState implements Serializable {
         showOtherCareUnits = false;
         showOtherCareProviders = false;
         confirmConsent = false;
-        confirmRelation = false;
+        confirmRelation = true;
         confirmEmergency = false;
-
         pdlReport = null;
         csReport = null;
         searchSession = java.util.UUID.randomUUID().toString();
         currentVisibility = Visibility.SAME_CARE_UNIT;
         shouldBeVisible.clear();
         currentProgress = PdlProgress.firstStep();
-
     }
 
     public String getSearchSession() {
@@ -101,7 +99,7 @@ public class PdlUserState implements Serializable {
         return patient;
     }
 
-    public WithAccess<PdlContext> getCtx() {
+    public PdlContext getCtx() {
         return ctx;
     }
 
@@ -122,8 +120,13 @@ public class PdlUserState implements Serializable {
         this.patient = patient;
     }
 
-    public void setCtx(WithAccess<PdlContext> ctx) {
+    public void setCtx(PdlContext ctx) {
         this.ctx = ctx;
+        Map<String, AssignmentAccess> assign = ctx.getAssignments();
+        if(assign.size() > 0) {
+            String[] keys = assign.keySet().toArray(new String[]{});
+            this.currentAssignment = keys[0];
+        }
     }
 
     public boolean isShowOtherCareUnits() {
@@ -168,6 +171,14 @@ public class PdlUserState implements Serializable {
         this.confirmRelation = confirmRelation;
     }
 
+    public String getCurrentAssignment() {
+        return currentAssignment;
+    }
+
+    public void setCurrentAssignment(String currentAssignment) {
+        this.currentAssignment = currentAssignment;
+    }
+
     @Override
     public String toString() {
         return "PdlUserState{" +
@@ -184,6 +195,7 @@ public class PdlUserState implements Serializable {
                 ", currentVisibility=" + currentVisibility +
                 ", shouldBeVisible=" + shouldBeVisible +
                 ", currentProgress=" + currentProgress +
+                ", currentAssignment='" + currentAssignment + '\'' +
                 '}';
     }
 }

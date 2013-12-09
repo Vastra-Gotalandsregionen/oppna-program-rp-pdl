@@ -1,6 +1,8 @@
 package se.vgregion.domain.pdl;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PdlContext implements Serializable {
     private static final long serialVersionUID = -2298228544035658452L;
@@ -8,8 +10,7 @@ public class PdlContext implements Serializable {
     public final String careProviderHsaId;
     public final String careUnitHsaId;
     public final String employeeHsaId;
-    public final String assignmentDisplayName;
-    public final String assignmentHsaId;
+    public final HashMap<String, AssignmentAccess> assignments;
     public final String careProviderDisplayName;
     public final String careUnitDisplayName;
     public final String employeeDisplayName;
@@ -21,15 +22,12 @@ public class PdlContext implements Serializable {
             String careUnitHsaId,
             String employeeDisplayName,
             String employeeHsaId,
-            String assignmentDisplayName,
-            String assignmentHsaId
+            HashMap<String, AssignmentAccess> assignments
     ) {
         this.careProviderHsaId = careProviderHsaId;
         this.careUnitHsaId = careUnitHsaId;
         this.employeeHsaId = employeeHsaId;
-        this.assignmentDisplayName = assignmentDisplayName;
-        this.assignmentHsaId = assignmentHsaId;
-
+        this.assignments = assignments;
         this.careProviderDisplayName = careProviderDisplayName;
         this.careUnitDisplayName = careUnitDisplayName;
         this.employeeDisplayName = employeeDisplayName;
@@ -47,12 +45,8 @@ public class PdlContext implements Serializable {
         return employeeHsaId;
     }
 
-    public String getAssignmentHsaId() {
-        return assignmentHsaId;
-    }
-
-    public String getAssignmentDisplayName() {
-        return assignmentDisplayName;
+    public Map<String, AssignmentAccess> getAssignments() {
+        return assignments;
     }
 
     public String getCareProviderDisplayName() {
@@ -73,8 +67,7 @@ public class PdlContext implements Serializable {
                 "careProviderHsaId='" + careProviderHsaId + '\'' +
                 ", careUnitHsaId='" + careUnitHsaId + '\'' +
                 ", employeeHsaId='" + employeeHsaId + '\'' +
-                ", assignmentDisplayName='" + assignmentDisplayName + '\'' +
-                ", assignmentHsaId='" + assignmentHsaId + '\'' +
+                ", assignments=" + assignments +
                 ", careProviderDisplayName='" + careProviderDisplayName + '\'' +
                 ", careUnitDisplayName='" + careUnitDisplayName + '\'' +
                 ", employeeDisplayName='" + employeeDisplayName + '\'' +

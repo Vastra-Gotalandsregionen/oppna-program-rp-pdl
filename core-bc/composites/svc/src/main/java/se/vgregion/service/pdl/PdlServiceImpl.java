@@ -89,6 +89,7 @@ public class PdlServiceImpl implements PdlService {
     @Override
     public PdlReport patientConsent(
             PdlContext ctx,
+            String currentAssignment,
             PdlReport report,
             String patientId,
             String reason,
@@ -100,6 +101,7 @@ public class PdlServiceImpl implements PdlService {
                 servicesHsaId,
                 establishConsent,
                 ctx,
+                currentAssignment,
                 patientId,
                 consentType,
                 reason,
@@ -113,6 +115,7 @@ public class PdlServiceImpl implements PdlService {
     @Override
     public PdlReport patientRelationship(
             PdlContext ctx,
+            String currentAssignment,
             PdlReport report,
             String patientId,
             String reason,
@@ -124,6 +127,7 @@ public class PdlServiceImpl implements PdlService {
                         servicesHsaId,
                         establishRelationship,
                         ctx,
+                        currentAssignment,
                         patientId,
                         reason,
                         duration,

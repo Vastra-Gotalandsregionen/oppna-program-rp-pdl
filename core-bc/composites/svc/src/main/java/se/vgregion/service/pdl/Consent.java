@@ -60,6 +60,7 @@ class Consent {
             String servicesHsaId,
             RegisterExtendedConsentResponderInterface establishConsent,
             PdlContext ctx,
+            String currentAssignment,
             String patientId,
             PdlReport.ConsentType consentType,
             String reason,
@@ -85,8 +86,8 @@ class Consent {
         action.setRequestDate(XMLDuration.currentDateAsXML());
 
         ActorType actor = new ActorType();
-        actor.setAssignmentId(ctx.assignmentHsaId);
-        actor.setAssignmentName(ctx.assignmentDisplayName);
+        actor.setAssignmentId(currentAssignment);
+        actor.setAssignmentName(ctx.assignments.get(currentAssignment).assignmentDisplayName);
         actor.setEmployeeId(ctx.employeeHsaId);
 
         action.setRegisteredBy(actor);

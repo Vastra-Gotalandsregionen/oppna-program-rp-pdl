@@ -29,6 +29,7 @@ public interface PdlService {
      * <p>Duration stipulates the duration of the relation, given from the time of the request.</p>
      *
      * @param ctx PDL Context
+     * @param currentAssignment The current chosen assignment
      * @param report Previous report where consent is not present
      * @param patientId Current Patient ID
      * @param reason Comment describing reason for establishing patient consent
@@ -39,6 +40,7 @@ public interface PdlService {
      */
     PdlReport patientConsent(
             PdlContext ctx,
+            String currentAssignment,
             PdlReport report,
             String patientId,
             String reason,
@@ -52,6 +54,7 @@ public interface PdlService {
      * <p>Duration stipulates the duration of the relation, given from the time of the request.</p>
      *
      * @param ctx PDL Context
+     * @param currentAssignment The current chosen assignment
      * @param report Previous report that is missing the relationship
      * @param patientId Current Patient ID
      * @param reason Comment describing reason for establishing patient relationship
@@ -61,6 +64,7 @@ public interface PdlService {
      */
     PdlReport patientRelationship(
             PdlContext ctx,
+            String currentAssignment,
             PdlReport report,
             String patientId,
             String reason,

@@ -19,15 +19,16 @@
                 <portlet:actionURL name="establishRelation" var="establishRelationUrl">
                     <portlet:param name="confirmed" value="true" />
                 </portlet:actionURL>
-                <div class="confirm">
-                    <a href="${establishRelationUrl}">Intyga patientrelation. Ditt val loggförs</a>
-                    <a href="${establishRelationUrl}">
-                        <i class="icon arrow_right_warn"></i>
-                        <span class="continue">Gå vidare</span>
-                    </a>
-                    <a href="${cancelConfirmationUrl}">
-                        <span class="continue cancel">Avbryt</span>
-                    </a>
+                <portlet:renderURL var="startUrl">
+                    <portlet:param name="jspPage" value="/WEB-INF/jsp/view.jsp" />
+                </portlet:renderURL>
+                <div class="clearfix confirm">
+                    <p class="heading">Intyga aktiv patientrelation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</p>
+                    <p>Det finns patientinformation för ${state.patient.patientDisplayName}. För att få tillgång till informationen måste du intyga att du har en aktiv patientrelation.
+                    Här finner du <a href="http://www.vgregion.se/sv/Vastra-Gotalandsregionen/startsida/Vard-och-halsa/Sa-styrs-varden/Halso--och-sjukvardsavdelningen/Patientdatalagen/">information om patientdatalagen</a></p>
+                    <p class="affirm">Jag är delaktig i vården av denna patient och behöver ta del av patientens vårdinformation.</p>
+                    <a href="${establishRelationUrl}" class="link-button-mod link-button-mod-warn">Jag intygar patientrelation</a>
+                    <a href="${startUrl}" class="link-button-mod">Sök igen</a>
                 </div>
             <div>
         </c:when>

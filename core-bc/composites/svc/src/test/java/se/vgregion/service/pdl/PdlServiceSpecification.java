@@ -17,11 +17,13 @@ import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponde
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelation.v1.rivtabp21.RegisterExtendedPatientRelationResponderInterface;
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelationresponder.v1.RegisterExtendedPatientRelationRequestType;
 import se.vgregion.domain.pdl.*;
-import se.vgregion.domain.pdl.decorators.WithOutcome;
 import se.vgregion.domain.pdl.decorators.WithBlock;
 import se.vgregion.domain.pdl.decorators.WithInfoType;
+import se.vgregion.domain.pdl.decorators.WithOutcome;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,6 +53,8 @@ public class PdlServiceSpecification {
     private List<WithInfoType<CareSystem>> careSystems;
 
     private static final String serviceHsaId = "SE2321000131-E000000000001";
+    private String otherProvider;
+    private String sameProvider;
 
     @Before
     public void setuUp() {
@@ -61,6 +65,15 @@ public class PdlServiceSpecification {
 
         MockitoAnnotations.initMocks(this);
 
+        otherProvider = "SE2321000131-S000000010452";
+        sameProvider = "SE2321000131-S000000020452";
+
+        HashMap<String, AssignmentAccess> assignments = new HashMap<String, AssignmentAccess>();
+        List<Access> otherProviders = Arrays.asList(Access.otherProvider("SE2321000131-E000000000011"));
+        List<Access> sameProviders = Arrays.asList(Access.sameProvider("SE2321000131-S000000010252"), Access.sameProvider("SE2321000131-S000000010251"));
+        assignments.put(otherProvider, new AssignmentAccess("Sammanhållen Journalföring", otherProviders));
+        assignments.put(sameProvider, new AssignmentAccess("Vård och behandling", sameProviders));
+
         ctx = new PdlContext(
                 "VGR",
                 "SE2321000131-E000000000001",
@@ -68,8 +81,7 @@ public class PdlServiceSpecification {
                 "SE2321000131-S000000010252",
                 "Ludvig Läkare",
                 "SE2321000131-P000000069215",
-                "Sammanhållen Journalföring",
-                "SE2321000131-S000000010452"
+                assignments
         );
 
         PatientRepository patients = new KivPatientRepository();
@@ -243,6 +255,7 @@ public class PdlServiceSpecification {
 
         PdlReport newReport = service.patientRelationship(
                 ctx,
+                sameProvider,
                 mockReport,
                 patient.patientId,
                 "Some reason",
@@ -276,6 +289,7 @@ public class PdlServiceSpecification {
 
         PdlReport newReport = service.patientConsent(
                 ctx,
+                sameProvider,
                 mockReport,
                 patient.patientId,
                 "Some reason",

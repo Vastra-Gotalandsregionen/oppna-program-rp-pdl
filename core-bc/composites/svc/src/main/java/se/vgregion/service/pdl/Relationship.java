@@ -37,6 +37,7 @@ public class Relationship {
             String servicesHsaId,
             RegisterExtendedPatientRelationResponderInterface establishRelationship,
             PdlContext ctx,
+            String currentAssignment,
             String patientId,
             String reason,
             int duration,
@@ -55,8 +56,8 @@ public class Relationship {
         action.setRequestDate(XMLDuration.currentDateAsXML());
 
         ActorType actor = new ActorType();
-        actor.setAssignmentId(ctx.getAssignmentHsaId());
-        actor.setAssignmentName(ctx.getAssignmentDisplayName());
+        actor.setAssignmentId(currentAssignment);
+        actor.setAssignmentName(ctx.assignments.get(currentAssignment).assignmentDisplayName);
         actor.setEmployeeId(ctx.employeeHsaId);
 
         action.setRequestedBy(actor);

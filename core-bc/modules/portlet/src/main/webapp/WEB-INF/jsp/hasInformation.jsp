@@ -15,19 +15,10 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 
-<h2>Patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h2>
 <c:choose>
-    <c:when test="${state.pdlReport.missingBothRelationConsent && !state.confirmRelation && !state.confirmConsent}">
-        <c:choose>
-            <c:when test="${state.ctx.otherProviders}">
-                <jsp:include page="establishRelationConsent.jsp" />
-                <jsp:include page="newSearch.jsp" />
-            </c:when>
-            <c:otherwise>
-                <jsp:include page="establishRelation.jsp" />
-                <jsp:include page="newSearch.jsp" />
-            </c:otherwise>
-        </c:choose>
+    <c:when test="${state.pdlReport.missingBothRelationConsent && !state.confirmRelation && !state.confirmConsent && state.ctx.otherProviders}">
+        <jsp:include page="establishRelationConsent.jsp" />
+        <jsp:include page="newSearch.jsp" />
     </c:when>
     <c:when test="${!state.pdlReport.hasRelationship.value && !state.confirmRelation}">
         <jsp:include page="establishRelation.jsp" />
@@ -35,9 +26,9 @@
     </c:when>
     <c:when test="${state.confirmRelation}">
         <jsp:include page="confirmConsentRelation.jsp" />
-        <jsp:include page="newSearch.jsp" />
     </c:when>
     <c:when test="${state.pdlReport.hasRelationship.value}">
+        <h2>Patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h2>
         <ul class="infotypes">
             <c:forEach items="${state.csReport.aggregatedSystems.value}" var="infoSelection">
                 <c:if test="${state.shouldBeVisible[infoSelection.key.lowestVisibility] && (infoSelection.key.containsOnlyBlocked[state.currentVisibility] && infoSelection.key.viewBlocked || !infoSelection.key.containsOnlyBlocked[state.currentVisibility]) }">

@@ -15,13 +15,14 @@ public class CareSystemsReport implements Serializable {
     public final WithOutcome<TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>> aggregatedSystems;
     public final Map<Visibility, Boolean> containsBlockedInfoTypes;
 
-    public CareSystemsReport(WithAccess<PdlContext> ctx, PdlReport pdlReport) {
+    public CareSystemsReport(PdlContext ctx, String currentAssignment, PdlReport pdlReport) {
 
-        ArrayList<WithInfoType<WithBlock<CareSystem>>> careSystems = (ctx.otherProviders) ?
-                pdlReport.systems.value : removeOtherProviders(ctx.value, pdlReport.systems.value) ;
+        ArrayList<WithInfoType<WithBlock<CareSystem>>> careSystems =
+                (ctx.assignments.get(currentAssignment).otherProviders) ?
+                removeOtherUnits(ctx, pdlReport.systems.value) : removeOtherProviders(ctx, pdlReport.systems.value) ;
 
         ArrayList <WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems =
-                categorizeSystems(ctx.value, careSystems);
+                categorizeSystems(ctx, careSystems);
 
         // Aggregate into a map by information type.
         TreeMap<InformationType, ArrayList<SystemState<CareSystem>>> aggregatedSystems =
@@ -201,6 +202,22 @@ public class CareSystemsReport implements Serializable {
         return filtered;
     }
 
+    private ArrayList<WithInfoType<WithBlock<CareSystem>>> removeOtherUnits(
+            PdlContext ctx,
+            ArrayList<WithInfoType<WithBlock<CareSystem>>> systems
+    ) {
+        ArrayList<WithInfoType<WithBlock<CareSystem>>> filtered = new ArrayList<WithInfoType<WithBlock<CareSystem>>>();
+        for( WithInfoType<WithBlock<CareSystem>> system : systems ){
+            boolean sameCareProvider = ctx.careProviderHsaId.equals(system.value.value.careProviderHsaId);
+            boolean sameCareUnit = ctx.careUnitHsaId.equals(system.value.value.careUnitHsaId);
+            boolean otherCareProvider = !ctx.careProviderHsaId.equals(system.value.value.careProviderHsaId);
+            if((sameCareProvider && sameCareUnit) || otherCareProvider) {
+                filtered.add(system);
+            }
+        }
+        return filtered;
+    }
+
     private static Comparator infoTypeComparator = new Comparator() {
         @Override
         public int compare(Object o1, Object o2) {
@@ -232,7 +249,7 @@ public class CareSystemsReport implements Serializable {
     };
 
     private static TreeMap<InformationType, ArrayList<SystemState<CareSystem>>> aggregateByInfotype(
-            ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> systemsWithBlocks
+            ArrayList <WithInfoType<WithVisibility<WithBlock<CareSystem>>>> systemsWithBlocks
     ) {
 
         TreeMap<InformationType, ArrayList<SystemState<CareSystem>>> categorizedSystems =

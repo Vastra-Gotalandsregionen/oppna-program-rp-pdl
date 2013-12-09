@@ -2,9 +2,12 @@ package se.vgregion.domain.pdl;
 
 import org.junit.Before;
 import org.junit.Test;
-import se.vgregion.domain.pdl.decorators.*;
+import se.vgregion.domain.pdl.decorators.InfoTypeState;
+import se.vgregion.domain.pdl.decorators.WithBlock;
+import se.vgregion.domain.pdl.decorators.WithInfoType;
+import se.vgregion.domain.pdl.decorators.WithOutcome;
 
-import java.util.ArrayList;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -14,10 +17,23 @@ public class CareSystemReportSpec {
     private PdlReport mockReport;
 
     private PdlContext ctx;
+    private String sameProvider;
+    private String otherProvider;
 
     @Before
     public void setup() throws Exception
     {
+
+        otherProvider = "SE2321000131-S000000010452";
+        sameProvider = "SE2321000131-S000000020452";
+
+        HashMap<String, AssignmentAccess> assignments = new HashMap<String, AssignmentAccess>();
+        List<Access> otherProviders = Arrays.asList(Access.otherProvider("SE2321000131-E000000000011"));
+        List<Access> sameProviders = Arrays.asList(Access.sameProvider("SE2321000131-S000000010252"), Access.sameProvider("SE2321000131-S000000010251"));
+        assignments.put(otherProvider, new AssignmentAccess("Sammanhållen Journalföring", otherProviders));
+        assignments.put(sameProvider, new AssignmentAccess("Vård och behandling", sameProviders));
+
+
         ctx = new PdlContext(
                 "VGR",
                 "SE2321000131-E000000000001",
@@ -25,8 +41,7 @@ public class CareSystemReportSpec {
                 "SE2321000131-S000000010252",
                 "Ludvig Läkare",
                 "SE2321000131-P000000069215",
-                "Sammanhållen Journalföring",
-                "SE2321000131-S000000010452"
+                assignments
         );
 
         CareSystem sameUnit1 = new CareSystem("Same Unit 1", ctx.careProviderHsaId, "VGR", ctx.careUnitHsaId, "Unit 1");
@@ -69,19 +84,17 @@ public class CareSystemReportSpec {
     @Test
     public void CareSystemReportShouldSegmentSystems() throws Exception {
 
-        WithAccess<PdlContext> c = WithAccess.withOtherProviders(ctx);
-        CareSystemsReport report = new CareSystemsReport(c, mockReport);
+        CareSystemsReport report = new CareSystemsReport(ctx, otherProvider , mockReport);
 
         assertEquals(Outcome.SUCCESS, report.aggregatedSystems.outcome);
-        assertEquals(3, report.aggregatedSystems.value.size());
+        assertEquals(2, report.aggregatedSystems.value.size());
 
     }
 
     @Test
     public void CareSystemReportShouldRemoveOtherProviders() throws Exception {
 
-        WithAccess<PdlContext> c = WithAccess.sameProvider(ctx);
-        CareSystemsReport report = new CareSystemsReport(c, mockReport);
+        CareSystemsReport report = new CareSystemsReport(ctx, sameProvider, mockReport);
 
         assertEquals(Outcome.SUCCESS, report.aggregatedSystems.outcome);
         assertEquals(2, report.aggregatedSystems.value.size());
@@ -102,8 +115,7 @@ public class CareSystemReportSpec {
 
     @Test
     public void CareSystemsReportShouldIndicateBlockedInfoType() throws Exception {
-        WithAccess<PdlContext> c = WithAccess.sameProvider(ctx);
-        CareSystemsReport report = new CareSystemsReport(c, mockReport);
+        CareSystemsReport report = new CareSystemsReport(ctx, sameProvider, mockReport);
 
         assertTrue(report.containsBlockedInfoTypes.get(Visibility.OTHER_CARE_UNIT));
 

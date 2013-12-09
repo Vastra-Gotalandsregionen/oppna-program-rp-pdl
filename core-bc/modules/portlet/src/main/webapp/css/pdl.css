@@ -189,24 +189,35 @@
 .pdl .confirm  {
     font-family: Ubuntu,Arial,Verdana,Helvetica,sans-serif;
     background-color: #fcf8e3;
-    color: #c09853;
     border: 1px solid #faebcc;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
-    font-size: 1.2em;
     padding: 1em;
     margin: 1em 0;
 
 }
 
-.pdl .confirm a {
-    color: #c09853;
-    text-decoration: none;
+.pdl .confirm p.heading {
+    font-size: 1.6em;
+    color: #7D591B;
 }
 
-.pdl .confirm a .cancel {
-    color: #2f72a9;
+.pdl .confirm p {
+    font-size: 1.2em;
+    color: #c09853;
 }
+
+.pdl .confirm p a,
+.pdl .confirm p a:hover,
+.pdl .confirm p a:active {
+    color: #c09853;
+}
+
+.pdl .confirm p.affirm {
+    font-size: 1.3em;
+    color: #7D591B; /*#b6383e;*/
+}
+
 
 .pdl .blockedInfoTypes {
     font-size: 1.2em;
@@ -405,6 +416,9 @@
   display: block;
   margin: 0 5%;
   width: 90%;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
 }
 
 .pdl-form .aui-field textarea {

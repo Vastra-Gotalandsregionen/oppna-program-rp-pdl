@@ -37,11 +37,28 @@
                 <span class="element-field-help">
                     Patient-ID ska anges på formatet ÅÅÅÅMMDDXXXX.
                 </span>
-                <aui:input type="hidden" name="reset" value="true" />
             </div>
+            <div class="${elementWrapCssClass}">
+                <aui:field-wrapper cssClass="element-field-wrap">
+                    <label for="<portlet:namespace />title">
+                        <span>Aktuellt uppdrag</span>
+                    </label>
+                    <aui:select name="currentAssignment" cssClass="element-field" label="">
+                        <c:forEach items="${state.ctx.assignments}" var="as">
+                            <aui:option value="${as.key}" label="${as.value.assignmentDisplayName}" selected="${state.currentAssignment == as.key}"/>
+                        </c:forEach>
+                    </aui:select>
+                </aui:field-wrapper>
+                <span class="element-field-help">
+                    Uppdraget avgör vilken information du får se.
+                </span>
+            </div>
+            <aui:input type="hidden" name="reset" value="true" />
        </aui:fieldset>
         <aui:button-row>
             <aui:button type="submit" value="S&ouml;k" cssClass="rp-button rp-button-proceed" />
         </aui:button-row>
     </aui:form>
+
+    <!-- state.ctx = ${state} -->
 </div>
