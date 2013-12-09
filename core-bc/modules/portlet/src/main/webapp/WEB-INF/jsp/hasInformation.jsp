@@ -24,7 +24,7 @@
         <jsp:include page="establishRelation.jsp" />
         <jsp:include page="newSearch.jsp" />
     </c:when>
-    <c:when test="${state.confirmRelation}">
+    <c:when test="${(state.confirmRelation && !state.pdlReport.hasRelationship.value)}">
         <jsp:include page="confirmConsentRelation.jsp" />
     </c:when>
     <c:when test="${state.pdlReport.hasRelationship.value}">

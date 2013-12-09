@@ -104,7 +104,7 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
         );
     }
 
-    public static <N extends Serializable, N1 extends N> InfoTypeState<N> init(
+    public static <N extends Serializable, N1 extends N> InfoTypeState<N> deselected(
             Visibility visibility,
             boolean containsBlocked,
             Map<Visibility, Boolean> containsOnlyBlocked,
@@ -113,6 +113,22 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
         return new InfoTypeState<N>(
                 visibility,
                 false,
+                containsBlocked,
+                containsOnlyBlocked,
+                false,
+                value
+        );
+    }
+
+    public static <N extends Serializable, N1 extends N> InfoTypeState<N> selected(
+            Visibility visibility,
+            boolean containsBlocked,
+            Map<Visibility, Boolean> containsOnlyBlocked,
+            N1 value
+    ) {
+        return new InfoTypeState<N>(
+                visibility,
+                true,
                 containsBlocked,
                 containsOnlyBlocked,
                 false,

@@ -32,9 +32,31 @@ public class CareSystemsReport implements Serializable {
         TreeMap<InfoTypeState<InformationType>,ArrayList<SystemState<CareSystem>>> infoTypeStateMap =
                 calcInfoTypeState(aggregatedSystems);
 
-        containsBlockedInfoTypes = containsOnlyBlockedInfoTypes(infoTypeStateMap);
+        // Open up those with lowest visibility SAME_CARE_UNIT
+        TreeMap<InfoTypeState<InformationType>,ArrayList<SystemState<CareSystem>>> lowestOpenedUp =
+                lowestOpenedUp(infoTypeStateMap);
 
-        this.aggregatedSystems = pdlReport.systems.mapValue(infoTypeStateMap);
+
+        containsBlockedInfoTypes = containsOnlyBlockedInfoTypes(lowestOpenedUp);
+
+        this.aggregatedSystems = pdlReport.systems.mapValue(lowestOpenedUp);
+    }
+
+    private TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> lowestOpenedUp(
+            TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> infoTypeStateMap
+    ) {
+        TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> lowestOpenedUp =
+                new TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>(infoTypeComparator);
+
+        for(InfoTypeState<InformationType> key: infoTypeStateMap.keySet()) {
+            if(key.lowestVisibility == Visibility.SAME_CARE_UNIT) {
+                lowestOpenedUp.put(key.select(), infoTypeStateMap.get(key));
+            } else {
+                lowestOpenedUp.put(key, infoTypeStateMap.get(key));
+            }
+        }
+
+        return lowestOpenedUp;
     }
 
     private CareSystemsReport(
@@ -103,11 +125,11 @@ public class CareSystemsReport implements Serializable {
                 }
             }
 
-            InfoTypeState<InformationType> newKey = InfoTypeState.init(
-                lowestVisibility,
-                containsBlocked,
-                containsOnlyBlocked,
-                key
+            InfoTypeState<InformationType> newKey = InfoTypeState.deselected(
+                    lowestVisibility,
+                    containsBlocked,
+                    containsOnlyBlocked,
+                    key
             );
 
             infoTypeStateMap.put(newKey, value);
@@ -211,6 +233,7 @@ public class CareSystemsReport implements Serializable {
             boolean sameCareProvider = ctx.careProviderHsaId.equals(system.value.value.careProviderHsaId);
             boolean sameCareUnit = ctx.careUnitHsaId.equals(system.value.value.careUnitHsaId);
             boolean otherCareProvider = !ctx.careProviderHsaId.equals(system.value.value.careProviderHsaId);
+
             if((sameCareProvider && sameCareUnit) || otherCareProvider) {
                 filtered.add(system);
             }
