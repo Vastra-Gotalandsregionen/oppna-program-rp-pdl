@@ -375,8 +375,6 @@ public class PdlController {
 
             state.setCsReport(newCsReport);
 
-            state.setShowOtherCareProviders(true);
-
             if(revokeEmergency && blocked) {
                 log(UserAction.BLOCK);
             } else if (!revokeEmergency && blocked) {
@@ -409,8 +407,8 @@ public class PdlController {
         }
     }
 
-    @ActionMapping("showSummary")
-    public void showSummary(ActionResponse response) {
+    @ActionMapping("goToSummary")
+    public void goToSummary(ActionResponse response) {
         if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
         } else {
@@ -422,7 +420,7 @@ public class PdlController {
                     state.getPatient().patientId
             );
 
-            response.setRenderParameter("showSummary", "showSummary");
+            response.setRenderParameter("view", "showSummary");
         }
     }
 

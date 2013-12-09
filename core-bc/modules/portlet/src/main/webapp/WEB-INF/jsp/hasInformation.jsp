@@ -136,8 +136,8 @@
         <jsp:include page="pdlScopeControls.jsp"/>
         <jsp:include page="pdlInfoCallout.jsp" />
         </div class="clearfix">
-            <portlet:actionURL name="showSummary" var="showSummaryUrl" />
-            <a href="${showSummaryUrl}" class="link-button-mod link-button-mod-proceed">Gå vidare</a>
+            <portlet:actionURL name="goToSummary" var="goToSummaryUrl" />
+            <a href="${goToSummaryUrl}" class="link-button-mod link-button-mod-proceed">Gå vidare</a>
             <portlet:renderURL var="startUrl">
                 <portlet:param name="jspPage" value="/WEB-INF/jsp/view.jsp" />
             </portlet:renderURL>
