@@ -65,6 +65,10 @@ public class PdlController {
     @RenderMapping
     public String enterSearchPatient() {
         state.reset(); // Make sure state is reset when user navigates to the start page.
+        if (state.getCtx() == null) {
+            PdlContext ctx = currentContext();
+            state.setCtx(ctx);
+        }
         return "view";
     }
 

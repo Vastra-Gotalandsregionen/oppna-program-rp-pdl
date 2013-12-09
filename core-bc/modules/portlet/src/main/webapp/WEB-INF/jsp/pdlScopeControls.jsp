@@ -32,7 +32,7 @@
                </c:if>
            </p>
        </c:when>
-       <c:when test="${state.showOtherCareUnits}">
+       <c:when test="${state.showOtherCareUnits && state.ctx.assignments[state.currentAssignment].otherProviders}">
             <p>
                 <c:choose>
                     <c:when test="${state.confirmConsent}">

@@ -59,6 +59,4 @@
             <aui:button type="submit" value="S&ouml;k" cssClass="rp-button rp-button-proceed" />
         </aui:button-row>
     </aui:form>
-
-    <!-- state.ctx = ${state} -->
 </div>

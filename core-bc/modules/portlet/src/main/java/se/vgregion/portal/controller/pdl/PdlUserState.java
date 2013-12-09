@@ -177,6 +177,9 @@ public class PdlUserState implements Serializable {
 
     public void setCurrentAssignment(String currentAssignment) {
         this.currentAssignment = currentAssignment;
+        if(this.ctx.assignments.get(currentAssignment).isOtherProviders()) {
+            this.showOtherCareUnits = true; // Skip other care units question for SJF
+        }
     }
 
     @Override
