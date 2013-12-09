@@ -27,6 +27,7 @@
                 <c:when test="${state.currentProgress == 'CHOOSE' || state.currentProgress == 'SYSTEMS'}">
                     <portlet:actionURL name="searchPatient" var="searchPatientUrl">
                         <portlet:param name="patientId" value="${state.patient.patientId}" />
+                        <portlet:param name="currentAssignment" value="${state.currentAssignment}" />
                         <portlet:param name="reset" value="false" />
                     </portlet:actionURL>
                     <a href="${searchPatientUrl}">V&auml;lj vårdenheter</a>
@@ -38,12 +39,9 @@
         </li>
         <li class="first <c:choose><c:when test="${state.currentProgress == 'SYSTEMS'}">current-unstarted</c:when></c:choose>">
             <c:choose>
-                <c:when test="${state.currentProgress == 'CHOOSE' || state.currentProgress == 'SYSTEMS'}">
-                    <portlet:actionURL name="searchPatient" var="searchPatientUrl">
-                        <portlet:param name="patientId" value="${state.patient.patientId}" />
-                        <portlet:param name="reset" value="false" />
-                    </portlet:actionURL>
-                    <a href="${searchPatientUrl}">Visa system</a>
+                <c:when test="${state.currentProgress == 'SYSTEMS'}">
+                    <portlet:actionURL name="showSummary" var="showSummaryUrl" />
+                    <a href="${showSummaryUrl}">Visa system</a>
                 </c:when>
                 <c:otherwise>
                     Visa system

@@ -10,7 +10,7 @@
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
-<jsp:include page="common.jsp" />
+<link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/css/pdl.css" />
 
 <portlet:defineObjects />
 <liferay-theme:defineObjects />

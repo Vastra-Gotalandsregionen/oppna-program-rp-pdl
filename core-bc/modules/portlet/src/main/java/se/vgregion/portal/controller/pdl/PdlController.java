@@ -422,7 +422,7 @@ public class PdlController {
                     state.getPatient().patientId
             );
 
-            response.setRenderParameter("view", "showSummary");
+            response.setRenderParameter("showSummary", "showSummary");
         }
     }
 
