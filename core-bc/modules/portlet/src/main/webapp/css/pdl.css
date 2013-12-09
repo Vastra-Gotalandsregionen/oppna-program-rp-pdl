@@ -111,6 +111,11 @@
     float: right;
 }
 
+.pdl i.arrow_right_warn {
+    background-image: url('../images/icon_arrow_right_warn.png');
+    float: right;
+}
+
 .pdl i.locked {
     background-image: url('../images/icon_padlock.png');
     float: right;
@@ -129,7 +134,7 @@
     text-decoration: none;
 }
 
-.pdl .showInformationType, .pdl .showInformationType {
+.pdl .continue {
     float: right;
     font-size: 1em;
     padding-right: 5px;
@@ -181,6 +186,42 @@
     margin-top: 1em;
 }
 
+.pdl .confirm  {
+    font-family: Ubuntu,Arial,Verdana,Helvetica,sans-serif;
+    background-color: #fcf8e3;
+    color: #c09853;
+    border: 1px solid #faebcc;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    font-size: 1.2em;
+    padding: 1em;
+    margin: 1em 0;
+
+}
+
+.pdl .confirm a {
+    color: #c09853;
+    text-decoration: none;
+}
+
+.pdl .confirm a .cancel {
+    color: #2f72a9;
+}
+
+.pdl .blockedInfoTypes {
+    font-size: 1.2em;
+    padding: 1em;
+    margin-top: 1em;
+}
+
+.pdl .blockedCareUnit {
+    padding: 0.5em;
+}
+
+.pdl .blocked a {
+    color: #bd5856;
+}
+
 /*------- Link button mod -------*/
 
 .link-button-mod:visited,
@@ -204,10 +245,6 @@
     text-decoration: none;
 }
 
-.link-button-mod span {
-
-}
-
 .link-button-mod:hover {
     border: 1px solid #245780;
     color: #fff;
@@ -217,6 +254,30 @@
 .link-button-mod:hover,
 .link-button-mod:hover span {
     cursor: pointer;
+}
+
+.button-simple:visited,
+.button-simple:hover,
+.button-simple {
+    background: #3582c0;
+    border: 1px solid #5d98bf;
+    padding: 10px 10px;
+}
+
+.button-simple-danger:visited,
+.button-simple-danger:hover,
+.button-simple-danger {
+    background: #b6383e;
+    border: 1px solid #872220;
+    padding: 10px 10px;
+}
+
+.button-simple-warn:visited,
+.button-simple-warn:hover,
+.button-simple-warn {
+    background: #cbb85d;
+    border: 1px solid #938542;
+    padding: 10px 10px;
 }
 
 .link-button-mod-danger:visited,

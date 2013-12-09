@@ -26,6 +26,9 @@ public class PdlUserState implements Serializable {
     private WithAccess<PdlContext> ctx;
     private boolean showOtherCareUnits = false;
     private boolean showOtherCareProviders = false;
+    private boolean confirmConsent = false;
+    private boolean confirmRelation = false;
+    private boolean confirmEmergency = false;
     private String searchSession = java.util.UUID.randomUUID().toString();
     private Visibility currentVisibility = Visibility.SAME_CARE_UNIT;
     private final Map<Visibility, Boolean> shouldBeVisible = new HashMap<Visibility, Boolean>();
@@ -58,9 +61,21 @@ public class PdlUserState implements Serializable {
         return pdlReport;
     }
 
+    public boolean isConfirmEmergency() {
+        return confirmEmergency;
+    }
+
+    public void setConfirmEmergency(boolean confirmEmergency) {
+        this.confirmEmergency = confirmEmergency;
+    }
+
     public void reset() {
         showOtherCareUnits = false;
         showOtherCareProviders = false;
+        confirmConsent = false;
+        confirmRelation = false;
+        confirmEmergency = false;
+
         pdlReport = null;
         csReport = null;
         searchSession = java.util.UUID.randomUUID().toString();
@@ -137,6 +152,22 @@ public class PdlUserState implements Serializable {
         this.currentProgress = currentProgress;
     }
 
+    public boolean isConfirmConsent() {
+        return confirmConsent;
+    }
+
+    public void setConfirmConsent(boolean confirmConsent) {
+        this.confirmConsent = confirmConsent;
+    }
+
+    public boolean isConfirmRelation() {
+        return confirmRelation;
+    }
+
+    public void setConfirmRelation(boolean confirmRelation) {
+        this.confirmRelation = confirmRelation;
+    }
+
     @Override
     public String toString() {
         return "PdlUserState{" +
@@ -146,6 +177,9 @@ public class PdlUserState implements Serializable {
                 ", ctx=" + ctx +
                 ", showOtherCareUnits=" + showOtherCareUnits +
                 ", showOtherCareProviders=" + showOtherCareProviders +
+                ", confirmConsent=" + confirmConsent +
+                ", confirmRelation=" + confirmRelation +
+                ", confirmEmergency=" + confirmEmergency +
                 ", searchSession='" + searchSession + '\'' +
                 ", currentVisibility=" + currentVisibility +
                 ", shouldBeVisible=" + shouldBeVisible +

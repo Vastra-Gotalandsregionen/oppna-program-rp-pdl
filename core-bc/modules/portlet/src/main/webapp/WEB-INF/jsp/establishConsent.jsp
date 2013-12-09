@@ -13,12 +13,14 @@
 <div class="clearfix">
     <portlet:actionURL name="establishConsent" var="establishConsentUrl" >
         <portlet:param name="emergency" value="false" />
+        <portlet:param name="confirmed" value="false" />
     </portlet:actionURL>
 
     <portlet:actionURL name="establishConsent" var="establishConsentEmergencyUrl">
          <portlet:param name="emergency" value="true" />
-     </portlet:actionURL>
+         <portlet:param name="confirmed" value="false" />
+    </portlet:actionURL>
 
-    <a href="${establishConsentUrl}" class="link-button-mod">Intyga samtycke</a>
-    <a href="${establishConsentEmergencyUrl}" class="link-button-mod link-button-mod-danger">Nödöppning sammanhållen jounrnalföring</i></a>
+    <a href="${establishConsentUrl}" class="link-button-mod button-simple">Intyga samtycke</a>
+    <a href="${establishConsentEmergencyUrl}" class="link-button-mod button-simple-danger">Nödöppning sammanhållen journalföring</i></a>
 </div>

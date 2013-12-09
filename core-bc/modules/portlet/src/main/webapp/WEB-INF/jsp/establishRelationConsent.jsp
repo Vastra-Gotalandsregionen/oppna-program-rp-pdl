@@ -11,18 +11,22 @@
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <div class="clearfix">
-    <portlet:actionURL name="establishRelation" var="establishRelationUrl" />
+    <portlet:actionURL name="establishRelation" var="establishRelationUrl">
+        <portlet:param name="confirmed" value="false" />
+    </portlet:actionURL>
 
     <portlet:actionURL name="establishRelationConsent" var="relationConsentUrl">
         <portlet:param name="emergency" value="false" />
+        <portlet:param name="confirmed" value="false" />
     </portlet:actionURL>
 
     <portlet:actionURL name="establishRelationConsent" var="relationConsentEmergencyUrl">
         <portlet:param name="emergency" value="true" />
+        <portlet:param name="confirmed" value="false" />
     </portlet:actionURL>
 
-    <a href="${establishRelationUrl}" class="link-button-mod">Intyga patientrelation</a>
-    <a href="${relationConsentUrl}" class="link-button-mod">Intyga patientrelation och samtycke</a>
-    <a href="${relationConsentEmergencyUrl}" class="link-button-mod link-button-mod-danger">Nödöppning av sammanhållen journalföring</a>
+    <a href="${establishRelationUrl}" class="link-button-mod button-simple">Intyga patientrelation</a>
+    <a href="${relationConsentUrl}" class="link-button-mod button-simple">Intyga patientrelation och samtycke</a>
+    <a href="${relationConsentEmergencyUrl}" class="link-button-mod button-simple-danger">Nödöppning av sammanhållen journalföring</a>
 </div>
 

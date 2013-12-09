@@ -26,6 +26,10 @@
             </c:when>
             <c:otherwise>
                 <h2>Det finns ingen patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h2>
+                <portlet:renderURL var="startUrl">
+                    <portlet:param name="jspPage" value="/WEB-INF/jsp/view.jsp" />
+                </portlet:renderURL>
+                <a href="${startUrl}" class="link-button-mod">Ny sökning</a>
             </c:otherwise>
         </c:choose>
 
@@ -37,5 +41,7 @@
         <!-- state.searchSession = ${state.searchSession} -->
         <!-- state.shouldBeVisible = ${state.shouldBeVisible} -->
         <!-- state.currentVisibility = ${state.currentVisibility} -->
+        <!-- state.confirmRelation = ${state.confirmRelation} -->
+        <!-- state.confirmConsent = ${state.confirmConsent} -->
     </div>
 </div>

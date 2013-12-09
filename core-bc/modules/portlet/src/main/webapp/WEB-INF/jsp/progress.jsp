@@ -43,10 +43,10 @@
                         <portlet:param name="patientId" value="${state.patient.patientId}" />
                         <portlet:param name="reset" value="false" />
                     </portlet:actionURL>
-                    <a href="${searchPatientUrl}">V&auml;lj informationsresurs</a>
+                    <a href="${searchPatientUrl}">Visa system</a>
                 </c:when>
                 <c:otherwise>
-                    V&auml;lj informationsk&auml;lla
+                    Visa system
                 </c:otherwise>
             </c:choose>
         </li>

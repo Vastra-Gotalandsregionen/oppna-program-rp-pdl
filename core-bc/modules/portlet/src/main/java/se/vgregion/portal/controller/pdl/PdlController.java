@@ -121,32 +121,40 @@ public class PdlController {
     @ActionMapping("establishRelationConsent")
     public void establishRelationConsent(
             ActionResponse response,
-            @RequestParam String emergency
+            @RequestParam boolean emergency,
+            @RequestParam boolean confirmed
     ) {
         if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
-            return;
+        } else if(confirmed) {
+            LOGGER.trace(
+                    "Request to create both consent and relationship between employee {} and patient {}.",
+                    state.getCtx().value.employeeHsaId,
+                    state.getPatient().patientId
+            );
+
+
+            establishConsent(response, emergency, confirmed);
+            establishRelationship(response, confirmed);
+
+            state.setShowOtherCareUnits(true);
+            state.setShowOtherCareProviders(true);
+            response.setRenderParameter("view", "pickInfoResource");
+        } else {
+            state.setConfirmConsent(true);
+            state.setConfirmRelation(true);
+            response.setRenderParameter("view", "pickInfoResource");
         }
-
-        LOGGER.trace(
-                "Request to create both consent and relationship between employee {} and patient {}.",
-                state.getCtx().value.employeeHsaId,
-                state.getPatient().patientId
-        );
-
-
-        establishConsent(response, emergency);
-        establishRelationship(response);
-
-        response.setRenderParameter("view", "pickInfoResource");
     }
 
     @ActionMapping("establishRelation")
-    public void establishRelationship(ActionResponse response) {
+    public void establishRelationship(
+            ActionResponse response,
+            @RequestParam boolean confirmed
+    ) {
         if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
-        } else {
-
+        } else if(confirmed) {
             LOGGER.trace(
                 "Request to create relationship between employee {} and patient {}.",
                 state.getCtx().value.employeeHsaId,
@@ -162,9 +170,35 @@ public class PdlController {
                 RoundedTimeUnit.NEAREST_HALF_HOUR
             );
 
+
+            state.setConfirmRelation(false);
             state.setPdlReport(newReport);
 
             log(UserAction.RELATION);
+
+            response.setRenderParameter("view", "pickInfoResource");
+        } else {
+            state.setConfirmRelation(true);
+            response.setRenderParameter("view", "pickInfoResource");
+        }
+    }
+
+    @ActionMapping("cancelConfirmation")
+    public void cancelConfirmation(
+            ActionResponse response
+    ) {
+        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+            response.setRenderParameter("view", "view");
+        } else {
+            LOGGER.trace(
+                    "Request to cancel confirmation. Relation confirmation {} and consent confirmation {}.",
+                    state.isConfirmRelation(),
+                    state.isConfirmConsent()
+            );
+
+            state.setConfirmConsent(false);
+            state.setConfirmRelation(false);
+            state.setConfirmEmergency(false);
 
             response.setRenderParameter("view", "pickInfoResource");
         }
@@ -173,11 +207,12 @@ public class PdlController {
     @ActionMapping("establishConsent")
     public void establishConsent(
             ActionResponse response,
-            @RequestParam String emergency
+            @RequestParam boolean emergency,
+            @RequestParam boolean confirmed
     ) {
         if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
-        } else {
+        } else if (confirmed) {
             LOGGER.trace(
                 "Request to create consent between employee {} and patient {}.",
                 state.getCtx().value.employeeHsaId,
@@ -193,14 +228,19 @@ public class PdlController {
                     "Reason",
                     1,
                     RoundedTimeUnit.NEAREST_HALF_HOUR,
-                    ("true".equals(emergency)) ? PdlReport.ConsentType.Emergency : PdlReport.ConsentType.Consent
+                    ( emergency ) ? PdlReport.ConsentType.Emergency : PdlReport.ConsentType.Consent
                 )
             );
 
+            state.setConfirmConsent(false);
             state.setShowOtherCareProviders(true);
 
             log(UserAction.CONSENT);
 
+            response.setRenderParameter("view", "pickInfoResource");
+        } else {
+            state.setConfirmConsent(true);
+            state.setConfirmEmergency(emergency);
             response.setRenderParameter("view", "pickInfoResource");
         }
     }
@@ -327,9 +367,9 @@ public class PdlController {
 
             state.setShowOtherCareProviders(true);
 
-            if(blocked && revokeEmergency) {
+            if(revokeEmergency && blocked) {
                 log(UserAction.BLOCK);
-            } else if (blocked && !revokeEmergency) {
+            } else if (!revokeEmergency && blocked) {
                 log(UserAction.BLOCK_EMERGENCY);
             } else {
                 log(UserAction.INFORMATION_CHOICE);

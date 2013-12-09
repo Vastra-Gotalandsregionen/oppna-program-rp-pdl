@@ -18,7 +18,7 @@
        <c:when test="${!state.showOtherCareUnits}">
             <p>
                 <portlet:actionURL name="showOtherCareUnits" var="showOtherCareUnitsUrl" />
-                <a href="${showOtherCareUnitsUrl}" class="link-button-mod">Visa information för andra vårdenheter</a>
+                <a href="${showOtherCareUnitsUrl}" class="link-button-mod button-simple">Visa information för andra vårdenheter</a>
             </p>
        </c:when>
        <c:when test="${state.showOtherCareProviders && state.pdlReport.consent.value.hasConsent}">
@@ -28,19 +28,24 @@
                </c:if>
                <c:if test="${!state.showOtherCareProviders && state.pdlReport.consent.value.hasConsent}">
                    <portlet:actionURL name="showOtherCareProviders" var="showOtherCareProvidersUrl" />
-                   <a href="${showOtherCareProvidersUrl}" class="link-button-mod">Visa information för andra vårdgivare</a>
+                   <a href="${showOtherCareProvidersUrl}" class="link-button-mod button-simple">Visa information för andra vårdgivare</a>
                </c:if>
            </p>
        </c:when>
        <c:when test="${state.showOtherCareUnits}">
             <p>
-                <c:if test="${!state.pdlReport.consent.value.hasConsent}">
-                    <jsp:include page="establishConsent.jsp" />
-                </c:if>
-                <c:if test="${!state.showOtherCareProviders && state.pdlReport.consent.value.hasConsent}">
-                    <portlet:actionURL name="showOtherCareProviders" var="showOtherCareProvidersUrl" />
-                    <a href="${showOtherCareProvidersUrl}" class="link-button-mod">Visa information för andra vårdgivare</a>
-                </c:if>
+                <c:choose>
+                    <c:when test="${state.confirmConsent}">
+                        <jsp:include page="confirmConsentRelation.jsp" />
+                    </c:when>
+                    <c:when test="${!state.pdlReport.consent.value.hasConsent}">
+                        <jsp:include page="establishConsent.jsp" />
+                    </c:when>
+                    <c:when test="${!state.showOtherCareProviders && state.pdlReport.consent.value.hasConsent}">
+                        <portlet:actionURL name="showOtherCareProviders" var="showOtherCareProvidersUrl" />
+                        <a href="${showOtherCareProvidersUrl}" class="link-button-mod button-simple">Visa information för andra vårdgivare</a>
+                    </c:when>
+                </c:choose>
             </p>
        </c:when>
     </c:choose>

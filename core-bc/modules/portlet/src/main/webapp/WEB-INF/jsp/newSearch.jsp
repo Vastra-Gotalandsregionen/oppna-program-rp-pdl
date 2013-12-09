@@ -11,9 +11,8 @@
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <div class="clearfix">
-    <portlet:actionURL name="establishRelation" var="establishRelationUrl">
-        <portlet:param name="confirmed" value="false" />
-    </portlet:actionURL>
-
-    <a href="${establishRelationUrl}" class="link-button-mod button-simple">Intyga patientrelation</a>
+    <portlet:renderURL var="startUrl">
+        <portlet:param name="jspPage" value="/WEB-INF/jsp/view.jsp" />
+    </portlet:renderURL>
+    <a href="${startUrl}" class="link-button-mod">Ny sökning</a>
 </div>
