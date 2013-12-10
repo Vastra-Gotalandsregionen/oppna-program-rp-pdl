@@ -12,7 +12,7 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
 
     public final Visibility lowestVisibility;
     public final boolean selected;
-    public final boolean containsBlocked;
+    public final Map<Visibility, Boolean> containsBlocked;
     public final Map<Visibility, Boolean> containsOnlyBlocked;
     public final boolean viewBlocked;
     public final String id;
@@ -21,7 +21,7 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
     private InfoTypeState(
             Visibility lowestVisibility,
             boolean selected,
-            boolean containsBlocked,
+            Map<Visibility, Boolean> containsBlocked,
             Map<Visibility, Boolean> containsOnlyBlocked,
             boolean viewBlocked,
             T value
@@ -41,7 +41,7 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
     private InfoTypeState(
             Visibility lowestVisibility,
             boolean selected,
-            boolean containsBlocked,
+            Map<Visibility, Boolean> containsBlocked,
             Map<Visibility, Boolean> containsOnlyBlocked,
             boolean viewBlocked,
             String id,
@@ -106,7 +106,7 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
 
     public static <N extends Serializable, N1 extends N> InfoTypeState<N> deselected(
             Visibility visibility,
-            boolean containsBlocked,
+            Map<Visibility, Boolean> containsBlocked,
             Map<Visibility, Boolean> containsOnlyBlocked,
             N1 value
     ) {
@@ -122,7 +122,7 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
 
     public static <N extends Serializable, N1 extends N> InfoTypeState<N> selected(
             Visibility visibility,
-            boolean containsBlocked,
+            Map<Visibility, Boolean>  containsBlocked,
             Map<Visibility, Boolean> containsOnlyBlocked,
             N1 value
     ) {
@@ -148,7 +148,7 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
         return selected;
     }
 
-    public boolean isContainsBlocked() {
+    public Map<Visibility, Boolean>  getContainsBlocked() {
         return containsBlocked;
     }
 

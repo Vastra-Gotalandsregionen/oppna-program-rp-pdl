@@ -103,8 +103,10 @@ public class CareSystemsReport implements Serializable {
 
     private boolean containsOtherCareUnits(TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> systems) {
         for(InfoTypeState<InformationType> key : systems.keySet()) {
-            if(key.lowestVisibility == Visibility.OTHER_CARE_UNIT) {
-                return true;
+            for(SystemState<CareSystem> sys : systems.get(key)) {
+                if(sys.getVisibility() ==  Visibility.OTHER_CARE_UNIT) {
+                    return true;
+                }
             }
         }
 
@@ -113,8 +115,10 @@ public class CareSystemsReport implements Serializable {
 
     private boolean containsOtherCareProviders(TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> systems) {
         for(InfoTypeState<InformationType> key : systems.keySet()) {
-            if(key.lowestVisibility == Visibility.OTHER_CARE_PROVIDER) {
-                return true;
+            for(SystemState<CareSystem> sys : systems.get(key)) {
+                if(sys.getVisibility() ==  Visibility.OTHER_CARE_PROVIDER) {
+                    return true;
+                }
             }
         }
 
@@ -131,16 +135,23 @@ public class CareSystemsReport implements Serializable {
             InformationType key = entry.getKey();
             ArrayList <SystemState<CareSystem>> value = entry.getValue();
             Visibility lowestVisibility = Visibility.OTHER_CARE_PROVIDER;
-            boolean containsBlocked = false;
+            Map<Visibility, Boolean> containsBlocked = new HashMap<Visibility, Boolean>();
             Map<Visibility, Boolean> containsOnlyBlocked = new HashMap<Visibility, Boolean>();
             for(SystemState<CareSystem> v : value) {
-                if(v.blocked) {
-                    containsBlocked = true;
-                }
 
                 if(!containsOnlyBlocked.containsKey(v.visibility)) {
                     containsOnlyBlocked.put(v.visibility, true);
                 }
+
+                if(!containsBlocked.containsKey(v.visibility)) {
+                    containsBlocked.put(v.visibility, false);
+                }
+
+                // Does this info type contain only blocked information?
+                containsBlocked.put(
+                        v.visibility,
+                        containsBlocked.get(v.visibility) | v.blocked
+                );
 
                 // Does this info type contain only blocked information?
                 containsOnlyBlocked.put(

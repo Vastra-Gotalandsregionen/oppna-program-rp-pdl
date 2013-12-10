@@ -84,7 +84,7 @@
                                             </li>
                                         </c:if>
                                     </c:forEach>
-                                    <c:if test="${infoSelection.key.containsBlocked && !infoSelection.key.viewBlocked}">
+                                    <c:if test="${infoSelection.key.containsBlocked[state.currentVisibility] && !infoSelection.key.viewBlocked }">
                                         <li>
                                             <div class="blocked blockedCareUnit">
                                                 <portlet:actionURL name="showBlockedInformation" var="showBlockedInformationUrl">
