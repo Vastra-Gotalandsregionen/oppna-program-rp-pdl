@@ -404,6 +404,11 @@ public class PdlController {
         return "pickInfoResource";
     }
 
+    @RenderMapping(params = "view=showSummary")
+    public String showSummary(final ModelMap model) {
+        return "showSummary";
+    }
+
     private PdlContext currentContext() {
 
         HashMap<String, AssignmentAccess> assignments = new HashMap<String, AssignmentAccess>();

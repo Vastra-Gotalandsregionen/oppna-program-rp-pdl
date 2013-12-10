@@ -19,9 +19,8 @@
     <jsp:include page="progress.jsp" />
 
     <div class="info">
-        <h1>Summering av patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h1>
+        <h2>System med patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h2>
 
-        Dina val.
     </div>
     <div class="clearfix">
         <portlet:renderURL var="startUrl">

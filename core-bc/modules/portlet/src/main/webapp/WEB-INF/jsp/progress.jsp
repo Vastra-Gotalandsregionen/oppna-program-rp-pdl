@@ -16,7 +16,7 @@
 
 <div>
     <ul class="rp-progress-bar clearfix">
-        <li class="first <c:choose><c:when test="${state.currentProgress == 'SEARCH'}">current-unstarted</c:when><c:when test="${state.currentProgress == 'CHOOSE'}">done-current</c:when></c:choose>">
+        <li class="first <c:choose><c:when test="${state.currentProgress == 'SEARCH'}">current-unstarted</c:when><c:when test="${state.currentProgress != 'SEARCH'}">done-current</c:when></c:choose>">
             <portlet:renderURL var="startUrl">
                 <portlet:param name="jspPage" value="/WEB-INF/jsp/view.jsp" />
             </portlet:renderURL>
@@ -37,7 +37,7 @@
                 </c:otherwise>
             </c:choose>
         </li>
-        <li class="first <c:choose><c:when test="${state.currentProgress == 'SYSTEMS'}">current-unstarted</c:when></c:choose>">
+        <li class="first <c:if test="${state.currentProgress == 'SYSTEMS'}">done-current</c:if>">
             <c:choose>
                 <c:when test="${state.currentProgress == 'SYSTEMS'}">
                     <portlet:actionURL name="showSummary" var="showSummaryUrl" />
