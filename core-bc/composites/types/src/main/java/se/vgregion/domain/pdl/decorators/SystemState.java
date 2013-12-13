@@ -7,34 +7,44 @@ import java.io.Serializable;
 public class SystemState<T extends Serializable> implements Serializable {
     private static final long serialVersionUID = 4032223817595569992L;
 
+    // InitiallyBlocked + Selected == true => System has been unblocked and is now selected was blocked but is now successed
+    // blocked == false CareGiver+CareUnit has been unblocked for this information type
+
     public final String id;
     public final boolean initiallyBlocked;
     public final boolean blocked;
     public final boolean selected;
     public final Visibility visibility;
     public final T value;
+    public final boolean needConfirmation;
 
-    private SystemState(String id, boolean initiallyBlocked, boolean blocked, boolean selected, Visibility visibility, T value) {
+    private SystemState(
+            String id,
+            boolean initiallyBlocked,
+            boolean blocked,
+            boolean needConfirmation,
+            boolean selected,
+            Visibility visibility,
+            T value
+    ) {
         this.id = id;
         this.initiallyBlocked = initiallyBlocked;
         this.blocked = blocked;
+        this.needConfirmation = needConfirmation;
         this.selected = selected;
         this.visibility = visibility;
         this.value = value;
     }
 
     public static <N extends Serializable, N1 extends N> SystemState<N> flattenAddSelection(WithVisibility<WithBlock<N1>> hierarchy) {
-        WithSelection<N1> ws = WithSelection.getDeselected(hierarchy.value.value);
-        WithBlock<WithSelection<N1>> wb = hierarchy.value.mapValue(ws);
-        WithVisibility<WithBlock<WithSelection<N1>>> vs = hierarchy.mapValue(wb);
-
         return new SystemState<N>(
-            vs.value.value.id,
-            vs.value.initiallyBlocked,
-            vs.value.blocked,
-            vs.value.value.selected,
-            vs.visibility,
-            vs.value.value.value
+            java.util.UUID.randomUUID().toString(),
+            hierarchy.value.initiallyBlocked,
+            hierarchy.value.blocked,
+            false,
+            false,
+            hierarchy.visibility,
+            hierarchy.value.value
         );
     }
 
@@ -43,6 +53,7 @@ public class SystemState<T extends Serializable> implements Serializable {
             id,
             initiallyBlocked,
             blocked,
+            needConfirmation,
             true,
             visibility,
             value
@@ -54,6 +65,7 @@ public class SystemState<T extends Serializable> implements Serializable {
                 id,
                 initiallyBlocked,
                 blocked,
+                needConfirmation,
                 false,
                 visibility,
                 value
@@ -65,10 +77,39 @@ public class SystemState<T extends Serializable> implements Serializable {
                 id,
                 initiallyBlocked,
                 false,
+                needConfirmation,
                 true,
                 visibility,
                 value
         );
+    }
+
+    public SystemState<T> needConfirmation() {
+        return new SystemState<T>(
+                id,
+                initiallyBlocked,
+                blocked,
+                true,
+                false,
+                visibility,
+                value
+        );
+    }
+
+    public SystemState<T> cancelConfirmation() {
+        return new SystemState<T>(
+                id,
+                initiallyBlocked,
+                true,
+                false,
+                false,
+                visibility,
+                value
+        );
+    }
+
+    public boolean isNeedConfirmation() {
+        return needConfirmation;
     }
 
     public String getId() {
@@ -102,8 +143,9 @@ public class SystemState<T extends Serializable> implements Serializable {
                 ", initiallyBlocked=" + initiallyBlocked +
                 ", blocked=" + blocked +
                 ", selected=" + selected +
-                ", lowestVisibility=" + visibility +
+                ", visibility=" + visibility +
                 ", value=" + value +
+                ", needConfirmation=" + needConfirmation +
                 '}';
     }
 }

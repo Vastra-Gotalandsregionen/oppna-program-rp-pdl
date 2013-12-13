@@ -36,7 +36,7 @@
                                     <c:forEach var="system" items="${infoSelection.value}">
                                         <portlet:actionURL name="toggleInformation" var="toggleInformationUrl">
                                             <portlet:param name="id" value="${system.id}" />
-                                            <portlet:param name="blocked" value="${system.blocked}" />
+                                            <portlet:param name="confirmed" value="false" />
                                             <portlet:param name="revokeEmergency" value="false" />
                                         </portlet:actionURL>
                                         <c:if test="${state.shouldBeVisible[system.visibility] && ((system.blocked && infoSelection.key.viewBlocked) || !system.blocked)}">
@@ -62,22 +62,26 @@
                                                         </c:if>
                                                     </c:when>
                                                 </c:choose>
-                                                <c:if test="${system.blocked}">
+                                                <c:if test="${system.blocked && system.needConfirmation}">
                                                     <portlet:actionURL name="toggleInformation" var="toggleInformationEmergencyUrl">
                                                         <portlet:param name="id" value="${system.id}" />
-                                                        <portlet:param name="blocked" value="${system.blocked}" />
+                                                        <portlet:param name="confirmed" value="true" />
                                                         <portlet:param name="revokeEmergency" value="true" />
+                                                    </portlet:actionURL>
+                                                    <portlet:actionURL name="cancelRevokeConfirmation" var="cancelRevokeConfirmationUrl">
+                                                        <portlet:param name="id" value="${system.id}" />
                                                     </portlet:actionURL>
                                                     <portlet:actionURL name="toggleInformation" var="toggleInformationConsentUrl">
                                                         <portlet:param name="id" value="${system.id}" />
-                                                        <portlet:param name="blocked" value="${system.blocked}" />
+                                                        <portlet:param name="confirmed" value="true" />
                                                         <portlet:param name="revokeEmergency" value="false" />
                                                     </portlet:actionURL>
                                                     <div class="unlock">
                                                         <b>Passera spärr</b> för ${system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}
                                                         <div class="clearfix">
                                                             <a href="${toggleInformationConsentUrl}" class="link-button-mod link-button-mod-warn">Passera spärr med medgivande</a>
-                                                            <a href="${toggleInformationEmergencyUrl}" class="link-button-mod link-button-mod-danger">Nödöppna information</a>
+                                                            <a href="${cancelRevokeConfirmationUrl}" class="link-button-mod">Avbryt</a>
+                                                            <a href="${toggleInformationEmergencyUrl}" class="link-button-mod link-button-mod-danger" style="float:right">Nödöppna information</a>
                                                         </div>
                                                     </div>
                                                 </c:if>

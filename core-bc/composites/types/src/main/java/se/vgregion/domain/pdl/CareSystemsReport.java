@@ -205,7 +205,7 @@ public class CareSystemsReport implements Serializable {
         return new CareSystemsReport(aggregatedSystems.mapValue(newSystems), containsBlockedInfoTypes);
     }
 
-    public CareSystemsReport toggleInformation(String id, boolean blocked) {
+    public CareSystemsReport toggleInformation(String id, boolean confirmed) {
         TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> newSystems =
                 new TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>();
 
@@ -216,8 +216,12 @@ public class CareSystemsReport implements Serializable {
             for(SystemState<CareSystem> uis : aggregatedSystems.value.get(key)) {
                 if(uis.id.equals(id)){
                     SystemState<CareSystem> newState = (uis.selected) ? uis.deselect() : uis.select();
-                    if(blocked) {
+                    if(confirmed && uis.needConfirmation && uis.blocked) {
                         newState = newState.unblock();
+                    } else if (!confirmed && !uis.needConfirmation && uis.blocked){
+                        newState = newState.needConfirmation();
+                    } else if (!confirmed && uis.needConfirmation && uis.blocked) {
+                        newState = newState.cancelConfirmation();
                     }
                     sysList.add(newState);
                 } else {
@@ -339,31 +343,6 @@ public class CareSystemsReport implements Serializable {
     ) {
         return (categorizedSystems.containsKey(infoTypeState)) ?
                 categorizedSystems.get(infoTypeState) : new ArrayList<SystemState<CareSystem>>();
-    }
-
-    private TreeMap<WithSelection<InformationType>, ArrayList<SystemState<CareSystem>>> infoTypeByVisibility(
-            TreeMap<
-                    WithSelection<InformationType>,
-                    ArrayList<SystemState<CareSystem>>> categorizedSystems,
-            EnumSet<Visibility> visibility
-    ) {
-        TreeMap<WithSelection<InformationType>, ArrayList<SystemState<CareSystem>>> filtered =
-                new TreeMap<WithSelection<InformationType>, ArrayList<SystemState<CareSystem>>>();
-
-        for(WithSelection<InformationType> sysKey : categorizedSystems.keySet()) {
-            ArrayList<SystemState<CareSystem>> list = categorizedSystems.get(sysKey);
-            ArrayList<SystemState<CareSystem>> filteredList = new ArrayList<SystemState<CareSystem>>();
-            for(SystemState<CareSystem> sys : list) {
-                if(visibility.contains(sys.visibility)) {
-                    filteredList.add(sys);
-                }
-            }
-            if(filteredList.size() > 0) {
-                filtered.put(sysKey, filteredList);
-            }
-        }
-
-        return filtered;
     }
 
     private ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizeSystems(

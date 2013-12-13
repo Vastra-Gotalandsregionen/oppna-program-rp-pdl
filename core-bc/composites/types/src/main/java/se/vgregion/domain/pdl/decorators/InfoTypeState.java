@@ -11,7 +11,7 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
     private static final long serialVersionUID = -5813956332644812360L;
 
     public final Visibility lowestVisibility;
-    public final boolean selected;
+    public final boolean selected;  // Shows that the user have actively chosen to view the information associated with this information type.
     public final Map<Visibility, Boolean> containsBlocked;
     public final Map<Visibility, Boolean> containsOnlyBlocked;
     public final boolean viewBlocked;

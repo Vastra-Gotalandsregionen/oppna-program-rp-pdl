@@ -328,10 +328,33 @@ public class PdlController {
         }
     }
 
+    @ActionMapping("cancelRevokeConfirmation")
+    public void cancelRevokeConfirmation(
+            @RequestParam String id,
+            ActionResponse response
+    ) {
+        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+            response.setRenderParameter("view", "view");
+        } else {
+            LOGGER.trace(
+                    "Request to select information type with id {} for patient {}",
+                    id,
+                    state.getPatient().patientId
+            );
+
+            CareSystemsReport newCsReport =
+                    state.getCsReport().toggleInformation(id, false);
+
+            state.setCsReport(newCsReport);
+
+            response.setRenderParameter("view", "pickInfoResource");
+        }
+    }
+
     @ActionMapping("toggleInformation")
     public void toggleInformation(
             @RequestParam String id,
-            @RequestParam boolean blocked,
+            @RequestParam boolean confirmed,
             @RequestParam boolean revokeEmergency,
             ActionResponse response
     ) {
@@ -345,13 +368,13 @@ public class PdlController {
             );
 
             CareSystemsReport newCsReport =
-                    state.getCsReport().toggleInformation(id, blocked);
+                    state.getCsReport().toggleInformation(id, confirmed);
 
             state.setCsReport(newCsReport);
 
-            if(revokeEmergency && blocked) {
+            if(revokeEmergency && confirmed) {
                 log(UserAction.BLOCK);
-            } else if (!revokeEmergency && blocked) {
+            } else if (!revokeEmergency && confirmed) {
                 log(UserAction.BLOCK_EMERGENCY);
             } else {
                 log(UserAction.INFORMATION_CHOICE);
