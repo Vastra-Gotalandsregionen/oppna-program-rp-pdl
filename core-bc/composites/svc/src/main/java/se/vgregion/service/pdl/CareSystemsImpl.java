@@ -51,6 +51,16 @@ public class CareSystemsImpl implements CareSystems {
                                         )
                                     ),
                                     new WithInfoType<CareSystem>(
+                                        InformationType.LUT,
+                                        new CareSystem(
+                                            "Bild- och funktionsregistret",
+                                            "SE2321000131-E000000000001",
+                                            "Capio",
+                                            "SE2321000131-S000000040252",
+                                            "Lundby närsjukhus, Hud 21"
+                                        )
+                                    ),
+                                    new WithInfoType<CareSystem>(
                                         InformationType.UNR,
                                         new CareSystem(
                                             "Bild- och funktionsregistret",
