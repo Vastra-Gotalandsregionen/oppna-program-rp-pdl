@@ -26,10 +26,31 @@
         <portlet:renderURL var="startUrl">
             <portlet:param name="jspPage" value="/WEB-INF/jsp/view.jsp" />
         </portlet:renderURL>
-        <c:forEach items="${state.sumReport.careSystems}" var="systemEntry">
-            ${systemEntry.key.displayName}<br/>
-
-        </c:forEach>
+        <ul class="section-navigation-list clearfix">
+            <c:forEach items="${state.sumReport.careSystems}" var="systemEntry">
+                <li>
+                    <a href="#">
+                        <span class="inner">
+                            <span class="title">${systemEntry.key.displayName}</span>
+                            <span class="description">
+                                <h3>Vald information</h3>
+                                <div class="clearfix">
+                                    <c:forEach items="${systemEntry.value}" var="withInfoType">
+                                        <b>${withInfoType.informationType.desc}</b><br/>
+                                        <c:forEach items="${withInfoType.value}" var="system">
+                                            ${system.careProviderDisplayName} - ${system.careUnitDisplayName}<br/>
+                                        </c:forEach>
+                                        <br/>
+                                    </c:forEach>
+                                </div>
+                            </span>
+                        </span>
+                    </a>
+                </li>
+            </c:forEach>
+        <ul>
+    </div>
+    <div class="clearfix">
         <a href="${startUrl}" class="link-button-mod">Ny sökning</a>
     </div>
 </div>
