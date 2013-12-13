@@ -51,6 +51,15 @@
         <ul>
     </div>
     <div class="clearfix">
+        <portlet:renderURL var="startUrl">
+            <portlet:param name="jspPage" value="/WEB-INF/jsp/view.jsp" />
+        </portlet:renderURL>
+        <portlet:actionURL name="searchPatient" var="searchPatientUrl">
+            <portlet:param name="patientId" value="${state.patient.patientId}" />
+            <portlet:param name="currentAssignment" value="${state.currentAssignment}" />
+            <portlet:param name="reset" value="false" />
+        </portlet:actionURL>
         <a href="${startUrl}" class="link-button-mod">Ny sökning</a>
+        <a href="${searchPatientUrl}" class="link-button-mod">Förändra dina val</a>
     </div>
 </div>

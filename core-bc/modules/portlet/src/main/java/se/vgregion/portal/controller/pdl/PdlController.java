@@ -445,8 +445,8 @@ public class PdlController {
         HashMap<String, AssignmentAccess> assignments = new HashMap<String, AssignmentAccess>();
         List<Access> otherProviders = Arrays.asList(Access.otherProvider("SE2321000131-E000000000001"));
         List<Access> sameProviders = Arrays.asList(Access.sameProvider("SE2321000131-S000000010252"), Access.sameProvider("SE2321000131-S000000010251"));
-        assignments.put("SE2321000131-S000000010452", new AssignmentAccess("Sammanhållen Journalföring", otherProviders) );
-        assignments.put("SE2321000131-S000000020452", new AssignmentAccess("Vård och behandling", sameProviders) );
+        assignments.put("SE2321000131-S000000010452", new AssignmentAccess("Vård och Behandling - Sammanhållen Journalföring", otherProviders) );
+        assignments.put("SE2321000131-S000000020452", new AssignmentAccess("Vård och Behandling - Utökad", sameProviders) );
 
         return new PdlContext(
                     "Capio",

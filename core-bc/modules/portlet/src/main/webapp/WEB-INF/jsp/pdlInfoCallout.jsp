@@ -14,5 +14,5 @@
     <h4>Du är inloggad som ${state.ctx.employeeDisplayName} (${state.ctx.careProviderDisplayName} - ${state.ctx.careUnitDisplayName}).</h4>
     <h4>Alla dina val i systemet loggförs</h4>
     <br/>
-    <h5>Dessa val kommer att i efterhand <a href="http://www.vgregion.se/sv/Vastra-Gotalandsregionen/startsida/Vard-och-halsa/Sa-styrs-varden/Halso--och-sjukvardsavdelningen/Patientdatalagen/">granskas enligt patientdatalagen.</h5>
+    <b>Dessa val kommer att i efterhand <a href="http://www.vgregion.se/sv/Vastra-Gotalandsregionen/startsida/Vard-och-halsa/Sa-styrs-varden/Halso--och-sjukvardsavdelningen/Patientdatalagen/">granskas enligt patientdatalagen.</a></b>
 </div>

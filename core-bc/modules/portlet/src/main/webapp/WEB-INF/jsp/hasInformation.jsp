@@ -135,12 +135,12 @@
         </c:if>
         <jsp:include page="pdlScopeControls.jsp"/>
         <div class="clearfix" style="margin-top: 1.2em;">
-            <portlet:actionURL name="goToSummary" var="goToSummaryUrl" />
-            <a href="${goToSummaryUrl}" class="link-button-mod link-button-mod-proceed">Gå vidare</a>
             <portlet:renderURL var="startUrl">
                 <portlet:param name="jspPage" value="/WEB-INF/jsp/view.jsp" />
             </portlet:renderURL>
             <a href="${startUrl}" class="link-button-mod">Ny sökning</a>
+            <portlet:actionURL name="goToSummary" var="goToSummaryUrl" />
+            <a href="${goToSummaryUrl}" class="link-button-mod link-button-mod-proceed">Gå vidare</a>
         </div>
     </c:when>
 </c:choose>
