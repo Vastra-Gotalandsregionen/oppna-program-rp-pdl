@@ -97,13 +97,10 @@ public class PdlServiceSpecification {
         when(blocksInterface.checkBlocks(eq(serviceHsaId), isA(CheckBlocksRequestType.class))).
                 thenAnswer(BlockingSpec.blockingRequestAndRespond(ctx, patient, 0, true));
 
-        when(consentInterface.checkConsent(anyString(), isA(CheckConsentRequestType.class))).
-                thenReturn(ConsentSpec.queryResult(false, false));  // Not under test, avoid null pointer
-
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
             thenReturn(RelationshipSpec.relationshipResult(false));  // Not under test, avoid null pointer
 
-        PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
+        PdlReport pdlReport = service.pdlReport(ctx, sameProvider, patient, careSystems);
 
         // Should not be a fallback result
         assertEquals(Outcome.SUCCESS, pdlReport.systems.outcome);
@@ -124,13 +121,10 @@ public class PdlServiceSpecification {
         when(blocksInterface.checkBlocks(eq(serviceHsaId), isA(CheckBlocksRequestType.class))).
                 thenReturn(BlockingSpec.blockedResult(0, false));
 
-        when(consentInterface.checkConsent(anyString(), isA(CheckConsentRequestType.class))).
-                thenReturn(ConsentSpec.queryResult(false, false)); // Not under test, avoid null pointer
-
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
                 thenReturn(RelationshipSpec.relationshipResult(false));  // Not under test, avoid null pointer
 
-        PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
+        PdlReport pdlReport = service.pdlReport(ctx, sameProvider, patient, careSystems);
 
         // Should at least contain more than one system
         assertTrue(pdlReport.systems.value.size() > 0);
@@ -155,7 +149,7 @@ public class PdlServiceSpecification {
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
                 thenReturn(RelationshipSpec.relationshipResult(false));  // Not under test, avoid null pointer
 
-        PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
+        PdlReport pdlReport = service.pdlReport(ctx, otherProvider, patient, careSystems);
 
         assertEquals(Outcome.SUCCESS, pdlReport.consent.outcome);
         assertTrue(pdlReport.consent.value.hasConsent);
@@ -173,7 +167,7 @@ public class PdlServiceSpecification {
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
                 thenReturn(RelationshipSpec.relationshipResult(false));  // Not under test, avoid null pointer
 
-        PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
+        PdlReport pdlReport = service.pdlReport(ctx, otherProvider, patient, careSystems);
 
         assertEquals(Outcome.SUCCESS, pdlReport.consent.outcome);
         assertTrue(pdlReport.consent.value.hasConsent);
@@ -191,7 +185,7 @@ public class PdlServiceSpecification {
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
                 thenReturn(RelationshipSpec.relationshipResult(false));  // Not under test, avoid null pointer
 
-        PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
+        PdlReport pdlReport = service.pdlReport(ctx, otherProvider, patient, careSystems);
 
         assertEquals(Outcome.SUCCESS, pdlReport.consent.outcome);
         assertFalse(pdlReport.consent.value.hasConsent);
@@ -202,13 +196,10 @@ public class PdlServiceSpecification {
         when(blocksInterface.checkBlocks(anyString(), isA(CheckBlocksRequestType.class))).
                 thenReturn(BlockingSpec.blockedResult(0, true)); // Not under test, avoid null pointer
 
-        when(consentInterface.checkConsent(anyString(), isA(CheckConsentRequestType.class))).
-                thenReturn(ConsentSpec.queryResult(false, true)); // Not under test, avoid null pointer
-
         when(relationshipInterface.checkPatientRelation(eq(serviceHsaId), isA(CheckPatientRelationRequestType.class))).
                 thenAnswer(RelationshipSpec.queryRequestAndResponse(ctx, patient, true));
 
-        PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
+        PdlReport pdlReport = service.pdlReport(ctx, sameProvider, patient, careSystems);
 
         assertEquals(Outcome.SUCCESS, pdlReport.hasRelationship.outcome);
         assertTrue(pdlReport.hasRelationship.value);
@@ -220,13 +211,10 @@ public class PdlServiceSpecification {
         when(blocksInterface.checkBlocks(anyString(), isA(CheckBlocksRequestType.class))).
                 thenReturn(BlockingSpec.blockedResult(0, true)); // Not under test, avoid null pointer
 
-        when(consentInterface.checkConsent(anyString(), isA(CheckConsentRequestType.class))).
-                thenReturn(ConsentSpec.queryResult(false, true)); // Not under test, avoid null pointer
-
         when(relationshipInterface.checkPatientRelation(eq(serviceHsaId), isA(CheckPatientRelationRequestType.class))).
                 thenAnswer(RelationshipSpec.queryRequestAndResponse(ctx, patient, false));
 
-        PdlReport pdlReport = service.pdlReport(ctx, patient, careSystems);
+        PdlReport pdlReport = service.pdlReport(ctx, sameProvider, patient, careSystems);
 
         assertEquals(Outcome.SUCCESS, pdlReport.hasRelationship.outcome);
         assertFalse(pdlReport.hasRelationship.value);

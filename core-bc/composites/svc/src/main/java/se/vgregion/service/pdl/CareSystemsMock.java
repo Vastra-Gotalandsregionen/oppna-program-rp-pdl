@@ -2,6 +2,7 @@ package se.vgregion.service.pdl;
 
 import org.springframework.stereotype.Service;
 import se.vgregion.domain.pdl.CareSystem;
+import se.vgregion.domain.pdl.CareSystemSource;
 import se.vgregion.domain.pdl.InformationType;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.pdl.decorators.WithInfoType;
@@ -23,7 +24,7 @@ public class CareSystemsMock implements CareSystems {
                                         new WithInfoType<CareSystem>(
                                                 InformationType.LAK,
                                                 new CareSystem(
-                                                        "Bild- och funktionsregistret",
+                                                        CareSystemSource.BFR,
                                                         "SE2321000131-E000000000001",
                                                         "VGR",
                                                         "SE2321000131-S000000010252",
@@ -33,7 +34,7 @@ public class CareSystemsMock implements CareSystems {
                                         new WithInfoType<CareSystem>(
                                                 InformationType.UPP,
                                                 new CareSystem(
-                                                        "Bild- och funktionsregistret",
+                                                        CareSystemSource.BFR,
                                                         "SE2321000131-E000000000001",
                                                         "VGR",
                                                         "SE2321000131-S000000010251",
@@ -43,7 +44,7 @@ public class CareSystemsMock implements CareSystems {
                                         new WithInfoType<CareSystem>(
                                                 InformationType.LAK,
                                                 new CareSystem(
-                                                        "System X",
+                                                        CareSystemSource.BFR,
                                                         "SE2321000131-E000000000001",
                                                         "VGR",
                                                         "SE2321000131-S000000010252",
@@ -53,7 +54,7 @@ public class CareSystemsMock implements CareSystems {
                                         new WithInfoType<CareSystem>(
                                                 InformationType.LAK,
                                                 new CareSystem(
-                                                        "Other Care Unit",
+                                                        CareSystemSource.BFR,
                                                         "SE2321000131-E000000000001",
                                                         "VGR",
                                                         "SE2321000131-S000000010254",
@@ -63,7 +64,7 @@ public class CareSystemsMock implements CareSystems {
                                         new WithInfoType<CareSystem>(
                                                 InformationType.UPP,
                                                 new CareSystem(
-                                                        "Other Care Giver System",
+                                                        CareSystemSource.BFR,
                                                         "SE2321000132-E000000000001",
                                                         "Capio Axess",
                                                         "SE2321000132-S000000010254",

@@ -21,7 +21,10 @@ public class PdlUserState implements Serializable {
 
     private PdlReport pdlReport;
     private CareSystemsReport csReport;
+    private SummaryReport sumReport;
+
     private Patient patient;
+
     private PdlContext ctx;
     private String currentAssignment;
     private boolean showOtherCareUnits = false;
@@ -77,10 +80,19 @@ public class PdlUserState implements Serializable {
         confirmEmergency = false;
         pdlReport = null;
         csReport = null;
+        sumReport = null;
         searchSession = java.util.UUID.randomUUID().toString();
         currentVisibility = Visibility.SAME_CARE_UNIT;
         shouldBeVisible.clear();
         currentProgress = PdlProgress.firstStep();
+    }
+
+    public SummaryReport getSumReport() {
+        return sumReport;
+    }
+
+    public void setSumReport(SummaryReport sumReport) {
+        this.sumReport = sumReport;
     }
 
     public String getSearchSession() {

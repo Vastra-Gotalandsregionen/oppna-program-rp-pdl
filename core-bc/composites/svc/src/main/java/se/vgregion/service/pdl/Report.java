@@ -19,10 +19,7 @@ import se.vgregion.domain.pdl.decorators.WithOutcome;
 import javax.xml.ws.WebServiceException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class Report {
 
@@ -36,7 +33,7 @@ public class Report {
     static PdlReport generateReport(
             String servicesHsaId,
             final PdlContext ctx,
-            final Patient patient,
+            String currentAssignment, final Patient patient,
             List<WithInfoType<CareSystem>> careSystems,
             final CheckBlocksResponderInterface checkBlocks,
             final CheckConsentResponderInterface checkConsent,
@@ -48,8 +45,21 @@ public class Report {
         Future<WithOutcome<ArrayList<WithInfoType<WithBlock<CareSystem>>>>> blocksFuture =
                 blocks(servicesHsaId, ctx, patient, careSystems, checkBlocks, executorService);
 
-        Future<WithOutcome<CheckedConsent>> consentFuture =
-                consent(servicesHsaId, ctx, patient.patientId, checkConsent, executorService);
+        Future<WithOutcome<CheckedConsent>> consentFuture;
+
+        if(ctx.assignments.get(currentAssignment).isOtherProviders()) {
+            consentFuture =
+                consent(
+                    servicesHsaId,
+                    ctx,
+                    patient.patientId,
+                    checkConsent,
+                    executorService
+                );
+        } else {
+            // Return dummy false value. This will not be used since the assignment is only within same care giver.
+            consentFuture = consentNotNeeded(executorService);
+        }
 
         Future<WithOutcome<Boolean>> relationshipFuture =
                 relationship(servicesHsaId, ctx, patient.patientId, checkRelationship, executorService);
@@ -235,6 +245,18 @@ public class Report {
         CheckedConsent consent = Consent.asCheckedConsent(consentResponse);
 
         return Consent.decideOutcome(consentResponse.getCheckResultType().getResult(), consent);
+    }
+
+    private static Future<WithOutcome<CheckedConsent>> consentNotNeeded(ExecutorService executorService) {
+        Future<WithOutcome<CheckedConsent>> consentFuture;Callable<WithOutcome<CheckedConsent>> consentCallable =
+                new Callable<WithOutcome<CheckedConsent>>() {
+                    public WithOutcome<CheckedConsent> call() {
+                        return WithOutcome.success(new CheckedConsent(PdlReport.ConsentType.Consent, false));
+                    }
+                };
+
+        consentFuture = executorService.submit(consentCallable);
+        return consentFuture;
     }
 
 }

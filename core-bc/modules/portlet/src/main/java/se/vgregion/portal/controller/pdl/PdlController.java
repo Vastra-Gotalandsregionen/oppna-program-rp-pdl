@@ -113,7 +113,12 @@ public class PdlController {
 
             //TODO 2013-11-18 : Magnus Andersson > Only do this if there are care systems!
             //TODO 2013-11-22 : Magnus Andersson > Should handle WithAccess and filter out unavailable systems.
-            PdlReport pdlReport = pdl.pdlReport(state.getCtx(), state.getPatient(), careSystems);
+            PdlReport pdlReport = pdl.pdlReport(
+                    state.getCtx(),
+                    state.getCurrentAssignment(),
+                    state.getPatient(),
+                    careSystems
+            );
 
             log(UserAction.SEARCH);
 
@@ -416,6 +421,9 @@ public class PdlController {
                     state.getCtx().employeeHsaId,
                     state.getPatient().patientId
             );
+
+            SummaryReport sumReport = new SummaryReport(state.getCsReport().aggregatedSystems.value);
+            state.setSumReport(sumReport);
 
             response.setRenderParameter("view", "showSummary");
         }

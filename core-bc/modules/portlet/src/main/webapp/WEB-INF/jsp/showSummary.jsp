@@ -26,6 +26,10 @@
         <portlet:renderURL var="startUrl">
             <portlet:param name="jspPage" value="/WEB-INF/jsp/view.jsp" />
         </portlet:renderURL>
+        <c:forEach items="${state.sumReport.careSystems}" var="systemEntry">
+            ${systemEntry.key.displayName}<br/>
+
+        </c:forEach>
         <a href="${startUrl}" class="link-button-mod">Ny sökning</a>
     </div>
 </div>

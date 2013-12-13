@@ -71,12 +71,14 @@ public class PdlServiceImpl implements PdlService {
     @Override
     public PdlReport pdlReport(
             final PdlContext ctx,
+            String currentAssignment,
             Patient patient,
             List<WithInfoType<CareSystem>> careSystems
     ) {
         return Report.generateReport(
                 servicesHsaId,
                 ctx,
+                currentAssignment,
                 patient,
                 careSystems,
                 checkBlocks,

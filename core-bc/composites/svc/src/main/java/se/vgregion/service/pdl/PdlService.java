@@ -15,11 +15,13 @@ public interface PdlService {
      *
      *
      * @param ctx PDL Context
+     * @param currentAssignment Currently active assignment
      * @param patient Patient information
      * @param careSystems Care Systems to generate report for
      */
     PdlReport pdlReport(
             PdlContext ctx,
+            String currentAssignment,
             Patient patient,
             List<WithInfoType<CareSystem>> careSystems
     );

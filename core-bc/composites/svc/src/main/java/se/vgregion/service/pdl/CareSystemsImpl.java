@@ -2,6 +2,7 @@ package se.vgregion.service.pdl;
 
 import org.springframework.stereotype.Service;
 import se.vgregion.domain.pdl.CareSystem;
+import se.vgregion.domain.pdl.CareSystemSource;
 import se.vgregion.domain.pdl.InformationType;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.pdl.decorators.WithInfoType;
@@ -23,7 +24,7 @@ public class CareSystemsImpl implements CareSystems {
                                     new WithInfoType<CareSystem>(
                                         InformationType.UNR,
                                         new CareSystem(
-                                            "Bild- och funktionsregistret",
+                                            CareSystemSource.BFR,
                                             "SE2321000131-E000000000001",
                                             "Capio",
                                             "SE2321000131-S000000010252",
@@ -33,7 +34,7 @@ public class CareSystemsImpl implements CareSystems {
                                     new WithInfoType<CareSystem>(
                                         InformationType.UNR,
                                         new CareSystem(
-                                            "Bild- och funktionsregistret",
+                                            CareSystemSource.LAR,
                                             "SE2321000131-E000000000001",
                                             "Capio",
                                             "SE2321000131-S000000020252",
@@ -43,7 +44,7 @@ public class CareSystemsImpl implements CareSystems {
                                     new WithInfoType<CareSystem>(
                                         InformationType.UNR,
                                         new CareSystem(
-                                            "Bild- och funktionsregistret",
+                                                CareSystemSource.BFR,
                                             "SE2321000131-E000000000001",
                                             "Capio",
                                             "SE2321000131-S000000030252",
@@ -51,19 +52,19 @@ public class CareSystemsImpl implements CareSystems {
                                         )
                                     ),
                                     new WithInfoType<CareSystem>(
-                                        InformationType.LUT,
+                                        InformationType.VBR,
                                         new CareSystem(
-                                            "Bild- och funktionsregistret",
+                                            CareSystemSource.BFR,
                                             "SE2321000131-E000000000001",
                                             "Capio",
                                             "SE2321000131-S000000040252",
-                                            "Lundby närsjukhus, Hud 21"
+                                            "Lundby närsjukhus, Ortopedi 12"
                                         )
                                     ),
                                     new WithInfoType<CareSystem>(
                                         InformationType.UNR,
                                         new CareSystem(
-                                            "Bild- och funktionsregistret",
+                                            CareSystemSource.BFR,
                                             "SE2321000132-E000000000001",
                                             "VGR",
                                             "SE2321000132-S000000010251",
@@ -73,7 +74,7 @@ public class CareSystemsImpl implements CareSystems {
                                     new WithInfoType<CareSystem>(
                                         InformationType.UNR,
                                         new CareSystem(
-                                            "Bild- och funktionsregistret",
+                                            CareSystemSource.BFR,
                                             "SE2321000132-E000000000001",
                                             "VGR",
                                             "SE2321000132-S000000010254",

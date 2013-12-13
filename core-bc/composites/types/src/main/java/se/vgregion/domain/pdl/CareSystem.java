@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class CareSystem implements Serializable {
     private static final long serialVersionUID = -8149026774965825742L;
 
-    public final String displayName;
+    public final CareSystemSource source;
     public final String careProviderHsaId;
     public final String careProviderDisplayName;
     public final String careUnitHsaId;
@@ -13,13 +13,13 @@ public class CareSystem implements Serializable {
     public final String displayId = java.util.UUID.randomUUID().toString(); // Used to keep track of Care System between requests.
 
     public CareSystem(
-            String displayName,
+            CareSystemSource source,
             String careProviderHsaId,
             String careProviderDisplayName,
             String careUnitHsaId,
             String careUnitDisplayName
     ) {
-        this.displayName = displayName;
+        this.source = source;
         this.careProviderHsaId = careProviderHsaId;
         this.careProviderDisplayName = careProviderDisplayName;
         this.careUnitHsaId = careUnitHsaId;
@@ -29,10 +29,6 @@ public class CareSystem implements Serializable {
 
     public String getCareUnitHsaId() {
         return careUnitHsaId;
-    }
-
-    public String getDisplayName() {
-        return displayName;
     }
 
     public String getCareProviderHsaId() {
@@ -51,10 +47,14 @@ public class CareSystem implements Serializable {
         return careUnitDisplayName;
     }
 
+    public CareSystemSource getSource() {
+        return source;
+    }
+
     @Override
     public String toString() {
         return "CareSystem{" +
-                "displayName='" + displayName + '\'' +
+                "source=" + source +
                 ", careProviderHsaId='" + careProviderHsaId + '\'' +
                 ", careProviderDisplayName='" + careProviderDisplayName + '\'' +
                 ", careUnitHsaId='" + careUnitHsaId + '\'' +
