@@ -43,9 +43,7 @@
                 </portlet:actionURL>
 
                 <div class="clearfix confirm">
-                    <p class="heading">${state.patient.patientDisplayName} har ej medgivit sitt samtycke till sammanhållen journalföring</p>
-                    <p>Det finns information hos andra vårdgivare, för att få se denna måste patienten medge sitt samtycke till sammanhållen journalföring.</p>
-                    <p class="affirm"><p>
+                    <p class="heading">För att få tillgång till information från andra vårdgivare så måste ${state.patient.patientDisplayName} medge sitt samtycke till sammanhållen journalföring</p>
 
                     <div class="clearfix">
                         <a href="${establishConsentUrl}" class="link-button-mod button-simple">Intyga samtycke</a>

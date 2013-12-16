@@ -23,9 +23,8 @@
 
     <div class="clearfix confirm">
         <p class="heading">${state.patient.patientDisplayName} har ej medgivit sitt samtycke till sammanhållen journalföring</p>
-        <p>Det finns information hos andra vårdgivare, för att få se denna måste patienten medge sitt samtycke till sammanhållen journalföring.</p>
 
-        <p class="affirm">För att gå vidare ska du inhämta patientens samtycke. Råder en nödsituation kan detta steget passeras. Ditt val loggförs.<p>
+        <p class="affirm">För att få information från andra vårdgivare behöver du inhämta patientens samtycke. Råder en nödsituation kan detta steget passeras. Ditt val loggförs.<p>
 
         <div class="clearfix">
             <a href="${establishConsentUrl}" class="link-button-mod button-simple">Jag har inhämtat patientens samtycke</a>
