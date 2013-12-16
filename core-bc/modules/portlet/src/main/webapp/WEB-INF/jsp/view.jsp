@@ -14,8 +14,6 @@
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 
-<jsp:include page="common.jsp" />
-
 <portlet:actionURL name="searchPatient" var="searchPatientUrl" />
 <div class="pdl clearfix">
 
