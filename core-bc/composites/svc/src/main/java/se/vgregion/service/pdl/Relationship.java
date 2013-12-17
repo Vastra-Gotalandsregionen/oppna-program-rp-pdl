@@ -72,14 +72,47 @@ public class Relationship {
         RegisterExtendedPatientRelationResponseType response = establishRelationship
                 .registerExtendedPatientRelation(servicesHsaId, request);
 
-        if( response.getResultType().getResultCode() == ResultCodeType.VALIDATION_ERROR ) {
-            LOGGER.error(
-                    "Validation error for register patient relationship. Message: {}",
-                    response.getResultType().getResultText()
-            );
+        if( response.getResultType().getResultCode() == ResultCodeType.OK ) {
+            return WithOutcome.success(true);
+        } else {
+            switch (response.getResultType().getResultCode()) {
+                case VALIDATION_ERROR :
+                    LOGGER.error(
+                        "Validation error for register patient relationship. Message: {}",
+                        response.getResultType().getResultText()
+                    );
+                    return WithOutcome.clientError(true);
+                case ERROR:
+                    LOGGER.error(
+                        "Error when registring patient relationship. Message: {}",
+                        response.getResultType().getResultText()
+                    );
+                    return WithOutcome.remoteFailure(true);
+                case ACCESSDENIED:
+                    LOGGER.error(
+                        "Access denied when registring patient relationship. Message: {}",
+                        response.getResultType().getResultText()
+                    );
+                    return WithOutcome.commFailure(true);
+                case ALREADYEXISTS:
+                    LOGGER.error(
+                            "Duplicate ids when registring patient relationship. Message: {}",
+                            response.getResultType().getResultText()
+                    );
+                    return WithOutcome.clientError(true);
+                case INVALIDSTATE:
+                    LOGGER.error(
+                        "Invalid state when registring patient relationship. Message: {}",
+                        response.getResultType().getResultText()
+                    );
+                default:
+                    LOGGER.error(
+                            "Unknown error when establishing relationship. Message: {}",
+                            response.getResultType().getResultText()
+                    );
+                    return WithOutcome.remoteFailure(true);
+            }
         }
-
-        return WithOutcome.success(response.getResultType().getResultCode() == ResultCodeType.OK);
     }
 
     public static <T extends Serializable> WithOutcome<T> decideOutcome(

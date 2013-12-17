@@ -99,13 +99,49 @@ class Consent {
                     establishConsent
                             .registerExtendedConsent(servicesHsaId, request);
 
-            ResultCodeType resultCode = response.getResultType().getResultCode();
+            if(response.getResultType().getResultCode() == ResultCodeType.OK) {
+                LOGGER.trace("Consent established for patient {}", patientId);
+                return WithOutcome.success(new CheckedConsent(consentType, true));
 
-            boolean hasConsent = ( resultCode == ResultCodeType.OK || resultCode == ResultCodeType.ALREADYEXISTS);
-            LOGGER.trace("Consent established for patient {}", patientId);
-
-            return WithOutcome.success(new CheckedConsent(consentType, hasConsent));
-
+            } else {
+                switch (response.getResultType().getResultCode()) {
+                    case VALIDATION_ERROR :
+                        LOGGER.error(
+                                "Validation error for consent. Message: {}",
+                                response.getResultType().getResultText()
+                        );
+                        return WithOutcome.clientError(new CheckedConsent(consentType, true));
+                    case ERROR:
+                        LOGGER.error(
+                                "Error when establishing consent. Message: {}",
+                                response.getResultType().getResultText()
+                        );
+                        return WithOutcome.remoteFailure(new CheckedConsent(consentType, true));
+                    case ACCESSDENIED:
+                        LOGGER.error(
+                                "Access denied when establishing consent. Message: {}",
+                                response.getResultType().getResultText()
+                        );
+                        return WithOutcome.commFailure(new CheckedConsent(consentType, true));
+                    case ALREADYEXISTS:
+                        LOGGER.error(
+                                "Duplicate ids when establishing consent. Message: {}",
+                                response.getResultType().getResultText()
+                        );
+                        return WithOutcome.clientError(new CheckedConsent(consentType, true));
+                    case INVALIDSTATE:
+                        LOGGER.error(
+                                "Invalid state when establishing consent. Message: {}",
+                                response.getResultType().getResultText()
+                        );
+                    default:
+                        LOGGER.error(
+                                "Unknown error when establishing consent. Message: {}",
+                                response.getResultType().getResultText()
+                        );
+                        return WithOutcome.remoteFailure(new CheckedConsent(consentType, true));
+                }
+            }
         } catch(SOAPFaultException e) {
             LOGGER.error("Could not contact Consent service. Using fallback.", e);
             return WithOutcome.commFailure(new CheckedConsent(consentType, true));

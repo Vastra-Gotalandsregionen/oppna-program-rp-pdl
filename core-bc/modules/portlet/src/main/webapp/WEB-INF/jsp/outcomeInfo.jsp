@@ -15,15 +15,15 @@
 
 <c:if test="${state.pdlReport.hasNonSuccessOutcome}">
     <div class="callout callout-danger">
-        <p>En eller flera frågor mot de bakomliggade säkerhetstjänsterna misslyckades. Var noggran när du väljer ut vilken information du tar del av eftersom du kan få tillgång till mer information än normalt.</p>
-        <p>De tjänster som påverkades är följande system:</p>
+        <h3>En eller flera frågor mot de bakomliggade säkerhetstjänsterna misslyckades.</h3>
+        <p><b>Följande av säkerhetstjänsterna sattes ur spel och har passerats.</b></p>
         <ul>
             <c:if test="${state.pdlReport.systems.outcome != 'SUCCESS'}">
                 <li>Tjänst för spärrar
                     <c:choose>
                         <c:when test="${state.pdlReport.systems.outcome == 'CLIENT_FAILURE'}">misslyckades på grund av ett klientfel.</c:when>
                         <c:when test="${state.pdlReport.systems.outcome == 'COMMUNICATION_FAILURE'}">misslyckades på grund av ett kommunikationsfel.</c:when>
-                        <c:when test="${state.pdlReport.systems.outcome == 'REMOTE_FAILURE'}">misslyckades på grund av ett fel i tjänsten.</c:when>
+                        <c:when test="${state.pdlReport.systems.outcome == 'REMOTE_FAILURE'}">misslyckades på grund av ett fel i säkerhetstjänsterna.</c:when>
                     </c:choose></li>
             </c:if>
             <c:if test="${state.pdlReport.hasRelationship.outcome != 'SUCCESS'}">
@@ -31,18 +31,18 @@
                         <c:choose>
                             <c:when test="${state.pdlReport.hasRelationship.outcome == 'CLIENT_FAILURE'}">misslyckades på grund av ett klientfel.</c:when>
                             <c:when test="${state.pdlReport.hasRelationship.outcome == 'COMMUNICATION_FAILURE'}">misslyckades på grund av ett kommunikationsfel.</c:when>
-                            <c:when test="${state.pdlReport.hasRelationship.outcome == 'REMOTE_FAILURE'}">misslyckades på grund av ett fel i tjänsten.</c:when>
+                            <c:when test="${state.pdlReport.hasRelationship.outcome == 'REMOTE_FAILURE'}">misslyckades på grund av ett fel i säkerhetstjänsterna.</c:when>
                         </c:choose></li>
                 </c:if>
-            <c:if test="${state.pdlReport.consent.outcome != Outcome.SUCCESS}">
-            <li>Tjänst för samtycke till sammanhållen journalföring
+            <c:if test="${state.pdlReport.consent.outcome != 'SUCCESS'}">
+                    <li>Tjänst för samtycke till sammanhållen journalföring
                     <c:choose>
-                        <c:when test="${state.pdlReport.hasRelationship.outcome == 'CLIENT_FAILURE'}">misslyckades på grund av ett klientfel.</c:when>
-                        <c:when test="${state.pdlReport.hasRelationship.outcome == 'COMMUNICATION_FAILURE'}">misslyckades på grund av ett kommunikationsfel.</c:when>
-                        <c:when test="${state.pdlReport.hasRelationship.outcome == 'REMOTE_FAILURE'}">misslyckades på grund av ett fel i tjänsten.</c:when>
+                        <c:when test="${state.pdlReport.consent.outcome == 'CLIENT_FAILURE'}">misslyckades på grund av ett klientfel.</c:when>
+                        <c:when test="${state.pdlReport.consent.outcome == 'COMMUNICATION_FAILURE'}">misslyckades på grund av ett kommunikationsfel.</c:when>
+                        <c:when test="${state.pdlReport.consent.outcome == 'REMOTE_FAILURE'}">misslyckades på grund av ett fel i säkerhetstjänsterna.</c:when>
                 </c:choose></li>
             </c:if>
         </ul>
-        <p>Alla dina val kommer att loggföras.</p>
+        <h3>Var noggrann med dina val eftersom du kan komma att se mer information än vanligt. Alla dina val loggförs.</h3>
     </div>
 </c:if>

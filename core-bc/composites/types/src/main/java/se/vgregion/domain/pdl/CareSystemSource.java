@@ -2,7 +2,7 @@ package se.vgregion.domain.pdl;
 
 public enum CareSystemSource {
     BFR("Bild- och funktionsregistret"),
-    LAR("Läkemedelsregistret");
+    RRE("Nya Remissregistret");
 
     public final String displayName;
 

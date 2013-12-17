@@ -34,7 +34,7 @@ public class CareSystemsImpl implements CareSystems {
                                     new WithInfoType<CareSystem>(
                                         InformationType.UNR,
                                         new CareSystem(
-                                            CareSystemSource.LAR,
+                                            CareSystemSource.BFR,
                                             "SE2321000131-E000000000001",
                                             "Capio",
                                             "SE2321000131-S000000020252",
@@ -52,9 +52,9 @@ public class CareSystemsImpl implements CareSystems {
                                         )
                                     ),
                                     new WithInfoType<CareSystem>(
-                                        InformationType.VBR,
+                                        InformationType.VBE,
                                         new CareSystem(
-                                            CareSystemSource.BFR,
+                                            CareSystemSource.RRE,
                                             "SE2321000131-E000000000001",
                                             "Capio",
                                             "SE2321000131-S000000040252",

@@ -111,6 +111,8 @@ public class PdlController {
 
             List<WithInfoType<CareSystem>> careSystems = systems.byPatientId(state.getCtx(), patientId);
 
+            boolean availablePatient = AvailablePatient.check(state.getCtx(), careSystems);
+
             //TODO 2013-11-18 : Magnus Andersson > Only do this if there are care systems!
             //TODO 2013-11-22 : Magnus Andersson > Should handle WithAccess and filter out unavailable systems.
             PdlReport pdlReport = pdl.pdlReport(
@@ -120,12 +122,27 @@ public class PdlController {
                     careSystems
             );
 
+            PdlReport newReport = pdlReport;
+
+            // TGP equivalent, create patient relationship
+            if(availablePatient && pdlReport.hasPatientInformation && !pdlReport.hasRelationship.value) {
+                newReport = pdl.patientRelationship(
+                        state.getCtx(),
+                        state.getCurrentAssignment(),
+                        pdlReport,
+                        state.getPatient().patientId,
+                        "Automatiskt skapad patientrelation: Patient finns tillgänglig sedan innan hos egen vårdenhet.",
+                        1,
+                        RoundedTimeUnit.NEAREST_HALF_HOUR
+                );
+            }
+
             log(UserAction.SEARCH);
 
             // Reformat systems list into a format that we can display
-            CareSystemsReport csReport = new CareSystemsReport(state.getCtx(), state.getCurrentAssignment(), pdlReport);
+            CareSystemsReport csReport = new CareSystemsReport(state.getCtx(), state.getCurrentAssignment(), newReport);
 
-            state.setPdlReport(pdlReport);
+            state.setPdlReport(newReport);
             state.setCsReport(csReport);
         } else {
             state.setCurrentProgress(PdlProgress.firstStep().nextStep());

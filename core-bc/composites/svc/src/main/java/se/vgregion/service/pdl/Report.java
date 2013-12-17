@@ -207,9 +207,9 @@ public class Report {
             String patientId,
             CheckPatientRelationResponderInterface checkRelationship
     ) {
-        CheckPatientRelationRequestType reuqest = Relationship.checkRelationshipRequest(ctx, patientId);
+        CheckPatientRelationRequestType request = Relationship.checkRelationshipRequest(ctx, patientId);
         CheckPatientRelationResponseType relationshipResponse =
-                checkRelationship.checkPatientRelation(regionalSecurityServicesHsaId, reuqest);
+                checkRelationship.checkPatientRelation(regionalSecurityServicesHsaId, request);
 
         boolean relation = relationshipResponse.getCheckResultType().isHasPatientrelation();
 

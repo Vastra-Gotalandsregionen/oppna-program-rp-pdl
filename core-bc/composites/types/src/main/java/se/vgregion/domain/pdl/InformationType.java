@@ -2,19 +2,19 @@ package se.vgregion.domain.pdl;
 
 public enum InformationType {
     //ALT("Allt"),
-    DIG("Diagnos"),
+    DIA("Diagnos"),
     FUN("Funktionsnedsättning"),
-    LAK("Läkemedel Förskrivning"),
-    LUT("Läkemedel Utlämning"),
-    LAO("Läkemedel Ordination"),
+    LAK("Läkemedel Ordination/förskrivning"),
+    LKM("Läkemedel Utlämning"),
     PAD("PADL"),
-    VOT("Vård- och omsorgstagare"),
+    PAT("Vård- och omsorgstagare"),
     UNR("Undersökningsresultat"),
-    UPP("Uppmärksamhetssignal"),
-    VBR("Vårdbegäran"),
-    VOK("Vård- och omsorgskontakt"),
-    VOD("Vård- och omsorgsdokument (ostrukturerad)"),
-    VOP("Vård- och omsorgsplan (ostrukturerad)");
+    UPP("Uppmärksamhetsinformation"),
+    VBE("Vårdbegäran"),
+    VOT("Vård- och omsorgstjänst"),
+    VKO("Vård- och omsorgskontakt"),
+    VOO("Vård- och omsorgsdokument (ostrukturerad)"),
+    VPO("Vård- och omsorgsplan (ostrukturerad)");
 
     private final String desc;
 
