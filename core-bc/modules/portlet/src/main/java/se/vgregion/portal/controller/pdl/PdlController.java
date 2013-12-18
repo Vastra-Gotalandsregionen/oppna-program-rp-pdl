@@ -91,7 +91,8 @@ public class PdlController {
         log.setCreationTime(new Date());
         log.setSearchSession(state.getSearchSession());
         log.setSystemId("Regionportalen");
-        log.setLogText((new LogUtil().findAnnotatedLogValues(currentContext())).toString());
+        // Commented out by EA 2013-12-18
+        //log.setLogText((new LogUtil().findAnnotatedLogValues(currentContext())).toString());
         return log;
     }
 
