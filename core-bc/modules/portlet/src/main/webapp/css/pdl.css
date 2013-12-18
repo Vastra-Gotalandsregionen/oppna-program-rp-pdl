@@ -1,28 +1,38 @@
 
 /* Originall bootstrap callouts */
 .pdl .callout {
-    margin: 20px 0;
-    padding: 20px;
-    border-left: 3px solid #eee;
+	border: 1px solid #eee;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    margin: 15px 0;
+    padding: 15px;
 }
+
+.pdl .callout .title {
+	font-weight: bold;
+}
+
+.pdl .callout p.last,
+.pdl .callout p:last-child {
+	margin-bottom: 0;
+}
+
 .pdl .callout-info {
-    background-color: #f4f8fa;
+    background-color: #d9edf7;
     border-color: #bce8f1;
+    color: #31708f;
 }
 
 .pdl .callout-danger {
-    background-color: #fdf7f7;
-    border-color: #eed3d7;
+    background-color: #f2dede;
+    border-color:#ebccd1;
+    color: #bd5856;
 }
 
 .pdl .callout-warning {
     background-color: #faf8f0;
     border-color: #faebcc;
-}
-
-.pdl .callout-info {
-    background-color: #f4f8fa;
-    border-color: #bce8f1;
 }
 
 .pdl .callout-info h4 {

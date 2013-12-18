@@ -15,8 +15,8 @@
 
 <c:if test="${state.pdlReport.hasNonSuccessOutcome}">
     <div class="callout callout-danger">
-        <h3>En eller flera frågor mot de bakomliggade säkerhetstjänsterna misslyckades.</h3>
-        <p><b>Följande av säkerhetstjänsterna sattes ur spel och har passerats.</b></p>
+        <p class="label">En eller flera frågor mot de bakomliggade säkerhetstjänsterna misslyckades.</p>
+        <p>Följande av säkerhetstjänsterna sattes ur spel och har passerats.</p>
         <ul>
             <c:if test="${state.pdlReport.systems.outcome != 'SUCCESS'}">
                 <li>Tjänst för spärrar
@@ -43,6 +43,6 @@
                 </c:choose></li>
             </c:if>
         </ul>
-        <h3>Var noggrann med dina val eftersom du kan komma att se mer information än vanligt. Alla dina val loggförs.</h3>
+        <p>Var noggrann med dina val eftersom du kan komma att se mer information än vanligt. Alla dina val loggförs.</p>
     </div>
 </c:if>

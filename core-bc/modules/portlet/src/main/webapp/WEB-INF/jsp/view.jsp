@@ -18,7 +18,6 @@
 <div class="pdl clearfix">
 
     <jsp:include page="progress.jsp" />
-    <jsp:include page="pdlInfoCallout.jsp" />
     <aui:form action="${searchPatientUrl}" name="searchPatientForm" cssClass="pdl-form" method="post">
         <aui:fieldset label="S&ouml;k patientinformation">
                 <c:set var="elementWrapCssClass" scope="page" value="element-wrap" />
@@ -57,4 +56,6 @@
             <aui:button type="submit" value="S&ouml;k" cssClass="rp-button rp-button-proceed" />
         </aui:button-row>
     </aui:form>
+    
+    <jsp:include page="pdlInfoCallout.jsp" />
 </div>
