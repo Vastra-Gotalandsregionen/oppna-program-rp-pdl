@@ -4,6 +4,7 @@ import org.apache.commons.collections.BeanMap;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -85,6 +86,10 @@ public class LogUtil {
             Field field = null;
             field = key2fields.get(forProperty);
             if (field == null) {
+                Method getter = getReadMethod(LogThisField.class);
+                if (getter != null) {
+                    return getter.getAnnotation(LogThisField.class);
+                }
                 return null;
             }
             LogThisField logThisField = field.getAnnotation(LogThisField.class);
