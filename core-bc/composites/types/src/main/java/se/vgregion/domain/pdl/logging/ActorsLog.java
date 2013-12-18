@@ -52,7 +52,13 @@ public class ActorsLog {
 
     @Override
     public String toString() {
-        return new TreeMap(new BeanMap()).toString();
+        try {
+            return new TreeMap(new BeanMap()).toString();
+        } catch (Exception e) {
+            System.out.println("Fel på to string i pdl-basklass!");
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     public String getEmployeeId() {

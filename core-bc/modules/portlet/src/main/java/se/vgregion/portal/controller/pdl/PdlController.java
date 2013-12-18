@@ -1,6 +1,9 @@
 package se.vgregion.portal.controller.pdl;
 
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import se.vgregion.domain.pdl.*;
 import se.vgregion.domain.pdl.decorators.WithInfoType;
+import se.vgregion.domain.pdl.logging.LogUtil;
 import se.vgregion.domain.pdl.logging.PdlEventLog;
 import se.vgregion.domain.pdl.logging.UserAction;
 import se.vgregion.service.pdl.CareSystems;
@@ -23,6 +27,8 @@ import se.vgregion.service.pdl.PatientRepository;
 import se.vgregion.service.pdl.PdlService;
 
 import javax.portlet.ActionResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -89,6 +95,7 @@ public class PdlController {
         log.setCreationTime(new Date());
         log.setSearchSession(state.getSearchSession());
         log.setSystemId("Regionportalen");
+        log.setLogText((new LogUtil().findAnnotatedLogValues(currentContext())).toString());
         return log;
     }
 
@@ -475,4 +482,24 @@ public class PdlController {
                     assignments
                 );
     }
+
+    public static String toJson(Object obj) {
+        try {
+            return toJsonImpl(obj);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String toJsonImpl(Object obj) throws JsonGenerationException, JsonMappingException, IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectMapper om = new ObjectMapper();
+        om.writeValue(baos, obj);
+        baos.flush();
+        baos.close();
+
+        String r = new String(baos.toByteArray(), "UTF-8");
+        return r;
+    }
+
 }

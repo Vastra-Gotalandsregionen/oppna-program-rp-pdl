@@ -1,5 +1,8 @@
 package se.vgregion.domain.pdl;
 
+import se.vgregion.domain.pdl.logging.LogThisField;
+import se.vgregion.domain.pdl.logging.UserAction;
+
 import java.io.Serializable;
 
 public class CareSystem implements Serializable {
@@ -8,6 +11,7 @@ public class CareSystem implements Serializable {
     public final CareSystemSource source;
     public final String careProviderHsaId;
     public final String careProviderDisplayName;
+    @LogThisField(onActions = UserAction.CONSENT)
     public final String careUnitHsaId;
     public final String careUnitDisplayName;
     public final String displayId = java.util.UUID.randomUUID().toString(); // Used to keep track of Care System between requests.

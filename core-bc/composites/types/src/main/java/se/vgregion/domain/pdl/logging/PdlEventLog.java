@@ -20,6 +20,9 @@ public class PdlEventLog extends ActorsLog {
         self.putAllWriteable(other);
     }
 
+    @Transient
+    private static final ThreadLocal<PdlEventLog> pendingEventLog = new ThreadLocal<PdlEventLog>();
+
     @Id
     @Column(name = "id", updatable = false)
     private String uuid = java.util.UUID.randomUUID().toString();
@@ -50,7 +53,9 @@ public class PdlEventLog extends ActorsLog {
     @Enumerated(EnumType.STRING)
     private UserAction userAction;
 
+    @Lob
     @Column(name = "log_text", updatable = false)
+
     private String logText;
 
     public String getUuid() {
@@ -131,6 +136,14 @@ public class PdlEventLog extends ActorsLog {
 
     public void setCreationTime(Date creationTime) {
         this.creationTime = creationTime;
+    }
+
+    public static PdlEventLog getPendingEventLog() {
+        return pendingEventLog.get();
+    }
+
+    public static void setPendingEventLog(PdlEventLog pdlEventLog) {
+        pendingEventLog.set(pdlEventLog);
     }
 
 }

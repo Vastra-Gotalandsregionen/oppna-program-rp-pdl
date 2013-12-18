@@ -1,5 +1,7 @@
 package se.vgregion.domain.pdl;
 
+import se.vgregion.domain.pdl.logging.LogThisField;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,12 +9,20 @@ import java.util.Map;
 public class PdlContext implements Serializable {
     private static final long serialVersionUID = -2298228544035658452L;
 
+    // So far there are no deeper thought on the LogThisField-marking.
+    @LogThisField()
     public final String careProviderHsaId;
+    @LogThisField()
     public final String careUnitHsaId;
+    @LogThisField()
     public final String employeeHsaId;
+    @LogThisField()
     public final HashMap<String, AssignmentAccess> assignments;
+    @LogThisField()
     public final String careProviderDisplayName;
+    @LogThisField()
     public final String careUnitDisplayName;
+    @LogThisField()
     public final String employeeDisplayName;
 
     public PdlContext(
