@@ -1,9 +1,5 @@
 package se.vgregion.portal.controller.pdl;
 
-
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -481,25 +477,6 @@ public class PdlController {
                     "SE2321000131-P000000069215",
                     assignments
                 );
-    }
-
-    public static String toJson(Object obj) {
-        try {
-            return toJsonImpl(obj);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static String toJsonImpl(Object obj) throws JsonGenerationException, JsonMappingException, IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectMapper om = new ObjectMapper();
-        om.writeValue(baos, obj);
-        baos.flush();
-        baos.close();
-
-        String r = new String(baos.toByteArray(), "UTF-8");
-        return r;
     }
 
 }
