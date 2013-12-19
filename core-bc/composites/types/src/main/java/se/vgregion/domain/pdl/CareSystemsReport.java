@@ -140,7 +140,7 @@ public class CareSystemsReport implements Serializable {
             for(SystemState<CareSystem> v : value) {
 
                 if(!containsOnlyBlocked.containsKey(v.visibility)) {
-                    containsOnlyBlocked.put(v.visibility, true);
+                    containsOnlyBlocked.put(v.visibility, false);
                 }
 
                 if(!containsBlocked.containsKey(v.visibility)) {
@@ -152,12 +152,15 @@ public class CareSystemsReport implements Serializable {
                         v.visibility,
                         containsBlocked.get(v.visibility) | v.blocked
                 );
-
+                
+                /*
+                // Commented out EA 2013-12-19
                 // Does this info type contain only blocked information?
                 containsOnlyBlocked.put(
                     v.visibility,
                     containsOnlyBlocked.get(v.visibility) & v.blocked
                 );
+                */
 
                 if(v.visibility.compareTo(lowestVisibility) < 0) {
                     lowestVisibility = v.visibility;

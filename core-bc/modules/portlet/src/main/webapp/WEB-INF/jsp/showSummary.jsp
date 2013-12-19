@@ -56,7 +56,7 @@
             <portlet:param name="currentAssignment" value="${state.currentAssignment}" />
             <portlet:param name="reset" value="false" />
         </portlet:actionURL>
-        <a href="${startUrl}" class="link-button-mod">Ny sökning</a>
-        <a href="${searchPatientUrl}" class="link-button-mod">Förändra dina val</a>
+        <a href="${startUrl}" class="link-button-mod">&laquo; Ny sökning</a>
+        <a href="${searchPatientUrl}" class="link-button-mod">&laquo; Förändra dina val</a>
     </div>
 </div>

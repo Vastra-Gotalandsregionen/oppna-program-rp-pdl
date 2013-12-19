@@ -88,16 +88,14 @@
                                     </c:forEach>
                                     <c:if test="${infoSelection.key.containsBlocked[state.currentVisibility] && !infoSelection.key.viewBlocked }">
                                         <li>
-                                            <div class="blocked blockedCareUnit">
-                                                <portlet:actionURL name="showBlockedInformation" var="showBlockedInformationUrl">
-                                                    <portlet:param name="id" value="${infoSelection.key.id}" />
-                                                </portlet:actionURL>
-                                                <a href="${showBlockedInformationUrl}">Ytterligare vårdenheter med spärrad information finns</a>
-                                                <a href="${showBlockedInformationUrl}">
-                                                    <i class="icon arrow_right_red"></i>
-                                                    <span class="continue">Visa spärrade vårdenheter</span>
-                                                </a>
-                                            <div>
+                                        	<div class="clearfix">
+	                                            <div class="callout callout-danger callout-action">
+	                                                <portlet:actionURL name="showBlockedInformation" var="showBlockedInformationUrl">
+	                                                    <portlet:param name="id" value="${infoSelection.key.id}" />
+	                                                </portlet:actionURL>
+	                                                <a href="${showBlockedInformationUrl}">Visa v&aring;rdenheter med sp&auml;rrad information</a>
+	                                            <div>
+                                            </div>
                                         </li>
                                     </c:if>
                                 </ul>
@@ -108,11 +106,20 @@
                                 <portlet:param name="id" value="${infoSelection.key.id}" />
                             </portlet:actionURL>
                             <li class="active">
-                                <a href="${selectInfoResourceUrl}">${infoSelection.key.value.desc}</a>
-                                <a href="${selectInfoResourceUrl}">
-                                    <i class="icon arrow_right_blue"></i>
-                                    <span class="showCareUnits">Visa vårdenheter</span>
-                                </a>
+                            	${infoSelection.key.value.desc}
+                            </li>
+                            <li class="sublist">
+                            	<ul>
+                            		<li>
+                            			<div class="clearfix">
+                            				<div class="callout callout-info callout-action">
+				                                <a href="${selectInfoResourceUrl}">
+				                                    Visa vårdenheter
+				                                </a>
+                            				</div>
+                            			</div>
+                            		</li>
+                            	</ul>
                             </li>
                         </c:otherwise>
                     </c:choose>
@@ -124,7 +131,7 @@
                 <portlet:param name="visibility" value="${state.currentVisibility}" />
             </portlet:actionURL>
             <div class="blocked blockedInfoTypes">
-                <a href="${showBlockedInformationTypesUrl}">Ytterligare informationstyper med spärrade vårdenheter finns</a>
+                <a href="${showBlockedInformationTypesUrl}">Visa v&aring;rdenheter med sp&auml;rrad information</a>
                 <a href="${showBlockedInformationTypesUrl}">
                     <i class="icon arrow_right_red"></i>
                     <span class="continue">Visa spärrade informationstyper</span>
@@ -136,9 +143,9 @@
             <portlet:renderURL var="startUrl">
                 <portlet:param name="jspPage" value="/WEB-INF/jsp/view.jsp" />
             </portlet:renderURL>
-            <a href="${startUrl}" class="link-button-mod">Ny sökning</a>
+            <a href="${startUrl}" class="link-button-mod">&laquo; Ny sökning</a>
             <portlet:actionURL name="goToSummary" var="goToSummaryUrl" />
-            <a href="${goToSummaryUrl}" class="link-button-mod link-button-mod-proceed">Gå vidare</a>
+            <a href="${goToSummaryUrl}" class="link-button-mod link-button-mod-proceed">Gå vidare &raquo;</a>
         </div>
     </c:when>
 </c:choose>

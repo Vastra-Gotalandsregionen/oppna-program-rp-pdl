@@ -35,6 +35,31 @@
     border-color: #faebcc;
 }
 
+.pdl .callout-action {
+	background-color: #fff;
+	float: left;
+	position: relative;
+	padding: 10px;
+}
+
+.pdl .callout-action a {
+	background: url(../images/icon_arrow_right_blue.png) center right no-repeat;
+	line-height: 16px;
+	min-height: 16px;
+	padding-right: 20px;
+	text-decoration: none;
+}
+
+.pdl .callout-info.callout-action a {
+	background-image: url(../images/icon_arrow_right_blue.png);
+	color: #31708f;
+}
+
+.pdl .callout-danger.callout-action a {
+	background-image: url(../images/icon_arrow_right_red.png);
+	color: #bd5856;
+}
+
 .pdl .callout-info h4 {
     color: #3a87ad;
 }
@@ -44,7 +69,7 @@
     font-size: 1.4em;
     list-style: none;
     border: 1px solid #c4ced5;
-    margin: 0;
+    margin: 20px 0 0 0;
     padding: 0;
     box-sizing: border-box;
     -moz-border-radius: 4px;
@@ -53,8 +78,12 @@
 }
 
 .pdl ul.infotypes > li {
-    padding: 15px 15px;
+    padding: 10px;
     border-bottom: 1px solid #c4ced5;
+}
+
+.pdl ul.infotypes > li .callout-action {
+	margin: 0;
 }
 
 .pdl ul.infotypes > li.active {
@@ -65,6 +94,9 @@
     padding-top: 0px;
 }
 
+.pdl ul.infotypes > li a {
+	text-decoration: none;
+}
 
 .pdl ul.infotypes > li > ul {
     padding-top: 0px;
@@ -261,7 +293,7 @@
     font-weight: normal;
     line-height: 1.1em;
     margin: 0 10px 10px 0;
-    padding: 15px 15px;
+    padding: 10px 15px;
     position: relative;
     text-decoration: none;
 }
@@ -311,8 +343,8 @@
 .link-button-mod-proceed:visited,
 .link-button-mod-proceed:hover,
 .link-button-mod-proceed {
-    background: #6264ac url('../images/buttons/button-bg-proceed.png') top left repeat-x;
-    border: 1px solid #4b4692;
+    background: #548332 url('../images/buttons/button-bg-proceed.png') top left repeat-x;
+    border: 1px solid #2f4a1c;
 }
 
 .link-button-mod-warn:visited,
@@ -347,6 +379,8 @@
 .pdl-form fieldset:last-child {
   margin-bottom: 0;
   padding-top: 10px;
+  
+  padding-top: 0;
 }
 
 .pdl h3.legend,
@@ -356,10 +390,8 @@
   display:block;
   font-family: Ubuntu, Arial, Verdana, Helvetica, sans-serif;
   font-weight: normal;
-  font-size: 1.4em;
-  
-  margin: 1em 0 1em 0;
-  
+  font-size: 1.6em;
+  margin: 20px 0 10px 0;
   padding-bottom: 5px;
   width: 100%;
 }
@@ -372,7 +404,7 @@
 .pdl-form .element-wrap{display:block}
 
 .pdl-form {
-    margin: 1em 0 0 0;
+    margin: 0;
 }
 
 .pdl-form .element-wrap {
@@ -467,13 +499,13 @@
   border-radius: 4px;
   display: inline-block;
   float: left;
-  font-size: 1.4em;
+  font-size: 1.1em;
   padding: 10px 15px;
 }
 
 .pdl-form .rp-button-proceed input[type="submit"] {
-    background: #6264ac url('../images/buttons/button-bg-proceed.png') top left repeat-x;
-    border: 1px solid #4b4692;
+    background: #548332 url('../images/buttons/button-bg-proceed.png') top left repeat-x;
+    border: 1px solid #2f4a1c;
 }
 
 .ie7 .pdl-form .rp-button input[type="submit"] {

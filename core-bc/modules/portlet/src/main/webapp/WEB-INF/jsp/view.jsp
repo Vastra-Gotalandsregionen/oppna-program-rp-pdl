@@ -19,8 +19,11 @@
 
     <jsp:include page="progress.jsp" />
     <jsp:include page="pdlInfoCallout.jsp" />
+    
+    <h3 class="legend">S&ouml;k patientinformation</h3>
+    
     <aui:form action="${searchPatientUrl}" name="searchPatientForm" cssClass="pdl-form" method="post">
-        <aui:fieldset label="S&ouml;k patientinformation">
+        <aui:fieldset label="">
                 <c:set var="elementWrapCssClass" scope="page" value="element-wrap" />
                 <c:if test="${status.error}">
                     <c:set var="elementWrapCssClass" scope="page" value="element-wrap element-has-errors" />
@@ -54,7 +57,7 @@
             <aui:input type="hidden" name="reset" value="true" />
        </aui:fieldset>
         <aui:button-row>
-            <aui:button type="submit" value="S&ouml;k" cssClass="rp-button rp-button-proceed" />
+            <aui:button type="submit" value="S&ouml;k &raquo;" cssClass="rp-button rp-button-proceed" />
         </aui:button-row>
     </aui:form>
     
