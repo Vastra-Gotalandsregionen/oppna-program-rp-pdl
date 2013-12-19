@@ -22,7 +22,7 @@
         <jsp:include page="confirmConsentRelation.jsp" />
     </c:when>
     <c:when test="${state.pdlReport.hasRelationship.value}">
-        <h2>Patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h2>
+        <h3 class="legend">Patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h3>
         <ul class="infotypes">
             <c:forEach items="${state.csReport.aggregatedSystems.value}" var="infoSelection">
                 <c:if test="${state.shouldBeVisible[infoSelection.key.lowestVisibility] && (infoSelection.key.containsOnlyBlocked[state.currentVisibility] && infoSelection.key.viewBlocked || !infoSelection.key.containsOnlyBlocked[state.currentVisibility]) }">

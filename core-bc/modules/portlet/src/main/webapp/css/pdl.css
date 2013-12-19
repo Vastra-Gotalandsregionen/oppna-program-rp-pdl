@@ -349,18 +349,19 @@
   padding-top: 10px;
 }
 
-.pdl h3.legend, .pdl-form .aui-fieldset-legend {
-  color: #666;
-  font-family: Ubuntu, Arial, Verdana, Helvetica, sans-serif;
-  font-size: 1.4em;
-  font-weight: normal;
-}
-
-.pdl h3.legend, .pdl-form .aui-legend {
+.pdl h3.legend,
+.pdl-form .aui-legend {
   border-bottom: 1px solid #d5e3ee;
+  color: #666;
+  display:block;
+  font-family: Ubuntu, Arial, Verdana, Helvetica, sans-serif;
+  font-weight: normal;
+  font-size: 1.4em;
+  
+  margin: 1em 0 1em 0;
+  
   padding-bottom: 5px;
   width: 100%;
-  display:block;
 }
 
 
