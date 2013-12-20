@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import se.vgregion.domain.pdl.*;
+import se.vgregion.domain.pdl.decorators.InfoTypeState;
+import se.vgregion.domain.pdl.decorators.SystemState;
 import se.vgregion.domain.pdl.decorators.WithInfoType;
 import se.vgregion.domain.pdl.logging.LogUtil;
 import se.vgregion.domain.pdl.logging.PdlEventLog;
@@ -23,12 +25,7 @@ import se.vgregion.service.pdl.PatientRepository;
 import se.vgregion.service.pdl.PdlService;
 
 import javax.portlet.ActionResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "VIEW")
@@ -91,8 +88,31 @@ public class PdlController {
         log.setCreationTime(new Date());
         log.setSearchSession(state.getSearchSession());
         log.setSystemId("Regionportalen");
-        // Commented out by EA 2013-12-18
-        //log.setLogText((new LogUtil().findAnnotatedLogValues(currentContext())).toString());
+
+        TreeSet viewedData = new TreeSet();
+
+        // This code must be changed whenever the view code is. So that it logs relevant information, such as what
+        // information is being displayed to the user.
+
+        Set<Map.Entry<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>> entries = state.getCsReport().getAggregatedSystems().getValue().entrySet();
+        for (Map.Entry<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> entry : entries) {
+            if (state.getShouldBeVisible().get(entry.getKey().lowestVisibility) // state.shouldBeVisible[infoSelection.key.lowestVisibility] &&
+                    && (entry.getKey().containsOnlyBlocked.get(state.getCurrentVisibility()) // (infoSelection.key.containsOnlyBlocked[state.currentVisibility]
+                    && entry.getKey().viewBlocked // && infoSelection.key.viewBlocked ||
+                    || entry.getKey().containsOnlyBlocked.get(state.getCurrentVisibility()) //!infoSelection.key.containsOnlyBlocked[state.currentVisibility])
+            )) {
+                ArrayList<SystemState<CareSystem>> items = entry.getValue();
+                // {system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}
+                for (SystemState<CareSystem> system : items) {
+                    String providerHsaIdId = system.value.careProviderHsaId;
+                    String unitHsaId = system.value.careUnitHsaId;
+                    viewedData.add(providerHsaIdId + "/" + unitHsaId);
+                }
+            }
+        }
+
+        log.setLogText(viewedData.toString());
+
         return log;
     }
 
@@ -103,7 +123,7 @@ public class PdlController {
             @RequestParam boolean reset,
             ActionResponse response
     ) {
-        if(reset){ // Support for going back without redoing the search
+        if (reset) { // Support for going back without redoing the search
             state.reset(); // Make sure reset is called here when user uses back button and submits again.
             PdlProgress now = state.getCurrentProgress();
             state.setCurrentProgress(now.nextStep());
@@ -129,7 +149,7 @@ public class PdlController {
             PdlReport newReport = pdlReport;
 
             // TGP equivalent, create patient relationship
-            if(availablePatient && pdlReport.hasPatientInformation && !pdlReport.hasRelationship.value) {
+            if (availablePatient && pdlReport.hasPatientInformation && !pdlReport.hasRelationship.value) {
                 newReport = pdl.patientRelationship(
                         state.getCtx(),
                         state.getCurrentAssignment(),
@@ -141,7 +161,6 @@ public class PdlController {
                 );
             }
 
-            log(UserAction.SEARCH);
 
             // Reformat systems list into a format that we can display
             CareSystemsReport csReport = new CareSystemsReport(state.getCtx(), state.getCurrentAssignment(), newReport);
@@ -151,6 +170,7 @@ public class PdlController {
         } else {
             state.setCurrentProgress(PdlProgress.firstStep().nextStep());
         }
+        log(UserAction.SEARCH);
         response.setRenderParameter("view", "pickInfoResource");
     }
 
@@ -159,23 +179,23 @@ public class PdlController {
             ActionResponse response,
             @RequestParam boolean confirmed
     ) {
-        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+        if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
-        } else if(confirmed) {
+        } else if (confirmed) {
             LOGGER.trace(
-                "Request to create relationship between employee {} and patient {}.",
-                state.getCtx().employeeHsaId,
-                state.getPatient().patientId
+                    "Request to create relationship between employee {} and patient {}.",
+                    state.getCtx().employeeHsaId,
+                    state.getPatient().patientId
             );
 
             PdlReport newReport = pdl.patientRelationship(
-                state.getCtx(),
-                state.getCurrentAssignment(),
-                state.getPdlReport(),
-                state.getPatient().patientId,
-                "Reason",
-                1,
-                RoundedTimeUnit.NEAREST_HALF_HOUR
+                    state.getCtx(),
+                    state.getCurrentAssignment(),
+                    state.getPdlReport(),
+                    state.getPatient().patientId,
+                    "Reason",
+                    1,
+                    RoundedTimeUnit.NEAREST_HALF_HOUR
             );
 
 
@@ -195,7 +215,7 @@ public class PdlController {
     public void cancelConfirmation(
             ActionResponse response
     ) {
-        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+        if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
         } else {
             LOGGER.trace(
@@ -218,27 +238,27 @@ public class PdlController {
             @RequestParam boolean emergency,
             @RequestParam boolean confirmed
     ) {
-        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+        if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
         } else if (confirmed) {
             LOGGER.trace(
-                "Request to create consent between employee {} and patient {}.",
-                state.getCtx().employeeHsaId,
-                state.getPatient().patientId
+                    "Request to create consent between employee {} and patient {}.",
+                    state.getCtx().employeeHsaId,
+                    state.getPatient().patientId
             );
 
             // FIXME 2013-10-21 : Magnus Andersson > Should choose between consent or emergency. Also add possiblility to be represented by someone?
             state.setPdlReport(
-                pdl.patientConsent(
-                    state.getCtx(),
-                    state.getCurrentAssignment(),
-                    state.getPdlReport(),
-                    state.getPatient().patientId,
-                    "Reason",
-                    1,
-                    RoundedTimeUnit.NEAREST_HALF_HOUR,
-                    ( emergency ) ? PdlReport.ConsentType.Emergency : PdlReport.ConsentType.Consent
-                )
+                    pdl.patientConsent(
+                            state.getCtx(),
+                            state.getCurrentAssignment(),
+                            state.getPdlReport(),
+                            state.getPatient().patientId,
+                            "Reason",
+                            1,
+                            RoundedTimeUnit.NEAREST_HALF_HOUR,
+                            (emergency) ? PdlReport.ConsentType.Emergency : PdlReport.ConsentType.Consent
+                    )
             );
 
             state.setConfirmConsent(false);
@@ -263,7 +283,7 @@ public class PdlController {
 
     @ActionMapping("showOtherCareUnits")
     public void showOtherCareUnits(ActionResponse response) {
-        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+        if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
         } else {
             LOGGER.trace(
@@ -285,14 +305,14 @@ public class PdlController {
             @RequestParam String id,
             ActionResponse response
     ) {
-        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+        if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
         } else {
-           LOGGER.trace(
-                   "Request to select information type with id {} for patient {}",
-                   id,
-                   state.getPatient().patientId
-           );
+            LOGGER.trace(
+                    "Request to select information type with id {} for patient {}",
+                    id,
+                    state.getPatient().patientId
+            );
 
             CareSystemsReport newCsReport =
                     state.getCsReport().selectInfoResource(id);
@@ -308,9 +328,9 @@ public class PdlController {
     @ActionMapping("showBlockedInformation")
     public void showBlockedInformation(
             @RequestParam String id,
-                ActionResponse response
+            ActionResponse response
     ) {
-        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+        if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
         } else {
             LOGGER.trace(
@@ -333,9 +353,9 @@ public class PdlController {
     @ActionMapping("showBlockedInformationTypes")
     public void showBlockedInformationTypes(
             @RequestParam Visibility visibility,
-                ActionResponse response
+            ActionResponse response
     ) {
-        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+        if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
         } else {
             LOGGER.trace(
@@ -359,7 +379,7 @@ public class PdlController {
             @RequestParam String id,
             ActionResponse response
     ) {
-        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+        if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
         } else {
             LOGGER.trace(
@@ -384,7 +404,7 @@ public class PdlController {
             @RequestParam boolean revokeEmergency,
             ActionResponse response
     ) {
-        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+        if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
         } else {
             LOGGER.trace(
@@ -398,7 +418,7 @@ public class PdlController {
 
             state.setCsReport(newCsReport);
 
-            if(revokeEmergency && confirmed) {
+            if (revokeEmergency && confirmed) {
                 log(UserAction.BLOCK);
             } else if (!revokeEmergency && confirmed) {
                 log(UserAction.BLOCK_EMERGENCY);
@@ -412,13 +432,13 @@ public class PdlController {
 
     @ActionMapping("showOtherCareProviders")
     public void showOtherCareProviders(ActionResponse response) {
-        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+        if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
         } else {
             LOGGER.trace(
-                "Request to show more information within same care giver for employee {} and patient {}.",
-                state.getCtx().employeeHsaId,
-                state.getPatient().patientId
+                    "Request to show more information within same care giver for employee {} and patient {}.",
+                    state.getCtx().employeeHsaId,
+                    state.getPatient().patientId
             );
 
 
@@ -432,7 +452,7 @@ public class PdlController {
 
     @ActionMapping("goToSummary")
     public void goToSummary(ActionResponse response) {
-        if(state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+        if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
         } else {
             state.setCurrentProgress(state.getCurrentProgress().nextStep());
@@ -466,18 +486,18 @@ public class PdlController {
         HashMap<String, AssignmentAccess> assignments = new HashMap<String, AssignmentAccess>();
         List<Access> otherProviders = Arrays.asList(Access.otherProvider("SE2321000131-E000000000001"));
         List<Access> sameProviders = Arrays.asList(Access.sameProvider("SE2321000131-S000000010252"), Access.sameProvider("SE2321000131-S000000010251"));
-        assignments.put("SE2321000131-S000000010452", new AssignmentAccess("Vård och Behandling - Sammanhållen Journalföring", otherProviders) );
-        assignments.put("SE2321000131-S000000020452", new AssignmentAccess("Vård och Behandling - Utökad", sameProviders) );
+        assignments.put("SE2321000131-S000000010452", new AssignmentAccess("Vård och Behandling - Sammanhållen Journalföring", otherProviders));
+        assignments.put("SE2321000131-S000000020452", new AssignmentAccess("Vård och Behandling - Utökad", sameProviders));
 
         return new PdlContext(
-                    "Capio",
-                    "SE2321000131-E000000000001",
-                    "Lundby Närsjukhus",
-                    "SE2321000131-S000000010252",
-                    "Ludvig Läkare",
-                    "SE2321000131-P000000069215",
-                    assignments
-                );
+                "Capio",
+                "SE2321000131-E000000000001",
+                "Lundby Närsjukhus",
+                "SE2321000131-S000000010252",
+                "Ludvig Läkare",
+                "SE2321000131-P000000069215",
+                assignments
+        );
     }
 
 }
