@@ -4,7 +4,6 @@ import se.vgregion.domain.assignment.Access;
 import se.vgregion.domain.assignment.Assignment;
 
 import java.util.Arrays;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -25,14 +24,14 @@ public class MockContext {
 
         TreeMap<String, Assignment> assignments = new TreeMap<String, Assignment>();
 
-        Set<Access> otherProviders = new TreeSet<Access>(
+        TreeSet<Access> otherProviders = new TreeSet<Access>(
                 Arrays.asList(
                         Access.fromMiuRights("Läsa;lko;SJF").value,
                         Access.fromMiuRights("Läsa;fun;SJF").value
                 )
         );
 
-        Set<Access> sameProviders = new TreeSet<Access>(
+        TreeSet<Access> sameProviders = new TreeSet<Access>(
                 Arrays.asList(
                         Access.fromMiuRights("Läsa;und;SE2321000131-S000000010252").value,
                         Access.fromMiuRights("Läsa;lak;"+otherCareUnitHsaId).value,

@@ -96,7 +96,8 @@ public class HsaAccessControl implements AccessControl {
                 return outcome.mapValue(context);
             }
         } catch (HsaWsFault hsaWsFault) {
-            LOGGER.error("Unable to do lookup for HSA-ID {}.", hsaId, hsaWsFault);
+            LOGGER.error("Unable to do lookup for HSA-ID {}. Faultinfo: {}.", hsaId, hsaWsFault.getFaultInfo());
+            return WithOutcome.clientError(new PdlContext("", hsaId, new TreeMap<String, Assignment>()));
         }
         // We did not get enough information.
         return WithOutcome.unfulfilled(new PdlContext("", hsaId, new TreeMap<String, Assignment>()));

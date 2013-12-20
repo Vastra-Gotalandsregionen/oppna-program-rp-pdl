@@ -11,7 +11,6 @@
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <div class="clearfix callout callout-info">
-
 	<%-- Alt 1 --%>
 
 	<%-- 
@@ -31,5 +30,4 @@
 	
 	<p class="label">Alla dina val i systemet loggförs</p>
 	<p>Dessa val kommer att i efterhand <a href="http://www.vgregion.se/sv/Vastra-Gotalandsregionen/startsida/Vard-och-halsa/Sa-styrs-varden/Halso--och-sjukvardsavdelningen/Patientdatalagen/">granskas enligt patientdatalagen.</a>	</p>
-	
 </div>

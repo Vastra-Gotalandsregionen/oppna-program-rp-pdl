@@ -34,8 +34,8 @@
                </c:if>
            </div>
        </c:when>
-       <c:when test="${state.showOtherCareUnits && state.ctx.assignments[state.currentAssignment].otherProviders}">
-            <div class="clearfix callout_ callout-info_">
+       <c:when test="${state.showOtherCareUnits && state.ctx.value.currentAssignment.otherProviders}">
+            <div class="clearfix">
                 <c:choose>
                     <c:when test="${state.confirmConsent}">
                         <jsp:include page="confirmConsentRelation.jsp" />

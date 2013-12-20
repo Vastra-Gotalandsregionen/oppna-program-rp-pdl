@@ -35,7 +35,7 @@
 
         <!-- state.pdlReport.consent.value.hasConsent = ${state.pdlReport.consent.value.hasConsent} -->
         <!-- state.pdlReport.hasRelationship.value = ${state.pdlReport.hasRelationship.value} -->
-        <!-- state.ctx.assignments[state.currentAssignment].otherProviders = ${state.ctx.assignments[state.currentAssignment].otherProviders} -->
+        <!-- state.ctx.value.currentAssignment.otherProviders = ${state.ctx.value.currentAssignment.otherProviders} -->
         <!-- state.showOtherCareUnits = ${state.showOtherCareUnits} -->
         <!-- state.showOtherCareProviders = ${state.showOtherCareProviders} -->
         <!-- state.searchSession = ${state.searchSession} -->

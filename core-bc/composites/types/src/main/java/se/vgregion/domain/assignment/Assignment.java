@@ -6,10 +6,9 @@ import se.vgregion.domain.pdl.CareSystem;
 import se.vgregion.domain.pdl.Visibility;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Set;
+import java.util.TreeSet;
 
-public class Assignment implements Serializable {
+public class Assignment implements Serializable, Comparable<Assignment> {
     private static final long serialVersionUID = 6955766363635374811L;
     private static final Logger LOGGER = LoggerFactory.getLogger(Assignment.class.getName());
 
@@ -19,7 +18,7 @@ public class Assignment implements Serializable {
     public final String careUnitHsaId;
     public final String careProviderDisplayName;
     public final String careUnitDisplayName;
-    private final Set<Access> access;
+    private final TreeSet<Access> access;
 
     public final boolean otherProviders;
     public final boolean otherUnits;
@@ -32,7 +31,7 @@ public class Assignment implements Serializable {
             String careUnitHsaId,
             String careProviderDisplayName,
             String careUnitDisplayName,
-            Set<Access> access
+            TreeSet<Access> access
             ) {
         this.assignmentHsaId = assignmentHsaId;
         this.assignmentDisplayName = assignmentDisplayName;
@@ -40,7 +39,7 @@ public class Assignment implements Serializable {
         this.careUnitHsaId = careUnitHsaId;
         this.careProviderDisplayName = careProviderDisplayName;
         this.careUnitDisplayName = careUnitDisplayName;
-        this.access = Collections.unmodifiableSet(access);
+        this.access = access;
 
         this.otherProviders = checkOtherProviders();
         this.otherUnits = (!otherProviders) && checkOtherUnits();
@@ -134,5 +133,15 @@ public class Assignment implements Serializable {
                 ", otherProviders=" + otherProviders +
                 ", otherUnits=" + otherUnits +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Assignment o) {
+        return this.assignmentHsaId.compareTo(o.assignmentHsaId) +
+                this.assignmentDisplayName.compareTo(o.assignmentDisplayName) +
+                this.careProviderHsaId.compareTo(o.careProviderHsaId) +
+                this.careUnitHsaId.compareTo(o.careUnitHsaId) +
+                this.careProviderDisplayName.compareTo(o.careProviderDisplayName) +
+                this.careUnitDisplayName.compareTo(o.careUnitDisplayName);
     }
 }
