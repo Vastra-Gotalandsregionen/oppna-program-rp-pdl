@@ -34,8 +34,10 @@ public class HsaAccessControl implements AccessControl {
     @Override
     public WithOutcome<PdlContext> getContextByEmployeeId(String hsaId) {
         AttributedURIType to = new AttributedURIType();
-        to.setValue(hsaId);
+
+        to.setValue("SE165565594230-1000");
         GetMiuForPersonType miuRequest = new GetMiuForPersonType();
+        miuRequest.setHsaIdentity(hsaId);
         try {
             GetMiuForPersonResponseType miuResponse = hsaOrgmaster.getMiuForPerson(
                 new AttributedURIType(),
