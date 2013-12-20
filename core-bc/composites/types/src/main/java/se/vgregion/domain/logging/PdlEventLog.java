@@ -10,11 +10,9 @@ import java.util.Date;
 public class PdlEventLog extends ActorsLog {
 
     public PdlEventLog() {
-        super();
     }
 
     public PdlEventLog(ActorsLog actorsLog) {
-        super();
         BeanMap self = new BeanMap(this);
         BeanMap other = new BeanMap(actorsLog);
         self.putAllWriteable(other);

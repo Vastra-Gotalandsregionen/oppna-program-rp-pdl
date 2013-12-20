@@ -284,9 +284,10 @@ public class PdlController {
     }
 
     void log(UserAction action) {
-        PdlEventLog log = newPdlEventLog();
-        log.setUserAction(action);
-        objectRepo.persist(log);
+        // TODO 2013-12-20 : Magnus Andersson > Commented out because it causes null pointers at runtime.
+//        PdlEventLog log = newPdlEventLog();
+//        log.setUserAction(action);
+//        objectRepo.persist(log);
     }
 
     @ActionMapping("showOtherCareUnits")
