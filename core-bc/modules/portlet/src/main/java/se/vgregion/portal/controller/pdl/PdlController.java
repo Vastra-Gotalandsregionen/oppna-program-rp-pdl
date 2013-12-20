@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
-import se.vgregion.domain.decorators.InfoTypeState;
-import se.vgregion.domain.decorators.SystemState;
 import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.logging.PdlEventLog;
@@ -22,7 +20,9 @@ import se.vgregion.domain.pdl.*;
 import se.vgregion.service.pdl.*;
 
 import javax.portlet.ActionResponse;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.TreeSet;
 
 @Controller
 @RequestMapping(value = "VIEW")
@@ -95,26 +95,34 @@ public class PdlController {
         // This code must be changed whenever the view code is. So that it logs relevant information, such as what
         // information is being displayed to the user.
 
-        Set<Map.Entry<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>> entries = state.getCsReport().getAggregatedSystems().getValue().entrySet();
-        for (Map.Entry<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> entry : entries) {
-            if (state.getShouldBeVisible().get(entry.getKey().lowestVisibility) // state.shouldBeVisible[infoSelection.key.lowestVisibility] &&
-                    && (entry.getKey().containsOnlyBlocked.get(state.getCurrentVisibility()) // (infoSelection.key.containsOnlyBlocked[state.currentVisibility]
-                    && entry.getKey().viewBlocked // && infoSelection.key.viewBlocked ||
-                    || entry.getKey().containsOnlyBlocked.get(state.getCurrentVisibility()) //!infoSelection.key.containsOnlyBlocked[state.currentVisibility])
-            )) {
-                ArrayList<SystemState<CareSystem>> items = entry.getValue();
-                // {system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}
-                for (SystemState<CareSystem> system : items) {
-                    String providerHsaIdId = system.value.careProviderHsaId;
-                    String unitHsaId = system.value.careUnitHsaId;
-                    viewedData.add(providerHsaIdId + "/" + unitHsaId);
-                }
-            }
-        }
+        // TODO 2013-12-20 : Magnus Andersson > Commenting out while refactoring
+//        Set<Map.Entry<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>> entries = state.getCsReport().getAggregatedSystems().getValue().entrySet();
+//        for (Map.Entry<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> entry : entries) {
+//            if (state.getShouldBeVisible().get(entry.getKey().lowestVisibility) // state.shouldBeVisible[infoSelection.key.lowestVisibility] &&
+//                    && (entry.getKey().containsOnlyBlocked.get(state.getCurrentVisibility()) // (infoSelection.key.containsOnlyBlocked[state.currentVisibility]
+//                    && entry.getKey().viewBlocked // && infoSelection.key.viewBlocked ||
+//                    || entry.getKey().containsOnlyBlocked.get(state.getCurrentVisibility()) //!infoSelection.key.containsOnlyBlocked[state.currentVisibility])
+//            )) {
+//                ArrayList<SystemState<CareSystem>> items = entry.getValue();
+//                // {system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}
+//                for (SystemState<CareSystem> system : items) {
+//                    String providerHsaIdId = system.value.careProviderHsaId;
+//                    String unitHsaId = system.value.careUnitHsaId;
+//                    viewedData.add(providerHsaIdId + "/" + unitHsaId);
+//                }
+//            }
+//        }
 
         log.setLogText(viewedData.toString());
 
         return log;
+    }
+
+    void log(UserAction action) {
+        // TODO 2013-12-20 : Magnus Andersson > Commented out because it causes null pointers at runtime.
+//        PdlEventLog log = newPdlEventLog();
+//        log.setUserAction(action);
+//        objectRepo.persist(log);
     }
 
     @ActionMapping("searchPatient")
@@ -172,6 +180,14 @@ public class PdlController {
             state.setPdlReport(newReport);
             state.setCsReport(csReport);
 
+            if(!csReport.containsSameCareUnit && ctx.currentAssignment.isOtherProviders()) {
+                state.setShowOtherCareProviders(true);
+            }
+
+            if(!csReport.containsSameCareUnit && ctx.currentAssignment.isOtherUnits()) {
+                state.setShowOtherCareUnits(true);
+            }
+
             log(UserAction.SEARCH);
             response.setRenderParameter("view", "pickInfoResource");
         } else {
@@ -204,7 +220,6 @@ public class PdlController {
                 1,
                 RoundedTimeUnit.NEAREST_HALF_HOUR
             );
-
 
             state.setConfirmRelation(false);
             state.setPdlReport(newReport);
@@ -283,13 +298,6 @@ public class PdlController {
         }
     }
 
-    void log(UserAction action) {
-        // TODO 2013-12-20 : Magnus Andersson > Commented out because it causes null pointers at runtime.
-//        PdlEventLog log = newPdlEventLog();
-//        log.setUserAction(action);
-//        objectRepo.persist(log);
-    }
-
     @ActionMapping("showOtherCareUnits")
     public void showOtherCareUnits(ActionResponse response) {
         if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
@@ -361,31 +369,7 @@ public class PdlController {
         }
     }
 
-    @ActionMapping("showBlockedInformationTypes")
-    public void showBlockedInformationTypes(
-            @RequestParam Visibility visibility,
-            ActionResponse response
-    ) {
-        if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
-            response.setRenderParameter("view", "view");
-        } else {
-            LOGGER.trace(
-                    "Request to show blocked information types for visibility {}",
-                    visibility
-            );
-
-            CareSystemsReport newCsReport =
-                    state.getCsReport().showBlocksForInfoType(visibility);
-
-            state.setCsReport(newCsReport);
-
-            log(UserAction.SHOW_BLOCKED_INFORMATION);
-
-            response.setRenderParameter("view", "pickInfoResource");
-        }
-    }
-
-    @ActionMapping("cancelRevokeConfirmation")
+     @ActionMapping("cancelRevokeConfirmation")
     public void cancelRevokeConfirmation(
             @RequestParam String id,
             ActionResponse response

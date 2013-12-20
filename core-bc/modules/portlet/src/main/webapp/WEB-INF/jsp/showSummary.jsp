@@ -33,8 +33,8 @@
                         <span class="inner">
                             <span class="title">${systemEntry.key.displayName}</span>
                             <span class="description">
-                                <h3>Vald information</h3>
                                 <div class="clearfix">
+                                    <br/>
                                     <c:forEach items="${systemEntry.value}" var="withInfoType">
                                         <b>${withInfoType.informationType.desc}</b><br/>
                                         <c:forEach items="${withInfoType.value}" var="system">

@@ -14,7 +14,7 @@ public class CareSystemsReport implements Serializable {
     private static final Logger LOGGER = LoggerFactory.getLogger(CareSystemsReport.class.getName());
 
     public final WithOutcome<TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>> aggregatedSystems;
-    public final Map<Visibility, Boolean> containsBlockedInfoTypes;
+    public final boolean containsSameCareUnit;
     public final boolean containsOtherCareUnits;
     public final boolean containsOtherCareProviders;
 
@@ -35,13 +35,14 @@ public class CareSystemsReport implements Serializable {
         TreeMap<InfoTypeState<InformationType>,ArrayList<SystemState<CareSystem>>> infoTypeStateMap =
                 calcInfoTypeState(aggregatedSystems);
 
-        // Open up those with lowest visibility SAME_CARE_UNIT
+        containsSameCareUnit = containsSameCareUnit(infoTypeStateMap);
+
+        // Open up those with same care unit, if they exist
         TreeMap<InfoTypeState<InformationType>,ArrayList<SystemState<CareSystem>>> lowestOpenedUp =
-                lowestOpenedUp(infoTypeStateMap);
+                (containsSameCareUnit) ? lowestOpenedUp(infoTypeStateMap) : infoTypeStateMap;
 
         containsOtherCareUnits = containsOtherCareUnits(lowestOpenedUp);
         containsOtherCareProviders = containsOtherCareProviders(lowestOpenedUp);
-        containsBlockedInfoTypes = containsOnlyBlockedInfoTypes(lowestOpenedUp);
 
         this.aggregatedSystems = pdlReport.systems.mapValue(lowestOpenedUp);
     }
@@ -66,41 +67,26 @@ public class CareSystemsReport implements Serializable {
 
     private CareSystemsReport(
             WithOutcome <TreeMap<InfoTypeState<InformationType>,
-            ArrayList<SystemState<CareSystem>>>> aggregatedSystems,
-            Map<Visibility, Boolean> containsBlockedInfoTypes
+            ArrayList<SystemState<CareSystem>>>> aggregatedSystems
     ) {
         this.aggregatedSystems = aggregatedSystems;
-        this.containsBlockedInfoTypes = containsBlockedInfoTypes;
+        this.containsSameCareUnit = containsSameCareUnit(aggregatedSystems.value);
         this.containsOtherCareProviders = containsOtherCareProviders(aggregatedSystems.value);
         this.containsOtherCareUnits = containsOtherCareUnits(aggregatedSystems.value);
     }
 
-    /**
-     * Find out if there is one info type that contain only blocked information.
-     * @param systems
-     * @return
-     */
-    private Map<Visibility, Boolean> containsOnlyBlockedInfoTypes(
-            TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> systems
-    ) {
-        Map<Visibility, Boolean> result = new HashMap<Visibility, Boolean>();
 
-        for(Visibility v : EnumSet.allOf(Visibility.class)) {
-            result.put(v, false); // make sure we have a value.
-            for(InfoTypeState<InformationType> key : systems.keySet()) {
-                if(
-                    v.compareTo(key.lowestVisibility) >= 0 &&
-                    key.containsOnlyBlocked.containsKey(v) &&
-                    key.containsOnlyBlocked.get(v)
-                ) {
-                    result.put(v, true);
+    private boolean containsSameCareUnit(TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> systems) {
+        for(InfoTypeState<InformationType> key : systems.keySet()) {
+            for(SystemState<CareSystem> sys : systems.get(key)) {
+                if(sys.getVisibility() ==  Visibility.SAME_CARE_UNIT) {
+                    return true;
                 }
             }
         }
 
-        return result;
+        return false;
     }
-
 
     private boolean containsOtherCareUnits(TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> systems) {
         for(InfoTypeState<InformationType> key : systems.keySet()) {
@@ -140,10 +126,6 @@ public class CareSystemsReport implements Serializable {
             Map<Visibility, Boolean> containsOnlyBlocked = new HashMap<Visibility, Boolean>();
             for(SystemState<CareSystem> v : value) {
 
-                if(!containsOnlyBlocked.containsKey(v.visibility)) {
-                    containsOnlyBlocked.put(v.visibility, false);
-                }
-
                 if(!containsBlocked.containsKey(v.visibility)) {
                     containsBlocked.put(v.visibility, false);
                 }
@@ -153,15 +135,6 @@ public class CareSystemsReport implements Serializable {
                         v.visibility,
                         containsBlocked.get(v.visibility) | v.blocked
                 );
-                
-                /*
-                // Commented out EA 2013-12-19
-                // Does this info type contain only blocked information?
-                containsOnlyBlocked.put(
-                    v.visibility,
-                    containsOnlyBlocked.get(v.visibility) & v.blocked
-                );
-                */
 
                 if(v.visibility.compareTo(lowestVisibility) < 0) {
                     lowestVisibility = v.visibility;
@@ -183,7 +156,7 @@ public class CareSystemsReport implements Serializable {
 
     public CareSystemsReport selectInfoResource(String id) {
         TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> newSystems =
-                new TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>();
+                new TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>(infoTypeComparator);
 
         for(InfoTypeState<InformationType> key : aggregatedSystems.value.keySet()) {
             if(key.id.equals(id)) {
@@ -192,12 +165,12 @@ public class CareSystemsReport implements Serializable {
                 newSystems.put(key, aggregatedSystems.value.get(key));
             }
         }
-        return new CareSystemsReport(aggregatedSystems.mapValue(newSystems), containsBlockedInfoTypes);
+        return new CareSystemsReport(aggregatedSystems.mapValue(newSystems));
     }
 
     public CareSystemsReport showBlocksForInfoResource(String id) {
         TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> newSystems =
-                new TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>();
+                new TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>(infoTypeComparator);
 
         for(InfoTypeState<InformationType> key : aggregatedSystems.value.keySet()) {
             if(key.id.equals(id)) {
@@ -206,12 +179,12 @@ public class CareSystemsReport implements Serializable {
                 newSystems.put(key, aggregatedSystems.value.get(key));
             }
         }
-        return new CareSystemsReport(aggregatedSystems.mapValue(newSystems), containsBlockedInfoTypes);
+        return new CareSystemsReport(aggregatedSystems.mapValue(newSystems));
     }
 
     public CareSystemsReport toggleInformation(String id, boolean confirmed) {
         TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> newSystems =
-                new TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>();
+                new TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>(infoTypeComparator);
 
         for(InfoTypeState<InformationType> key : aggregatedSystems.value.keySet()) {
             ArrayList<SystemState<CareSystem>> sysList =
@@ -235,30 +208,7 @@ public class CareSystemsReport implements Serializable {
 
             newSystems.put(key, sysList);
         }
-        return new CareSystemsReport(aggregatedSystems.mapValue(newSystems), containsBlockedInfoTypes);
-    }
-
-    public CareSystemsReport showBlocksForInfoType(Visibility visibility) {
-        HashMap<Visibility, Boolean> newContainsBlockedInfoTypes = new HashMap<Visibility, Boolean>();
-        for(Visibility v : EnumSet.allOf(Visibility.class)) {
-            if(v == visibility) {
-                newContainsBlockedInfoTypes.put(v, false);
-            } else {
-                newContainsBlockedInfoTypes.put(v, containsBlockedInfoTypes.get(v));
-            }
-        }
-
-        TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> newAggregatedSystems =
-                new TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>();
-
-        for(InfoTypeState<InformationType> k : aggregatedSystems.value.keySet()) {
-            newAggregatedSystems.put(k.showBlockedInfoType(visibility), aggregatedSystems.value.get(k));
-        }
-
-        WithOutcome<TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>> result =
-                aggregatedSystems.mapValue(newAggregatedSystems);
-
-        return new CareSystemsReport(result, newContainsBlockedInfoTypes);
+        return new CareSystemsReport(aggregatedSystems.mapValue(newSystems));
     }
 
     private ArrayList<WithInfoType<WithBlock<CareSystem>>> removeOtherProviders(Assignment assignment, ArrayList <WithInfoType<WithBlock<CareSystem>>> systems) {
@@ -386,10 +336,6 @@ public class CareSystemsReport implements Serializable {
         return aggregatedSystems;
     }
 
-    public Map<Visibility, Boolean> getContainsBlockedInfoTypes() {
-        return containsBlockedInfoTypes;
-    }
-
     public boolean isContainsOtherCareUnits() {
         return containsOtherCareUnits;
     }
@@ -398,13 +344,18 @@ public class CareSystemsReport implements Serializable {
         return containsOtherCareProviders;
     }
 
+    public boolean isContainsSameCareUnit() {
+        return containsSameCareUnit;
+    }
+
     @Override
     public String toString() {
         return "CareSystemsReport{" +
                 "aggregatedSystems=" + aggregatedSystems +
-                ", containsBlockedInfoTypes=" + containsBlockedInfoTypes +
+                ", containsSameCareUnit=" + containsSameCareUnit +
                 ", containsOtherCareUnits=" + containsOtherCareUnits +
                 ", containsOtherCareProviders=" + containsOtherCareProviders +
                 '}';
     }
+
 }

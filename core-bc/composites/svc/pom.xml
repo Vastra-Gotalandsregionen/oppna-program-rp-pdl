@@ -79,12 +79,12 @@
       <dependency>
           <groupId>org.springframework</groupId>
           <artifactId>spring-orm</artifactId>
-          <exclusions>
+          <!-- <exclusions>
               <exclusion>
                   <groupId>commons-logging</groupId>
                   <artifactId>commons-logging</artifactId>
               </exclusion>
-          </exclusions>
+          </exclusions> -->
       </dependency>
 
       <!-- For rounding dates -->

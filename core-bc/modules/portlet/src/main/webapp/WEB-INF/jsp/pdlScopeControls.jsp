@@ -16,23 +16,12 @@
 <div class="clearfix">
     <c:choose>
        <c:when test="${!state.showOtherCareUnits && state.csReport.containsOtherCareUnits}">
-       		<div class="clearfix">
-	            <div class="callout callout-info callout-action">
-	                <portlet:actionURL name="showOtherCareUnits" var="showOtherCareUnitsUrl" />
-	                <a href="${showOtherCareUnitsUrl}" class="link-button-mod_ button-simple_">Visa fler vårdenheter</a>
-	            </div>
+            <div class="clearfix">
+                <div class="callout callout-info callout-action">
+                    <portlet:actionURL name="showOtherCareUnits" var="showOtherCareUnitsUrl" />
+                    <a href="${showOtherCareUnitsUrl}">Visa fler vårdenheter</a>
+                </div>
             </div>
-       </c:when>
-       <c:when test="${state.showOtherCareProviders && state.pdlReport.consent.value.hasConsent && state.csReport.containsOtherCareProviders}">
-           <div class="clearfix callout callout-info">
-               <c:if test="${!state.pdlReport.consent.value.hasConsent}">
-                   <jsp:include page="establishConsent.jsp" />
-               </c:if>
-               <c:if test="${!state.showOtherCareProviders && state.pdlReport.consent.value.hasConsent}">
-                   <portlet:actionURL name="showOtherCareProviders" var="showOtherCareProvidersUrl" />
-                   <a href="${showOtherCareProvidersUrl}" class="link-button-mod_ button-simple_">Visa fler vårdgivare &raquo;</a>
-               </c:if>
-           </div>
        </c:when>
        <c:when test="${state.showOtherCareUnits && state.ctx.value.currentAssignment.otherProviders}">
             <div class="clearfix">
@@ -44,8 +33,10 @@
                         <jsp:include page="establishConsent.jsp" />
                     </c:when>
                     <c:when test="${!state.showOtherCareProviders && state.pdlReport.consent.value.hasConsent}">
-                        <portlet:actionURL name="showOtherCareProviders" var="showOtherCareProvidersUrl" />
-                        <a href="${showOtherCareProvidersUrl}" class="link-button-mod_ button-simple_">Visa fler vårdgivare &raquo;</a>
+                        <div class="callout callout-info callout-action">
+                            <portlet:actionURL name="showOtherCareProviders" var="showOtherCareProvidersUrl" />
+                            <a href="${showOtherCareProvidersUrl}" class="link-button-mod_ button-simple_">Visa fler vårdgivare</a>
+                        </div>
                     </c:when>
                 </c:choose>
             </div>

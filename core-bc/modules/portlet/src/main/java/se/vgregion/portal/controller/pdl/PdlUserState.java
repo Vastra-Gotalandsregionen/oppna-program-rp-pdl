@@ -117,7 +117,6 @@ public class PdlUserState implements Serializable {
 
     public void setPdlReport(PdlReport report) {
         this.pdlReport = report;
-        calcVisibility();
     }
 
     public CareSystemsReport getCsReport() {
@@ -126,6 +125,7 @@ public class PdlUserState implements Serializable {
 
     public void setCsReport(CareSystemsReport csReport) {
         this.csReport = csReport;
+        calcVisibility();
     }
 
     public void setPatient(Patient patient) {

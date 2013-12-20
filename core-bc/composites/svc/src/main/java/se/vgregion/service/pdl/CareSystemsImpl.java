@@ -30,6 +30,36 @@ public class CareSystemsImpl implements CareSystems {
                                         "SE2321000131-E000000006834",
                                         "Akutklinik"
                                     )
+                                ),
+                                new WithInfoType<CareSystem>(
+                                    InformationType.VBE,
+                                    new CareSystem(
+                                        CareSystemSource.BFR,
+                                        "SE2321000131-E000000000001",
+                                        "Västra Götalandsregionen",
+                                        "SE2321000131-E000000006834",
+                                        "Akutklinik"
+                                    )
+                                ),
+                                new WithInfoType<CareSystem>(
+                                    InformationType.UND,
+                                    new CareSystem(
+                                        CareSystemSource.BFR,
+                                        "SE5565189692-0001",
+                                        "Capio AB",
+                                        "SE5565189692-16M",
+                                        "Lundby"
+                                    )
+                                ),
+                                new WithInfoType<CareSystem>(
+                                    InformationType.VBE,
+                                    new CareSystem(
+                                        CareSystemSource.BFR,
+                                        "SE2321000131-E000000000001",
+                                        "Västra Götalandsregionen",
+                                        "SE2321000131-E000000001166",
+                                        "Frölunda Specialistsjukhus"
+                                    )
                                 )
                             )
                     );
@@ -43,7 +73,7 @@ public class CareSystemsImpl implements CareSystems {
                                             new CareSystem(
                                                 CareSystemSource.BFR,
                                                 "SE2321000131-E000000000001",
-                                                "Capio",
+                                                "Capio AB",
                                                 "SE2321000131-S000000010252",
                                                 "Lundby närsjukhus, Ortopedi 2"
                                             )
@@ -53,7 +83,7 @@ public class CareSystemsImpl implements CareSystems {
                                             new CareSystem(
                                                 CareSystemSource.BFR,
                                                 "SE2321000131-E000000000001",
-                                                "Capio",
+                                                "Capio AB",
                                                 "SE2321000131-S000000020252",
                                                 "Lundby närsjukhus, Ortopedi 1"
                                             )
@@ -63,7 +93,7 @@ public class CareSystemsImpl implements CareSystems {
                                             new CareSystem(
                                                     CareSystemSource.BFR,
                                                 "SE2321000131-E000000000001",
-                                                "Capio",
+                                                "Capio AB",
                                                 "SE2321000131-S000000030252",
                                                 "Lundby närsjukhus, Barn och ungdomspsykatri"
                                             )
@@ -73,7 +103,7 @@ public class CareSystemsImpl implements CareSystems {
                                             new CareSystem(
                                                 CareSystemSource.RRE,
                                                 "SE2321000131-E000000000001",
-                                                "Capio",
+                                                "Capio AB",
                                                 "SE2321000131-S000000040252",
                                                 "Lundby närsjukhus, Ortopedi 12"
                                             )
@@ -83,7 +113,7 @@ public class CareSystemsImpl implements CareSystems {
                                             new CareSystem(
                                                 CareSystemSource.BFR,
                                                 "SE2321000132-E000000000001",
-                                                "VGR",
+                                                "Västra Götalandsregionen",
                                                 "SE2321000132-S000000010251",
                                                 "SU Sahlgrenska, Ortopedi 11"
                                             )
@@ -93,7 +123,7 @@ public class CareSystemsImpl implements CareSystems {
                                             new CareSystem(
                                                 CareSystemSource.BFR,
                                                 "SE2321000132-E000000000001",
-                                                "VGR",
+                                                "Västra Götalandsregionen",
                                                 "SE2321000132-S000000010254",
                                                 "NU-sjukvården, Kirurgi 12"
                                             )
