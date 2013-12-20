@@ -10,7 +10,8 @@ import se.riv.ehr.patientrelationship.administration.registerextendedpatientrela
 import se.riv.ehr.patientrelationship.v1.*;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.pdl.RoundedTimeUnit;
-import se.vgregion.domain.pdl.decorators.WithOutcome;
+import se.vgregion.domain.assignment.Assignment;
+import se.vgregion.domain.decorators.WithOutcome;
 
 import java.io.Serializable;
 
@@ -23,10 +24,11 @@ public class Relationship {
     }
 
     public static CheckPatientRelationRequestType checkRelationshipRequest(PdlContext ctx, String patientId) {
+
         CheckPatientRelationRequestType request = new CheckPatientRelationRequestType();
         AccessingActorType actor = new AccessingActorType();
-        actor.setCareProviderId(ctx.careProviderHsaId);
-        actor.setCareUnitId(ctx.careUnitHsaId);
+        actor.setCareProviderId(ctx.currentAssignment.careProviderHsaId);
+        actor.setCareUnitId(ctx.currentAssignment.careUnitHsaId);
         actor.setEmployeeId(ctx.employeeHsaId);
         request.setPatientId(patientId);
         request.setAccessingActor(actor);
@@ -37,15 +39,16 @@ public class Relationship {
             String servicesHsaId,
             RegisterExtendedPatientRelationResponderInterface establishRelationship,
             PdlContext ctx,
-            String currentAssignment,
             String patientId,
             String reason,
             int duration,
             RoundedTimeUnit timeUnit
     ) {
+        Assignment currentAssignment = ctx.currentAssignment;
+
         RegisterExtendedPatientRelationRequestType request = new RegisterExtendedPatientRelationRequestType();
-        request.setCareProviderId(ctx.careProviderHsaId);
-        request.setCareUnitId(ctx.careUnitHsaId);
+        request.setCareProviderId(currentAssignment.careProviderHsaId);
+        request.setCareUnitId(currentAssignment.careUnitHsaId);
         request.setEmployeeId(ctx.employeeHsaId);
         request.setPatientId(patientId);
         request.setPatientRelationId(java.util.UUID.randomUUID().toString());
@@ -56,8 +59,8 @@ public class Relationship {
         action.setRequestDate(XMLDuration.currentDateAsXML());
 
         ActorType actor = new ActorType();
-        actor.setAssignmentId(currentAssignment);
-        actor.setAssignmentName(ctx.assignments.get(currentAssignment).assignmentDisplayName);
+        actor.setAssignmentId(ctx.currentAssignment.getAssignmentHsaId());
+        actor.setAssignmentName(currentAssignment.assignmentDisplayName);
         actor.setEmployeeId(ctx.employeeHsaId);
 
         action.setRequestedBy(actor);
@@ -90,7 +93,7 @@ public class Relationship {
                     return WithOutcome.remoteFailure(true);
                 case ACCESSDENIED:
                     LOGGER.error(
-                        "Access denied when registring patient relationship. Message: {}",
+                        "AccessWithScope denied when registring patient relationship. Message: {}",
                         response.getResultType().getResultText()
                     );
                     return WithOutcome.commFailure(true);

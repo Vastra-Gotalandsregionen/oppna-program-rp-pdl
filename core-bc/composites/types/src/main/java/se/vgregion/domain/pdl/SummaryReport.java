@@ -1,8 +1,8 @@
 package se.vgregion.domain.pdl;
 
-import se.vgregion.domain.pdl.decorators.InfoTypeState;
-import se.vgregion.domain.pdl.decorators.SystemState;
-import se.vgregion.domain.pdl.decorators.WithInfoType;
+import se.vgregion.domain.decorators.InfoTypeState;
+import se.vgregion.domain.decorators.SystemState;
+import se.vgregion.domain.decorators.WithInfoType;
 
 import java.io.Serializable;
 import java.util.*;

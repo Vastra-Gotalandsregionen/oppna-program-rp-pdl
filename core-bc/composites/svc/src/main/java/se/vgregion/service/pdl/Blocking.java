@@ -13,9 +13,9 @@ import se.riv.ehr.blocking.querying.getblocksforpatientresponder.v2.GetBlocksFor
 import se.riv.ehr.blocking.querying.getblocksforpatientresponder.v2.GetBlocksForPatientResponseType;
 import se.riv.ehr.blocking.v2.*;
 import se.vgregion.domain.pdl.*;
-import se.vgregion.domain.pdl.decorators.WithBlock;
-import se.vgregion.domain.pdl.decorators.WithInfoType;
-import se.vgregion.domain.pdl.decorators.WithOutcome;
+import se.vgregion.domain.decorators.WithBlock;
+import se.vgregion.domain.decorators.WithInfoType;
+import se.vgregion.domain.decorators.WithOutcome;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -88,8 +88,8 @@ class Blocking {
         CheckBlocksRequestType req = new CheckBlocksRequestType();
         req.setPatientId(pe.patientId);
         AccessingActorType actor = new AccessingActorType();
-        actor.setCareProviderId(ctx.careProviderHsaId);
-        actor.setCareUnitId(ctx.careUnitHsaId);
+        actor.setCareProviderId(ctx.currentAssignment.careProviderHsaId);
+        actor.setCareUnitId(ctx.currentAssignment.careUnitHsaId);
         actor.setEmployeeId(ctx.employeeHsaId);
         req.setAccessingActor(actor);
 
@@ -199,7 +199,7 @@ class Blocking {
         TemporaryRevokeRegistrationType revoke  = new TemporaryRevokeRegistrationType();
         revoke.setBlockId(block.getBlockId());
         revoke.setTemporaryRevokeId(java.util.UUID.randomUUID().toString());
-        revoke.setRevokedForCareUnitId(ctx.careUnitHsaId);
+        revoke.setRevokedForCareUnitId(ctx.currentAssignment.careUnitHsaId);
         revoke.setRevokedForEmployeeId(ctx.employeeHsaId);
         XMLDuration xmlDuration = new XMLDuration(duration, roundedTimeUnit);
         revoke.setEndDate(xmlDuration.endDate);

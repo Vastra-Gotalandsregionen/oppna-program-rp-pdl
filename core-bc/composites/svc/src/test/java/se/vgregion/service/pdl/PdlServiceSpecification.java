@@ -16,21 +16,18 @@ import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivt
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationRequestType;
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelation.v1.rivtabp21.RegisterExtendedPatientRelationResponderInterface;
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelationresponder.v1.RegisterExtendedPatientRelationRequestType;
+import se.vgregion.domain.decorators.WithBlock;
+import se.vgregion.domain.decorators.WithInfoType;
+import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.pdl.*;
-import se.vgregion.domain.pdl.decorators.WithBlock;
-import se.vgregion.domain.pdl.decorators.WithInfoType;
-import se.vgregion.domain.pdl.decorators.WithOutcome;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class PdlServiceSpecification {
 
@@ -58,6 +55,7 @@ public class PdlServiceSpecification {
 
     @Before
     public void setuUp() {
+
         ExecutorService executorService = Executors.newFixedThreadPool(3);
 
         service.setServicesHsaId(serviceHsaId);
@@ -65,24 +63,7 @@ public class PdlServiceSpecification {
 
         MockitoAnnotations.initMocks(this);
 
-        otherProvider = "SE2321000131-S000000010452";
-        sameProvider = "SE2321000131-S000000020452";
-
-        HashMap<String, AssignmentAccess> assignments = new HashMap<String, AssignmentAccess>();
-        List<Access> otherProviders = Arrays.asList(Access.otherProvider("SE2321000131-E000000000011"));
-        List<Access> sameProviders = Arrays.asList(Access.sameProvider("SE2321000131-S000000010252"), Access.sameProvider("SE2321000131-S000000010251"));
-        assignments.put(otherProvider, new AssignmentAccess("Sammanhållen Journalföring", otherProviders));
-        assignments.put(sameProvider, new AssignmentAccess("Vård och behandling", sameProviders));
-
-        ctx = new PdlContext(
-                "VGR",
-                "SE2321000131-E000000000001",
-                "Sahlgrenska, Radiologi 32",
-                "SE2321000131-S000000010252",
-                "Ludvig Läkare",
-                "SE2321000131-P000000069215",
-                assignments
-        );
+        ctx = MockContext.getMockContext();
 
         PatientRepository patients = new KivPatientRepository();
         patient = patients.byPatientId("test");
@@ -93,14 +74,16 @@ public class PdlServiceSpecification {
 
     @Test
     public void reportHasBlocks() throws Exception {
+        PdlContext newCtx = ctx.changeAssignment(MockContext.VE);
 
         when(blocksInterface.checkBlocks(eq(serviceHsaId), isA(CheckBlocksRequestType.class))).
-                thenAnswer(BlockingSpec.blockingRequestAndRespond(ctx, patient, 0, true));
+                thenAnswer(BlockingSpec.blockingRequestAndRespond(newCtx, patient, 0, true));
 
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
             thenReturn(RelationshipSpec.relationshipResult(false));  // Not under test, avoid null pointer
 
-        PdlReport pdlReport = service.pdlReport(ctx, sameProvider, patient, careSystems);
+
+        PdlReport pdlReport = service.pdlReport(newCtx, patient, careSystems);
 
         // Should not be a fallback result
         assertEquals(Outcome.SUCCESS, pdlReport.systems.outcome);
@@ -124,7 +107,9 @@ public class PdlServiceSpecification {
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
                 thenReturn(RelationshipSpec.relationshipResult(false));  // Not under test, avoid null pointer
 
-        PdlReport pdlReport = service.pdlReport(ctx, sameProvider, patient, careSystems);
+        PdlContext newCtx = ctx.changeAssignment(MockContext.VE);
+
+        PdlReport pdlReport = service.pdlReport(newCtx, patient, careSystems);
 
         // Should at least contain more than one system
         assertTrue(pdlReport.systems.value.size() > 0);
@@ -149,7 +134,9 @@ public class PdlServiceSpecification {
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
                 thenReturn(RelationshipSpec.relationshipResult(false));  // Not under test, avoid null pointer
 
-        PdlReport pdlReport = service.pdlReport(ctx, otherProvider, patient, careSystems);
+        PdlContext newCtx = ctx.changeAssignment(MockContext.SJF);
+
+        PdlReport pdlReport = service.pdlReport(newCtx, patient, careSystems);
 
         assertEquals(Outcome.SUCCESS, pdlReport.consent.outcome);
         assertTrue(pdlReport.consent.value.hasConsent);
@@ -167,7 +154,9 @@ public class PdlServiceSpecification {
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
                 thenReturn(RelationshipSpec.relationshipResult(false));  // Not under test, avoid null pointer
 
-        PdlReport pdlReport = service.pdlReport(ctx, otherProvider, patient, careSystems);
+        PdlContext newCtx = ctx.changeAssignment(MockContext.SJF);
+
+        PdlReport pdlReport = service.pdlReport(newCtx, patient, careSystems);
 
         assertEquals(Outcome.SUCCESS, pdlReport.consent.outcome);
         assertTrue(pdlReport.consent.value.hasConsent);
@@ -185,7 +174,9 @@ public class PdlServiceSpecification {
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
                 thenReturn(RelationshipSpec.relationshipResult(false));  // Not under test, avoid null pointer
 
-        PdlReport pdlReport = service.pdlReport(ctx, otherProvider, patient, careSystems);
+        PdlContext newCtx = ctx.changeAssignment(MockContext.SJF);
+
+        PdlReport pdlReport = service.pdlReport(newCtx, patient, careSystems);
 
         assertEquals(Outcome.SUCCESS, pdlReport.consent.outcome);
         assertFalse(pdlReport.consent.value.hasConsent);
@@ -193,13 +184,15 @@ public class PdlServiceSpecification {
 
     @Test
     public void reportHasRelationship() throws Exception {
+        PdlContext newCtx = ctx.changeAssignment(MockContext.VE);
+
         when(blocksInterface.checkBlocks(anyString(), isA(CheckBlocksRequestType.class))).
                 thenReturn(BlockingSpec.blockedResult(0, true)); // Not under test, avoid null pointer
 
         when(relationshipInterface.checkPatientRelation(eq(serviceHsaId), isA(CheckPatientRelationRequestType.class))).
-                thenAnswer(RelationshipSpec.queryRequestAndResponse(ctx, patient, true));
+                thenAnswer(RelationshipSpec.queryRequestAndResponse(newCtx, patient, true));
 
-        PdlReport pdlReport = service.pdlReport(ctx, sameProvider, patient, careSystems);
+        PdlReport pdlReport = service.pdlReport(newCtx, patient, careSystems);
 
         assertEquals(Outcome.SUCCESS, pdlReport.hasRelationship.outcome);
         assertTrue(pdlReport.hasRelationship.value);
@@ -208,13 +201,15 @@ public class PdlServiceSpecification {
 
     @Test
     public void reportNoRelationship() throws Exception {
+        PdlContext newCtx = ctx.changeAssignment(MockContext.VE);
+
         when(blocksInterface.checkBlocks(anyString(), isA(CheckBlocksRequestType.class))).
                 thenReturn(BlockingSpec.blockedResult(0, true)); // Not under test, avoid null pointer
 
         when(relationshipInterface.checkPatientRelation(eq(serviceHsaId), isA(CheckPatientRelationRequestType.class))).
-                thenAnswer(RelationshipSpec.queryRequestAndResponse(ctx, patient, false));
+                thenAnswer(RelationshipSpec.queryRequestAndResponse(newCtx, patient, false));
 
-        PdlReport pdlReport = service.pdlReport(ctx, sameProvider, patient, careSystems);
+        PdlReport pdlReport = service.pdlReport(newCtx, patient, careSystems);
 
         assertEquals(Outcome.SUCCESS, pdlReport.hasRelationship.outcome);
         assertFalse(pdlReport.hasRelationship.value);
@@ -243,7 +238,6 @@ public class PdlServiceSpecification {
 
         PdlReport newReport = service.patientRelationship(
                 ctx,
-                sameProvider,
                 mockReport,
                 patient.patientId,
                 "Some reason",
@@ -277,7 +271,6 @@ public class PdlServiceSpecification {
 
         PdlReport newReport = service.patientConsent(
                 ctx,
-                sameProvider,
                 mockReport,
                 patient.patientId,
                 "Some reason",

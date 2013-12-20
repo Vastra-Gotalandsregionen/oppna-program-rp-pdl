@@ -12,9 +12,9 @@ import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivt
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationRequestType;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationResponseType;
 import se.vgregion.domain.pdl.*;
-import se.vgregion.domain.pdl.decorators.WithBlock;
-import se.vgregion.domain.pdl.decorators.WithInfoType;
-import se.vgregion.domain.pdl.decorators.WithOutcome;
+import se.vgregion.domain.decorators.WithBlock;
+import se.vgregion.domain.decorators.WithInfoType;
+import se.vgregion.domain.decorators.WithOutcome;
 
 import javax.xml.ws.WebServiceException;
 import java.util.ArrayList;
@@ -31,10 +31,10 @@ public class Report {
     }
 
     static PdlReport generateReport(
-            String servicesHsaId,
+            final String servicesHsaId,
             final PdlContext ctx,
-            String currentAssignment, final Patient patient,
-            List<WithInfoType<CareSystem>> careSystems,
+            final Patient patient,
+            final List<WithInfoType<CareSystem>> careSystems,
             final CheckBlocksResponderInterface checkBlocks,
             final CheckConsentResponderInterface checkConsent,
             final CheckPatientRelationResponderInterface checkRelationship,
@@ -47,7 +47,7 @@ public class Report {
 
         Future<WithOutcome<CheckedConsent>> consentFuture;
 
-        if(ctx.assignments.get(currentAssignment).isOtherProviders()) {
+        if(ctx.currentAssignment.isOtherProviders()) {
             consentFuture =
                 consent(
                     servicesHsaId,

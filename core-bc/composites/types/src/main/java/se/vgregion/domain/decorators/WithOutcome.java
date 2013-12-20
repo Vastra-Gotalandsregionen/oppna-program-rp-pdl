@@ -1,4 +1,4 @@
-package se.vgregion.domain.pdl.decorators;
+package se.vgregion.domain.decorators;
 
 import se.vgregion.domain.pdl.Outcome;
 
@@ -13,10 +13,12 @@ public class WithOutcome<T extends Serializable> implements Serializable {
 
     public final T value;
     public final Outcome outcome;
+    public final boolean success;
 
     private WithOutcome(Outcome status, T value) {
         this.value = value;
         this.outcome = status;
+        this.success = status == Outcome.SUCCESS;
     }
 
     public T getValue() {
@@ -27,6 +29,10 @@ public class WithOutcome<T extends Serializable> implements Serializable {
         return outcome;
     }
 
+    public boolean isSuccess() {
+        return success;
+    }
+
     public WithOutcome<T> mapOutcome(Outcome newOutcome) {
         return new WithOutcome<T>(newOutcome, value);
     }
@@ -35,20 +41,33 @@ public class WithOutcome<T extends Serializable> implements Serializable {
         return new WithOutcome<N>(outcome, newValue);
     }
 
-    public static<V extends Serializable, V1 extends V> WithOutcome<V> success(V value) {
+    public static<V extends Serializable, V1 extends V> WithOutcome<V> success(V1 value) {
         return new WithOutcome<V>(Outcome.SUCCESS, value);
     }
 
-    public static<V extends Serializable, V1 extends V> WithOutcome<V> remoteFailure(V value) {
+    public static<V extends Serializable, V1 extends V> WithOutcome<V> remoteFailure(V1 value) {
         return new WithOutcome<V>(Outcome.REMOTE_FAILURE, value);
     }
 
-    public static<V extends Serializable, V1 extends V> WithOutcome<V> commFailure(V value) {
+    public static<V extends Serializable, V1 extends V> WithOutcome<V> commFailure(V1 value) {
         return new WithOutcome<V>(Outcome.COMMUNICATION_FAILURE, value);
     }
 
-    public static<V extends Serializable, V1 extends V> WithOutcome<V> clientError(V value) {
+    public static<V extends Serializable, V1 extends V> WithOutcome<V> clientError(V1 value) {
         return new WithOutcome<V>(Outcome.CLIENT_FAILURE, value);
+    }
+
+    public static<V extends Serializable, V1 extends V> WithOutcome<V> unfulfilled(V1 value) {
+        return new WithOutcome<V>(Outcome.UNFULFILLED_FAILURE, value);
+    }
+
+    public static WithOutcome flatten(WithOutcome ... outcomes) {
+        for(WithOutcome o : outcomes) {
+            if(!o.success) {
+                return o;
+            }
+        }
+        return outcomes[0];
     }
 
     @Override

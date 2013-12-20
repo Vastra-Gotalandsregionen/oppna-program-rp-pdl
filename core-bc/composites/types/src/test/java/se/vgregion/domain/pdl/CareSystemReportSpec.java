@@ -1,61 +1,40 @@
 package se.vgregion.domain.pdl;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import se.vgregion.domain.decorators.WithBlock;
+import se.vgregion.domain.decorators.WithInfoType;
+import se.vgregion.domain.decorators.WithOutcome;
 
-import se.vgregion.domain.pdl.decorators.InfoTypeState;
-import se.vgregion.domain.pdl.decorators.WithBlock;
-import se.vgregion.domain.pdl.decorators.WithInfoType;
-import se.vgregion.domain.pdl.decorators.WithOutcome;
-
-import java.util.*;
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class CareSystemReportSpec {
 
     private PdlReport mockReport;
 
     private PdlContext ctx;
-    private String sameProvider;
-    private String otherProvider;
 
     @Before
     public void setup() throws Exception
     {
 
-        otherProvider = "SE2321000131-S000000010452";
-        sameProvider = "SE2321000131-S000000020452";
+        ctx = MockContext.getMockContext();
 
-        HashMap<String, AssignmentAccess> assignments = new HashMap<String, AssignmentAccess>();
-        List<Access> otherProviders = Arrays.asList(Access.otherProvider("SE2321000131-E000000000011"));
-        List<Access> sameProviders = Arrays.asList(Access.sameProvider("SE2321000131-S000000010252"), Access.sameProvider("SE2321000131-S000000010251"));
-        assignments.put(otherProvider, new AssignmentAccess("Sammanhållen Journalföring", otherProviders));
-        assignments.put(sameProvider, new AssignmentAccess("Vård och behandling", sameProviders));
+        ctx = ctx.changeAssignment(MockContext.VE);
+
+        CareSystem sameUnit1 = new CareSystem(CareSystemSource.BFR, ctx.currentAssignment.careProviderHsaId, "VGR", ctx.currentAssignment.careUnitHsaId, "Unit 1");
+        CareSystem sameUnit2 = new CareSystem(CareSystemSource.BFR, ctx.currentAssignment.careProviderHsaId, "VGR", ctx.currentAssignment.careUnitHsaId, "Unit 1");
 
 
-        ctx = new PdlContext(
-                "VGR",
-                "SE2321000131-E000000000001",
-                "Sahlgrenska, Radiologi 32",
-                "SE2321000131-S000000010252",
-                "Ludvig Läkare",
-                "SE2321000131-P000000069215",
-                assignments
-        );
+        CareSystem otherUnit1 = new CareSystem(CareSystemSource.BFR, ctx.currentAssignment.careProviderHsaId, "VGR", "otherCareUnitHsaId", "Unit 2");
+        CareSystem otherUnit2 = new CareSystem(CareSystemSource.BFR, ctx.currentAssignment.careProviderHsaId, "VGR", "otherCareUnitHsaId", "Unit 2");
 
-        CareSystem sameUnit1 = new CareSystem(CareSystemSource.BFR, ctx.careProviderHsaId, "VGR", ctx.careUnitHsaId, "Unit 1");
-        CareSystem sameUnit2 = new CareSystem(CareSystemSource.BFR, ctx.careProviderHsaId, "VGR", ctx.careUnitHsaId, "Unit 1");
+        ctx = ctx.changeAssignment(MockContext.SJF);
 
-        String otherCareUnitHsaId = "SE2321000131-S000000010251";
-        CareSystem otherUnit1 = new CareSystem(CareSystemSource.BFR, ctx.careProviderHsaId, "VGR", otherCareUnitHsaId, "Unit 2");
-        CareSystem otherUnit2 = new CareSystem(CareSystemSource.BFR, ctx.careProviderHsaId, "VGR", otherCareUnitHsaId, "Unit 2");
-
-        String otherCareProviderHsaId = "SE2321000131-E000000000011";
-        CareSystem otherProvider1 = new CareSystem(CareSystemSource.BFR, otherCareProviderHsaId, "Capio Axess Lundby", ctx.careUnitHsaId, "Unit 3");
-        CareSystem otherProvider2 = new CareSystem(CareSystemSource.BFR, otherCareProviderHsaId, "Capio Axess Lundby", otherCareUnitHsaId, "Unit 4");
+        CareSystem otherProvider1 = new CareSystem(CareSystemSource.BFR, ctx.currentAssignment.careProviderHsaId, "Capio Axess Lundby", ctx.currentAssignment.careUnitHsaId, "Unit 3");
+        CareSystem otherProvider2 = new CareSystem(CareSystemSource.BFR, ctx.currentAssignment.careProviderHsaId, "Capio Axess Lundby", "otherCareUnitHsaId", "Unit 4");
 
         ArrayList<WithInfoType<WithBlock<CareSystem>>> sourceSystems = new ArrayList<WithInfoType<WithBlock<CareSystem>>>();
         sourceSystems.add(wrapSystem(InformationType.LAK, false, sameUnit1));
@@ -86,7 +65,9 @@ public class CareSystemReportSpec {
     @Test
     public void CareSystemReportShouldSegmentSystems() throws Exception {
 
-        CareSystemsReport report = new CareSystemsReport(ctx, otherProvider , mockReport);
+        PdlContext newCtx = ctx.changeAssignment(MockContext.SJF);
+
+        CareSystemsReport report = new CareSystemsReport(newCtx.currentAssignment, mockReport);
 
         assertEquals(Outcome.SUCCESS, report.aggregatedSystems.outcome);
         assertEquals(2, report.aggregatedSystems.value.size());
@@ -95,8 +76,9 @@ public class CareSystemReportSpec {
 
     @Test
     public void CareSystemReportShouldRemoveOtherProviders() throws Exception {
+        PdlContext newCtx = ctx.changeAssignment(MockContext.VE);
 
-        CareSystemsReport report = new CareSystemsReport(ctx, sameProvider, mockReport);
+        CareSystemsReport report = new CareSystemsReport(newCtx.currentAssignment, mockReport);
 
         assertEquals(Outcome.SUCCESS, report.aggregatedSystems.outcome);
         assertEquals(2, report.aggregatedSystems.value.size());
@@ -113,25 +95,5 @@ public class CareSystemReportSpec {
         else blockSystem = WithBlock.unblocked(system);
 
         return new WithInfoType<WithBlock<CareSystem>>(informationType, blockSystem);
-    }
-
-    @Test
-    @Ignore
-    public void CareSystemsReportShouldIndicateBlockedInfoType() throws Exception {
-        CareSystemsReport report = new CareSystemsReport(ctx, sameProvider, mockReport);
-
-        assertTrue(report.containsBlockedInfoTypes.get(Visibility.OTHER_CARE_UNIT));
-
-        int i = 0;
-        for(InfoTypeState<InformationType> ss : report.aggregatedSystems.value.keySet()) {
-            if(ss.value == InformationType.UPP) {
-                Boolean test = ss.containsOnlyBlocked.get(ss.lowestVisibility);
-                assertTrue(test);
-                i++;
-            }
-        }
-
-        assertEquals(1, i);
-
     }
 }

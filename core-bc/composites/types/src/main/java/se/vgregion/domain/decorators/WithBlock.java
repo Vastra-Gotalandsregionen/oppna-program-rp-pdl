@@ -1,4 +1,4 @@
-package se.vgregion.domain.pdl.decorators;
+package se.vgregion.domain.decorators;
 
 import java.io.Serializable;
 

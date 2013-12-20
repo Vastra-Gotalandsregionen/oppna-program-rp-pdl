@@ -1,5 +1,10 @@
 package se.vgregion.domain.pdl;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
+
 public enum InformationType {
     //ALT("Allt"),
     DIA("Diagnos"),
@@ -8,7 +13,7 @@ public enum InformationType {
     LKM("Läkemedel Utlämning"),
     PAD("PADL"),
     PAT("Vård- och omsorgstagare"),
-    UNR("Undersökningsresultat"),
+    UND("Undersökningsresultat"),
     UPP("Uppmärksamhetsinformation"),
     VBE("Vårdbegäran"),
     VOT("Vård- och omsorgstjänst"),
@@ -24,6 +29,16 @@ public enum InformationType {
 
     public String getDesc() {
         return desc;
+    }
+
+    private static final Set<String> mapToLak =
+            Collections.unmodifiableSet(new TreeSet<String>(Arrays.asList("LKO", "LKF")));
+
+    public static InformationType valueOfWithFallback(String value) {
+        if(mapToLak.contains(value)) {
+            return LAK;
+        }
+        return InformationType.valueOf(value);
     }
 
     @Override

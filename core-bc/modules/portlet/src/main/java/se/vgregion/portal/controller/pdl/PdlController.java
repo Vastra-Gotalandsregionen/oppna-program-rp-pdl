@@ -12,17 +12,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
+import se.vgregion.domain.decorators.InfoTypeState;
+import se.vgregion.domain.decorators.SystemState;
+import se.vgregion.domain.decorators.WithInfoType;
+import se.vgregion.domain.decorators.WithOutcome;
+import se.vgregion.domain.logging.PdlEventLog;
+import se.vgregion.domain.logging.UserAction;
 import se.vgregion.domain.pdl.*;
-import se.vgregion.domain.pdl.decorators.InfoTypeState;
-import se.vgregion.domain.pdl.decorators.SystemState;
-import se.vgregion.domain.pdl.decorators.WithInfoType;
-import se.vgregion.domain.pdl.logging.LogUtil;
-import se.vgregion.domain.pdl.logging.PdlEventLog;
-import se.vgregion.domain.pdl.logging.UserAction;
-import se.vgregion.service.pdl.CareSystems;
-import se.vgregion.service.pdl.ObjectRepo;
-import se.vgregion.service.pdl.PatientRepository;
-import se.vgregion.service.pdl.PdlService;
+import se.vgregion.service.pdl.*;
 
 import javax.portlet.ActionResponse;
 import java.util.*;
@@ -44,11 +41,13 @@ public class PdlController {
     private PatientRepository patients;
     @Autowired
     private ObjectRepo objectRepo;
+    @Autowired
+    private AccessControl accessControl;
 
     @ModelAttribute("state")
     public PdlUserState initState() {
         if (state.getCtx() == null) {
-            PdlContext ctx = currentContext();
+            WithOutcome<PdlContext> ctx = currentContext();
             state.setCtx(ctx);
         }
         return state;
@@ -67,7 +66,7 @@ public class PdlController {
     public String enterSearchPatient() {
         state.reset(); // Make sure state is reset when user navigates to the start page.
         if (state.getCtx() == null) {
-            PdlContext ctx = currentContext();
+            WithOutcome<PdlContext> ctx = currentContext();
             state.setCtx(ctx);
         }
         return "view";
@@ -76,15 +75,17 @@ public class PdlController {
     PdlEventLog newPdlEventLog() {
         PdlEventLog log = new PdlEventLog();
         Patient patient = state.getPatient();
+        PdlContext ctx = state.getCtx().value;
+
         log.setPatientDisplayName(patient.getPatientDisplayName());
         log.setPatientId(patient.getPatientId());
-        log.setEmployeeDisplayName(state.getCtx().employeeDisplayName);
-        log.setEmployeeId(state.getCtx().employeeHsaId);
-        log.setAssignmentId(state.getCurrentAssignment());
-        log.setCareProviderDisplayName(state.getCtx().getCareProviderDisplayName());
-        log.setCareProviderId(state.getCtx().getCareProviderHsaId());
-        log.setCareUnitDisplayName(state.getCtx().getCareUnitDisplayName());
-        log.setCareUnitId(state.getCtx().getCareUnitHsaId());
+        log.setEmployeeDisplayName(ctx.employeeDisplayName);
+        log.setEmployeeId(ctx.employeeHsaId);
+        log.setAssignmentId(ctx.currentAssignment.assignmentHsaId);
+        log.setCareProviderDisplayName(ctx.currentAssignment.careProviderDisplayName);
+        log.setCareProviderId(ctx.currentAssignment.careProviderHsaId);
+        log.setCareUnitDisplayName(ctx.currentAssignment.careUnitDisplayName);
+        log.setCareUnitId(ctx.currentAssignment.careUnitHsaId);
         log.setCreationTime(new Date());
         log.setSearchSession(state.getSearchSession());
         log.setSystemId("Regionportalen");
@@ -123,25 +124,30 @@ public class PdlController {
             @RequestParam boolean reset,
             ActionResponse response
     ) {
-        if (reset) { // Support for going back without redoing the search
+        if(patientId == null) {
+            // Login has timed out and the user had to login, thus loosing the parameter for search.
+            state.setCurrentProgress(PdlProgress.firstStep());
+            response.setRenderParameter("view", "view");
+        } else if(reset){ // Support for going back without redoing the search
             state.reset(); // Make sure reset is called here when user uses back button and submits again.
             PdlProgress now = state.getCurrentProgress();
             state.setCurrentProgress(now.nextStep());
             state.setCurrentAssignment(currentAssignment);
 
+            PdlContext ctx = state.getCtx().value;
+
             LOGGER.trace("Searching for patient {} in care systems.", patientId);
 
             state.setPatient(patients.byPatientId(patientId));
 
-            List<WithInfoType<CareSystem>> careSystems = systems.byPatientId(state.getCtx(), patientId);
+            List<WithInfoType<CareSystem>> careSystems = systems.byPatientId(ctx, patientId);
 
-            boolean availablePatient = AvailablePatient.check(state.getCtx(), careSystems);
+            boolean availablePatient = AvailablePatient.check(ctx, careSystems);
 
             //TODO 2013-11-18 : Magnus Andersson > Only do this if there are care systems!
             //TODO 2013-11-22 : Magnus Andersson > Should handle WithAccess and filter out unavailable systems.
             PdlReport pdlReport = pdl.pdlReport(
-                    state.getCtx(),
-                    state.getCurrentAssignment(),
+                    ctx,
                     state.getPatient(),
                     careSystems
             );
@@ -151,8 +157,7 @@ public class PdlController {
             // TGP equivalent, create patient relationship
             if (availablePatient && pdlReport.hasPatientInformation && !pdlReport.hasRelationship.value) {
                 newReport = pdl.patientRelationship(
-                        state.getCtx(),
-                        state.getCurrentAssignment(),
+                        ctx,
                         pdlReport,
                         state.getPatient().patientId,
                         "Automatiskt skapad patientrelation: Patient finns tillgänglig sedan innan hos egen vårdenhet.",
@@ -162,16 +167,17 @@ public class PdlController {
             }
 
 
-            // Reformat systems list into a format that we can display
-            CareSystemsReport csReport = new CareSystemsReport(state.getCtx(), state.getCurrentAssignment(), newReport);
+            CareSystemsReport csReport = new CareSystemsReport(ctx.currentAssignment, newReport);
 
             state.setPdlReport(newReport);
             state.setCsReport(csReport);
+
+            log(UserAction.SEARCH);
+            response.setRenderParameter("view", "pickInfoResource");
         } else {
             state.setCurrentProgress(PdlProgress.firstStep().nextStep());
+            response.setRenderParameter("view", "pickInfoResource");
         }
-        log(UserAction.SEARCH);
-        response.setRenderParameter("view", "pickInfoResource");
     }
 
     @ActionMapping("establishRelation")
@@ -181,21 +187,22 @@ public class PdlController {
     ) {
         if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
-        } else if (confirmed) {
+        } else if(confirmed) {
+            PdlContext ctx = state.getCtx().value;
+
             LOGGER.trace(
-                    "Request to create relationship between employee {} and patient {}.",
-                    state.getCtx().employeeHsaId,
-                    state.getPatient().patientId
+                "Request to create relationship between employee {} and patient {}.",
+                ctx.employeeHsaId,
+                state.getPatient().patientId
             );
 
             PdlReport newReport = pdl.patientRelationship(
-                    state.getCtx(),
-                    state.getCurrentAssignment(),
-                    state.getPdlReport(),
-                    state.getPatient().patientId,
-                    "Reason",
-                    1,
-                    RoundedTimeUnit.NEAREST_HALF_HOUR
+                ctx,
+                state.getPdlReport(),
+                state.getPatient().patientId,
+                "Reason",
+                1,
+                RoundedTimeUnit.NEAREST_HALF_HOUR
             );
 
 
@@ -241,24 +248,25 @@ public class PdlController {
         if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
         } else if (confirmed) {
+            PdlContext ctx = state.getCtx().value;
+
             LOGGER.trace(
-                    "Request to create consent between employee {} and patient {}.",
-                    state.getCtx().employeeHsaId,
-                    state.getPatient().patientId
+                "Request to create consent between employee {} and patient {}.",
+                ctx.employeeHsaId,
+                state.getPatient().patientId
             );
 
             // FIXME 2013-10-21 : Magnus Andersson > Should choose between consent or emergency. Also add possiblility to be represented by someone?
             state.setPdlReport(
-                    pdl.patientConsent(
-                            state.getCtx(),
-                            state.getCurrentAssignment(),
-                            state.getPdlReport(),
-                            state.getPatient().patientId,
-                            "Reason",
-                            1,
-                            RoundedTimeUnit.NEAREST_HALF_HOUR,
-                            (emergency) ? PdlReport.ConsentType.Emergency : PdlReport.ConsentType.Consent
-                    )
+                pdl.patientConsent(
+                    ctx,
+                    state.getPdlReport(),
+                    state.getPatient().patientId,
+                    "Reason",
+                    1,
+                    RoundedTimeUnit.NEAREST_HALF_HOUR,
+                    ( emergency ) ? PdlReport.ConsentType.Emergency : PdlReport.ConsentType.Consent
+                )
             );
 
             state.setConfirmConsent(false);
@@ -286,9 +294,11 @@ public class PdlController {
         if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
         } else {
+            PdlContext ctx = state.getCtx().value;
+
             LOGGER.trace(
                     "Request to show more information within same care giver for employee {} and patient {}.",
-                    state.getCtx().employeeHsaId,
+                    ctx.employeeHsaId,
                     state.getPatient().patientId
             );
 
@@ -435,10 +445,12 @@ public class PdlController {
         if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
         } else {
+            PdlContext ctx = state.getCtx().value;
+
             LOGGER.trace(
-                    "Request to show more information within same care giver for employee {} and patient {}.",
-                    state.getCtx().employeeHsaId,
-                    state.getPatient().patientId
+                "Request to show more information within same care giver for employee {} and patient {}.",
+                ctx.employeeHsaId,
+                state.getPatient().patientId
             );
 
 
@@ -456,10 +468,11 @@ public class PdlController {
             response.setRenderParameter("view", "view");
         } else {
             state.setCurrentProgress(state.getCurrentProgress().nextStep());
+            PdlContext ctx = state.getCtx().value;
 
             LOGGER.trace(
                     "Request to show summary employee {} and patient {}.",
-                    state.getCtx().employeeHsaId,
+                    ctx.employeeHsaId,
                     state.getPatient().patientId
             );
 
@@ -481,23 +494,8 @@ public class PdlController {
         return "showSummary";
     }
 
-    private PdlContext currentContext() {
-
-        HashMap<String, AssignmentAccess> assignments = new HashMap<String, AssignmentAccess>();
-        List<Access> otherProviders = Arrays.asList(Access.otherProvider("SE2321000131-E000000000001"));
-        List<Access> sameProviders = Arrays.asList(Access.sameProvider("SE2321000131-S000000010252"), Access.sameProvider("SE2321000131-S000000010251"));
-        assignments.put("SE2321000131-S000000010452", new AssignmentAccess("Vård och Behandling - Sammanhållen Journalföring", otherProviders));
-        assignments.put("SE2321000131-S000000020452", new AssignmentAccess("Vård och Behandling - Utökad", sameProviders));
-
-        return new PdlContext(
-                "Capio",
-                "SE2321000131-E000000000001",
-                "Lundby Närsjukhus",
-                "SE2321000131-S000000010252",
-                "Ludvig Läkare",
-                "SE2321000131-P000000069215",
-                assignments
-        );
+    private WithOutcome<PdlContext> currentContext() {
+        return accessControl.getContextByEmployeeId("SE2321000131-S000000012310");
     }
 
 }

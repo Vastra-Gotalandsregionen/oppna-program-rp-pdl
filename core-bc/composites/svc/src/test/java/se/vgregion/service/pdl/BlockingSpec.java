@@ -50,8 +50,8 @@ public class BlockingSpec {
                 CheckBlocksRequestType arg2 = (CheckBlocksRequestType) (invocationOnMock.getArguments()[1]);
                 AccessingActorType actor = arg2.getAccessingActor();
                 assertEquals(pe.patientId, arg2.getPatientId());
-                assertEquals(ctx.careProviderHsaId, actor.getCareProviderId());
-                assertEquals(ctx.careUnitHsaId, actor.getCareUnitId());
+                assertEquals(ctx.currentAssignment.careProviderHsaId, actor.getCareProviderId());
+                assertEquals(ctx.currentAssignment.careUnitHsaId, actor.getCareUnitId());
                 assertEquals(ctx.employeeHsaId, actor.getEmployeeId());
 
                 return blockedResult(rowNumber, isBlocked);

@@ -1,9 +1,8 @@
-package se.vgregion.domain.pdl.logging;
+package se.vgregion.domain.logging;
 
 import org.apache.commons.beanutils.BeanMap;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.TreeMap;
 
 /**

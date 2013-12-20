@@ -1,16 +1,9 @@
-package se.vgregion.domain.pdl.logging;
+package se.vgregion.domain.logging;
 
 import junit.framework.Assert;
 import org.apache.commons.collections.BeanMap;
 import org.junit.Test;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Claes Lundahl
- * Date: 2013-11-25
- * Time: 14:55
- * To change this template use File | Settings | File Templates.
- */
 public class ActorsLogTest {
 
     @Test

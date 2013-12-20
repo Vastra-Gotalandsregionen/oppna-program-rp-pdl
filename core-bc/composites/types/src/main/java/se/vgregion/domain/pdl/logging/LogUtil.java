@@ -1,15 +1,12 @@
 package se.vgregion.domain.pdl.logging;
 
 import org.apache.commons.collections.BeanMap;
+import se.vgregion.domain.logging.UserAction;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
-/**
- * Created by clalu4 on 2013-12-15.
- */
 public class LogUtil {
 
     private IdentityHashMap processedNodes = new IdentityHashMap();

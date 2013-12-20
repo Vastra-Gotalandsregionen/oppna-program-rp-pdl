@@ -5,7 +5,7 @@ import se.vgregion.domain.pdl.CareSystem;
 import se.vgregion.domain.pdl.CareSystemSource;
 import se.vgregion.domain.pdl.InformationType;
 import se.vgregion.domain.pdl.PdlContext;
-import se.vgregion.domain.pdl.decorators.WithInfoType;
+import se.vgregion.domain.decorators.WithInfoType;
 
 import java.util.Arrays;
 import java.util.Collections;

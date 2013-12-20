@@ -1,86 +1,83 @@
 package se.vgregion.domain.pdl;
 
 import se.vgregion.domain.pdl.logging.LogThisField;
+import se.vgregion.domain.assignment.Assignment;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class PdlContext implements Serializable {
     private static final long serialVersionUID = -2298228544035658452L;
-
-    // So far there are no deeper thought on the LogThisField-marking.
-    @LogThisField()
-    public final String careProviderHsaId;
-    @LogThisField()
-    public final String careUnitHsaId;
-    @LogThisField()
     public final String employeeHsaId;
-    @LogThisField()
-    public final HashMap<String, AssignmentAccess> assignments;
-    @LogThisField()
-    public final String careProviderDisplayName;
-    @LogThisField()
-    public final String careUnitDisplayName;
-    @LogThisField()
     public final String employeeDisplayName;
+    public final Assignment currentAssignment;
+    public final TreeMap<String, Assignment> assignments;
 
     public PdlContext(
-            String careProviderDisplayName,
-            String careProviderHsaId,
-            String careUnitDisplayName,
-            String careUnitHsaId,
-            String employeeDisplayName,
-            String employeeHsaId,
-            HashMap<String, AssignmentAccess> assignments
+        String employeeDisplayName,
+        String employeeHsaId,
+        TreeMap<String, Assignment> assignments
     ) {
-        this.careProviderHsaId = careProviderHsaId;
-        this.careUnitHsaId = careUnitHsaId;
         this.employeeHsaId = employeeHsaId;
-        this.assignments = assignments;
-        this.careProviderDisplayName = careProviderDisplayName;
-        this.careUnitDisplayName = careUnitDisplayName;
         this.employeeDisplayName = employeeDisplayName;
+        this.assignments = assignments;
+        if(assignments.size() > 0) {
+            this.currentAssignment = assignments.firstEntry().getValue();
+        } else {
+            this.currentAssignment = null; // This class should be wrapped in WithOutcome.
+        }
     }
 
-    public String getCareProviderHsaId() {
-        return careProviderHsaId;
-    }
-
-    public String getCareUnitHsaId() {
-        return careUnitHsaId;
+    private PdlContext(
+        String employeeDisplayName,
+        String employeeHsaId,
+        Assignment currentAssignment,
+        TreeMap<String, Assignment> assignments
+    ) {
+        this.employeeHsaId = employeeHsaId;
+        this.employeeDisplayName = employeeDisplayName;
+        this.assignments = assignments;
+        this.currentAssignment = currentAssignment;
     }
 
     public String getEmployeeHsaId() {
         return employeeHsaId;
     }
 
-    public Map<String, AssignmentAccess> getAssignments() {
+    public Assignment getCurrentAssignment() {
+        return currentAssignment;
+    }
+
+    public Map<String, Assignment> getAssignments() {
         return assignments;
-    }
-
-    public String getCareProviderDisplayName() {
-        return careProviderDisplayName;
-    }
-
-    public String getCareUnitDisplayName() {
-        return careUnitDisplayName;
     }
 
     public String getEmployeeDisplayName() {
         return employeeDisplayName;
     }
 
+    public PdlContext changeAssignment(String newCurrentAssignment) {
+        if(assignments.containsKey(newCurrentAssignment)) {
+        return new PdlContext(
+                employeeDisplayName,
+                employeeHsaId,
+                assignments.get(newCurrentAssignment),
+                assignments
+            );
+        } else {
+            throw new IllegalArgumentException("The assignment associated with "+newCurrentAssignment+" does not exist in the list of available assignments.");
+        }
+    }
+
     @Override
     public String toString() {
         return "PdlContext{" +
-                "careProviderHsaId='" + careProviderHsaId + '\'' +
-                ", careUnitHsaId='" + careUnitHsaId + '\'' +
-                ", employeeHsaId='" + employeeHsaId + '\'' +
-                ", assignments=" + assignments +
-                ", careProviderDisplayName='" + careProviderDisplayName + '\'' +
-                ", careUnitDisplayName='" + careUnitDisplayName + '\'' +
+                "employeeHsaId='" + employeeHsaId + '\'' +
                 ", employeeDisplayName='" + employeeDisplayName + '\'' +
+                ", currentAssignment='" + currentAssignment + '\'' +
+                ", assignments=" + assignments +
                 '}';
     }
+
 }

@@ -88,13 +88,13 @@
                                     </c:forEach>
                                     <c:if test="${infoSelection.key.containsBlocked[state.currentVisibility] && !infoSelection.key.viewBlocked }">
                                         <li>
-                                        	<div class="clearfix">
-	                                            <div class="callout callout-danger callout-action">
-	                                                <portlet:actionURL name="showBlockedInformation" var="showBlockedInformationUrl">
-	                                                    <portlet:param name="id" value="${infoSelection.key.id}" />
-	                                                </portlet:actionURL>
-	                                                <a href="${showBlockedInformationUrl}">Visa v&aring;rdenheter med sp&auml;rrad information</a>
-	                                            <div>
+                                            <div class="clearfix">
+                                                <div class="callout callout-danger callout-action">
+                                                    <portlet:actionURL name="showBlockedInformation" var="showBlockedInformationUrl">
+                                                        <portlet:param name="id" value="${infoSelection.key.id}" />
+                                                    </portlet:actionURL>
+                                                    <a href="${showBlockedInformationUrl}">Visa v&aring;rdenheter med sp&auml;rrad information</a>
+                                                <div>
                                             </div>
                                         </li>
                                     </c:if>
@@ -106,20 +106,20 @@
                                 <portlet:param name="id" value="${infoSelection.key.id}" />
                             </portlet:actionURL>
                             <li class="active">
-                            	${infoSelection.key.value.desc}
+                                ${infoSelection.key.value.desc}
                             </li>
                             <li class="sublist">
-                            	<ul>
-                            		<li>
-                            			<div class="clearfix">
-                            				<div class="callout callout-info callout-action">
-				                                <a href="${selectInfoResourceUrl}">
-				                                    Visa vårdenheter
-				                                </a>
-                            				</div>
-                            			</div>
-                            		</li>
-                            	</ul>
+                                <ul>
+                                    <li>
+                                        <div class="clearfix">
+                                            <div class="callout callout-info callout-action">
+                                                <a href="${selectInfoResourceUrl}">
+                                                    Visa vårdenheter
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
                             </li>
                         </c:otherwise>
                     </c:choose>

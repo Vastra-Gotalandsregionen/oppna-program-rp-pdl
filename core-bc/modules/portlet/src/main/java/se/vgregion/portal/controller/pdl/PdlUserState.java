@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import se.vgregion.domain.pdl.*;
+import se.vgregion.domain.decorators.WithOutcome;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -25,8 +26,7 @@ public class PdlUserState implements Serializable {
 
     private Patient patient;
 
-    private PdlContext ctx;
-    private String currentAssignment;
+    private WithOutcome<PdlContext> ctx;
     private boolean showOtherCareUnits = false;
     private boolean showOtherCareProviders = false;
     private boolean confirmConsent = false;
@@ -111,7 +111,7 @@ public class PdlUserState implements Serializable {
         return patient;
     }
 
-    public PdlContext getCtx() {
+    public WithOutcome<PdlContext> getCtx() {
         return ctx;
     }
 
@@ -132,13 +132,28 @@ public class PdlUserState implements Serializable {
         this.patient = patient;
     }
 
-    public void setCtx(PdlContext ctx) {
+    @Override
+    public String toString() {
+        return "PdlUserState{" +
+                "pdlReport=" + pdlReport +
+                ", csReport=" + csReport +
+                ", sumReport=" + sumReport +
+                ", patient=" + patient +
+                ", ctx=" + ctx +
+                ", showOtherCareUnits=" + showOtherCareUnits +
+                ", showOtherCareProviders=" + showOtherCareProviders +
+                ", confirmConsent=" + confirmConsent +
+                ", confirmRelation=" + confirmRelation +
+                ", confirmEmergency=" + confirmEmergency +
+                ", searchSession='" + searchSession + '\'' +
+                ", currentVisibility=" + currentVisibility +
+                ", shouldBeVisible=" + shouldBeVisible +
+                ", currentProgress=" + currentProgress +
+                '}';
+    }
+
+    public void setCtx(WithOutcome<PdlContext> ctx) {
         this.ctx = ctx;
-        Map<String, AssignmentAccess> assign = ctx.getAssignments();
-        if(assign.size() > 0) {
-            String[] keys = assign.keySet().toArray(new String[]{});
-            this.currentAssignment = keys[0];
-        }
     }
 
     public boolean isShowOtherCareUnits() {
@@ -183,34 +198,12 @@ public class PdlUserState implements Serializable {
         this.confirmRelation = confirmRelation;
     }
 
-    public String getCurrentAssignment() {
-        return currentAssignment;
-    }
-
     public void setCurrentAssignment(String currentAssignment) {
-        this.currentAssignment = currentAssignment;
-        if(this.ctx.assignments.get(currentAssignment).isOtherProviders()) {
+        PdlContext newCtx = this.ctx.value.changeAssignment(currentAssignment);
+        this.ctx = (this.ctx.mapValue(newCtx));
+        if(newCtx.currentAssignment.isOtherProviders()) {
             this.showOtherCareUnits = true; // Skip other care units question for SJF
         }
     }
 
-    @Override
-    public String toString() {
-        return "PdlUserState{" +
-                "pdlReport=" + pdlReport +
-                ", csReport=" + csReport +
-                ", patient=" + patient +
-                ", ctx=" + ctx +
-                ", showOtherCareUnits=" + showOtherCareUnits +
-                ", showOtherCareProviders=" + showOtherCareProviders +
-                ", confirmConsent=" + confirmConsent +
-                ", confirmRelation=" + confirmRelation +
-                ", confirmEmergency=" + confirmEmergency +
-                ", searchSession='" + searchSession + '\'' +
-                ", currentVisibility=" + currentVisibility +
-                ", shouldBeVisible=" + shouldBeVisible +
-                ", currentProgress=" + currentProgress +
-                ", currentAssignment='" + currentAssignment + '\'' +
-                '}';
-    }
 }

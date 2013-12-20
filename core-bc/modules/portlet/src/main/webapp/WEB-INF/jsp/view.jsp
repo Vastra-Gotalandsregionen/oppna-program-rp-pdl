@@ -45,8 +45,8 @@
                         <span>Aktuellt uppdrag</span>
                     </label>
                     <aui:select name="currentAssignment" cssClass="element-field" label="">
-                        <c:forEach items="${state.ctx.assignments}" var="as">
-                            <aui:option value="${as.key}" label="${as.value.assignmentDisplayName}" selected="${state.currentAssignment == as.key}"/>
+                        <c:forEach items="${state.ctx.value.assignments}" var="as">
+                            <aui:option value="${as.key}" label="${as.value.assignmentDisplayName}" selected="${state.ctx.value.currentAssignment.assignmentHsaId == as.key}"/>
                         </c:forEach>
                     </aui:select>
                 </aui:field-wrapper>

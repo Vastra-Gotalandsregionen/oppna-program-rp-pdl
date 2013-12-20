@@ -2,20 +2,22 @@
 
 # Global
 TP_HOST=<your.host.se>
-TP_PORT=<your.port>
+TP_PORT1=<your.port>
+TP_PORT2=<your.port>
 TP_BASE_URI=<your.base.path>
+## Place this file with property values in ${user.home}/.pdl/ with name application.properties
 
 # HsaId for the region where the security services reside
 pdl.regionalSecurityServicesHsaId=SE2321000131-E000000000001
 
 # Endpoints for security services
-ws.endpoint.pdl.checkBlocks=https://${TP_HOST}:${TP_PORT}/${TP_BASE_URI}/ehr/blocking/accesscontrol/CheckBlocks/2/rivtabp21
-ws.endpoint.pdl.checkConsent=https://${TP_HOST}:${TP_PORT}/${TP_BASE_URI}/ehr/patientconsent/accesscontrol/CheckConsent/1/rivtabp21
-ws.endpoint.pdl.checkRelationship=https://${TP_HOST}:${TP_PORT}/${TP_BASE_URI}/ehr/patientrelationship/accesscontrol/CheckPatientRelation/1/rivtabp21
-ws.endpoint.pdl.patientBlocks=https://${TP_HOST}:${TP_PORT}/${TP_BASE_URI}/ehr/blocking/administration/GetExtendedBlocksForPatient/2/rivtabp21
-ws.endpoint.pdl.temporaryRevoke=https://${TP_HOST}:${TP_PORT}/${TP_BASE_URI}/ehr/blocking/administration/RegisterTemporaryExtendedRevoke/2/rivtabp21
-ws.endpoint.pdl.registerConsent=https://${TP_HOST}:${TP_PORT}/${TP_BASE_URI}/ehr/patientconsent/administration/RegisterExtendedConsent/1/rivtabp21
-ws.endpoint.pdl.registerRelationship=https://${TP_HOST}:${TP_PORT}/${TP_BASE_URI}/ehr/patientrelationship/administration/RegisterExtendedPatientRelation/1/rivtabp21
+ws.endpoint.pdl.checkBlocks=https://${TP_HOST}:${TP_PORT1}/${TP_BASE_URI}/ehr/blocking/accesscontrol/CheckBlocks/2/rivtabp21
+ws.endpoint.pdl.checkConsent=https://${TP_HOST}:${TP_PORT1}/${TP_BASE_URI}/ehr/patientconsent/accesscontrol/CheckConsent/1/rivtabp21
+ws.endpoint.pdl.checkRelationship=https://${TP_HOST}:${TP_PORT1}/${TP_BASE_URI}/ehr/patientrelationship/accesscontrol/CheckPatientRelation/1/rivtabp21
+ws.endpoint.pdl.patientBlocks=https://${TP_HOST}:${TP_PORT1}/${TP_BASE_URI}/ehr/blocking/administration/GetExtendedBlocksForPatient/2/rivtabp21
+ws.endpoint.pdl.temporaryRevoke=https://${TP_HOST}:${TP_PORT1}/${TP_BASE_URI}/ehr/blocking/administration/RegisterTemporaryExtendedRevoke/2/rivtabp21
+ws.endpoint.pdl.registerConsent=https://${TP_HOST}:${TP_PORT1}/${TP_BASE_URI}/ehr/patientconsent/administration/RegisterExtendedConsent/1/rivtabp21
+ws.endpoint.pdl.registerRelationship=https://${TP_HOST}:${TP_PORT1}/${TP_BASE_URI}/ehr/patientrelationship/administration/RegisterExtendedPatientRelation/1/rivtabp21
 ws.endpoint.pdl.storeLog=
-
+ws.endpoint.pdl.hsaOrgmaster=https://${TP_HOST}:${TP_PORT2}/hsa-ws2/services/hsa-ws2-proxy/v3
 

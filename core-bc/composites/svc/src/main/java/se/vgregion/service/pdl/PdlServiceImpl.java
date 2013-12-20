@@ -10,8 +10,8 @@ import se.riv.ehr.patientconsent.administration.registerextendedconsent.v1.rivta
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelation.v1.rivtabp21.RegisterExtendedPatientRelationResponderInterface;
 import se.vgregion.domain.pdl.*;
-import se.vgregion.domain.pdl.decorators.WithOutcome;
-import se.vgregion.domain.pdl.decorators.WithInfoType;
+import se.vgregion.domain.decorators.WithOutcome;
+import se.vgregion.domain.decorators.WithInfoType;
 
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
@@ -71,14 +71,12 @@ public class PdlServiceImpl implements PdlService {
     @Override
     public PdlReport pdlReport(
             final PdlContext ctx,
-            String currentAssignment,
             Patient patient,
             List<WithInfoType<CareSystem>> careSystems
     ) {
         return Report.generateReport(
                 servicesHsaId,
                 ctx,
-                currentAssignment,
                 patient,
                 careSystems,
                 checkBlocks,
@@ -91,7 +89,6 @@ public class PdlServiceImpl implements PdlService {
     @Override
     public PdlReport patientConsent(
             PdlContext ctx,
-            String currentAssignment,
             PdlReport report,
             String patientId,
             String reason,
@@ -103,7 +100,6 @@ public class PdlServiceImpl implements PdlService {
                 servicesHsaId,
                 establishConsent,
                 ctx,
-                currentAssignment,
                 patientId,
                 consentType,
                 reason,
@@ -117,7 +113,6 @@ public class PdlServiceImpl implements PdlService {
     @Override
     public PdlReport patientRelationship(
             PdlContext ctx,
-            String currentAssignment,
             PdlReport report,
             String patientId,
             String reason,
@@ -129,7 +124,6 @@ public class PdlServiceImpl implements PdlService {
                         servicesHsaId,
                         establishRelationship,
                         ctx,
-                        currentAssignment,
                         patientId,
                         reason,
                         duration,

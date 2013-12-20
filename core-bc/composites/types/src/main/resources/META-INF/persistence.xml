@@ -3,6 +3,6 @@
              version="2.0">
 
     <persistence-unit name="default">
-        <class>se.vgregion.domain.pdl.logging.PdlEventLog</class>
+        <class>se.vgregion.domain.logging.PdlEventLog</class>
     </persistence-unit>
 </persistence>

@@ -1,7 +1,7 @@
 package se.vgregion.service.pdl;
 
 import se.vgregion.domain.pdl.*;
-import se.vgregion.domain.pdl.decorators.WithInfoType;
+import se.vgregion.domain.decorators.WithInfoType;
 
 import java.util.List;
 
@@ -15,13 +15,11 @@ public interface PdlService {
      *
      *
      * @param ctx PDL Context
-     * @param currentAssignment Currently active assignment
      * @param patient Patient information
      * @param careSystems Care Systems to generate report for
      */
     PdlReport pdlReport(
             PdlContext ctx,
-            String currentAssignment,
             Patient patient,
             List<WithInfoType<CareSystem>> careSystems
     );
@@ -31,7 +29,6 @@ public interface PdlService {
      * <p>Duration stipulates the duration of the relation, given from the time of the request.</p>
      *
      * @param ctx PDL Context
-     * @param currentAssignment The current chosen assignment
      * @param report Previous report where consent is not present
      * @param patientId Current Patient ID
      * @param reason Comment describing reason for establishing patient consent
@@ -42,7 +39,6 @@ public interface PdlService {
      */
     PdlReport patientConsent(
             PdlContext ctx,
-            String currentAssignment,
             PdlReport report,
             String patientId,
             String reason,
@@ -56,7 +52,6 @@ public interface PdlService {
      * <p>Duration stipulates the duration of the relation, given from the time of the request.</p>
      *
      * @param ctx PDL Context
-     * @param currentAssignment The current chosen assignment
      * @param report Previous report that is missing the relationship
      * @param patientId Current Patient ID
      * @param reason Comment describing reason for establishing patient relationship
@@ -66,7 +61,6 @@ public interface PdlService {
      */
     PdlReport patientRelationship(
             PdlContext ctx,
-            String currentAssignment,
             PdlReport report,
             String patientId,
             String reason,

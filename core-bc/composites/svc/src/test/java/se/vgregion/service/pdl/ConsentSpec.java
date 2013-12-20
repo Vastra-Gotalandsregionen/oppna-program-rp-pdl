@@ -56,11 +56,13 @@ public class ConsentSpec {
 
                 assertEquals(pe.patientId, req.getPatientId());
                 AccessingActorType actor = req.getAccessingActor();
-                assertEquals(ctx.careProviderHsaId, actor.getCareProviderId());
-                assertEquals(ctx.careUnitHsaId, actor.getCareUnitId());
+                assertEquals(ctx.currentAssignment.careProviderHsaId, actor.getCareProviderId());
+                assertEquals(ctx.currentAssignment.careUnitHsaId, actor.getCareUnitId());
                 assertEquals(ctx.employeeHsaId, actor.getEmployeeId());
 
-                return queryResult(hasConsent, emergency);
+                CheckConsentResponseType response = queryResult(hasConsent, emergency);
+
+                return response;
             }
         };
     }
@@ -92,8 +94,8 @@ public class ConsentSpec {
 
                 assertEquals(AssertionTypeType.fromValue(consentType.name()), req.getAssertionType());
                 assertEquals(pe.getPatientId(), req.getPatientId());
-                assertEquals(ctx.careProviderHsaId, req.getCareProviderId());
-                assertEquals(ctx.careUnitHsaId, req.getCareUnitId());
+                assertEquals(ctx.currentAssignment.careProviderHsaId, req.getCareProviderId());
+                assertEquals(ctx.currentAssignment.careUnitHsaId, req.getCareUnitId());
                 assertEquals(ctx.employeeHsaId, req.getEmployeeId());
                 assertNotNull(req.getRegistrationAction().getRegistrationDate());
                 assertNotNull(req.getEndDate());

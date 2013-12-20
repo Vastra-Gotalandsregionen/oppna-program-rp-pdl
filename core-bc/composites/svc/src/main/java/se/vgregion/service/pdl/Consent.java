@@ -13,7 +13,7 @@ import se.vgregion.domain.pdl.CheckedConsent;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.pdl.PdlReport;
 import se.vgregion.domain.pdl.RoundedTimeUnit;
-import se.vgregion.domain.pdl.decorators.WithOutcome;
+import se.vgregion.domain.decorators.WithOutcome;
 
 import javax.xml.ws.soap.SOAPFaultException;
 import java.io.Serializable;
@@ -26,10 +26,11 @@ class Consent {
     }
 
     static CheckConsentRequestType checkConsentRequest(PdlContext ctx, String patientId) {
+
         CheckConsentRequestType request = new CheckConsentRequestType();
         AccessingActorType actor = new AccessingActorType();
-        actor.setCareProviderId(ctx.careProviderHsaId);
-        actor.setCareUnitId(ctx.careUnitHsaId);
+        actor.setCareProviderId(ctx.currentAssignment.careProviderHsaId);
+        actor.setCareUnitId(ctx.currentAssignment.careUnitHsaId);
         actor.setEmployeeId(ctx.employeeHsaId);
         request.setPatientId(patientId);
         request.setAccessingActor(actor);
@@ -60,7 +61,6 @@ class Consent {
             String servicesHsaId,
             RegisterExtendedConsentResponderInterface establishConsent,
             PdlContext ctx,
-            String currentAssignment,
             String patientId,
             PdlReport.ConsentType consentType,
             String reason,
@@ -70,8 +70,8 @@ class Consent {
         RegisterExtendedConsentRequestType request = new RegisterExtendedConsentRequestType();
         request.setAssertionId(java.util.UUID.randomUUID().toString());
         request.setAssertionType(AssertionTypeType.fromValue(consentType.name()));
-        request.setCareProviderId(ctx.careProviderHsaId);
-        request.setCareUnitId(ctx.getCareUnitHsaId());
+        request.setCareProviderId(ctx.currentAssignment.careProviderHsaId);
+        request.setCareUnitId(ctx.currentAssignment.getCareUnitHsaId());
         request.setEmployeeId(ctx.getEmployeeHsaId());
 
         XMLDuration xmlDuration = new XMLDuration(duration, roundedTimeUnit);
@@ -86,8 +86,8 @@ class Consent {
         action.setRequestDate(XMLDuration.currentDateAsXML());
 
         ActorType actor = new ActorType();
-        actor.setAssignmentId(currentAssignment);
-        actor.setAssignmentName(ctx.assignments.get(currentAssignment).assignmentDisplayName);
+        actor.setAssignmentId(ctx.currentAssignment.getAssignmentHsaId());
+        actor.setAssignmentName(ctx.currentAssignment.getAssignmentDisplayName());
         actor.setEmployeeId(ctx.employeeHsaId);
 
         action.setRegisteredBy(actor);
@@ -119,7 +119,7 @@ class Consent {
                         return WithOutcome.remoteFailure(new CheckedConsent(consentType, true));
                     case ACCESSDENIED:
                         LOGGER.error(
-                                "Access denied when establishing consent. Message: {}",
+                                "AccessWithScope denied when establishing consent. Message: {}",
                                 response.getResultType().getResultText()
                         );
                         return WithOutcome.commFailure(new CheckedConsent(consentType, true));

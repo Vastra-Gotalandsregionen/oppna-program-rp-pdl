@@ -1,4 +1,4 @@
-package se.vgregion.domain.pdl.logging;
+package se.vgregion.domain.logging;
 
 public enum UserAction {
     SEARCH,

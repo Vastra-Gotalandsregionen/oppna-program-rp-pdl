@@ -3,7 +3,8 @@ package se.vgregion.domain.pdl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.vgregion.domain.pdl.decorators.*;
+import se.vgregion.domain.assignment.Assignment;
+import se.vgregion.domain.decorators.*;
 
 import java.io.Serializable;
 import java.util.*;
@@ -17,14 +18,14 @@ public class CareSystemsReport implements Serializable {
     public final boolean containsOtherCareUnits;
     public final boolean containsOtherCareProviders;
 
-    public CareSystemsReport(PdlContext ctx, String currentAssignment, PdlReport pdlReport) {
+    public CareSystemsReport(Assignment currentAssignment, PdlReport pdlReport) {
 
         ArrayList<WithInfoType<WithBlock<CareSystem>>> careSystems =
-                (ctx.assignments.get(currentAssignment).otherProviders) ?
-                removeOtherUnits(ctx, pdlReport.systems.value) : removeOtherProviders(ctx, pdlReport.systems.value) ;
+                (currentAssignment.otherProviders) ?
+                removeOtherUnits(currentAssignment, pdlReport.systems.value) : removeOtherProviders(currentAssignment, pdlReport.systems.value) ;
 
         ArrayList <WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems =
-                categorizeSystems(ctx, careSystems);
+                categorizeSystems(currentAssignment, careSystems);
 
         // Aggregate into a map by information type.
         TreeMap<InformationType, ArrayList<SystemState<CareSystem>>> aggregatedSystems =
@@ -260,10 +261,12 @@ public class CareSystemsReport implements Serializable {
         return new CareSystemsReport(result, newContainsBlockedInfoTypes);
     }
 
-    private ArrayList<WithInfoType<WithBlock<CareSystem>>> removeOtherProviders(PdlContext ctx, ArrayList <WithInfoType<WithBlock<CareSystem>>> systems) {
+    private ArrayList<WithInfoType<WithBlock<CareSystem>>> removeOtherProviders(Assignment assignment, ArrayList <WithInfoType<WithBlock<CareSystem>>> systems) {
         ArrayList<WithInfoType<WithBlock<CareSystem>>> filtered = new ArrayList<WithInfoType<WithBlock<CareSystem>>>();
-        for( WithInfoType<WithBlock<CareSystem>> system : systems ){
-            if(ctx.careProviderHsaId.equals(system.value.value.careProviderHsaId)) {
+        for(WithInfoType<WithBlock<CareSystem>> system : systems){
+            Visibility systemVisibility = system.value.value.getVisibilityFor(assignment);
+
+            if(systemVisibility != Visibility.OTHER_CARE_PROVIDER && systemVisibility != Visibility.NOT_VISIBLE) {
                 filtered.add(system);
             }
         }
@@ -271,16 +274,14 @@ public class CareSystemsReport implements Serializable {
     }
 
     private ArrayList<WithInfoType<WithBlock<CareSystem>>> removeOtherUnits(
-            PdlContext ctx,
+            Assignment assignment,
             ArrayList<WithInfoType<WithBlock<CareSystem>>> systems
     ) {
         ArrayList<WithInfoType<WithBlock<CareSystem>>> filtered = new ArrayList<WithInfoType<WithBlock<CareSystem>>>();
         for( WithInfoType<WithBlock<CareSystem>> system : systems ){
-            boolean sameCareProvider = ctx.careProviderHsaId.equals(system.value.value.careProviderHsaId);
-            boolean sameCareUnit = ctx.careUnitHsaId.equals(system.value.value.careUnitHsaId);
-            boolean otherCareProvider = !ctx.careProviderHsaId.equals(system.value.value.careProviderHsaId);
+            Visibility systemVisibility = system.value.value.getVisibilityFor(assignment);
 
-            if((sameCareProvider && sameCareUnit) || otherCareProvider) {
+            if(systemVisibility != Visibility.OTHER_CARE_UNIT && systemVisibility != Visibility.NOT_VISIBLE) {
                 filtered.add(system);
             }
         }
@@ -349,7 +350,7 @@ public class CareSystemsReport implements Serializable {
     }
 
     private ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizeSystems(
-            PdlContext ctx,
+            Assignment currentAssignment,
             ArrayList<WithInfoType<WithBlock<CareSystem>>> systems
     ) {
 
@@ -357,15 +358,9 @@ public class CareSystemsReport implements Serializable {
                 new ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>>();
 
         for (WithInfoType<WithBlock<CareSystem>> sys : systems) {
-            boolean isSameCareProvider = ctx.careProviderHsaId.equals(sys.value.value.careProviderHsaId);
-            boolean isSameCareUnit = ctx.careUnitHsaId.equals(sys.value.value.careUnitHsaId);
-
-            if (isSameCareProvider && isSameCareUnit) {
-                withVisiblitiy(categorizedSystems, sys, Visibility.SAME_CARE_UNIT);
-            } else if (isSameCareProvider) {
-                withVisiblitiy(categorizedSystems, sys, Visibility.OTHER_CARE_UNIT);
-            } else {
-                withVisiblitiy(categorizedSystems, sys, Visibility.OTHER_CARE_PROVIDER);
+            Visibility systemVisibility = sys.value.value.getVisibilityFor(currentAssignment);
+            if(systemVisibility != Visibility.NOT_VISIBLE) {
+                withVisiblitiy(categorizedSystems, sys, systemVisibility);
             }
         }
 

@@ -25,7 +25,6 @@ Generation time : 2013-10-08 14:16:23 CEST
     <module>composites/svc</module>
     <module>composites/schema</module>
     <module>modules/portlet</module>
-    <module>modules/intsvc</module>
     <module>applications/core-bc</module>
   </modules>
 </project>

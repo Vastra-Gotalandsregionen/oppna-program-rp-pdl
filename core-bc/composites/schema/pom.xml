@@ -59,5 +59,10 @@ Generation time : 2013-10-08 14:16:23 CEST
       <artifactId>urn-riv-ehr-log-schemas</artifactId>
       <version>${ehr.log.version}</version>
     </dependency>
+    <dependency>
+      <groupId>se.vgregion.icc.sd.hsaws2</groupId>
+      <artifactId>hsa-ws2-schemas</artifactId>
+      <version>1.0.0</version>
+    </dependency>
   </dependencies>
 </project>

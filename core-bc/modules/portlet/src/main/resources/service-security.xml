@@ -14,7 +14,7 @@
 
   <!-- The name of each <http:conduit> configuration is matched to the url used by CXF RS. -->
   <!-- The name value containing the URL pattern can NOT be loaded from a property file -->
-  <http:conduit name="https://esbtest.vgregion.se:40200/.*">
+  <http:conduit name="https://esbtest.vgregion.se*">
     <http:tlsClientParameters disableCNCheck="true">
       <sec:keyManagers keyPassword="${pdl.tjp.keystore.password}">
         <sec:keyStore
