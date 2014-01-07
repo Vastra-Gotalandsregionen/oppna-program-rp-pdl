@@ -20,9 +20,10 @@ public class CareSystemsReport implements Serializable {
 
     public CareSystemsReport(Assignment currentAssignment, PdlReport pdlReport) {
 
-        ArrayList<WithInfoType<WithBlock<CareSystem>>> careSystems =
-                (currentAssignment.otherProviders) ?
-                removeOtherUnits(currentAssignment, pdlReport.systems.value) : removeOtherProviders(currentAssignment, pdlReport.systems.value) ;
+        ArrayList<WithInfoType<WithBlock<CareSystem>>> careSystems = filerByAssignment(
+                currentAssignment,
+                pdlReport.systems.value
+        );
 
         ArrayList <WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems =
                 categorizeSystems(currentAssignment, careSystems);
@@ -211,27 +212,14 @@ public class CareSystemsReport implements Serializable {
         return new CareSystemsReport(aggregatedSystems.mapValue(newSystems));
     }
 
-    private ArrayList<WithInfoType<WithBlock<CareSystem>>> removeOtherProviders(Assignment assignment, ArrayList <WithInfoType<WithBlock<CareSystem>>> systems) {
-        ArrayList<WithInfoType<WithBlock<CareSystem>>> filtered = new ArrayList<WithInfoType<WithBlock<CareSystem>>>();
-        for(WithInfoType<WithBlock<CareSystem>> system : systems){
-            Visibility systemVisibility = system.value.value.getVisibilityFor(assignment);
-
-            if(systemVisibility != Visibility.OTHER_CARE_PROVIDER && systemVisibility != Visibility.NOT_VISIBLE) {
-                filtered.add(system);
-            }
-        }
-        return filtered;
-    }
-
-    private ArrayList<WithInfoType<WithBlock<CareSystem>>> removeOtherUnits(
+    private ArrayList<WithInfoType<WithBlock<CareSystem>>> filerByAssignment(
             Assignment assignment,
             ArrayList<WithInfoType<WithBlock<CareSystem>>> systems
     ) {
         ArrayList<WithInfoType<WithBlock<CareSystem>>> filtered = new ArrayList<WithInfoType<WithBlock<CareSystem>>>();
         for( WithInfoType<WithBlock<CareSystem>> system : systems ){
-            Visibility systemVisibility = system.value.value.getVisibilityFor(assignment);
 
-            if(systemVisibility != Visibility.OTHER_CARE_UNIT && systemVisibility != Visibility.NOT_VISIBLE) {
+            if(assignment.shouldBeIncluded(system.value.value)) {
                 filtered.add(system);
             }
         }
@@ -308,10 +296,7 @@ public class CareSystemsReport implements Serializable {
                 new ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>>();
 
         for (WithInfoType<WithBlock<CareSystem>> sys : systems) {
-            Visibility systemVisibility = sys.value.value.getVisibilityFor(currentAssignment);
-            if(systemVisibility != Visibility.NOT_VISIBLE) {
-                withVisiblitiy(categorizedSystems, sys, systemVisibility);
-            }
+            withVisiblitiy(categorizedSystems, sys, currentAssignment.visibilityFor(sys.value.value));
         }
 
         return categorizedSystems;

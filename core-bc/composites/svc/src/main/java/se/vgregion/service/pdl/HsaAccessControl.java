@@ -46,8 +46,6 @@ public class HsaAccessControl implements AccessControl {
             );
 
             if (miuResponse.getMiuInformation().size() > 0) {
-                WithOutcome<ArrayList<Assignment>> outcome = WithOutcome.success(null);
-
                 TreeMap<String, Assignment> assignments = new TreeMap<String, Assignment>();
 
                 for (MiuInformationType miu : miuResponse.getMiuInformation()) {
@@ -59,19 +57,12 @@ public class HsaAccessControl implements AccessControl {
                         for (String miuRight : miu.getMiuRights().getMiuRight()) {
                             if(miuRight.contains(ALL)) {
                                 // Special case, expand ALL to all information types
-                                WithOutcome<ArrayList<String>> mius = expandAllMiu(miuRight);
-                                if(mius.isSuccess()) {
-                                    for(String m : mius.value) {
-                                        WithOutcome<Access> accessEntry = Access.fromMiuRights(m);
-                                        outcome = WithOutcome.flatten(outcome, accessEntry);
+                                ArrayList<String> mius = expandAllMiu(miuRight);
+                                    for(String m : mius) {
+                                        access.add(Access.fromMiuRights(m));
                                     }
-                                }
                             } else {
-                                WithOutcome<Access> accessEntry = Access.fromMiuRights(miuRight);
-
-                                outcome = WithOutcome.flatten(outcome, accessEntry); // Combining multiple outcomes into one outcome taking the first failure
-
-                                access.add(accessEntry.value);
+                                access.add(Access.fromMiuRights(miuRight));
                             }
                         }
 
@@ -93,7 +84,7 @@ public class HsaAccessControl implements AccessControl {
                 String displayName = firstEntry.getGivenName() + " " + firstEntry.getMiddleAndSurName();
                 PdlContext context = new PdlContext(displayName, hsaId, assignments);
 
-                return outcome.mapValue(context);
+                return WithOutcome.success(context);
             }
         } catch (HsaWsFault hsaWsFault) {
             LOGGER.error("Unable to do lookup for HSA-ID {}. Faultinfo: {}.", hsaId, hsaWsFault.getFaultInfo());
@@ -103,18 +94,16 @@ public class HsaAccessControl implements AccessControl {
         return WithOutcome.unfulfilled(new PdlContext("", hsaId, new TreeMap<String, Assignment>()));
     }
 
-    private WithOutcome<ArrayList<String>> expandAllMiu(String miuRight) {
+    private ArrayList<String> expandAllMiu(String miuRight) {
         String[] rights = miuRight.split(";");
-        if(rights.length == 3) {
-            String activity = rights[0];
-            String scope = rights[2];
-            ArrayList<String> mius = new ArrayList<String>();
-            for(InformationType i : InformationType.values()) {
-                mius.add(activity + ";" + i.toString().toLowerCase() + ";" + scope);
-            }
 
-            return WithOutcome.success(mius);
+        String activity = rights[0];
+        String scope = rights[2];
+        ArrayList<String> mius = new ArrayList<String>();
+        for(InformationType i : InformationType.values()) {
+            mius.add(activity + ";" + i.toString().toLowerCase() + ";" + scope);
         }
-        return WithOutcome.clientError(null);
+
+        return mius;
     }
 }

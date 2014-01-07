@@ -81,7 +81,7 @@ public class CareSystemReportSpec {
         CareSystemsReport report = new CareSystemsReport(newCtx.currentAssignment, mockReport);
 
         assertEquals(Outcome.SUCCESS, report.aggregatedSystems.outcome);
-        assertEquals(2, report.aggregatedSystems.value.size());
+        assertEquals(1, report.aggregatedSystems.value.size());
     }
 
     private WithInfoType<WithBlock<CareSystem>> wrapSystem(

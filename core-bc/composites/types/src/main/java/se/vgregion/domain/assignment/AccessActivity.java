@@ -1,25 +1,31 @@
 package se.vgregion.domain.assignment;
 
-import se.vgregion.domain.decorators.WithOutcome;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public enum AccessActivity {
     READ("Läsa"),
     WRITE("Skriva"),
-    SIGN("Signera");
+    SIGN("Signera"),
+    UNKNOWN("Okänd");
 
     public final String value;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccessActivity.class.getName());
+
 
     private AccessActivity(String value) {
         this.value = value;
     }
 
-    public static WithOutcome<AccessActivity> getByValue(String value) {
+    public static AccessActivity getByValue(String value) {
         for(AccessActivity val : AccessActivity.values()) {
             if(val.value.equalsIgnoreCase(value)) {
-                return WithOutcome.success(val);
+                return val;
             }
         }
 
-        return WithOutcome.clientError(null);
+        LOGGER.error("Value unkown type, got " + value + ", expected Läsa, Skriva or Signera.");
+        return UNKNOWN;
     }
 }

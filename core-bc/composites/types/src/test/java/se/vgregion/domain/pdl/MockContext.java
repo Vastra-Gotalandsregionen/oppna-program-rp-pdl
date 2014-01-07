@@ -26,16 +26,19 @@ public class MockContext {
 
         TreeSet<Access> otherProviders = new TreeSet<Access>(
                 Arrays.asList(
-                        Access.fromMiuRights("Läsa;lko;SJF").value,
-                        Access.fromMiuRights("Läsa;fun;SJF").value
+                        Access.fromMiuRights("Läsa;lko;SJF"),
+                        Access.fromMiuRights("Läsa;fun;SJF")
                 )
         );
 
         TreeSet<Access> sameProviders = new TreeSet<Access>(
                 Arrays.asList(
-                        Access.fromMiuRights("Läsa;und;SE2321000131-S000000010252").value,
-                        Access.fromMiuRights("Läsa;lak;"+otherCareUnitHsaId).value,
-                        Access.fromMiuRights("Läsa;upp;"+otherCareUnitHsaId).value
+                        Access.fromMiuRights("Läsa;und;SE2321000131-S000000010252"),
+                        Access.fromMiuRights("Läsa;lak;"+otherCareUnitHsaId),
+                        Access.fromMiuRights("Läsa;upp;"+otherCareUnitHsaId),
+                        Access.fromMiuRights("Läsa;und;VE"),
+                        Access.fromMiuRights("Läsa;lak;VE"),
+                        Access.fromMiuRights("Läsa;upp;VE")
                 )
         );
         assignments.put(

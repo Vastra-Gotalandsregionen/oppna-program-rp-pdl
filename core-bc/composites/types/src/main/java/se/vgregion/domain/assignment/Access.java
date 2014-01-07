@@ -1,7 +1,6 @@
 package se.vgregion.domain.assignment;
 
 import se.vgregion.domain.pdl.InformationType;
-import se.vgregion.domain.decorators.WithOutcome;
 
 import java.io.Serializable;
 
@@ -19,18 +18,16 @@ public class Access implements Serializable, Comparable<Access> {
         this.scope = scope;
     }
 
-    public static WithOutcome<Access> fromMiuRights(String miuRight) {
+    public static Access fromMiuRights(String miuRight) {
         String[] rights = miuRight.split(";");
-        if(rights.length == 3) {
-            WithOutcome<AccessActivity> activity = AccessActivity.getByValue(rights[0]);
-            InformationType informationType = InformationType.valueOfWithFallback(rights[1].toUpperCase());
-            String scope = rights[2];
-            boolean isHsaId = scope.length() > 3; // Assumption: Scope is a HSA-ID if longer than three characters (Other being VE, VG, SJF)
+        if(rights.length != 3) throw new IllegalArgumentException("Miu rights for assignment must be a three values separated by a semicolon.");
 
-            return WithOutcome.success(new Access(isHsaId, activity.value, informationType, scope));
-        } else {
-            return WithOutcome.clientError(null);
-        }
+        AccessActivity activity = AccessActivity.getByValue(rights[0]);
+        InformationType informationType = InformationType.valueOfWithFallback(rights[1].toUpperCase());
+        String scope = rights[2];
+        boolean isHsaId = scope.length() > 3; // Assumption: Scope is a HSA-ID if longer than three characters (Other being VE, VG, SJF)
+
+        return new Access(isHsaId, activity, informationType, scope);
     }
 
     @Override
@@ -38,5 +35,15 @@ public class Access implements Serializable, Comparable<Access> {
         return this.accessActivity.compareTo(o.accessActivity) +
                this.infoType.compareTo(o.infoType) +
                this.scope.compareTo(o.scope);
+    }
+
+    @Override
+    public String toString() {
+        return "Access{" +
+                "hasHsaId=" + hasHsaId +
+                ", accessActivity=" + accessActivity +
+                ", infoType=" + infoType +
+                ", scope='" + scope + '\'' +
+                '}';
     }
 }

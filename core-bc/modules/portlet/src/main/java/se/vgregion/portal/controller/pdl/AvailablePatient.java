@@ -16,7 +16,7 @@ public class AvailablePatient {
     public static boolean check(PdlContext ctx, List<WithInfoType<CareSystem>> careSystems) {
         for( WithInfoType<CareSystem> infoSystem : careSystems ) {
             CareSystem system = infoSystem.value;
-            Visibility systemVisibility = system.getVisibilityFor(ctx.currentAssignment);
+            Visibility systemVisibility = ctx.currentAssignment.visibilityFor(system);
             if(systemVisibility == Visibility.SAME_CARE_UNIT) {
                 return true;
             }

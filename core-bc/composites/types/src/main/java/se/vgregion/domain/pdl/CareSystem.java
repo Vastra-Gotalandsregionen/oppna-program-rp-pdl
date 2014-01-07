@@ -1,7 +1,5 @@
 package se.vgregion.domain.pdl;
 
-import se.vgregion.domain.assignment.Assignment;
-
 import java.io.Serializable;
 
 public class CareSystem implements Serializable {
@@ -51,25 +49,6 @@ public class CareSystem implements Serializable {
 
     public CareSystemSource getSource() {
         return source;
-    }
-
-    public Visibility getVisibilityFor(
-            String careProviderHsaId,
-            String careUnitHsaId
-    ) {
-        boolean sameCareProvider = this.careProviderHsaId.equalsIgnoreCase(careProviderHsaId);
-        boolean sameCareUnit = this.careUnitHsaId.equalsIgnoreCase(careUnitHsaId);
-        if(!sameCareProvider) {
-            return Visibility.OTHER_CARE_PROVIDER;
-        } else if(sameCareUnit) {
-            return Visibility.SAME_CARE_UNIT;
-        } else {
-            return Visibility.OTHER_CARE_UNIT;
-        }
-    }
-
-    public Visibility getVisibilityFor(Assignment assignment) {
-        return getVisibilityFor(assignment.careProviderHsaId, assignment.getCareUnitHsaId());
     }
 
     @Override

@@ -33,9 +33,7 @@ public class AssignmentSpec {
         WithOutcome outcome = WithOutcome.success(null);
 
         for(String miu : mius) {
-            WithOutcome<Access> access = Access.fromMiuRights(miu);
-            outcome = outcome.flatten(outcome, access);
-            assignments.add(access.value);
+            assignments.add(Access.fromMiuRights(miu));
         }
 
         Assignment ass = new Assignment(
