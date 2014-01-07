@@ -36,7 +36,10 @@ public class MockContext {
                 Arrays.asList(
                         Access.fromMiuRights("Läsa;und;SE2321000131-S000000010252"),
                         Access.fromMiuRights("Läsa;lak;"+otherCareUnitHsaId),
-                        Access.fromMiuRights("Läsa;upp;"+otherCareUnitHsaId)
+                        Access.fromMiuRights("Läsa;upp;"+otherCareUnitHsaId),
+                        Access.fromMiuRights("Läsa;und;VE"),
+                        Access.fromMiuRights("Läsa;lak;VE"),
+                        Access.fromMiuRights("Läsa;upp;VE")
                 )
         );
         assignments.put(

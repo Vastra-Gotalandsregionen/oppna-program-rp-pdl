@@ -219,7 +219,7 @@ public class CareSystemsReport implements Serializable {
         ArrayList<WithInfoType<WithBlock<CareSystem>>> filtered = new ArrayList<WithInfoType<WithBlock<CareSystem>>>();
         for( WithInfoType<WithBlock<CareSystem>> system : systems ){
 
-            if(assignment.shouldBeIncluded(system.value.value)) {
+            if(assignment.shouldBeIncluded(system.mapValue(system.value.value))) {
                 filtered.add(system);
             }
         }

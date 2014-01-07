@@ -25,7 +25,7 @@ public class CareSystemReportSpec {
         ctx = ctx.changeAssignment(MockContext.VE);
 
         CareSystem sameUnit1 = new CareSystem(CareSystemSource.BFR, ctx.currentAssignment.careProviderHsaId, "VGR", ctx.currentAssignment.careUnitHsaId, "Unit 1");
-        CareSystem sameUnit2 = new CareSystem(CareSystemSource.BFR, ctx.currentAssignment.careProviderHsaId, "VGR", ctx.currentAssignment.careUnitHsaId, "Unit 1");
+        CareSystem sameUnit2 = new CareSystem(CareSystemSource.RRE, ctx.currentAssignment.careProviderHsaId, "VGR", ctx.currentAssignment.careUnitHsaId, "Unit 1");
 
 
         CareSystem otherUnit1 = new CareSystem(CareSystemSource.BFR, ctx.currentAssignment.careProviderHsaId, "VGR", "otherCareUnitHsaId", "Unit 2");
@@ -70,7 +70,7 @@ public class CareSystemReportSpec {
         CareSystemsReport report = new CareSystemsReport(newCtx.currentAssignment, mockReport);
 
         assertEquals(Outcome.SUCCESS, report.aggregatedSystems.outcome);
-        assertEquals(2, report.aggregatedSystems.value.size());
+        assertEquals(1, report.aggregatedSystems.value.size());
 
     }
 

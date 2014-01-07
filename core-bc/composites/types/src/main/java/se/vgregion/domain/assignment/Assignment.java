@@ -2,7 +2,9 @@ package se.vgregion.domain.assignment;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.pdl.CareSystem;
+import se.vgregion.domain.pdl.InformationType;
 import se.vgregion.domain.pdl.Visibility;
 
 import java.io.Serializable;
@@ -79,22 +81,35 @@ public class Assignment implements Serializable, Comparable<Assignment> {
         }
     }
 
-    public boolean shouldBeIncluded(CareSystem careSystem) {
+    public boolean shouldBeIncluded(WithInfoType<CareSystem> careSystem) {
         return (access.size() > 0 ) && checkAllAccess(access.first(), careSystem);
     }
 
     // Recursively check each access against care system, if one or more access is granted the recursion is stopped
-    private boolean checkAllAccess(Access nextAccess, CareSystem careSystem) {
+    private boolean checkAllAccess(Access nextAccess, WithInfoType<CareSystem> careSystem) {
         NavigableSet<Access> tail = access.tailSet(nextAccess, false); // Get the rest of the set, excluding the head
 
-        boolean include = checkAccess(nextAccess, careSystem);
+        boolean include =
+                checkSameCareUnit(careSystem.value) ||
+                checkInfoType(nextAccess, careSystem.informationType) &&
+                checkScope(nextAccess, careSystem.value);
 
         // If we found that we should include the system or there are no more accesses left
         boolean includeOrEnd = include || tail.size() == 0;
         return (includeOrEnd) ? include : checkAllAccess(tail.first(), careSystem);
     }
 
-    private boolean checkAccess(Access access, CareSystem careSystem) {
+    // If the the information resides in the same care unit it should ALWAYS be displayed
+    private boolean checkSameCareUnit(CareSystem careSystem) {
+        return Visibility.SAME_CARE_UNIT == visibilityFor(careSystem);
+
+    }
+
+    private boolean checkInfoType(Access access, InformationType informationType) {
+        return access.infoType == informationType;
+    }
+
+    private boolean checkScope(Access access, CareSystem careSystem) {
         Visibility systemVisibility = visibilityFor(careSystem);
 
         if(access.hasHsaId) {
