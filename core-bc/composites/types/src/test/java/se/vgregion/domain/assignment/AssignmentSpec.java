@@ -30,7 +30,6 @@ public class AssignmentSpec {
        };
 
         TreeSet<Access> assignments = new TreeSet<Access>();
-        WithOutcome outcome = WithOutcome.success(null);
 
         for(String miu : mius) {
             assignments.add(Access.fromMiuRights(miu));
@@ -46,7 +45,6 @@ public class AssignmentSpec {
                 assignments
         );
 
-        assertTrue(outcome.success);
         assertTrue(ass.otherProviders);
         assertFalse(ass.otherUnits);
     }
