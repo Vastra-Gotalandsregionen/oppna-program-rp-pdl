@@ -3,3 +3,12 @@
 target
 *.class
 rebel.xml
+
+.DS_Store
+
+.settings
+.classpath
+.project
+
+
+
