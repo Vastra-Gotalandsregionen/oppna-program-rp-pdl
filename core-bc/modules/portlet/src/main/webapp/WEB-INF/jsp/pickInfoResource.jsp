@@ -21,11 +21,11 @@
     <jsp:include page="outcomeInfo.jsp" />
     <div class="info">
         <c:choose>
-            <c:when test="${state.pdlReport.hasPatientInformation}">
+            <c:when test="${state.csReport.availablePatientInformation}">
                 <jsp:include page="hasInformation.jsp" />
             </c:when>
             <c:otherwise>
-                <h2>Det finns ingen patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h2>
+                <h2>Det finns ingen tillgänglig patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h2>
                 <portlet:renderURL var="startUrl">
                     <portlet:param name="jspPage" value="/WEB-INF/jsp/view.jsp" />
                 </portlet:renderURL>

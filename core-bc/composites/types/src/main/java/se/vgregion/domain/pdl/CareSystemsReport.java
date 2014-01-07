@@ -17,6 +17,7 @@ public class CareSystemsReport implements Serializable {
     public final boolean containsSameCareUnit;
     public final boolean containsOtherCareUnits;
     public final boolean containsOtherCareProviders;
+    public final boolean availablePatientInformation;
 
     public CareSystemsReport(Assignment currentAssignment, PdlReport pdlReport) {
 
@@ -44,6 +45,8 @@ public class CareSystemsReport implements Serializable {
 
         containsOtherCareUnits = containsOtherCareUnits(lowestOpenedUp);
         containsOtherCareProviders = containsOtherCareProviders(lowestOpenedUp);
+
+        availablePatientInformation = lowestOpenedUp.size() > 0;
 
         this.aggregatedSystems = pdlReport.systems.mapValue(lowestOpenedUp);
     }
@@ -74,6 +77,7 @@ public class CareSystemsReport implements Serializable {
         this.containsSameCareUnit = containsSameCareUnit(aggregatedSystems.value);
         this.containsOtherCareProviders = containsOtherCareProviders(aggregatedSystems.value);
         this.containsOtherCareUnits = containsOtherCareUnits(aggregatedSystems.value);
+        this.availablePatientInformation = aggregatedSystems.value.size() > 0;
     }
 
 
@@ -333,6 +337,9 @@ public class CareSystemsReport implements Serializable {
         return containsSameCareUnit;
     }
 
+    public boolean isAvailablePatientInformation() {
+        return availablePatientInformation;
+    }
     @Override
     public String toString() {
         return "CareSystemsReport{" +
