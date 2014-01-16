@@ -21,114 +21,169 @@ public class CareSystemsImpl implements CareSystems {
             return Collections
                     .unmodifiableList(
                             Arrays.asList(
-                                new WithInfoType<CareSystem>(
-                                    InformationType.UND,
-                                    new CareSystem(
-                                        CareSystemSource.BFR,
-                                        "SE2321000131-E000000000001",
-                                        "Västra Götalandsregionen",
-                                        "SE2321000131-E000000006834",
-                                        "Akutklinik"
-                                    )
-                                ),
-                                new WithInfoType<CareSystem>(
-                                    InformationType.VBE,
-                                    new CareSystem(
-                                        CareSystemSource.BFR,
-                                        "SE2321000131-E000000000001",
-                                        "Västra Götalandsregionen",
-                                        "SE2321000131-E000000006834",
-                                        "Akutklinik"
-                                    )
-                                ),
-                                new WithInfoType<CareSystem>(
-                                    InformationType.UND,
-                                    new CareSystem(
-                                        CareSystemSource.BFR,
-                                        "SE5565189692-0001",
-                                        "Capio AB",
-                                        "SE5565189692-16M",
-                                        "Lundby"
-                                    )
-                                ),
-                                new WithInfoType<CareSystem>(
-                                    InformationType.VBE,
-                                    new CareSystem(
-                                        CareSystemSource.BFR,
-                                        "SE2321000131-E000000000001",
-                                        "Västra Götalandsregionen",
-                                        "SE2321000131-E000000001166",
-                                        "Frölunda Specialistsjukhus"
-                                    )
-                                )
-                            )
-                    );
-        } else {
-            return Collections
-                    .unmodifiableList(
-                            Arrays
-                                .asList(
-                                        new WithInfoType<CareSystem>(
-                                            InformationType.UND,
-                                            new CareSystem(
-                                                CareSystemSource.BFR,
-                                                "SE2321000131-E000000000001",
-                                                "Capio AB",
-                                                "SE2321000131-S000000010252",
-                                                "Lundby närsjukhus, Ortopedi 2"
-                                            )
-                                        ),
-                                        new WithInfoType<CareSystem>(
-                                            InformationType.UND,
-                                            new CareSystem(
-                                                CareSystemSource.BFR,
-                                                "SE2321000131-E000000000001",
-                                                "Capio AB",
-                                                "SE2321000131-S000000020252",
-                                                "Lundby närsjukhus, Ortopedi 1"
-                                            )
-                                        ),
-                                        new WithInfoType<CareSystem>(
+                                    new WithInfoType<CareSystem>(
                                             InformationType.UND,
                                             new CareSystem(
                                                     CareSystemSource.BFR,
-                                                "SE2321000131-E000000000001",
-                                                "Capio AB",
-                                                "SE2321000131-S000000030252",
-                                                "Lundby närsjukhus, Barn och ungdomspsykatri"
+                                                    "SE2321000131-E000000000001",
+                                                    "Västra Götalandsregionen",
+                                                    "SE2321000131-E000000006834",
+                                                    "Akutklinik"
                                             )
-                                        ),
-                                        new WithInfoType<CareSystem>(
+                                    ),
+                                    new WithInfoType<CareSystem>(
                                             InformationType.VBE,
                                             new CareSystem(
-                                                CareSystemSource.RRE,
-                                                "SE2321000131-E000000000001",
-                                                "Capio AB",
-                                                "SE2321000131-S000000040252",
-                                                "Lundby närsjukhus, Ortopedi 12"
+                                                    CareSystemSource.BFR,
+                                                    "SE2321000131-E000000000001",
+                                                    "Västra Götalandsregionen",
+                                                    "SE2321000131-E000000006834",
+                                                    "Akutklinik"
                                             )
-                                        ),
-                                        new WithInfoType<CareSystem>(
+                                    ),
+                                    new WithInfoType<CareSystem>(
                                             InformationType.UND,
                                             new CareSystem(
-                                                CareSystemSource.BFR,
-                                                "SE2321000132-E000000000001",
-                                                "Västra Götalandsregionen",
-                                                "SE2321000132-S000000010251",
-                                                "SU Sahlgrenska, Ortopedi 11"
+                                                    CareSystemSource.BFR,
+                                                    "SE5565189692-0001",
+                                                    "Capio AB",
+                                                    "SE5565189692-16M",
+                                                    "Lundby"
                                             )
-                                        ),
-                                        new WithInfoType<CareSystem>(
+                                    ),
+                                    new WithInfoType<CareSystem>(
+                                            InformationType.VBE,
+                                            new CareSystem(
+                                                    CareSystemSource.BFR,
+                                                    "SE2321000131-E000000000001",
+                                                    "Västra Götalandsregionen",
+                                                    "SE2321000131-E000000001166",
+                                                    "Frölunda Specialistsjukhus"
+                                            )
+                                    )
+                            )
+                    );
+        } else if( patientId.equals("194302173333") ) {  // VG Test
+            return Collections.unmodifiableList(
+                    Arrays.asList(
+                            new WithInfoType<CareSystem>(
+                                    InformationType.VBE,
+                                    new CareSystem(
+                                            CareSystemSource.BFR,
+                                            "SE2321000131-E000000000001",
+                                            "Västra Götalandsregionen",
+                                            "SE2321000131-E000000010252",
+                                            "Frölunda Specialistsjukhus"
+                                    )
+                            ),
+                            new WithInfoType<CareSystem>(
+                                    InformationType.LAK,
+                                    new CareSystem(
+                                            CareSystemSource.OTH,
+                                            "SE2321000131-E000000000001",
+                                            "Västra Götalandsregionen",
+                                            "SE2321000131-E000000001266",
+                                            "Backa Läkarhus"
+                                    )
+                            ),
+                            new WithInfoType<CareSystem>(
+                                    InformationType.VBE,
+                                    new CareSystem(
+                                            CareSystemSource.BFR,
+                                            "SE2321000131-E000000000001",
+                                            "Västra Götalandsregionen",
+                                            "SE2321000131-E000000001266",
+                                            "Backa Läkarhus"
+                                    )
+                            ),
+                            new WithInfoType<CareSystem>(
+                                    InformationType.UND,
+                                    new CareSystem(
+                                            CareSystemSource.BFR,
+                                            "SE2321000131-E000000000001",
+                                            "Västra Götalandsregionen",
+                                            "SE2321000131-E000000001266",
+                                            "Backa Läkarhus"
+                                    )
+                            ),
+                            new WithInfoType<CareSystem>(
+                                    InformationType.UND,
+                                    new CareSystem(
+                                            CareSystemSource.BFR,
+                                            "SE5565189692-0001",
+                                            "Capio AB",
+                                            "SE5565189692-16M",
+                                            "Lundby, Ortopedi 12"
+                                    )
+                            )
+
+                    )
+            );
+        } else {
+            return Collections
+                    .unmodifiableList(
+                            Arrays.asList(
+                                    new WithInfoType<CareSystem>(
                                             InformationType.UND,
                                             new CareSystem(
-                                                CareSystemSource.BFR,
-                                                "SE2321000132-E000000000001",
-                                                "Västra Götalandsregionen",
-                                                "SE2321000132-S000000010254",
-                                                "NU-sjukvården, Kirurgi 12"
+                                                    CareSystemSource.BFR,
+                                                    "SE2321000131-E000000000001",
+                                                    "Capio AB",
+                                                    "SE2321000131-E000000010252",
+                                                    "Lundby närsjukhus, Ortopedi 2"
                                             )
-                                        )
-                                )
+                                    ),
+                                    new WithInfoType<CareSystem>(
+                                            InformationType.UND,
+                                            new CareSystem(
+                                                    CareSystemSource.BFR,
+                                                    "SE2321000131-E000000000001",
+                                                    "Capio AB",
+                                                    "SE2321000131-E000000020252",
+                                                    "Lundby närsjukhus, Ortopedi 1"
+                                            )
+                                    ),
+                                    new WithInfoType<CareSystem>(
+                                            InformationType.UND,
+                                            new CareSystem(
+                                                    CareSystemSource.BFR,
+                                                    "SE2321000131-E000000000001",
+                                                    "Capio AB",
+                                                    "SE2321000131-E000000030252",
+                                                    "Lundby närsjukhus, Barn och ungdomspsykatri"
+                                            )
+                                    ),
+                                    new WithInfoType<CareSystem>(
+                                            InformationType.VBE,
+                                            new CareSystem(
+                                                    CareSystemSource.RRE,
+                                                    "SE2321000131-E000000000001",
+                                                    "Capio AB",
+                                                    "SE2321000131-E000000040252",
+                                                    "Lundby närsjukhus, Ortopedi 12"
+                                            )
+                                    ),
+                                    new WithInfoType<CareSystem>(
+                                            InformationType.UND,
+                                            new CareSystem(
+                                                    CareSystemSource.BFR,
+                                                    "SE2321000132-E000000000001",
+                                                    "Västra Götalandsregionen",
+                                                    "SE2321000132-E000000010251",
+                                                    "SU Sahlgrenska, Ortopedi 11"
+                                            )
+                                    ),
+                                    new WithInfoType<CareSystem>(
+                                            InformationType.UND,
+                                            new CareSystem(
+                                                    CareSystemSource.BFR,
+                                                    "SE2321000132-E000000000001",
+                                                    "Västra Götalandsregionen",
+                                                    "SE2321000132-E000000010254",
+                                                    "NU-sjukvården, Kirurgi 12"
+                                            )
+                                    )
+                            )
                     );
         }
     }

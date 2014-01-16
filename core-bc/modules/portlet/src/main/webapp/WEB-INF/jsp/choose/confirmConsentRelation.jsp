@@ -1,15 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/portlet" prefix="portlet" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-
-<%@ taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %>
-<%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
-<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
-<%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
-<%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
-
 <portlet:actionURL name="cancelConfirmation" var="cancelConfirmationUrl" />
 
 <div class="clearfix">
@@ -26,8 +16,8 @@
                 <h3 class="legend">Intyga patientrelation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h3>
                 
                 <div class="clearfix callout callout-info">
-                	<p class="label">Du måste intyga patientrelation för att få ta del av patientens vårdinformation.</p>
-                	
+                    <p class="label">Du måste intyga patientrelation för att få ta del av patientens vårdinformation.</p>
+
                     <p>Det finns patientinformation för ${state.patient.patientDisplayName}. För att få tillgång till informationen måste du intyga att du har en patientrelation.
                     Här finner du <a href="http://www.vgregion.se/sv/Vastra-Gotalandsregionen/startsida/Vard-och-halsa/Sa-styrs-varden/Halso--och-sjukvardsavdelningen/Patientdatalagen/">information om patientdatalagen</a></p>
                 </div>

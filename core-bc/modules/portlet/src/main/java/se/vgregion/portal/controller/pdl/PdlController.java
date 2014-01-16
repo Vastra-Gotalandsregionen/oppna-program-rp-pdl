@@ -54,15 +54,6 @@ public class PdlController {
         return state;
     }
 
-    // Matches personnummer: 900313-1245, 990313+1245 (100yrs+)
-    // Matches samordningsnummer: 910572-3453
-    // Will not verify last control sum number
-    //private final static String personSamordningsNummerRegex =
-    //        "[0-9]{2}(0[0-9]|1[0-2])(0[0-9]|1[0-9]|2[0-9]|3[0-1]|6[0-9]|7[0-9]|8[0-9]|9[0-1])[-+][0-9]{4}";
-
-    //@RequestMapping(value = "/searchPatient/{ssn:"+personSamordningsNummerRegex+"}", method = RequestMethod.GET)
-    //@PathVariable("ssn") String ssn
-
     @RenderMapping
     public String enterSearchPatient() {
         state.reset(); // Make sure state is reset when user navigates to the start page.
@@ -126,6 +117,10 @@ public class PdlController {
 //        objectRepo.persist(log);
     }
 
+
+    private final static String personSamordningsNummerRegex =
+            "[1-2][0-9][0-9]{2}(0[0-9]|1[0-2])(0[0-9]|1[0-9]|2[0-9]|3[0-1]|6[0-9]|7[0-9]|8[0-9]|9[0-1])[0-9]{4}";
+
     @ActionMapping("searchPatient")
     public void searchPatientInformation(
             @RequestParam String patientId,
@@ -150,36 +145,36 @@ public class PdlController {
 
             List<WithInfoType<CareSystem>> careSystems = systems.byPatientId(ctx, patientId);
 
-            boolean availablePatient = AvailablePatient.check(ctx, careSystems);
+            if(careSystems.size() > 0) {
 
-            //TODO 2013-11-18 : Magnus Andersson > Only do this if there are care systems!
-            //TODO 2013-11-22 : Magnus Andersson > Should handle WithAccess and filter out unavailable systems.
-            PdlReport pdlReport = pdl.pdlReport(
-                    ctx,
-                    state.getPatient(),
-                    careSystems
-            );
+                boolean availablePatient = AvailablePatient.check(ctx, careSystems);
 
-            PdlReport newReport = pdlReport;
+                PdlReport pdlReport = pdl.pdlReport(
+                        ctx,
+                        state.getPatient(),
+                        careSystems
+                );
 
-            // TGP equivalent, create patient relationship
-            if (availablePatient && pdlReport.hasPatientInformation && !pdlReport.hasRelationship.value) {
-                newReport = pdl.patientRelationship(
+                PdlReport newReport = pdlReport;
+
+                // TGP equivalent, create patient relationship
+                if (availablePatient && pdlReport.hasPatientInformation && !pdlReport.hasRelationship.value) {
+                    newReport = pdl.patientRelationship(
                         ctx,
                         pdlReport,
                         state.getPatient().patientId,
                         "Automatiskt skapad patientrelation: Patient finns tillgänglig sedan innan hos egen vårdenhet.",
                         1,
                         RoundedTimeUnit.NEAREST_HALF_HOUR
-                );
+                    );
+                }
+
+                CareSystemsReport csReport = new CareSystemsReport(ctx.currentAssignment, newReport);
+
+                state.setPdlReport(newReport);
+                state.setCsReport(csReport);
+                state.setCurrentAssignment(currentAssignment);
             }
-
-
-            CareSystemsReport csReport = new CareSystemsReport(ctx.currentAssignment, newReport);
-
-            state.setPdlReport(newReport);
-            state.setCsReport(csReport);
-            state.setCurrentAssignment(currentAssignment);
 
             log(UserAction.SEARCH);
             response.setRenderParameter("view", "pickInfoResource");
@@ -326,6 +321,12 @@ public class PdlController {
             CareSystemsReport newCsReport =
                     state.getCsReport().selectInfoResource(id);
 
+            if(state.getCtx().value.currentAssignment.otherUnits) {
+                state.setCurrentVisibility(Visibility.OTHER_CARE_UNIT);
+            } else if(state.getCtx().value.currentAssignment.otherProviders) {
+                state.setCurrentVisibility(Visibility.OTHER_CARE_PROVIDER);
+            }
+
             state.setCsReport(newCsReport);
 
             log(UserAction.INFORMATION_CHOICE);
@@ -410,25 +411,6 @@ public class PdlController {
             } else {
                 log(UserAction.INFORMATION_CHOICE);
             }
-
-            response.setRenderParameter("view", "pickInfoResource");
-        }
-    }
-
-    @ActionMapping("showOtherCareProviders")
-    public void showOtherCareProviders(ActionResponse response) {
-        if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
-            response.setRenderParameter("view", "view");
-        } else {
-            PdlContext ctx = state.getCtx().value;
-
-            LOGGER.trace(
-                "Request to show more information within same care giver for employee {} and patient {}.",
-                ctx.employeeHsaId,
-                state.getPatient().patientId
-            );
-
-            log(UserAction.OTHER_CARE_PROVIDERS);
 
             response.setRenderParameter("view", "pickInfoResource");
         }

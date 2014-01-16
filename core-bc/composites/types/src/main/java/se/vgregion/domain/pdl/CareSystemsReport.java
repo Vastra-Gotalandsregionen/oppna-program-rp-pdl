@@ -344,6 +344,7 @@ public class CareSystemsReport implements Serializable {
     public boolean isAvailablePatientInformation() {
         return availablePatientInformation;
     }
+
     @Override
     public String toString() {
         return "CareSystemsReport{" +

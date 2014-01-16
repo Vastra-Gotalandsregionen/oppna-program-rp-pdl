@@ -27,6 +27,7 @@ public class SystemState<T extends Serializable> implements Serializable {
             Visibility visibility,
             T value
     ) {
+
         this.id = id;
         this.initiallyBlocked = initiallyBlocked;
         this.blocked = blocked;

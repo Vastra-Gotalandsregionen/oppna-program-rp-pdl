@@ -12,14 +12,13 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 @Service("MockAccessControl")
-public class MockContext implements AccessControl {
+public class MockAccessControl implements AccessControl {
 
     public static final String SJF = "SJF";
     public static final String VE = "VE";
+    public static final String VG = "VG";
     public static final String careProviderHsaId = "SE2321000131-E000000000001";
     public static final String careUnitHsaId = "SE2321000131-E000000010252";
-    public static final String otherCareUnitHsaId = "SE2321000131-E000000010251";
-    public static final String otherCareProviderHsaId = "SE2321000131-E000000000011";
 
     @Override
     public WithOutcome<PdlContext> getContextByEmployeeId(String hsaId) {
@@ -32,19 +31,29 @@ public class MockContext implements AccessControl {
 
         TreeSet<Access> otherProviders = new TreeSet<Access>(
                 Arrays.asList(
-                        Access.fromMiuRights("Läsa;lko;SJF"),
-                        Access.fromMiuRights("Läsa;fun;SJF")
+                        Access.fromMiuRights("Läsa;lak;SJF"),
+                        Access.fromMiuRights("Läsa;und;SJF"),
+                        Access.fromMiuRights("Läsa;upp;SJF"),
+                        Access.fromMiuRights("Läsa;vbe;SJF")
+                )
+        );
+
+
+        TreeSet<Access> sameCareGiver = new TreeSet<Access>(
+                Arrays.asList(
+                        Access.fromMiuRights("Läsa;lak;VG"),
+                        Access.fromMiuRights("Läsa;und;VG"),
+                        Access.fromMiuRights("Läsa;upp;VG"),
+                        Access.fromMiuRights("Läsa;vbe;VG")
                 )
         );
 
         TreeSet<Access> sameProviders = new TreeSet<Access>(
                 Arrays.asList(
-                        Access.fromMiuRights("Läsa;und;SE2321000131-S000000010252"),
-                        Access.fromMiuRights("Läsa;lak;"+otherCareUnitHsaId),
-                        Access.fromMiuRights("Läsa;upp;"+otherCareUnitHsaId),
                         Access.fromMiuRights("Läsa;und;VE"),
                         Access.fromMiuRights("Läsa;lak;VE"),
-                        Access.fromMiuRights("Läsa;upp;VE")
+                        Access.fromMiuRights("Läsa;upp;VE"),
+                        Access.fromMiuRights("Läsa;vbe;VE")
                 )
         );
         assignments.put(
@@ -52,11 +61,24 @@ public class MockContext implements AccessControl {
                 new Assignment(
                         SJF,
                         "Sammanhållen Journalföring",
-                        otherCareProviderHsaId,
-                        otherCareUnitHsaId,
+                        careProviderHsaId,
+                        careUnitHsaId,
                         "careProviderDisplayNameOther",
                         "careUnitDisplayNameOther",
                         otherProviders
+                )
+        );
+
+        assignments.put(
+                VG,
+                new Assignment(
+                        VG,
+                        "Vård och behandling - Utökad",
+                        careProviderHsaId,
+                        careUnitHsaId,
+                        "careProviderDisplayNameSame",
+                        "careUnitDisplayNameSame",
+                        sameCareGiver
                 )
         );
 

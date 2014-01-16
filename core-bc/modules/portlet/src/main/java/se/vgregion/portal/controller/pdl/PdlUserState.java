@@ -30,16 +30,29 @@ public class PdlUserState implements Serializable {
     private boolean confirmConsent = false;
     private boolean confirmRelation = true;
     private boolean confirmEmergency = false;
+    private boolean patientInformationExist = false;
     private String searchSession = java.util.UUID.randomUUID().toString();
-    private Visibility currentVisibility = Visibility.SAME_CARE_UNIT;
-    private final Map<Visibility, Boolean> shouldBeVisible = new HashMap<Visibility, Boolean>();
+    private String currentVisibility = Visibility.SAME_CARE_UNIT.name();
+    private final Map<String, Boolean> shouldBeVisible = new HashMap<String, Boolean>();
     private PdlProgress currentProgress = PdlProgress.firstStep();
 
     private void calcVisibility() {
         shouldBeVisible.clear();
-        shouldBeVisible.put(Visibility.SAME_CARE_UNIT, pdlReport.hasRelationship.value);
-        shouldBeVisible.put(Visibility.OTHER_CARE_UNIT, ctx.value.currentAssignment.isOtherUnits() && pdlReport.hasRelationship.value);
-        shouldBeVisible.put(Visibility.OTHER_CARE_PROVIDER, ctx.value.currentAssignment.isOtherProviders() && pdlReport.consent.value.hasConsent && pdlReport.hasRelationship.value);
+        shouldBeVisible.put(
+                Visibility.SAME_CARE_UNIT.name(),
+                pdlReport.hasRelationship.value);
+
+        shouldBeVisible.put(
+                Visibility.OTHER_CARE_UNIT.name(),
+                ctx.value.currentAssignment.isOtherUnits() &&
+                pdlReport.hasRelationship.value);
+
+        shouldBeVisible.put(
+                Visibility.OTHER_CARE_PROVIDER.name(),
+                ctx.value.currentAssignment.isOtherProviders() &&
+                pdlReport.hasRelationship.value);
+
+        patientInformationExist = csReport.availablePatientInformation;
     }
 
     public PdlReport getPdlReport() {
@@ -58,11 +71,12 @@ public class PdlUserState implements Serializable {
         confirmConsent = false;
         confirmRelation = true;
         confirmEmergency = false;
+        patientInformationExist = false;
         pdlReport = null;
         csReport = null;
         sumReport = null;
         searchSession = java.util.UUID.randomUUID().toString();
-        currentVisibility = Visibility.SAME_CARE_UNIT;
+        currentVisibility = Visibility.SAME_CARE_UNIT.name();
         shouldBeVisible.clear();
         currentProgress = PdlProgress.firstStep();
     }
@@ -83,7 +97,7 @@ public class PdlUserState implements Serializable {
         return currentProgress;
     }
 
-    public Visibility getCurrentVisibility() {
+    public String getCurrentVisibility() {
         return currentVisibility;
     }
 
@@ -103,6 +117,14 @@ public class PdlUserState implements Serializable {
         return csReport;
     }
 
+    public boolean isPatientInformationExist() {
+        return patientInformationExist;
+    }
+
+    public void setPatientInformationExist(boolean patientInformationExist) {
+        this.patientInformationExist = patientInformationExist;
+    }
+
     public void setCsReport(CareSystemsReport csReport) {
         this.csReport = csReport;
         calcVisibility();
@@ -112,29 +134,11 @@ public class PdlUserState implements Serializable {
         this.patient = patient;
     }
 
-    @Override
-    public String toString() {
-        return "PdlUserState{" +
-                "pdlReport=" + pdlReport +
-                ", csReport=" + csReport +
-                ", sumReport=" + sumReport +
-                ", patient=" + patient +
-                ", ctx=" + ctx +
-                ", confirmConsent=" + confirmConsent +
-                ", confirmRelation=" + confirmRelation +
-                ", confirmEmergency=" + confirmEmergency +
-                ", searchSession='" + searchSession + '\'' +
-                ", currentVisibility=" + currentVisibility +
-                ", shouldBeVisible=" + shouldBeVisible +
-                ", currentProgress=" + currentProgress +
-                '}';
-    }
-
     public void setCtx(WithOutcome<PdlContext> ctx) {
         this.ctx = ctx;
     }
 
-    public Map<Visibility, Boolean> getShouldBeVisible() {
+    public Map<String, Boolean> getShouldBeVisible() {
         return shouldBeVisible;
     }
 
@@ -158,10 +162,33 @@ public class PdlUserState implements Serializable {
         this.confirmRelation = confirmRelation;
     }
 
+    public void setCurrentVisibility(Visibility currentVisibility) {
+        this.currentVisibility = currentVisibility.name();
+    }
+
     public void setCurrentAssignment(String currentAssignment) {
         PdlContext newCtx = this.ctx.value.changeAssignment(currentAssignment);
         this.ctx = (this.ctx.mapValue(newCtx));
         calcVisibility();
+    }
+
+    @Override
+    public String toString() {
+        return "PdlUserState{" +
+                "pdlReport=" + pdlReport +
+                ", csReport=" + csReport +
+                ", sumReport=" + sumReport +
+                ", patient=" + patient +
+                ", ctx=" + ctx +
+                ", confirmConsent=" + confirmConsent +
+                ", confirmRelation=" + confirmRelation +
+                ", confirmEmergency=" + confirmEmergency +
+                ", patientInformationExist=" + patientInformationExist +
+                ", searchSession='" + searchSession + '\'' +
+                ", currentVisibility=" + currentVisibility +
+                ", shouldBeVisible=" + shouldBeVisible +
+                ", currentProgress=" + currentProgress +
+                '}';
     }
 
 }

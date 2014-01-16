@@ -16,13 +16,13 @@
 <liferay-theme:defineObjects />
 
 <div class="pdl clearfix">
-    <jsp:include page="progress.jsp" />
+    <%@ include file="progress.jsp" %>
 
-    <jsp:include page="searchOutcomeInfo.jsp" />
+    <%@ include file="choose/searchOutcomeInfo.jsp" %>
     <div class="info">
         <c:choose>
-            <c:when test="${state.csReport.availablePatientInformation}">
-                <jsp:include page="choose/hasInformation.jsp" />
+            <c:when test="${state.patientInformationExist}">
+                <%@ include file="choose/hasInformation.jsp" %>
             </c:when>
             <c:otherwise>
                 <h2>Det finns ingen tillgänglig patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h2>

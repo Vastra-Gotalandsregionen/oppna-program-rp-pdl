@@ -17,8 +17,8 @@
 <portlet:actionURL name="searchPatient" var="searchPatientUrl" />
 <div class="pdl clearfix">
 
-    <jsp:include page="progress.jsp" />
-    <jsp:include page="search/hsaOutcomeInfo.jsp" />
+    <%@ include file="progress.jsp" %>
+    <%@ include file="search/hsaOutcomeInfo.jsp" %>
     <c:if test="${state.ctx.success}">
 
         <jsp:include page="search/pdlInfoCallout.jsp" />

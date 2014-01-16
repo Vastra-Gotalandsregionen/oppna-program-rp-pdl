@@ -72,7 +72,8 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
 
     public InfoTypeState<T> select() {
        return new InfoTypeState<T>(
-           lowestVisibility,
+               lowestVisibility,
+               showSameCareUnit,
                true,
                containsBlocked,
                viewBlocked,
@@ -97,6 +98,7 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
     public InfoTypeState<T> viewBlocked() {
         return new InfoTypeState<T>(
             lowestVisibility,
+            showSameCareUnit,
             selected,
             containsBlocked,
             true,

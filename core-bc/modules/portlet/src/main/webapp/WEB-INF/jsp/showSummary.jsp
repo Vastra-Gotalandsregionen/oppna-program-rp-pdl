@@ -16,7 +16,7 @@
 <liferay-theme:defineObjects />
 
 <div class="pdl clearfix">
-    <jsp:include page="progress.jsp" />
+    <%@ include file="progress.jsp" %>
 
     <div class="info">
         <h3 class="legend">System med patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h3>
