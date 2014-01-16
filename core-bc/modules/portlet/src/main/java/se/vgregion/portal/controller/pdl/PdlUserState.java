@@ -27,8 +27,6 @@ public class PdlUserState implements Serializable {
     private Patient patient;
 
     private WithOutcome<PdlContext> ctx;
-    private boolean showOtherCareUnits = false;
-    private boolean showOtherCareProviders = false;
     private boolean confirmConsent = false;
     private boolean confirmRelation = true;
     private boolean confirmEmergency = false;
@@ -40,24 +38,8 @@ public class PdlUserState implements Serializable {
     private void calcVisibility() {
         shouldBeVisible.clear();
         shouldBeVisible.put(Visibility.SAME_CARE_UNIT, pdlReport.hasRelationship.value);
-        shouldBeVisible.put(Visibility.OTHER_CARE_UNIT, showOtherCareUnits && pdlReport.hasRelationship.value);
-        shouldBeVisible.put(Visibility.OTHER_CARE_PROVIDER, showOtherCareUnits && showOtherCareProviders && pdlReport.consent.value.hasConsent && pdlReport.hasRelationship.value);
-
-        if(pdlReport.hasRelationship.value) {
-            currentVisibility = Visibility.SAME_CARE_UNIT;
-
-            if(showOtherCareUnits) {
-                currentVisibility = Visibility.OTHER_CARE_UNIT;
-
-                if(
-                    showOtherCareProviders &&
-                    pdlReport.consent.value.hasConsent
-                ) {
-                    currentVisibility = Visibility.OTHER_CARE_PROVIDER;
-                }
-            }
-        }
-
+        shouldBeVisible.put(Visibility.OTHER_CARE_UNIT, ctx.value.currentAssignment.isOtherUnits() && pdlReport.hasRelationship.value);
+        shouldBeVisible.put(Visibility.OTHER_CARE_PROVIDER, ctx.value.currentAssignment.isOtherProviders() && pdlReport.consent.value.hasConsent && pdlReport.hasRelationship.value);
     }
 
     public PdlReport getPdlReport() {
@@ -73,8 +55,6 @@ public class PdlUserState implements Serializable {
     }
 
     public void reset() {
-        showOtherCareUnits = false;
-        showOtherCareProviders = false;
         confirmConsent = false;
         confirmRelation = true;
         confirmEmergency = false;
@@ -140,8 +120,6 @@ public class PdlUserState implements Serializable {
                 ", sumReport=" + sumReport +
                 ", patient=" + patient +
                 ", ctx=" + ctx +
-                ", showOtherCareUnits=" + showOtherCareUnits +
-                ", showOtherCareProviders=" + showOtherCareProviders +
                 ", confirmConsent=" + confirmConsent +
                 ", confirmRelation=" + confirmRelation +
                 ", confirmEmergency=" + confirmEmergency +
@@ -156,26 +134,8 @@ public class PdlUserState implements Serializable {
         this.ctx = ctx;
     }
 
-    public boolean isShowOtherCareUnits() {
-        return showOtherCareUnits;
-    }
-
-    public void setShowOtherCareUnits(boolean showOtherCareUnits) {
-        this.showOtherCareUnits = showOtherCareUnits;
-        calcVisibility();
-    }
-
     public Map<Visibility, Boolean> getShouldBeVisible() {
         return shouldBeVisible;
-    }
-
-    public boolean isShowOtherCareProviders() {
-        return showOtherCareProviders;
-    }
-
-    public void setShowOtherCareProviders(boolean showOtherCareProviders) {
-        this.showOtherCareProviders = showOtherCareProviders;
-        calcVisibility();
     }
 
     public void setCurrentProgress(PdlProgress currentProgress) {
@@ -201,9 +161,7 @@ public class PdlUserState implements Serializable {
     public void setCurrentAssignment(String currentAssignment) {
         PdlContext newCtx = this.ctx.value.changeAssignment(currentAssignment);
         this.ctx = (this.ctx.mapValue(newCtx));
-        if(newCtx.currentAssignment.isOtherProviders()) {
-            this.showOtherCareUnits = true; // Skip other care units question for SJF
-        }
+        calcVisibility();
     }
 
 }

@@ -15,7 +15,6 @@
 
 <c:if test="${state.pdlReport.hasNonSuccessOutcome}">
     <div class="callout callout-danger">
-    	  
         <p class="label">En eller flera frågor mot de bakomliggade säkerhetstjänsterna misslyckades.</p>
         <!-- -->
         <p>Följande av säkerhetstjänsterna sattes ur spel och har passerats.</p>

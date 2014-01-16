@@ -21,13 +21,17 @@ public class CareSystemsReport implements Serializable {
 
     public CareSystemsReport(Assignment currentAssignment, PdlReport pdlReport) {
 
-        ArrayList<WithInfoType<WithBlock<CareSystem>>> careSystems = filerByAssignment(
+        ArrayList<WithInfoType<WithBlock<CareSystem>>> careSystems =
+            filerByAssignment(
                 currentAssignment,
                 pdlReport.systems.value
-        );
+            );
 
         ArrayList <WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems =
-                categorizeSystems(currentAssignment, careSystems);
+            categorizeSystems(
+                currentAssignment,
+                careSystems
+            );
 
         // Aggregate into a map by information type.
         TreeMap<InformationType, ArrayList<SystemState<CareSystem>>> aggregatedSystems =
@@ -60,7 +64,7 @@ public class CareSystemsReport implements Serializable {
 
         for(InfoTypeState<InformationType> key: infoTypeStateMap.keySet()) {
             if(key.lowestVisibility == Visibility.SAME_CARE_UNIT) {
-                lowestOpenedUp.put(key.select(), infoTypeStateMap.get(key));
+                lowestOpenedUp.put(key.showSameCareUnit(), infoTypeStateMap.get(key));
             } else {
                 lowestOpenedUp.put(key, infoTypeStateMap.get(key));
             }

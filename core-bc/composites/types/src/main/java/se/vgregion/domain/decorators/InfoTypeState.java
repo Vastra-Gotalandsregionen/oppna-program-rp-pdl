@@ -10,6 +10,7 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
     private static final long serialVersionUID = -5813956332644812360L;
 
     public final Visibility lowestVisibility;
+    public final boolean showSameCareUnit;
     public final boolean selected;  // Shows that the user have actively chosen to view the information associated with this information type.
     public final Map<Visibility, Boolean> containsBlocked;
     public final boolean viewBlocked;
@@ -25,6 +26,7 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
     ) {
         this(
             lowestVisibility,
+            false, // Defaults to false
             selected,
             containsBlocked,
             viewBlocked,
@@ -32,7 +34,6 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
             value
         );
     }
-
 
     private InfoTypeState(
             Visibility lowestVisibility,
@@ -43,6 +44,25 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
             T value
     ) {
         this.lowestVisibility = lowestVisibility;
+        this.showSameCareUnit = false;
+        this.selected = selected;
+        this.containsBlocked = containsBlocked;
+        this.viewBlocked = viewBlocked;
+        this.id = id;
+        this.value = value;
+    }
+
+    private InfoTypeState(
+            Visibility lowestVisibility,
+            boolean showSameCareUnit,
+            boolean selected,
+            Map<Visibility, Boolean> containsBlocked,
+            boolean viewBlocked,
+            String id,
+            T value
+    ) {
+        this.lowestVisibility = lowestVisibility;
+        this.showSameCareUnit = showSameCareUnit;
         this.selected = selected;
         this.containsBlocked = containsBlocked;
         this.viewBlocked = viewBlocked;
@@ -52,7 +72,7 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
 
     public InfoTypeState<T> select() {
        return new InfoTypeState<T>(
-               lowestVisibility,
+           lowestVisibility,
                true,
                containsBlocked,
                viewBlocked,
@@ -61,14 +81,27 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
        );
     }
 
+    public InfoTypeState<T> showSameCareUnit() {
+        return new InfoTypeState<T>(
+            lowestVisibility,
+            true,
+            selected,
+            containsBlocked,
+            viewBlocked,
+            id,
+            value
+        );
+    }
+
+
     public InfoTypeState<T> viewBlocked() {
         return new InfoTypeState<T>(
-                lowestVisibility,
-                selected,
-                containsBlocked,
-                true,
-                id,
-                value
+            lowestVisibility,
+            selected,
+            containsBlocked,
+            true,
+            id,
+            value
         );
     }
 
@@ -126,6 +159,10 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
         return value;
     }
 
+    public boolean isShowSameCareUnit() {
+        return showSameCareUnit;
+    }
+
     @Override
     public int compareTo(InfoTypeState o) {
         return id.compareTo(o.id);
@@ -135,6 +172,7 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
     public String toString() {
         return "InfoTypeState{" +
                 "lowestVisibility=" + lowestVisibility +
+                ", showSameCareUnit=" + showSameCareUnit +
                 ", selected=" + selected +
                 ", containsBlocked=" + containsBlocked +
                 ", viewBlocked=" + viewBlocked +
@@ -142,4 +180,5 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
                 ", value=" + value +
                 '}';
     }
+
 }

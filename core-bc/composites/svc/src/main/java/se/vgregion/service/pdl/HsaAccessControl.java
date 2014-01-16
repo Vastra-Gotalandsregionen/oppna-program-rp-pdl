@@ -1,5 +1,6 @@
 package se.vgregion.service.pdl;
 
+import org.apache.cxf.common.i18n.UncheckedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -9,18 +10,18 @@ import se.riv.hsa.hsaws.v3.HsaWsResponderInterface;
 import se.riv.hsa.hsawsresponder.v3.GetMiuForPersonResponseType;
 import se.riv.hsa.hsawsresponder.v3.GetMiuForPersonType;
 import se.riv.hsa.hsawsresponder.v3.MiuInformationType;
-import se.vgregion.domain.pdl.InformationType;
-import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.assignment.Access;
 import se.vgregion.domain.assignment.Assignment;
 import se.vgregion.domain.decorators.WithOutcome;
+import se.vgregion.domain.pdl.InformationType;
+import se.vgregion.domain.pdl.PdlContext;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-@Service
+@Service("HsaAccessControl")
 public class HsaAccessControl implements AccessControl {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HsaAccessControl.class.getName());
@@ -88,6 +89,12 @@ public class HsaAccessControl implements AccessControl {
             }
         } catch (HsaWsFault hsaWsFault) {
             LOGGER.error("Unable to do lookup for HSA-ID {}. Faultinfo: {}.", hsaId, hsaWsFault.getFaultInfo());
+            return WithOutcome.clientError(new PdlContext("", hsaId, new TreeMap<String, Assignment>()));
+        } catch (UncheckedException cfxFault ) {
+            LOGGER.error("Unable to do lookup because of communication error.", cfxFault);
+            return WithOutcome.commFailure(new PdlContext("", hsaId, new TreeMap<String, Assignment>()));
+        } catch (RuntimeException ex ) {
+            LOGGER.error("Unable to do lookup, undefined error.", ex);
             return WithOutcome.clientError(new PdlContext("", hsaId, new TreeMap<String, Assignment>()));
         }
         // We did not get enough information.

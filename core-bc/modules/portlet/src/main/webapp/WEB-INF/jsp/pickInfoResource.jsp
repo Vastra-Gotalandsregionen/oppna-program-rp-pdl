@@ -18,11 +18,11 @@
 <div class="pdl clearfix">
     <jsp:include page="progress.jsp" />
 
-    <jsp:include page="outcomeInfo.jsp" />
+    <jsp:include page="searchOutcomeInfo.jsp" />
     <div class="info">
         <c:choose>
             <c:when test="${state.csReport.availablePatientInformation}">
-                <jsp:include page="hasInformation.jsp" />
+                <jsp:include page="choose/hasInformation.jsp" />
             </c:when>
             <c:otherwise>
                 <h2>Det finns ingen tillgänglig patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h2>
@@ -36,8 +36,6 @@
         <!-- state.pdlReport.consent.value.hasConsent = ${state.pdlReport.consent.value.hasConsent} -->
         <!-- state.pdlReport.hasRelationship.value = ${state.pdlReport.hasRelationship.value} -->
         <!-- state.ctx.value.currentAssignment.otherProviders = ${state.ctx.value.currentAssignment.otherProviders} -->
-        <!-- state.showOtherCareUnits = ${state.showOtherCareUnits} -->
-        <!-- state.showOtherCareProviders = ${state.showOtherCareProviders} -->
         <!-- state.searchSession = ${state.searchSession} -->
         <!-- state.shouldBeVisible = ${state.shouldBeVisible} -->
         <!-- state.currentVisibility = ${state.currentVisibility} -->

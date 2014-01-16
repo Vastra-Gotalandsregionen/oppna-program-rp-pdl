@@ -42,6 +42,7 @@ public class PdlController {
     @Autowired
     private ObjectRepo objectRepo;
     @Autowired
+    @Qualifier("MockAccessControl")
     private AccessControl accessControl;
 
     @ModelAttribute("state")
@@ -140,7 +141,6 @@ public class PdlController {
             state.reset(); // Make sure reset is called here when user uses back button and submits again.
             PdlProgress now = state.getCurrentProgress();
             state.setCurrentProgress(now.nextStep());
-            state.setCurrentAssignment(currentAssignment);
 
             PdlContext ctx = state.getCtx().value;
 
@@ -179,14 +179,7 @@ public class PdlController {
 
             state.setPdlReport(newReport);
             state.setCsReport(csReport);
-
-            if(!csReport.containsSameCareUnit && ctx.currentAssignment.isOtherProviders()) {
-                state.setShowOtherCareProviders(true);
-            }
-
-            if(!csReport.containsSameCareUnit && ctx.currentAssignment.isOtherUnits()) {
-                state.setShowOtherCareUnits(true);
-            }
+            state.setCurrentAssignment(currentAssignment);
 
             log(UserAction.SEARCH);
             response.setRenderParameter("view", "pickInfoResource");
@@ -285,7 +278,6 @@ public class PdlController {
             );
 
             state.setConfirmConsent(false);
-            state.setShowOtherCareProviders(true);
 
             log(UserAction.CONSENT);
 
@@ -310,8 +302,6 @@ public class PdlController {
                     ctx.employeeHsaId,
                     state.getPatient().patientId
             );
-
-            state.setShowOtherCareUnits(true);
 
             log(UserAction.OTHER_CARE_UNITS);
 
@@ -438,9 +428,6 @@ public class PdlController {
                 state.getPatient().patientId
             );
 
-
-            state.setShowOtherCareProviders(true);
-
             log(UserAction.OTHER_CARE_PROVIDERS);
 
             response.setRenderParameter("view", "pickInfoResource");
@@ -468,6 +455,10 @@ public class PdlController {
         }
     }
 
+    @RenderMapping(params = "view=view")
+    public String start(final ModelMap model) {
+        return "view";
+    }
 
     @RenderMapping(params = "view=pickInfoResource")
     public String searchResult(final ModelMap model) {
