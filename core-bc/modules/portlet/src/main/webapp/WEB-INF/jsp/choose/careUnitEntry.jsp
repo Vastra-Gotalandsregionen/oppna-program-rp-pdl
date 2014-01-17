@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<c:if test="${((infoSelection.key.showSameCareUnit && system.visibility == 'SAME_CARE_UNIT') || (state.shouldBeVisible[state.currentVisibility] && system.visibility == state.currentVisibility && infoSelection.key.selected)) && ((system.blocked && infoSelection.key.viewBlocked) || !system.blocked)}">
+<c:if test="${pdl:displayCareUnit(infoSelection.key, system, state)}">
     <li>
         <portlet:actionURL name="toggleInformation" var="toggleInformationUrl">
             <portlet:param name="id" value="${system.id}" />

@@ -9,6 +9,7 @@
 <%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
+<%@ taglib uri="http://portalen.vgregion.se/pdl" prefix="pdl" %>
 
 <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/css/pdl.css" />
 

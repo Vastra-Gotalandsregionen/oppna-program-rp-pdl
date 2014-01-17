@@ -17,7 +17,7 @@
                         <portlet:param name="id" value="${infoSelection.key.id}" />
                     </portlet:actionURL>
                     <c:choose>
-                        <c:when test="${infoSelection.key.selected || infoSelection.key.showSameCareUnit}">
+                        <c:when test="${pdl:expandInfoType(infoSelection.key, state)}">
                             <li class="sublist">
                                 <ul>
                                     <c:forEach var="system" items="${infoSelection.value}">

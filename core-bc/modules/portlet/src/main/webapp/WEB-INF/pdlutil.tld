@@ -1,0 +1,27 @@
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+
+  <tlib-version>1.0</tlib-version>
+
+  <short-name>PdlDisplay</short-name>
+
+  <uri>http://portalen.vgregion.se/pdl</uri>
+
+  <function>
+    <description>Determines if information type should be expanded.</description>
+    <display-name>Show Information Type</display-name>
+    <name>expandInfoType</name>
+    <function-class>se.vgregion.portal.controller.pdl.DisplayInformation</function-class>
+    <function-signature>boolean expandInfoType(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.portal.controller.pdl.PdlUserState)</function-signature>
+  </function>
+
+  <function>
+    <description>Determines if care unit should be displayed.</description>
+    <display-name>Show Information Type</display-name>
+    <name>displayCareUnit</name>
+    <function-class>se.vgregion.portal.controller.pdl.DisplayInformation</function-class>
+    <function-signature>boolean displayCareUnit(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.domain.decorators.SystemState, se.vgregion.portal.controller.pdl.PdlUserState)</function-signature>
+  </function>
+
+</taglib>

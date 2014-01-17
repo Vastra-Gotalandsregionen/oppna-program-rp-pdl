@@ -32,7 +32,7 @@ public class PdlUserState implements Serializable {
     private boolean confirmEmergency = false;
     private boolean patientInformationExist = false;
     private String searchSession = java.util.UUID.randomUUID().toString();
-    private String currentVisibility = Visibility.SAME_CARE_UNIT.name();
+    private Visibility currentVisibility = Visibility.SAME_CARE_UNIT;
     private final Map<String, Boolean> shouldBeVisible = new HashMap<String, Boolean>();
     private PdlProgress currentProgress = PdlProgress.firstStep();
 
@@ -76,7 +76,7 @@ public class PdlUserState implements Serializable {
         csReport = null;
         sumReport = null;
         searchSession = java.util.UUID.randomUUID().toString();
-        currentVisibility = Visibility.SAME_CARE_UNIT.name();
+        currentVisibility = Visibility.SAME_CARE_UNIT;
         shouldBeVisible.clear();
         currentProgress = PdlProgress.firstStep();
     }
@@ -97,7 +97,7 @@ public class PdlUserState implements Serializable {
         return currentProgress;
     }
 
-    public String getCurrentVisibility() {
+    public Visibility getCurrentVisibility() {
         return currentVisibility;
     }
 
@@ -163,7 +163,7 @@ public class PdlUserState implements Serializable {
     }
 
     public void setCurrentVisibility(Visibility currentVisibility) {
-        this.currentVisibility = currentVisibility.name();
+        this.currentVisibility = currentVisibility;
     }
 
     public void setCurrentAssignment(String currentAssignment) {

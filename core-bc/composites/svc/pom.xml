@@ -75,7 +75,14 @@
           <artifactId>dao-framework-jpa</artifactId>
           <version>3.5</version>
       </dependency>
-
+    <dependency>
+      <groupId>com.liferay.portal</groupId>
+      <artifactId>util-taglib</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>taglibs</groupId>
+      <artifactId>standard</artifactId>
+    </dependency>
       <dependency>
           <groupId>org.springframework</groupId>
           <artifactId>spring-orm</artifactId>
