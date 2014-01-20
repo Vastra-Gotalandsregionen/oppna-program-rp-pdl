@@ -209,35 +209,12 @@ public class PdlController {
                 RoundedTimeUnit.NEAREST_HALF_HOUR
             );
 
-            state.setConfirmRelation(false);
             state.setPdlReport(newReport);
 
             log(UserAction.RELATION);
 
             response.setRenderParameter("view", "pickInfoResource");
         } else {
-            state.setConfirmRelation(true);
-            response.setRenderParameter("view", "pickInfoResource");
-        }
-    }
-
-    @ActionMapping("cancelConfirmation")
-    public void cancelConfirmation(
-            ActionResponse response
-    ) {
-        if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
-            response.setRenderParameter("view", "view");
-        } else {
-            LOGGER.trace(
-                    "Request to cancel confirmation. Relation confirmation {} and consent confirmation {}.",
-                    state.isConfirmRelation(),
-                    state.isConfirmConsent()
-            );
-
-            state.setConfirmConsent(false);
-            state.setConfirmRelation(true);
-            state.setConfirmEmergency(false);
-
             response.setRenderParameter("view", "pickInfoResource");
         }
     }
@@ -245,12 +222,11 @@ public class PdlController {
     @ActionMapping("establishConsent")
     public void establishConsent(
             ActionResponse response,
-            @RequestParam boolean emergency,
-            @RequestParam boolean confirmed
+            @RequestParam boolean emergency
     ) {
         if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
-        } else if (confirmed) {
+        } else {
             PdlContext ctx = state.getCtx().value;
 
             LOGGER.trace(
@@ -272,16 +248,10 @@ public class PdlController {
                 )
             );
 
-            state.setConfirmConsent(false);
-
             log(UserAction.CONSENT);
 
-            response.setRenderParameter("view", "pickInfoResource");
-        } else {
-            state.setConfirmConsent(true);
-            state.setConfirmRelation(false);
-            state.setConfirmEmergency(emergency);
-            response.setRenderParameter("view", "pickInfoResource");
+            // Hand over to select info resource again. Provide the stashed information type id
+            selectInfoResource(state.getConsentInformationTypeId(), response);
         }
     }
 
@@ -317,21 +287,33 @@ public class PdlController {
                     id,
                     state.getPatient().patientId
             );
+            state.setConsentInformationTypeId(null); // Reset left over id
 
-            CareSystemsReport newCsReport =
-                    state.getCsReport().selectInfoResource(id);
+            boolean otherProviders =
+                    state.getCtx().value.currentAssignment.isOtherProviders() &&
+                    state.getPdlReport().consent.value.hasConsent;
 
-            if(state.getCtx().value.currentAssignment.otherUnits) {
-                state.setCurrentVisibility(Visibility.OTHER_CARE_UNIT);
-            } else if(state.getCtx().value.currentAssignment.otherProviders) {
-                state.setCurrentVisibility(Visibility.OTHER_CARE_PROVIDER);
+            boolean sameProvider = !state.getCtx().value.currentAssignment.isOtherProviders();
+
+            if(sameProvider || otherProviders) {
+                CareSystemsReport newCsReport =
+                        state.getCsReport().selectInfoResource(id);
+
+                if(state.getCtx().value.currentAssignment.otherUnits) {
+                    state.setCurrentVisibility(Visibility.OTHER_CARE_UNIT);
+                } else if(state.getCtx().value.currentAssignment.otherProviders) {
+                    state.setCurrentVisibility(Visibility.OTHER_CARE_PROVIDER);
+                }
+
+                state.setCsReport(newCsReport);
+
+                log(UserAction.INFORMATION_CHOICE);
+
+                response.setRenderParameter("view", "pickInfoResource");
+            } else {
+                state.setConsentInformationTypeId(id); // Save the id until after consent has been established
+                response.setRenderParameter("view", "establishConsent");
             }
-
-            state.setCsReport(newCsReport);
-
-            log(UserAction.INFORMATION_CHOICE);
-
-            response.setRenderParameter("view", "pickInfoResource");
         }
     }
 
@@ -440,6 +422,11 @@ public class PdlController {
     @RenderMapping(params = "view=view")
     public String start(final ModelMap model) {
         return "view";
+    }
+
+    @RenderMapping(params = "view=establishConsent")
+    public String establishConsent(final ModelMap model) {
+        return "establishConsent";
     }
 
     @RenderMapping(params = "view=pickInfoResource")

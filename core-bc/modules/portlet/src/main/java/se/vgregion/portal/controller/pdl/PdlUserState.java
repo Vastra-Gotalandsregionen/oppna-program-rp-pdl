@@ -25,14 +25,12 @@ public class PdlUserState implements Serializable {
     private SummaryReport sumReport;
     private Patient patient;
     private WithOutcome<PdlContext> ctx;
-    private boolean confirmConsent = false;
-    private boolean confirmRelation = true;
-    private boolean confirmEmergency = false;
     private boolean patientInformationExist = false;
     private String searchSession = java.util.UUID.randomUUID().toString();
     private Visibility currentVisibility = Visibility.SAME_CARE_UNIT;
     private final Map<String, Boolean> shouldBeVisible = new HashMap<String, Boolean>();
     private PdlProgress currentProgress = PdlProgress.firstStep();
+    private String consentInformationTypeId = null;
 
     private void calcVisibility() {
         shouldBeVisible.clear();
@@ -57,22 +55,13 @@ public class PdlUserState implements Serializable {
         return pdlReport;
     }
 
-    public boolean isConfirmEmergency() {
-        return confirmEmergency;
-    }
-
-    public void setConfirmEmergency(boolean confirmEmergency) {
-        this.confirmEmergency = confirmEmergency;
-    }
-
     public void reset() {
-        confirmConsent = false;
-        confirmRelation = true;
-        confirmEmergency = false;
         patientInformationExist = false;
         pdlReport = null;
         csReport = null;
         sumReport = null;
+        consentInformationTypeId = null;
+
         searchSession = java.util.UUID.randomUUID().toString();
         currentVisibility = Visibility.SAME_CARE_UNIT;
         shouldBeVisible.clear();
@@ -81,6 +70,10 @@ public class PdlUserState implements Serializable {
 
     public SummaryReport getSumReport() {
         return sumReport;
+    }
+
+    public String getConsentInformationTypeId() {
+        return consentInformationTypeId;
     }
 
     public void setSumReport(SummaryReport sumReport) {
@@ -93,6 +86,10 @@ public class PdlUserState implements Serializable {
 
     public PdlProgress getCurrentProgress() {
         return currentProgress;
+    }
+
+    public void setConsentInformationTypeId(String consentInformationTypeId) {
+        this.consentInformationTypeId = consentInformationTypeId;
     }
 
     public Visibility getCurrentVisibility() {
@@ -123,6 +120,23 @@ public class PdlUserState implements Serializable {
         this.patientInformationExist = patientInformationExist;
     }
 
+    @Override
+    public String toString() {
+        return "PdlUserState{" +
+                "pdlReport=" + pdlReport +
+                ", csReport=" + csReport +
+                ", sumReport=" + sumReport +
+                ", patient=" + patient +
+                ", ctx=" + ctx +
+                ", patientInformationExist=" + patientInformationExist +
+                ", searchSession='" + searchSession + '\'' +
+                ", currentVisibility=" + currentVisibility +
+                ", shouldBeVisible=" + shouldBeVisible +
+                ", currentProgress=" + currentProgress +
+                ", consentInformationTypeId='" + consentInformationTypeId + '\'' +
+                '}';
+    }
+
     public void setCsReport(CareSystemsReport csReport) {
         this.csReport = csReport;
         calcVisibility();
@@ -144,22 +158,6 @@ public class PdlUserState implements Serializable {
         this.currentProgress = currentProgress;
     }
 
-    public boolean isConfirmConsent() {
-        return confirmConsent;
-    }
-
-    public void setConfirmConsent(boolean confirmConsent) {
-        this.confirmConsent = confirmConsent;
-    }
-
-    public boolean isConfirmRelation() {
-        return confirmRelation;
-    }
-
-    public void setConfirmRelation(boolean confirmRelation) {
-        this.confirmRelation = confirmRelation;
-    }
-
     public void setCurrentVisibility(Visibility currentVisibility) {
         this.currentVisibility = currentVisibility;
     }
@@ -168,25 +166,6 @@ public class PdlUserState implements Serializable {
         PdlContext newCtx = this.ctx.value.changeAssignment(currentAssignment);
         this.ctx = (this.ctx.mapValue(newCtx));
         calcVisibility();
-    }
-
-    @Override
-    public String toString() {
-        return "PdlUserState{" +
-                "pdlReport=" + pdlReport +
-                ", csReport=" + csReport +
-                ", sumReport=" + sumReport +
-                ", patient=" + patient +
-                ", ctx=" + ctx +
-                ", confirmConsent=" + confirmConsent +
-                ", confirmRelation=" + confirmRelation +
-                ", confirmEmergency=" + confirmEmergency +
-                ", patientInformationExist=" + patientInformationExist +
-                ", searchSession='" + searchSession + '\'' +
-                ", currentVisibility=" + currentVisibility +
-                ", shouldBeVisible=" + shouldBeVisible +
-                ", currentProgress=" + currentProgress +
-                '}';
     }
 
 }

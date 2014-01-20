@@ -22,15 +22,19 @@
     <%@ include file="choose/searchOutcomeInfo.jsp" %>
     <div class="info">
         <c:choose>
-            <c:when test="${state.patientInformationExist}">
+            <c:when test="${state.patientInformationExist && state.pdlReport.hasRelationship.value}">
                 <%@ include file="choose/hasInformation.jsp" %>
+            </c:when>
+            <c:when test="${state.patientInformationExist && !state.pdlReport.hasRelationship.value}">
+                <jsp:include page="choose/establishRelation.jsp" />
+                <jsp:include page="choose/newSearch.jsp" />
             </c:when>
             <c:otherwise>
                 <h2>Det finns ingen tillgänglig patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h2>
                 <portlet:renderURL var="startUrl">
                     <portlet:param name="jspPage" value="/WEB-INF/jsp/view.jsp" />
                 </portlet:renderURL>
-                <a href="${startUrl}" class="link-button-mod">Ny sökning</a>
+                <a href="${startUrl}" class="link-button-mod">&laquo; Ny sökning</a>
             </c:otherwise>
         </c:choose>
 
@@ -40,7 +44,5 @@
         <!-- state.searchSession = ${state.searchSession} -->
         <!-- state.shouldBeVisible = ${state.shouldBeVisible} -->
         <!-- state.currentVisibility = ${state.currentVisibility} -->
-        <!-- state.confirmRelation = ${state.confirmRelation} -->
-        <!-- state.confirmConsent = ${state.confirmConsent} -->
     </div>
 </div>
