@@ -120,7 +120,7 @@ public class CareSystemsReport implements Serializable {
                     lowestVisibility = v.visibility;
                 }
 
-                containsOtherUnits |= v.visibility == Visibility.OTHER_CARE_PROVIDER;
+                containsOtherUnits |= v.visibility == Visibility.OTHER_CARE_UNIT;
                 containsOtherProviders |= v.visibility == Visibility.OTHER_CARE_PROVIDER;
             }
 

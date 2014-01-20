@@ -169,11 +169,11 @@ public class PdlController {
                     );
                 }
 
-                CareSystemsReport csReport = new CareSystemsReport(ctx.currentAssignment, newReport);
+                CareSystemsReport csReport = new CareSystemsReport(ctx.assignments.get(currentAssignment), newReport);
 
                 state.setPdlReport(newReport);
                 state.setCsReport(csReport);
-                state.setCurrentAssignment(currentAssignment);
+                state.setCurrentAssignment(currentAssignment); // Must be here or null pointer exception since it calls calcVisibility
             }
 
             log(UserAction.SEARCH);
