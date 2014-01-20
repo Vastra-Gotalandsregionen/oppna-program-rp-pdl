@@ -24,4 +24,29 @@
     <function-signature>boolean displayCareUnit(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.domain.decorators.SystemState, se.vgregion.portal.controller.pdl.PdlUserState)</function-signature>
   </function>
 
+  <function>
+    <description>Determines if information type should have an option to show more.</description>
+    <display-name>Show more Information Type</display-name>
+    <name>displayShowMore</name>
+    <function-class>se.vgregion.portal.controller.pdl.DisplayInformation</function-class>
+    <function-signature>boolean displayShowMore(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.portal.controller.pdl.PdlUserState)</function-signature>
+  </function>
+
+  <function>
+    <description>Determines if information type should have an option to show more.</description>
+    <display-name>Show other units</display-name>
+    <name>displayOtherUnits</name>
+    <function-class>se.vgregion.portal.controller.pdl.DisplayInformation</function-class>
+    <function-signature>boolean displayOtherUnits(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.portal.controller.pdl.PdlUserState)</function-signature>
+  </function>
+
+  <function>
+    <description>Determines if information type should have an option to show more.</description>
+    <display-name>Show other providers</display-name>
+    <name>displayOtherProviders</name>
+    <function-class>se.vgregion.portal.controller.pdl.DisplayInformation</function-class>
+    <function-signature>boolean displayOtherProviders(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.portal.controller.pdl.PdlUserState)</function-signature>
+  </function>
+
+
 </taglib>

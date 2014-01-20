@@ -1,5 +1,6 @@
 package se.vgregion.service.pdl;
 
+import org.apache.cxf.binding.soap.SoapFault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.riv.ehr.patientconsent.accesscontrol.checkconsentresponder.v1.CheckConsentRequestType;
@@ -9,12 +10,13 @@ import se.riv.ehr.patientconsent.administration.registerextendedconsentresponder
 import se.riv.ehr.patientconsent.administration.registerextendedconsentresponder.v1.RegisterExtendedConsentResponseType;
 import se.riv.ehr.patientconsent.v1.*;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationRequestType;
+import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.pdl.CheckedConsent;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.pdl.PdlReport;
 import se.vgregion.domain.pdl.RoundedTimeUnit;
-import se.vgregion.domain.decorators.WithOutcome;
 
+import javax.xml.ws.WebServiceException;
 import javax.xml.ws.soap.SOAPFaultException;
 import java.io.Serializable;
 
@@ -57,7 +59,40 @@ class Consent {
         return new CheckPatientRelationRequestType();
     }
 
-    public static WithOutcome<CheckedConsent> establishConsent(
+    public static WithOutcome<CheckedConsent> establishConsentWithFallback(
+            String servicesHsaId,
+            RegisterExtendedConsentResponderInterface establishConsent,
+            PdlContext ctx,
+            String patientId,
+            PdlReport.ConsentType consentType,
+            String reason,
+            int duration,
+            RoundedTimeUnit roundedTimeUnit
+    ) {
+        WithOutcome<CheckedConsent> consent;
+        try {
+            consent = establishConsent(
+                servicesHsaId,
+                establishConsent,
+                ctx,
+                patientId,
+                consentType,
+                reason,
+                duration,
+                roundedTimeUnit
+            );
+        } catch (WebServiceException e) {
+            LOGGER.error("Failed to establish relationship for patientId {}. Using fallback response.", patientId, e);
+            consent = WithOutcome.commFailure(new CheckedConsent(consentType, true));
+        } catch (SoapFault e) {
+            LOGGER.error("Failed to establish relationship for patientId {}. Using fallback response.", patientId, e);
+            consent = WithOutcome.commFailure(new CheckedConsent(consentType, true));
+        }
+
+        return consent;
+    }
+
+    private static WithOutcome<CheckedConsent> establishConsent(
             String servicesHsaId,
             RegisterExtendedConsentResponderInterface establishConsent,
             PdlContext ctx,

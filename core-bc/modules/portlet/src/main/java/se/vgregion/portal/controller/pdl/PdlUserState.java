@@ -23,9 +23,7 @@ public class PdlUserState implements Serializable {
     private PdlReport pdlReport;
     private CareSystemsReport csReport;
     private SummaryReport sumReport;
-
     private Patient patient;
-
     private WithOutcome<PdlContext> ctx;
     private boolean confirmConsent = false;
     private boolean confirmRelation = true;

@@ -96,7 +96,7 @@ public class PdlServiceImpl implements PdlService {
             RoundedTimeUnit roundedTimeUnit,
             PdlReport.ConsentType consentType
     ) {
-        WithOutcome<CheckedConsent> consentStatus = Consent.establishConsent(
+        WithOutcome<CheckedConsent> consentStatus = Consent.establishConsentWithFallback(
                 servicesHsaId,
                 establishConsent,
                 ctx,
@@ -120,7 +120,7 @@ public class PdlServiceImpl implements PdlService {
             RoundedTimeUnit timeUnit
     ) {
         WithOutcome<Boolean> relationshipStatus = Relationship
-                .establishRelation(
+                .establishRelationWithFallback(
                         servicesHsaId,
                         establishRelationship,
                         ctx,

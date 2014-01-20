@@ -1,6 +1,7 @@
 package se.vgregion.service.pdl;
 
 
+import org.apache.cxf.binding.soap.SoapFault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationRequestType;
@@ -8,11 +9,12 @@ import se.riv.ehr.patientrelationship.administration.registerextendedpatientrela
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelationresponder.v1.RegisterExtendedPatientRelationRequestType;
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelationresponder.v1.RegisterExtendedPatientRelationResponseType;
 import se.riv.ehr.patientrelationship.v1.*;
-import se.vgregion.domain.pdl.PdlContext;
-import se.vgregion.domain.pdl.RoundedTimeUnit;
 import se.vgregion.domain.assignment.Assignment;
 import se.vgregion.domain.decorators.WithOutcome;
+import se.vgregion.domain.pdl.PdlContext;
+import se.vgregion.domain.pdl.RoundedTimeUnit;
 
+import javax.xml.ws.WebServiceException;
 import java.io.Serializable;
 
 public class Relationship {
@@ -35,7 +37,38 @@ public class Relationship {
         return request;
     }
 
-    public static WithOutcome<Boolean> establishRelation(
+    public static WithOutcome<Boolean> establishRelationWithFallback(
+            String servicesHsaId,
+            RegisterExtendedPatientRelationResponderInterface establishRelationship,
+            PdlContext ctx,
+            String patientId,
+            String reason,
+            int duration,
+            RoundedTimeUnit timeUnit
+    ) {
+        WithOutcome<Boolean> relation;
+        try {
+            relation = establishRelation(
+                    servicesHsaId,
+                    establishRelationship,
+                    ctx,
+                    patientId,
+                    reason,
+                    duration,
+                    timeUnit
+            );
+        } catch (WebServiceException e) {
+            LOGGER.error("Failed to establish relationship for patientId {}. Using fallback response.", patientId, e);
+            relation = WithOutcome.commFailure(true);
+        } catch (SoapFault e) {
+            LOGGER.error("Failed to establish relationship for patientId {}. Using fallback response.", patientId, e);
+            relation = WithOutcome.commFailure(true);
+        }
+
+        return relation;
+    }
+
+    private static WithOutcome<Boolean> establishRelation(
             String servicesHsaId,
             RegisterExtendedPatientRelationResponderInterface establishRelationship,
             PdlContext ctx,

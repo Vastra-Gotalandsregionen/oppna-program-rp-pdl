@@ -40,7 +40,6 @@
                     </c:choose>
                 </c:forEach>
             </ul>
-        <jsp:include page="pdlScopeControls.jsp"/>
         <div class="clearfix" style="margin-top: 1.2em;">
             <portlet:renderURL var="startUrl">
                 <portlet:param name="jspPage" value="/WEB-INF/jsp/view.jsp" />

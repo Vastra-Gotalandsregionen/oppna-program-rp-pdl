@@ -15,8 +15,6 @@ public class CareSystemsReport implements Serializable {
 
     public final WithOutcome<TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>> aggregatedSystems;
     public final boolean containsSameCareUnit;
-    public final boolean containsOtherCareUnits;
-    public final boolean containsOtherCareProviders;
     public final boolean availablePatientInformation;
 
     public CareSystemsReport(Assignment currentAssignment, PdlReport pdlReport) {
@@ -47,9 +45,6 @@ public class CareSystemsReport implements Serializable {
         TreeMap<InfoTypeState<InformationType>,ArrayList<SystemState<CareSystem>>> lowestOpenedUp =
                 (containsSameCareUnit) ? lowestOpenedUp(infoTypeStateMap) : infoTypeStateMap;
 
-        containsOtherCareUnits = containsOtherCareUnits(lowestOpenedUp);
-        containsOtherCareProviders = containsOtherCareProviders(lowestOpenedUp);
-
         availablePatientInformation = lowestOpenedUp.size() > 0;
 
         this.aggregatedSystems = pdlReport.systems.mapValue(lowestOpenedUp);
@@ -79,8 +74,6 @@ public class CareSystemsReport implements Serializable {
     ) {
         this.aggregatedSystems = aggregatedSystems;
         this.containsSameCareUnit = containsSameCareUnit(aggregatedSystems.value);
-        this.containsOtherCareProviders = containsOtherCareProviders(aggregatedSystems.value);
-        this.containsOtherCareUnits = containsOtherCareUnits(aggregatedSystems.value);
         this.availablePatientInformation = aggregatedSystems.value.size() > 0;
     }
 
@@ -89,30 +82,6 @@ public class CareSystemsReport implements Serializable {
         for(InfoTypeState<InformationType> key : systems.keySet()) {
             for(SystemState<CareSystem> sys : systems.get(key)) {
                 if(sys.getVisibility() ==  Visibility.SAME_CARE_UNIT) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    private boolean containsOtherCareUnits(TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> systems) {
-        for(InfoTypeState<InformationType> key : systems.keySet()) {
-            for(SystemState<CareSystem> sys : systems.get(key)) {
-                if(sys.getVisibility() ==  Visibility.OTHER_CARE_UNIT) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    private boolean containsOtherCareProviders(TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> systems) {
-        for(InfoTypeState<InformationType> key : systems.keySet()) {
-            for(SystemState<CareSystem> sys : systems.get(key)) {
-                if(sys.getVisibility() ==  Visibility.OTHER_CARE_PROVIDER) {
                     return true;
                 }
             }
@@ -132,7 +101,9 @@ public class CareSystemsReport implements Serializable {
             ArrayList <SystemState<CareSystem>> value = entry.getValue();
             Visibility lowestVisibility = Visibility.OTHER_CARE_PROVIDER;
             Map<Visibility, Boolean> containsBlocked = new HashMap<Visibility, Boolean>();
-            Map<Visibility, Boolean> containsOnlyBlocked = new HashMap<Visibility, Boolean>();
+            boolean containsOtherUnits = false;
+            boolean containsOtherProviders = false;
+
             for(SystemState<CareSystem> v : value) {
 
                 if(!containsBlocked.containsKey(v.visibility)) {
@@ -148,16 +119,23 @@ public class CareSystemsReport implements Serializable {
                 if(v.visibility.compareTo(lowestVisibility) < 0) {
                     lowestVisibility = v.visibility;
                 }
+
+                containsOtherUnits |= v.visibility == Visibility.OTHER_CARE_PROVIDER;
+                containsOtherProviders |= v.visibility == Visibility.OTHER_CARE_PROVIDER;
             }
 
             InfoTypeState<InformationType> newKey = InfoTypeState.deselected(
                     lowestVisibility,
                     containsBlocked,
-                    containsOnlyBlocked,
                     key
             );
 
-            infoTypeStateMap.put(newKey, value);
+            InfoTypeState<InformationType> mappedKey = newKey.mapContains(
+                    containsOtherUnits,
+                    containsOtherProviders
+            );
+
+            infoTypeStateMap.put(mappedKey, value);
         }
 
         return infoTypeStateMap;
@@ -329,14 +307,6 @@ public class CareSystemsReport implements Serializable {
         return aggregatedSystems;
     }
 
-    public boolean isContainsOtherCareUnits() {
-        return containsOtherCareUnits;
-    }
-
-    public boolean isContainsOtherCareProviders() {
-        return containsOtherCareProviders;
-    }
-
     public boolean isContainsSameCareUnit() {
         return containsSameCareUnit;
     }
@@ -350,8 +320,6 @@ public class CareSystemsReport implements Serializable {
         return "CareSystemsReport{" +
                 "aggregatedSystems=" + aggregatedSystems +
                 ", containsSameCareUnit=" + containsSameCareUnit +
-                ", containsOtherCareUnits=" + containsOtherCareUnits +
-                ", containsOtherCareProviders=" + containsOtherCareProviders +
                 '}';
     }
 

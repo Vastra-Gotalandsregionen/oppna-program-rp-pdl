@@ -13,6 +13,8 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
     public final boolean showSameCareUnit;
     public final boolean selected;  // Shows that the user have actively chosen to view the information associated with this information type.
     public final Map<Visibility, Boolean> containsBlocked;
+    public final boolean containsOtherUnits;
+    public final boolean containsOtherProviders;
     public final boolean viewBlocked;
     public final String id;
     public final T value;
@@ -31,6 +33,8 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
             containsBlocked,
             viewBlocked,
             java.util.UUID.randomUUID().toString(),
+            false,
+            false,
             value
         );
     }
@@ -41,10 +45,14 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
             Map<Visibility, Boolean> containsBlocked,
             boolean viewBlocked,
             String id,
+            boolean containsOtherUnits,
+            boolean containsOtherProviders,
             T value
     ) {
         this.lowestVisibility = lowestVisibility;
         this.showSameCareUnit = false;
+        this.containsOtherUnits = containsOtherUnits;
+        this.containsOtherProviders = containsOtherProviders;
         this.selected = selected;
         this.containsBlocked = containsBlocked;
         this.viewBlocked = viewBlocked;
@@ -59,12 +67,16 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
             Map<Visibility, Boolean> containsBlocked,
             boolean viewBlocked,
             String id,
+            boolean containsOtherUnits,
+            boolean containsOtherProviders,
             T value
     ) {
         this.lowestVisibility = lowestVisibility;
         this.showSameCareUnit = showSameCareUnit;
         this.selected = selected;
         this.containsBlocked = containsBlocked;
+        this.containsOtherUnits = containsOtherUnits;
+        this.containsOtherProviders = containsOtherProviders;
         this.viewBlocked = viewBlocked;
         this.id = id;
         this.value = value;
@@ -72,13 +84,15 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
 
     public InfoTypeState<T> select() {
        return new InfoTypeState<T>(
-               lowestVisibility,
-               showSameCareUnit,
-               true,
-               containsBlocked,
-               viewBlocked,
-               id,
-               value
+           lowestVisibility,
+           showSameCareUnit,
+           true,
+           containsBlocked,
+           viewBlocked,
+           id,
+           containsOtherUnits,
+           containsOtherProviders,
+           value
        );
     }
 
@@ -90,6 +104,8 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
             containsBlocked,
             viewBlocked,
             id,
+            containsOtherUnits,
+            containsOtherProviders,
             value
         );
     }
@@ -103,6 +119,8 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
             containsBlocked,
             true,
             id,
+            containsOtherUnits,
+            containsOtherProviders,
             value
         );
     }
@@ -110,7 +128,6 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
     public static <N extends Serializable, N1 extends N> InfoTypeState<N> deselected(
             Visibility visibility,
             Map<Visibility, Boolean> containsBlocked,
-            Map<Visibility, Boolean> containsOnlyBlocked,
             N1 value
     ) {
         return new InfoTypeState<N>(
@@ -125,7 +142,6 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
     public static <N extends Serializable, N1 extends N> InfoTypeState<N> selected(
             Visibility visibility,
             Map<Visibility, Boolean>  containsBlocked,
-            Map<Visibility, Boolean> containsOnlyBlocked,
             N1 value
     ) {
         return new InfoTypeState<N>(
@@ -133,6 +149,23 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
                 true,
                 containsBlocked,
                 false,
+                value
+        );
+    }
+
+    public InfoTypeState<T> mapContains(
+            boolean newContainsOtherUnits,
+            boolean newContainsOtherProviders
+    ) {
+        return new InfoTypeState<T>(
+                lowestVisibility,
+                showSameCareUnit,
+                selected,
+                containsBlocked,
+                viewBlocked,
+                id,
+                newContainsOtherUnits,
+                newContainsOtherProviders,
                 value
         );
     }

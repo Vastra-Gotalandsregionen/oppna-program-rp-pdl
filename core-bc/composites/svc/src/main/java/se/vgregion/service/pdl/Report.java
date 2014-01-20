@@ -1,5 +1,6 @@
 package se.vgregion.service.pdl;
 
+import org.apache.cxf.binding.soap.SoapFault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.riv.ehr.blocking.accesscontrol.checkblocks.v2.rivtabp21.CheckBlocksResponderInterface;
@@ -11,15 +12,18 @@ import se.riv.ehr.patientconsent.accesscontrol.checkconsentresponder.v1.CheckCon
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationRequestType;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationResponseType;
-import se.vgregion.domain.pdl.*;
 import se.vgregion.domain.decorators.WithBlock;
 import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
+import se.vgregion.domain.pdl.*;
 
 import javax.xml.ws.WebServiceException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 public class Report {
 
@@ -86,7 +90,10 @@ public class Report {
         } catch (ExecutionException e) {
             LOGGER.error("Failed to fetch relationship for patientId {} during report generation. Using fallback response.", patientId, e);
         }  catch (WebServiceException e) {
-            LOGGER.error("Failed to fetch systems for patientId {} during report generation. Using fallback response.", patientId, e);
+            LOGGER.error("Failed to fetch relationship for patientId {} during report generation. Using fallback response.", patientId, e);
+            hasRelationship = WithOutcome.commFailure(true);
+        } catch (SoapFault e) {
+            LOGGER.error("Failed to fetch relationship for patientId {} during report generation. Using fallback response.", patientId, e);
             hasRelationship = WithOutcome.commFailure(true);
         }
         return hasRelationship;
@@ -102,6 +109,10 @@ public class Report {
         } catch (ExecutionException e) {
             LOGGER.error("Failed to fetch consent for patientId {} during report generation. Using fallback response.", patientId, e);
         } catch (WebServiceException e) {
+            LOGGER.error("Failed to fetch systems for patientId {} during report generation. Using fallback response.", patientId, e);
+            checkedConsent = WithOutcome.commFailure(
+                    new CheckedConsent(PdlReport.ConsentType.Consent, true));
+        } catch (SoapFault e) {
             LOGGER.error("Failed to fetch systems for patientId {} during report generation. Using fallback response.", patientId, e);
             checkedConsent = WithOutcome.commFailure(
                     new CheckedConsent(PdlReport.ConsentType.Consent, true));
@@ -124,7 +135,11 @@ public class Report {
         } catch (WebServiceException e) {
             LOGGER.error("Failed to fetch systems for patientId {} during report generation. Using fallback response.", patientId, e);
             checkedBlocks = WithOutcome.commFailure(mapCareSystemsFallback(careSystems));
+        } catch (SoapFault e) {
+            LOGGER.error("Failed to fetch systems for patientId {} during report generation. Using fallback response.", patientId, e);
+            checkedBlocks = WithOutcome.commFailure(mapCareSystemsFallback(careSystems));
         }
+
         return checkedBlocks;
     }
 

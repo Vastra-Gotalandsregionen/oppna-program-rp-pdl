@@ -11,7 +11,6 @@ public class DisplayInformation {
         // Util class, private constructor
     }
 
-
     public static boolean expandInfoType(InfoTypeState<InformationType> infoType, PdlUserState state) {
         boolean lowestVisibility = state.getCurrentVisibility().compareTo(infoType.lowestVisibility) >= 0;
         boolean hasRelationship = state.getPdlReport().hasRelationship.value;
@@ -31,6 +30,24 @@ public class DisplayInformation {
         }
 
         throw new IllegalArgumentException("Unable to gather enough information to calculate visibility.");
+    }
+
+    public static boolean displayShowMore(
+            InfoTypeState<InformationType> infoType,
+            PdlUserState state
+    ) {
+        return displayOtherUnits(infoType, state) || displayOtherProviders(infoType, state) ;
+    }
+
+    public static boolean displayOtherUnits(
+            InfoTypeState<InformationType> infoType,
+            PdlUserState state
+    ) {
+        return state.getCtx().value.currentAssignment.otherUnits && infoType.containsOtherUnits;
+    }
+
+    public static boolean displayOtherProviders(InfoTypeState<InformationType> infoType, PdlUserState state) {
+        return state.getCtx().value.currentAssignment.otherProviders && infoType.containsOtherProviders;
     }
 
     public static boolean displayCareUnit(
