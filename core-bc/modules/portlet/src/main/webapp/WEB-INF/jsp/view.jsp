@@ -21,7 +21,7 @@
     <%@ include file="search/hsaOutcomeInfo.jsp" %>
     <c:if test="${state.ctx.success}">
 
-        <jsp:include page="search/pdlInfoCallout.jsp" />
+        <%@ include file="search/pdlInfoCallout.jsp" %>
 
         <h3 class="legend">S&ouml;k patientinformation</h3>
 

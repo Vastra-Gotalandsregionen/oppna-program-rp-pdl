@@ -26,8 +26,7 @@
                 <%@ include file="choose/hasInformation.jsp" %>
             </c:when>
             <c:when test="${state.patientInformationExist && !state.pdlReport.hasRelationship.value}">
-                <jsp:include page="choose/establishRelation.jsp" />
-                <jsp:include page="choose/newSearch.jsp" />
+                <%@ include file="choose/establishRelation.jsp" %>
             </c:when>
             <c:otherwise>
                 <h2>Det finns ingen tillgänglig patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h2>
