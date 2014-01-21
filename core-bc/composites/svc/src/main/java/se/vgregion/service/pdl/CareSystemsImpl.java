@@ -82,6 +82,16 @@ public class CareSystemsImpl implements CareSystems {
                                             CareSystemSource.OTH,
                                             "SE2321000131-E000000000001",
                                             "Västra Götalandsregionen",
+                                            "SE2321000131-E000000001267",
+                                            "Backa Läkarhus 2"
+                                    )
+                            ),
+                            new WithInfoType<CareSystem>(
+                                    InformationType.LAK,
+                                    new CareSystem(
+                                            CareSystemSource.OTH,
+                                            "SE2321000131-E000000000001",
+                                            "Västra Götalandsregionen",
                                             "SE2321000131-E000000001266",
                                             "Backa Läkarhus"
                                     )

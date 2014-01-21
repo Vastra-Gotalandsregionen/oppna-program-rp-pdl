@@ -16,6 +16,7 @@ public class CareSystemsReport implements Serializable {
     public final WithOutcome<TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>> aggregatedSystems;
     public final boolean containsSameCareUnit;
     public final boolean availablePatientInformation;
+    public final boolean selectedInfoResource;
 
     public CareSystemsReport(Assignment currentAssignment, PdlReport pdlReport) {
 
@@ -47,6 +48,7 @@ public class CareSystemsReport implements Serializable {
 
         availablePatientInformation = lowestOpenedUp.size() > 0;
 
+        this.selectedInfoResource = false;
         this.aggregatedSystems = pdlReport.systems.mapValue(lowestOpenedUp);
     }
 
@@ -70,11 +72,13 @@ public class CareSystemsReport implements Serializable {
 
     private CareSystemsReport(
             WithOutcome <TreeMap<InfoTypeState<InformationType>,
-            ArrayList<SystemState<CareSystem>>>> aggregatedSystems
+            ArrayList<SystemState<CareSystem>>>> aggregatedSystems,
+            boolean selectedInfoResource
     ) {
         this.aggregatedSystems = aggregatedSystems;
         this.containsSameCareUnit = containsSameCareUnit(aggregatedSystems.value);
         this.availablePatientInformation = aggregatedSystems.value.size() > 0;
+        this.selectedInfoResource = selectedInfoResource;
     }
 
 
@@ -152,7 +156,10 @@ public class CareSystemsReport implements Serializable {
                 newSystems.put(key, aggregatedSystems.value.get(key));
             }
         }
-        return new CareSystemsReport(aggregatedSystems.mapValue(newSystems));
+        return new CareSystemsReport(
+                aggregatedSystems.mapValue(newSystems),
+                this.selectedInfoResource
+        );
     }
 
     public CareSystemsReport showBlocksForInfoResource(String id) {
@@ -166,16 +173,19 @@ public class CareSystemsReport implements Serializable {
                 newSystems.put(key, aggregatedSystems.value.get(key));
             }
         }
-        return new CareSystemsReport(aggregatedSystems.mapValue(newSystems));
+        return new CareSystemsReport(aggregatedSystems.mapValue(newSystems), this.selectedInfoResource);
     }
 
     public CareSystemsReport toggleInformation(String id, boolean confirmed) {
         TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> newSystems =
                 new TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>(infoTypeComparator);
 
+        boolean selected = false;
+
         for(InfoTypeState<InformationType> key : aggregatedSystems.value.keySet()) {
             ArrayList<SystemState<CareSystem>> sysList =
                     new ArrayList<SystemState<CareSystem>>();
+
 
             for(SystemState<CareSystem> uis : aggregatedSystems.value.get(key)) {
                 if(uis.id.equals(id)){
@@ -188,14 +198,22 @@ public class CareSystemsReport implements Serializable {
                         newState = newState.cancelConfirmation();
                     }
                     sysList.add(newState);
+                    selected |= newState.selected;
                 } else {
                     sysList.add(uis);
+                    selected |= uis.selected;
                 }
             }
 
             newSystems.put(key, sysList);
         }
-        return new CareSystemsReport(aggregatedSystems.mapValue(newSystems));
+
+        CareSystemsReport report = new CareSystemsReport(
+                aggregatedSystems.mapValue(newSystems),
+                selected
+        );
+
+        return report;
     }
 
     private ArrayList<WithInfoType<WithBlock<CareSystem>>> filerByAssignment(
@@ -315,12 +333,17 @@ public class CareSystemsReport implements Serializable {
         return availablePatientInformation;
     }
 
+    public boolean isSelectedInfoResource() {
+        return selectedInfoResource;
+    }
+
     @Override
     public String toString() {
         return "CareSystemsReport{" +
                 "aggregatedSystems=" + aggregatedSystems +
                 ", containsSameCareUnit=" + containsSameCareUnit +
+                ", availablePatientInformation=" + availablePatientInformation +
+                ", selectedInfoResource=" + selectedInfoResource +
                 '}';
     }
-
 }

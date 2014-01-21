@@ -21,6 +21,7 @@
 
     <%@ include file="choose/searchOutcomeInfo.jsp" %>
     <div class="info">
+        <h3 class="legend">Patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h3>
         <c:choose>
             <c:when test="${state.patientInformationExist && state.pdlReport.hasRelationship.value}">
                 <%@ include file="choose/hasInformation.jsp" %>
@@ -29,7 +30,10 @@
                 <%@ include file="choose/establishRelation.jsp" %>
             </c:when>
             <c:otherwise>
-                <h2>Det finns ingen tillgänglig patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h2>
+                <div class="clearfix callout callout-info">
+                    Patientinformation saknas
+                </div>
+
                 <portlet:renderURL var="startUrl">
                     <portlet:param name="jspPage" value="/WEB-INF/jsp/view.jsp" />
                 </portlet:renderURL>

@@ -29,8 +29,6 @@
          <portlet:param name="confirmed" value="true" />
     </portlet:actionURL>
 
-    <h3 class="legend">${state.patient.patientDisplayName} har ej medgivit sitt samtycke till sammanhållen journalföring</h3>
-
     <div class="clearfix callout callout-info">
         <p class="label">Du måste intyga patientens samtycke</p>
         <p>För att få information från andra vårdgivare behöver du inhämta patientens samtycke.</p>

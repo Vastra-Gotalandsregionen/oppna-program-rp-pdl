@@ -5,8 +5,6 @@
         <portlet:param name="confirmed" value="true" />
     </portlet:actionURL>
 
-    <h3 class="legend">Intyga patientrelation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h3>
-
     <div class="clearfix callout callout-info">
         <p class="label">Du måste intyga patientrelation för att få ta del av patientens vårdinformation.</p>
 
