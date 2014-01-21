@@ -44,9 +44,9 @@
             <div class="unlock">
                 <b>Passera spärr</b> för ${system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}
                 <div class="clearfix">
-                    <a href="${cancelRevokeConfirmationUrl}" class="link-button-mod button-simple">&laquo; Avbryt</a>
-                    <a href="${toggleInformationConsentUrl}" class="link-button-mod button-simple">Passera spärr med medgivande &raquo;</a>
-                    <a href="${toggleInformationEmergencyUrl}" class="link-button-mod button-simple-danger">Nödöppna information &raquo;</a>
+                    <a href="${cancelRevokeConfirmationUrl}" class="link-button-mod button-simple">Avbryt</a>
+                    <a href="${toggleInformationConsentUrl}" class="link-button-mod button-simple">Passera spärr med medgivande</a>
+                    <a href="${toggleInformationEmergencyUrl}" class="link-button-mod button-simple-danger">Nödöppna information</a>
                 </div>
             </div>
         </c:if>

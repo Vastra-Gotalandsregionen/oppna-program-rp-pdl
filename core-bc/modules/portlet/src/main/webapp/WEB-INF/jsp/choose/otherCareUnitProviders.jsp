@@ -6,10 +6,10 @@
                 <a href="${selectInfoResourceUrl}">
                     <c:choose>
                         <c:when test="${pdl:displayOtherUnits(infoSelection.key, state)}">
-                            Visa andra vårdenheter
+                            Visa vårdenheter
                         </c:when>
                         <c:when test="${pdl:displayOtherProviders(infoSelection.key, state)}">
-                            Visa vårdenheter för andra vårdgivare
+                            Visa vårdenheter för sammanhållen journalföring
                         </c:when>
                     </c:choose>
                 </a>

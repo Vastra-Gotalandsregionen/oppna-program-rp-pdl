@@ -19,6 +19,7 @@
 <div class="pdl clearfix">
     <%@ include file="progress.jsp" %>
 
+    <h3 class="legend">Patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h3>
     <portlet:actionURL name="establishConsent" var="establishConsentUrl" >
         <portlet:param name="emergency" value="false" />
         <portlet:param name="confirmed" value="true" />

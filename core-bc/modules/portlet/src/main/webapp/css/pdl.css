@@ -209,9 +209,9 @@
 
 .pdl .unlock {
     font-family: Ubuntu,Arial,Verdana,Helvetica,sans-serif;
-    background-color: #fcf8e3;
-    color: #c09853;
-    border: 1px solid #faebcc;
+    background-color: #d9edf7;
+    color: #31708f;
+    border: 1px solid #bce8f1;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
     padding: 0.5em;
@@ -312,7 +312,8 @@
 .button-simple:visited,
 .button-simple:hover,
 .button-simple {
-    background: #3582c0;
+    color: #31708f;
+    background: #fff;
     border: 1px solid #5d98bf;
     padding: 10px 10px;
 }
@@ -320,7 +321,8 @@
 .button-simple-danger:visited,
 .button-simple-danger:hover,
 .button-simple-danger {
-    background: #b6383e;
+    background: #fff;
+    color: #872220;
     border: 1px solid #872220;
     padding: 10px 10px;
 }
@@ -328,7 +330,8 @@
 .button-simple-warn:visited,
 .button-simple-warn:hover,
 .button-simple-warn {
-    background: #cbb85d;
+    color: #938542;
+    background: #fff;
     border: 1px solid #938542;
     padding: 10px 10px;
 }
