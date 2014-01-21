@@ -27,7 +27,7 @@
                 </c:if>
             </c:when>
         </c:choose>
-        <c:if test="${system.blocked && system.needConfirmation}">
+        <c:if test="${pdl:displayUnblockConfirmation(system)}">
             <portlet:actionURL name="toggleInformation" var="toggleInformationEmergencyUrl">
                 <portlet:param name="id" value="${system.id}" />
                 <portlet:param name="confirmed" value="true" />
@@ -44,9 +44,9 @@
             <div class="unlock">
                 <b>Passera spärr</b> för ${system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}
                 <div class="clearfix">
-                    <a href="${toggleInformationConsentUrl}" class="link-button-mod link-button-mod-warn">Passera spärr med medgivande</a>
-                    <a href="${cancelRevokeConfirmationUrl}" class="link-button-mod">Avbryt</a>
-                    <a href="${toggleInformationEmergencyUrl}" class="link-button-mod link-button-mod-danger" style="float:right">Nödöppna information</a>
+                    <a href="${cancelRevokeConfirmationUrl}" class="link-button-mod button-simple">&laquo; Avbryt</a>
+                    <a href="${toggleInformationConsentUrl}" class="link-button-mod button-simple">Passera spärr med medgivande &raquo;</a>
+                    <a href="${toggleInformationEmergencyUrl}" class="link-button-mod button-simple-danger">Nödöppna information &raquo;</a>
                 </div>
             </div>
         </c:if>

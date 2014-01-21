@@ -58,8 +58,15 @@ public class DisplayInformation {
         boolean isSelectedNotSameUnit = infoType.selected || system.visibility == Visibility.SAME_CARE_UNIT;
         boolean infotypeExpanded = expandInfoType(infoType, state);
         boolean lowestVisibility = state.getCurrentVisibility().compareTo(system.visibility) >= 0;
-        boolean isUnblocked = !(infoType.containsBlocked.get(system.visibility) && system.initiallyBlocked && system.blocked);
+        boolean isUnblocked = infoType.viewBlocked || !(infoType.containsBlocked.get(system.visibility) && system.initiallyBlocked && system.blocked);
 
         return state.isPatientInformationExist() && infotypeExpanded && isSelectedNotSameUnit && lowestVisibility && isUnblocked;
+    }
+
+    public static boolean displayUnblockConfirmation(
+        SystemState<CareSystem> system
+    ) {
+       boolean needsConfirmation = system.blocked && system.needConfirmation;
+       return  needsConfirmation;
     }
 }

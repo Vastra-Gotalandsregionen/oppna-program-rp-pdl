@@ -48,5 +48,13 @@
     <function-signature>boolean displayOtherProviders(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.portal.controller.pdl.PdlUserState)</function-signature>
   </function>
 
+  <function>
+    <description>Determines if block dialog should be shown.</description>
+    <display-name>Show block dialog</display-name>
+    <name>displayUnblockConfirmation</name>
+    <function-class>se.vgregion.portal.controller.pdl.DisplayInformation</function-class>
+    <function-signature>boolean displayUnblockConfirmation(se.vgregion.domain.decorators.SystemState)</function-signature>
+  </function>
+
 
 </taglib>
