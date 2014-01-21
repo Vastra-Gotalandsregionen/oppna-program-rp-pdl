@@ -56,5 +56,12 @@
     <function-signature>boolean displayUnblockConfirmation(se.vgregion.domain.decorators.SystemState)</function-signature>
   </function>
 
+  <function>
+    <description>Determines if an action to view blocked care units should be displayed.</description>
+    <display-name>Action to view blocked care units</display-name>
+    <name>displayBlockedAction</name>
+    <function-class>se.vgregion.portal.controller.pdl.DisplayInformation</function-class>
+    <function-signature>boolean displayBlockedAction(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.portal.controller.pdl.PdlUserState)</function-signature>
+  </function>
 
 </taglib>

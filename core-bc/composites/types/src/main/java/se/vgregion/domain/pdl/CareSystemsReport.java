@@ -156,9 +156,10 @@ public class CareSystemsReport implements Serializable {
                 newSystems.put(key, aggregatedSystems.value.get(key));
             }
         }
+
         return new CareSystemsReport(
-                aggregatedSystems.mapValue(newSystems),
-                this.selectedInfoResource
+            aggregatedSystems.mapValue(newSystems),
+            this.selectedInfoResource
         );
     }
 
@@ -173,7 +174,11 @@ public class CareSystemsReport implements Serializable {
                 newSystems.put(key, aggregatedSystems.value.get(key));
             }
         }
-        return new CareSystemsReport(aggregatedSystems.mapValue(newSystems), this.selectedInfoResource);
+
+        return new CareSystemsReport(
+            aggregatedSystems.mapValue(newSystems),
+            this.selectedInfoResource
+        );
     }
 
     public CareSystemsReport toggleInformation(String id, boolean confirmed) {

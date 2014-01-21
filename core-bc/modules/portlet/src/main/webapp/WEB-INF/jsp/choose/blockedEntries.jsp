@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<c:if test="${infoSelection.key.containsBlocked[state.currentVisibility] && !infoSelection.key.viewBlocked}">
+<c:if test="${pdl:displayBlockedAction(infoSelection.key, state)}">
     <li>
         <div class="clearfix">
             <div class="callout callout-danger callout-action">

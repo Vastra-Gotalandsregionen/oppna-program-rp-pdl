@@ -66,7 +66,22 @@ public class DisplayInformation {
     public static boolean displayUnblockConfirmation(
         SystemState<CareSystem> system
     ) {
-       boolean needsConfirmation = system.blocked && system.needConfirmation;
+       boolean needsConfirmation =
+               system.blocked &&
+               system.needConfirmation;
+
        return  needsConfirmation;
+    }
+
+    public static boolean displayBlockedAction(
+            InfoTypeState<InformationType> infoType,
+            PdlUserState state
+    ) {
+        boolean displayBlockedAction =
+            infoType.containsBlocked.get(state.getCurrentVisibility()) &&
+            !infoType.viewBlocked &&
+            infoType.selected;
+
+        return displayBlockedAction;
     }
 }
