@@ -1,7 +1,7 @@
 package se.vgregion.service.pdl;
 
-import se.vgregion.domain.pdl.*;
 import se.vgregion.domain.decorators.WithInfoType;
+import se.vgregion.domain.pdl.*;
 
 import java.util.List;
 

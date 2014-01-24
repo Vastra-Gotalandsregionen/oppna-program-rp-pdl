@@ -20,8 +20,8 @@ import se.vgregion.domain.pdl.*;
 import se.vgregion.service.pdl.*;
 
 import javax.portlet.ActionResponse;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.TreeSet;
 
 @Controller
@@ -35,7 +35,7 @@ public class PdlController {
     @Autowired
     private PdlUserState state;
     @Autowired
-    @Qualifier("CareSystemsImpl")
+    @Qualifier("CareSystemsProxy")
     private CareSystems systems;
     @Autowired
     private PatientRepository patients;
@@ -143,16 +143,23 @@ public class PdlController {
 
             state.setPatient(patients.byPatientId(patientId));
 
-            List<WithInfoType<CareSystem>> careSystems = systems.byPatientId(ctx, patientId);
+            WithOutcome<ArrayList<WithInfoType<CareSystem>>> careSystems = systems.byPatientId(ctx, patientId);
 
-            if(careSystems.size() > 0) {
+            state.setSourcesNonSuccessOutcome(
+                    !careSystems.success &&
+                    careSystems.outcome != Outcome.UNFULFILLED_FAILURE
+            );
 
-                boolean availablePatient = AvailablePatient.check(ctx, careSystems);
+            state.setMissingResults(careSystems.outcome == Outcome.UNFULFILLED_FAILURE);
+
+            if(careSystems.value.size() > 0) {
+
+                boolean availablePatient = AvailablePatient.check(ctx, careSystems.value);
 
                 PdlReport pdlReport = pdl.pdlReport(
                         ctx,
                         state.getPatient(),
-                        careSystems
+                        careSystems.value
                 );
 
                 PdlReport newReport = pdlReport;

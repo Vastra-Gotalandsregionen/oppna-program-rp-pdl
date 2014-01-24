@@ -30,12 +30,6 @@
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
 
-
-  <context-param>
-    <param-name>test</param-name>
-    <param-value>testar</param-value>
-  </context-param>
-
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>classpath*:/applicationContext.xml /*-portlet.xml</param-value>

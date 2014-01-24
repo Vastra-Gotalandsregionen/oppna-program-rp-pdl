@@ -20,4 +20,5 @@ ws.endpoint.pdl.registerConsent=https://${TP_HOST}:${TP_PORT1}/${TP_BASE_URI}/eh
 ws.endpoint.pdl.registerRelationship=https://${TP_HOST}:${TP_PORT1}/${TP_BASE_URI}/ehr/patientrelationship/administration/RegisterExtendedPatientRelation/1/rivtabp21
 ws.endpoint.pdl.storeLog=
 ws.endpoint.pdl.hsaOrgmaster=https://${TP_HOST}:${TP_PORT2}/hsa-ws2/services/hsa-ws2-proxy/v3
+ws.endpoint.pdl.infoBroker=https://<your.infobroker.host>:<your.infobroker.port>/patient-history/PatientHistory
 

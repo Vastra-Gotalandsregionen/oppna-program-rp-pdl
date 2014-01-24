@@ -64,5 +64,10 @@ Generation time : 2013-10-08 14:16:23 CEST
       <artifactId>hsa-ws2-schemas</artifactId>
       <version>1.0.0</version>
     </dependency>
+    <dependency>
+      <groupId>se.vgregion.bfr</groupId>
+      <artifactId>bfr-infobroker-wsclient-composite-svc</artifactId>
+      <version>2.3</version>
+    </dependency>
   </dependencies>
 </project>

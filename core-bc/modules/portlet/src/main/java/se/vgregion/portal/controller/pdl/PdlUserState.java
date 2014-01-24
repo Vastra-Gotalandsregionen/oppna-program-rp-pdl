@@ -31,6 +31,8 @@ public class PdlUserState implements Serializable {
     private final Map<String, Boolean> shouldBeVisible = new HashMap<String, Boolean>();
     private PdlProgress currentProgress = PdlProgress.firstStep();
     private String consentInformationTypeId = null;
+    private boolean sourcesNonSuccessOutcome = false;
+    private boolean missingResults = false;
 
     private void calcVisibility() {
         shouldBeVisible.clear();
@@ -57,6 +59,8 @@ public class PdlUserState implements Serializable {
 
     public void reset() {
         patientInformationExist = false;
+        sourcesNonSuccessOutcome = false;
+        missingResults = false;
         pdlReport = null;
         csReport = null;
         sumReport = null;
@@ -120,21 +124,12 @@ public class PdlUserState implements Serializable {
         this.patientInformationExist = patientInformationExist;
     }
 
-    @Override
-    public String toString() {
-        return "PdlUserState{" +
-                "pdlReport=" + pdlReport +
-                ", csReport=" + csReport +
-                ", sumReport=" + sumReport +
-                ", patient=" + patient +
-                ", ctx=" + ctx +
-                ", patientInformationExist=" + patientInformationExist +
-                ", searchSession='" + searchSession + '\'' +
-                ", currentVisibility=" + currentVisibility +
-                ", shouldBeVisible=" + shouldBeVisible +
-                ", currentProgress=" + currentProgress +
-                ", consentInformationTypeId='" + consentInformationTypeId + '\'' +
-                '}';
+    public boolean isSourcesNonSuccessOutcome() {
+        return sourcesNonSuccessOutcome;
+    }
+
+    public void setSourcesNonSuccessOutcome(boolean sourcesNonSuccessOutcome) {
+        this.sourcesNonSuccessOutcome = sourcesNonSuccessOutcome;
     }
 
     public void setCsReport(CareSystemsReport csReport) {
@@ -168,4 +163,30 @@ public class PdlUserState implements Serializable {
         calcVisibility();
     }
 
+    public boolean isMissingResults() {
+        return missingResults;
+    }
+
+    public void setMissingResults(boolean missingResults) {
+        this.missingResults = missingResults;
+    }
+
+    @Override
+    public String toString() {
+        return "PdlUserState{" +
+                "pdlReport=" + pdlReport +
+                ", csReport=" + csReport +
+                ", sumReport=" + sumReport +
+                ", patient=" + patient +
+                ", ctx=" + ctx +
+                ", patientInformationExist=" + patientInformationExist +
+                ", searchSession='" + searchSession + '\'' +
+                ", currentVisibility=" + currentVisibility +
+                ", shouldBeVisible=" + shouldBeVisible +
+                ", currentProgress=" + currentProgress +
+                ", consentInformationTypeId='" + consentInformationTypeId + '\'' +
+                ", sourcesNonSuccessOutcome=" + sourcesNonSuccessOutcome +
+                ", missingResults=" + missingResults +
+                '}';
+    }
 }

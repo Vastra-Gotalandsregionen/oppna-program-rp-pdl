@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 @Service
-public class PdlServiceImpl implements PdlService {
+public class PdlServiceProxy implements PdlService {
 
     @Resource(name = "checkBlocks")
     private CheckBlocksResponderInterface checkBlocks;

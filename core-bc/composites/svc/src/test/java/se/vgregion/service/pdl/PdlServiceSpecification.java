@@ -44,7 +44,7 @@ public class PdlServiceSpecification {
     private RegisterExtendedConsentResponderInterface establishConsent;
 
     @InjectMocks
-    private PdlServiceImpl service = new PdlServiceImpl();
+    private PdlServiceProxy service = new PdlServiceProxy();
 
     private PdlContext ctx;
     private Patient patient;
@@ -70,7 +70,7 @@ public class PdlServiceSpecification {
         patient = patients.byPatientId("test");
 
         CareSystems systems = new CareSystemsMock();
-        careSystems = systems.byPatientId(ctx, patient.patientId);
+        careSystems = systems.byPatientId(ctx, patient.patientId).value;
     }
 
     @Test
