@@ -108,13 +108,14 @@ public class CareSystemsReport implements Serializable {
             boolean containsOtherUnits = false;
             boolean containsOtherProviders = false;
 
+            // Pre-pouplate Visibility with false values.
+            for(Visibility v : Visibility.values()) {
+                containsBlocked.put(v, false);
+            }
+
             for(SystemState<CareSystem> v : value) {
 
-                if(!containsBlocked.containsKey(v.visibility)) {
-                    containsBlocked.put(v.visibility, false);
-                }
-
-                // Does this info type contain only blocked information?
+                // Does this info type contain blocked information?
                 containsBlocked.put(
                         v.visibility,
                         containsBlocked.get(v.visibility) | v.blocked

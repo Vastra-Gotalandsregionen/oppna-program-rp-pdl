@@ -77,11 +77,16 @@ public class DisplayInformation {
             InfoTypeState<InformationType> infoType,
             PdlUserState state
     ) {
+        try {
         boolean displayBlockedAction =
             infoType.containsBlocked.get(state.getCurrentVisibility()) &&
             !infoType.viewBlocked &&
             infoType.selected;
 
-        return displayBlockedAction;
+            return displayBlockedAction;
+        } catch( Exception e ){
+            e.printStackTrace();
+            return false;
+        }
     }
 }
