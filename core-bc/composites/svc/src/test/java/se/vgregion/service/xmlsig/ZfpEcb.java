@@ -34,23 +34,16 @@ public class ZfpEcb {
 
         MessageDigest md = MessageDigest.getInstance("SHA-1");
 
-        byte[] secret = "secretkey1234567".getBytes();
-
 //        byte[] hashedSecret = md.digest(secret);
 //        System.out.println("Secret = " + bytesToHex(hashedSecret));
 
-        byte[] keyBytes = hexStringToByteArray("<Omitted>");
+        byte[] keyBytes = hexStringToByteArray("244589c9e6fa56635f67f97cdbd226363465b7055cb86720"); // Testkey
 
         byte[] chiperText = encrypt(enc, keyBytes);
 
 
         String chipherTextString = Base64.encodeBase64String(chiperText);
         String urlChiperText = URLEncoder.encode(chipherTextString, "UTF-8");
-
-       // assertEquals(
-       //         "Z/nOUbe7J8ua2B1IOas6rZAYHxm9RxHl26LUGwBfOEPG93uW4N6VXJTmp/r9lMITkNOuDtD0K9TzCBW9F35p5x6JK+qfyGKoDbZ4hS1Pb1gn6f2qx4LztQ==",
-       //         chipherText
-       // );
 
         System.out.println("Encrypted = " + chipherTextString);
         System.out.println("Encrypted URL Encoded = " + urlChiperText);
