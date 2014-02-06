@@ -259,7 +259,11 @@ public class PdlController {
                 )
             );
 
-            log(UserAction.CONSENT);
+            if(emergency) {
+                log(UserAction.CONSENT_EMERGENCY);
+            } else {
+                log(UserAction.CONSENT);
+            }
 
             // Hand over to select info resource again. Provide the stashed information type id
             selectInfoResource(state.getConsentInformationTypeId(), response);

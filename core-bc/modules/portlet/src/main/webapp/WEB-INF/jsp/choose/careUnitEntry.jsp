@@ -27,7 +27,7 @@
                 </c:if>
             </c:when>
         </c:choose>
-        <c:if test="${pdl:displayUnblockConfirmation(system)}">
+        <c:if test="${pdl:displayUnblockConfirmation(system, state)}">
             <portlet:actionURL name="toggleInformation" var="toggleInformationEmergencyUrl">
                 <portlet:param name="id" value="${system.id}" />
                 <portlet:param name="confirmed" value="true" />
@@ -48,6 +48,12 @@
                     <a href="${toggleInformationConsentUrl}" class="link-button-mod button-simple">Passera spärr med medgivande</a>
                     <a href="${toggleInformationEmergencyUrl}" class="link-button-mod button-simple-danger">Nödöppna information</a>
                 </div>
+            </div>
+        </c:if>
+        <c:if test="${pdl:displayUnblockInformation(system, state)}">
+            <div class="unlock unlock-sjf">
+                <p><b>Spärrad information hos annan vårdgivare</b></p>
+                Du behöver kontakta vårdgivare ${system.value.careProviderDisplayName} för att kunna nödöppna information.
             </div>
         </c:if>
     </li>

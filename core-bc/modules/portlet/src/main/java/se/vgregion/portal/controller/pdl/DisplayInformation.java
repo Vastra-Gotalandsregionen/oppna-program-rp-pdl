@@ -64,13 +64,27 @@ public class DisplayInformation {
     }
 
     public static boolean displayUnblockConfirmation(
-        SystemState<CareSystem> system
+        SystemState<CareSystem> system,
+        PdlUserState state
     ) {
        boolean needsConfirmation =
                system.blocked &&
-               system.needConfirmation;
+               system.needConfirmation &&
+               !state.getCtx().value.currentAssignment.isOtherProviders();
 
        return  needsConfirmation;
+    }
+
+    public static boolean displayUnblockInformation(
+            SystemState<CareSystem> system,
+            PdlUserState state
+    ) {
+        boolean needsConfirmation =
+                system.blocked &&
+                system.needConfirmation &&
+                state.getCtx().value.currentAssignment.isOtherProviders();
+
+        return  needsConfirmation;
     }
 
     public static boolean displayBlockedAction(
