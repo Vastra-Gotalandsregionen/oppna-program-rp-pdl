@@ -7,6 +7,7 @@ import se.vgregion.domain.pdl.CareSystem;
 import se.vgregion.domain.pdl.CareSystemSource;
 import se.vgregion.domain.pdl.InformationType;
 import se.vgregion.domain.pdl.PdlContext;
+import se.vgregion.service.search.CareSystems;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package se.vgregion.service.pdl;
+package se.vgregion.service.search;
 
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.decorators.WithOutcome;

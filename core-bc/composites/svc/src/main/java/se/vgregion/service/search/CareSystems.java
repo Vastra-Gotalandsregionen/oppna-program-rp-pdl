@@ -1,4 +1,4 @@
-package se.vgregion.service.pdl;
+package se.vgregion.service.search;
 
 import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;

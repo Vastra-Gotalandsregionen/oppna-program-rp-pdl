@@ -1,4 +1,4 @@
-package se.vgregion.service.pdl;
+package se.vgregion.service.sources;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +7,8 @@ import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.pdl.CareSystem;
 import se.vgregion.domain.pdl.PdlContext;
-import se.vgregion.service.pdl.sources.RadiologySource;
+import se.vgregion.service.search.CareSystems;
+import se.vgregion.service.sources.RadiologySource;
 
 import java.util.ArrayList;
 

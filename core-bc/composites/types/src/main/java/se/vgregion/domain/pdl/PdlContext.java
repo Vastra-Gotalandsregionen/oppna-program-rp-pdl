@@ -1,6 +1,5 @@
 package se.vgregion.domain.pdl;
 
-import se.vgregion.domain.pdl.logging.LogThisField;
 import se.vgregion.domain.assignment.Assignment;
 
 import java.io.Serializable;

@@ -12,6 +12,7 @@ import se.riv.ehr.patientrelationship.administration.registerextendedpatientrela
 import se.vgregion.domain.pdl.*;
 import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.decorators.WithInfoType;
+import se.vgregion.service.search.PdlService;
 
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;

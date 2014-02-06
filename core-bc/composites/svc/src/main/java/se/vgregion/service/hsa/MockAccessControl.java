@@ -1,4 +1,4 @@
-package se.vgregion.service.pdl;
+package se.vgregion.service.hsa;
 
 
 import org.springframework.stereotype.Service;
@@ -6,6 +6,7 @@ import se.vgregion.domain.assignment.Access;
 import se.vgregion.domain.assignment.Assignment;
 import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.pdl.PdlContext;
+import se.vgregion.service.search.AccessControl;
 
 import java.util.Arrays;
 import java.util.TreeMap;
@@ -100,6 +101,7 @@ public class MockAccessControl implements AccessControl {
                 "Ludvig Läkare",
                 "SE2321000131-P000000069215",
                 assignments
+
         );
     }
 

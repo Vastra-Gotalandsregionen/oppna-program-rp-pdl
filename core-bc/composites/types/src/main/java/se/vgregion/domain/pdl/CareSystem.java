@@ -23,8 +23,16 @@ public class CareSystem implements Serializable {
         this.careProviderHsaId = careProviderHsaId;
         this.careProviderDisplayName = careProviderDisplayName;
         this.careUnitHsaId = careUnitHsaId;
-
         this.careUnitDisplayName = careUnitDisplayName;
+    }
+
+    public CareSystem(CareSystemSource source,
+                      CareProviderUnit careProviderUnit) {
+        this.source = source;
+        this.careProviderHsaId = careProviderUnit.careProviderHsaId;
+        this.careProviderDisplayName = careProviderUnit.careProviderDisplayName;
+        this.careUnitHsaId = careProviderUnit.careUnitHsaId;
+        this.careUnitDisplayName = careProviderUnit.careUnitDisplayName;
     }
 
     public String getCareUnitHsaId() {
@@ -59,8 +67,7 @@ public class CareSystem implements Serializable {
                 ", careProviderDisplayName='" + careProviderDisplayName + '\'' +
                 ", careUnitHsaId='" + careUnitHsaId + '\'' +
                 ", careUnitDisplayName='" + careUnitDisplayName + '\'' +
-                ", displayId='" + displayId + '\'' +
+                ", displayId='" + displayId +
                 '}';
     }
-
 }

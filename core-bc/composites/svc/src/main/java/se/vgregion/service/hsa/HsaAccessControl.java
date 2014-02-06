@@ -1,8 +1,9 @@
-package se.vgregion.service.pdl;
+package se.vgregion.service.hsa;
 
 import org.apache.cxf.common.i18n.UncheckedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.addressing.v1.AttributedURIType;
 import se.riv.hsa.hsaws.v3.HsaWsFault;
@@ -15,6 +16,8 @@ import se.vgregion.domain.assignment.Assignment;
 import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.pdl.InformationType;
 import se.vgregion.domain.pdl.PdlContext;
+import se.vgregion.service.search.AccessControl;
+import se.vgregion.service.search.CareAgreement;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -24,24 +27,27 @@ import java.util.TreeSet;
 @Service("HsaAccessControl")
 public class HsaAccessControl implements AccessControl {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HsaAccessControl.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(HsaAccessControl.class);
     private static final String ALL = ";alla;";
     private static final String VoB = "Vård och behandling";
 
     @Resource(name = "hsaOrgmaster")
     private HsaWsResponderInterface hsaOrgmaster;
 
+    @Autowired
+    private CareAgreement agreementService;
 
     @Override
     public WithOutcome<PdlContext> getContextByEmployeeId(String hsaId) {
-        AttributedURIType to = new AttributedURIType();
+        // FIXME 2014-02-03 : Magnus Andersson > Hard coded value, use config
+        AttributedURIType to = HsaWsUtil.getAttribute("SE165565594230-1000");
 
-        to.setValue("SE165565594230-1000");
         GetMiuForPersonType miuRequest = new GetMiuForPersonType();
         miuRequest.setHsaIdentity(hsaId);
+
         try {
             GetMiuForPersonResponseType miuResponse = hsaOrgmaster.getMiuForPerson(
-                new AttributedURIType(),
+                HsaWsUtil.getAttribute(null),
                 to,
                 miuRequest
             );
@@ -77,7 +83,11 @@ public class HsaAccessControl implements AccessControl {
                                 access
                             );
 
-                        assignments.put(miu.getHsaIdentity(), assignment);
+                        boolean hasAgreement = agreementService.hasCareAgreement(assignment.getCareProviderHsaId());
+
+                        if(hasAgreement) {
+                            assignments.put(miu.getHsaIdentity(), assignment);
+                        }
                     }
                 }
 

@@ -21,6 +21,9 @@ import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.pdl.*;
 import se.vgregion.service.MockContext;
+import se.vgregion.service.patient.KivPatientRepository;
+import se.vgregion.service.search.CareSystems;
+import se.vgregion.service.search.PatientRepository;
 
 import java.util.ArrayList;
 import java.util.List;

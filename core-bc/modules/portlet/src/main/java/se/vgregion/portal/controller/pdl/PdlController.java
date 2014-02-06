@@ -17,7 +17,8 @@ import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.logging.PdlEventLog;
 import se.vgregion.domain.logging.UserAction;
 import se.vgregion.domain.pdl.*;
-import se.vgregion.service.pdl.*;
+import se.vgregion.service.log.LogRepo;
+import se.vgregion.service.search.*;
 
 import javax.portlet.ActionResponse;
 import java.util.ArrayList;
@@ -40,10 +41,13 @@ public class PdlController {
     @Autowired
     private PatientRepository patients;
     @Autowired
-    private ObjectRepo objectRepo;
+    private LogRepo logRepo;
     @Autowired
     @Qualifier("MockAccessControl")
     private AccessControl accessControl;
+    @Autowired
+    private CareAgreement careAgreement;
+
 
     @ModelAttribute("state")
     public PdlUserState initState() {
@@ -114,7 +118,7 @@ public class PdlController {
         // TODO 2013-12-20 : Magnus Andersson > Commented out because it causes null pointers at runtime.
 //        PdlEventLog log = newPdlEventLog();
 //        log.setUserAction(action);
-//        objectRepo.persist(log);
+//        logRepo.persist(log);
     }
 
 

@@ -27,7 +27,7 @@ import java.util.concurrent.Future;
 
 public class Report {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Report.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(Report.class);
 
 
     private Report() {

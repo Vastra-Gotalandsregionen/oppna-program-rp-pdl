@@ -1,10 +1,11 @@
-package se.vgregion.service.pdl;
+package se.vgregion.service.patient;
 
 import org.springframework.stereotype.Service;
 import se.vgregion.domain.pdl.Patient;
+import se.vgregion.service.search.PatientRepository;
 
 @Service
-public class KivPatientRepository implements PatientRepository{
+public class KivPatientRepository implements PatientRepository {
     @Override
     public Patient byPatientId(String patientId) {
         if(patientId.equals("196609095176"))

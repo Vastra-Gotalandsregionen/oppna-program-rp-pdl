@@ -1,4 +1,4 @@
-package se.vgregion.service.pdl;
+package se.vgregion.service.sources;
 
 import org.springframework.stereotype.Service;
 import se.vgregion.domain.decorators.WithInfoType;
@@ -7,6 +7,7 @@ import se.vgregion.domain.pdl.CareSystem;
 import se.vgregion.domain.pdl.CareSystemSource;
 import se.vgregion.domain.pdl.InformationType;
 import se.vgregion.domain.pdl.PdlContext;
+import se.vgregion.service.search.CareSystems;
 
 import java.util.ArrayList;
 

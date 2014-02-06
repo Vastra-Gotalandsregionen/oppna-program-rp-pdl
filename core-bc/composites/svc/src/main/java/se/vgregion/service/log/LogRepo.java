@@ -1,10 +1,9 @@
-package se.vgregion.service.pdl;
+package se.vgregion.service.log;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
-import javax.transaction.Transaction;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -13,7 +12,7 @@ import java.util.List;
  * Repository class to access the db.
  */
 @Repository
-public class ObjectRepo {
+public class LogRepo {
 
     @PersistenceContext
     EntityManager entityManager;
@@ -21,7 +20,7 @@ public class ObjectRepo {
     /**
      * Creates a new instance.
      */
-    public ObjectRepo() {
+    public LogRepo() {
     }
 
     /**
