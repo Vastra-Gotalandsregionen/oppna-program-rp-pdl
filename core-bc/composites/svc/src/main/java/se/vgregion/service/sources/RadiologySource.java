@@ -34,7 +34,7 @@ public class RadiologySource implements CareSystems {
     private PatientHistoryResponderInterface infoBroker;
 
     @Autowired
-    @Qualifier("hsaUnitMappingMock")
+    @Qualifier("hsaUnitMapping")
     private HsaUnitMapper hsaMapper;
 
     @Resource(name = "hsaOrgmaster")

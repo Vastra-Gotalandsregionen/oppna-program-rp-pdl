@@ -7,6 +7,7 @@ import org.junit.Test;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 
 import static org.junit.Assert.assertEquals;
@@ -16,13 +17,17 @@ public class ZfpEcb {
     @Test
     public void zfpEcbSpike() throws Exception {
         // dicom -> study-uid
-        String original = "sui=1.2.3.45.6789.0&lights=off&pw=yP9a5foBZtU=&un=testUser|20131213134546";
+
+         String id = "1.2.752.30.104.1144953.9231176.20130413113626";
+        //String id = "1.2.752.30.104.9910751.7741310.20081111190143";
+
+
+        String time = "20140206160000";
+        String user = "TestUser";
+        String password = "<Omitted>";
+        String original = "sui="+id+"&lights=off&un="+user+"&pw="+password+"|"+time;
         // ZFP?mode=Inbound#pl=<encypted-playload>
         byte[] enc = original.getBytes("utf-8");
-        byte[] encPad = new byte[]{0x07,0x07,0x07,0x07,0x07,0x07,0x07}; //
-        byte[] con = new byte[enc.length + encPad.length];
-        System.arraycopy(enc, 0, con, 0, enc.length);
-        System.arraycopy(encPad, 0, con, enc.length, encPad.length);
 
         System.out.println(enc.length);
         System.out.println(bytesToHex(enc));
@@ -31,25 +36,26 @@ public class ZfpEcb {
 
         byte[] secret = "secretkey1234567".getBytes();
 
-        byte[] hashedSecret = md.digest(secret);
-        System.out.println("Secret = " + bytesToHex(hashedSecret));
-        byte[] keyBytes = hexStringToByteArray("b5254f86bc85d0a4fdc81f76986b8a7cc29d437016ba6b08");
+//        byte[] hashedSecret = md.digest(secret);
+//        System.out.println("Secret = " + bytesToHex(hashedSecret));
+
+        byte[] keyBytes = hexStringToByteArray("<Omitted>");
 
         byte[] chiperText = encrypt(enc, keyBytes);
 
 
-        String chipherText = Base64.encodeBase64String(chiperText);
+        String chipherTextString = Base64.encodeBase64String(chiperText);
+        String urlChiperText = URLEncoder.encode(chipherTextString, "UTF-8");
 
        // assertEquals(
        //         "Z/nOUbe7J8ua2B1IOas6rZAYHxm9RxHl26LUGwBfOEPG93uW4N6VXJTmp/r9lMITkNOuDtD0K9TzCBW9F35p5x6JK+qfyGKoDbZ4hS1Pb1gn6f2qx4LztQ==",
        //         chipherText
        // );
 
-        System.out.println("Encrypted = " + chipherText);
-
+        System.out.println("Encrypted = " + chipherTextString);
+        System.out.println("Encrypted URL Encoded = " + urlChiperText);
         String plainText = decrypt(chiperText, keyBytes);
         assertEquals(original, plainText);
-        System.out.println("Plain text = " + plainText);
     }
 
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
@@ -91,7 +97,7 @@ public class ZfpEcb {
         //final byte[] encData = new sun.misc.BASE64Decoder().decodeBuffer(message);
         final byte[] plainText = decipher.doFinal(message);
 
-        return new String(plainText);
+        return new String(plainText, "UTF-8");
 
     }
 
