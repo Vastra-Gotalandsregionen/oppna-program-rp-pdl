@@ -196,7 +196,7 @@ public class Report {
     }
 
     // Sorry for all the brackets...
-    // This is a list of Care systems, each belonging to a specific information type.
+    // This is a list of Care systems, each belonging to a specific information decorator.
     // The response is from an external system. It can fail with fallback or succeed.
     // This is all executed async.
     static Future<WithOutcome<ArrayList<WithInfoType<WithBlock<CareSystem>>>>> blocks(

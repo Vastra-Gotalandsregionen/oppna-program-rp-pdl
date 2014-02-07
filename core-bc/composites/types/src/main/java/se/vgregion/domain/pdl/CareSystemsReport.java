@@ -32,7 +32,7 @@ public class CareSystemsReport implements Serializable {
                 careSystems
             );
 
-        // Aggregate into a map by information type.
+        // Aggregate into a map by information decorator.
         TreeMap<InformationType, ArrayList<SystemState<CareSystem>>> aggregatedSystems =
                 aggregateByInfotype(categorizedSystems);
 
@@ -115,7 +115,7 @@ public class CareSystemsReport implements Serializable {
 
             for(SystemState<CareSystem> v : value) {
 
-                // Does this info type contain blocked information?
+                // Does this info decorator contain blocked information?
                 containsBlocked.put(
                         v.visibility,
                         containsBlocked.get(v.visibility) | v.blocked
@@ -257,7 +257,7 @@ public class CareSystemsReport implements Serializable {
             }
 
             throw new ClassCastException(
-                    "One or more incompatible type in o1 [" +
+                    "One or more incompatible decorator in o1 [" +
                     o1.getClass().getCanonicalName() +
                     "] or o2 [" +
                     o2.getClass().getCanonicalName() +

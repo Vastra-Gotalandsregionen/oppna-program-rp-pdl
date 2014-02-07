@@ -144,7 +144,7 @@ class Blocking {
                     withBlock = WithBlock.unblocked(careSystem.value);
                 }
 
-                // Map current info type container, keeping the info type but changing the value to a care system with block.
+                // Map current info decorator container, keeping the info decorator but changing the value to a care system with block.
                 WithInfoType<WithBlock<CareSystem>> careSystemBlock = careSystem.mapValue(withBlock);
 
                 careSystemsWithBlocks.add(careSystemBlock);

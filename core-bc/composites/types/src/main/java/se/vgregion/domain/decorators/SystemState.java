@@ -8,7 +8,7 @@ public class SystemState<T extends Serializable> implements Serializable {
     private static final long serialVersionUID = 4032223817595569992L;
 
     // InitiallyBlocked + Selected == true => System has been unblocked and is now selected was blocked but is now successed
-    // blocked == false CareGiver+CareUnit has been unblocked for this information type
+    // blocked == false CareGiver+CareUnit has been unblocked for this information decorator
 
     public final String id;
     public final boolean initiallyBlocked;

@@ -5,7 +5,7 @@ import se.vgregion.domain.pdl.InformationType;
 import java.io.Serializable;
 
 /**
- * This class is used to categorize what information type the containing value belongs to.
+ * This class is used to categorize what information decorator the containing value belongs to.
  */
 public class WithInfoType<T extends Serializable> implements Serializable, Comparable<WithInfoType<T>> {
     private static final long serialVersionUID = 6882959945764167896L;

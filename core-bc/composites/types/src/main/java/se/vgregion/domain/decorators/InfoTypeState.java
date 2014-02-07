@@ -11,7 +11,7 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
 
     public final Visibility lowestVisibility;
     public final boolean showSameCareUnit;
-    public final boolean selected;  // Shows that the user have actively chosen to view the information associated with this information type.
+    public final boolean selected;  // Shows that the user have actively chosen to view the information associated with this information decorator.
     public final Map<Visibility, Boolean> containsBlocked;
     public final boolean containsOtherUnits;
     public final boolean containsOtherProviders;

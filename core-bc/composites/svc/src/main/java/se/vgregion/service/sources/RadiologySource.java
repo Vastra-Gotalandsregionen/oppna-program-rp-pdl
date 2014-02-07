@@ -11,15 +11,14 @@ import riv.ehr.ehrexchange.patienthistory._1.rivtabp20.PatientHistoryResponderIn
 import se.ecare.ib.exportmessage.ExternalId;
 import se.riv.hsa.hsaws.v3.HsaWsFault;
 import se.riv.hsa.hsaws.v3.HsaWsResponderInterface;
-import se.riv.hsa.hsawsresponder.v3.GetCareUnitResponseType;
 import se.vgregion.domain.decorators.Maybe;
 import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
+import se.vgregion.domain.decorators.WithPatient;
 import se.vgregion.domain.pdl.*;
 import se.vgregion.portal.bfr.infobroker.domain.InfobrokerPersonIdType;
 import se.vgregion.service.search.CareSystems;
 import se.vgregion.service.search.HsaUnitMapper;
-import se.vgregion.service.hsa.HsaWsUtil;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -42,50 +41,85 @@ public class RadiologySource implements CareSystems {
 
 
     @Override
-    public WithOutcome<ArrayList<WithInfoType<CareSystem>>> byPatientId(PdlContext ctx, String patientId) {
-        try {
+    public WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> byPatientId(
+            PdlContext ctx, String patientId
+    ) {
+        Patient unknownPatient = new Patient(patientId);
 
+        try {
             // FIXME 2014-01-22 : Magnus Andersson > HACK to prepare for workshop.
             InfobrokerPersonIdType pidType = (!patientId.equals("20090226D077")) ? InfobrokerPersonIdType.PAT_PERS_NR : InfobrokerPersonIdType.SU_PAT_RES_NR;
 
-            RequestList result = getIbRequests(patientId, pidType);
+            RequestList result = ibRequest(patientId, pidType);
 
-            return getMapRadiologyResult(ctx, patientId, result);
 
+            WithOutcome<ArrayList<WithInfoType<CareSystem>>> outcome =
+                    getMapRadiologyResult(ctx, patientId, result);
+
+            Patient patient = extractPatient(result, unknownPatient);
+
+            WithPatient<ArrayList<WithInfoType<CareSystem>>> withPatient =
+                    new WithPatient<ArrayList<WithInfoType<CareSystem>>>(patient, outcome.value);
+
+            return outcome.mapValue(withPatient);
         } catch (Exception e) {
             LOGGER.error("Unable to search in radiology source with patient id {}.", patientId, e);
-            return WithOutcome.remoteFailure(new ArrayList<WithInfoType<CareSystem>>());
+
+            ArrayList<WithInfoType<CareSystem>> systems = new ArrayList<WithInfoType<CareSystem>>();
+
+            WithPatient<ArrayList<WithInfoType<CareSystem>>> withPatient =
+                    new WithPatient<ArrayList<WithInfoType<CareSystem>>>(unknownPatient, systems);
+
+            return WithOutcome.remoteFailure(withPatient);
         }
+    }
+
+    private Patient extractPatient(RequestList result, Patient unknownPatient) {
+
+        boolean hasPatientInfo = result != null &&
+                result.getPatient() != null &&
+                (result.getPatient().getPatientData().getFirstName() != null ||
+                result.getPatient().getPatientData().getLastName() != null);
+
+        if(hasPatientInfo) {
+            String firstName = result.getPatient().getPatientData().getFirstName();
+            String lastName = result.getPatient().getPatientData().getLastName();
+
+            Patient.Sex patientSex = Patient.Sex.UNKNOWN;
+
+            switch (result.getPatient().getPatientData().getSex()) {
+                case MALE:
+                    patientSex = Patient.Sex.MALE;
+                    break;
+                case FEMALE:
+                    patientSex = Patient.Sex.FEMALE;
+                    break;
+            }
+
+            return unknownPatient.mapNameSex(firstName + " " + lastName, patientSex);
+        }
+        return unknownPatient;
     }
 
     private WithOutcome<ArrayList<WithInfoType<CareSystem>>> getMapRadiologyResult(PdlContext ctx, String patientId, RequestList result) throws HsaWsFault {
         ArrayList<WithInfoType<CareSystem>> systems = new ArrayList<WithInfoType<CareSystem>>();
+        WithOutcome<ArrayList<WithInfoType<CareSystem>>> outcome = WithOutcome.success(systems);
 
         if(result != null && result.getRequest().size() > 0)  {
             for(Request req : result.getRequest()) {
 
-                Maybe<String> hsaUnitId = getHsaUnitId(req);
+                Maybe<String> hsaUnitId = extractHsaUnitId(req);
 
                 if(hsaUnitId.success) {
                     // TODO 2014-02-03 : Magnus Andersson > Do this in parallell all unit hsa id:s, list for futures.
-                    GetCareUnitResponseType careUnitResponse = getGetCareUnit(hsaUnitId);
 
-                    boolean isValidResponse =
-                            careUnitResponse != null &&
-                            careUnitResponse.getCareGiver() != null &&
-                            careUnitResponse.getCareUnitHsaIdentity() != null;
+                    WithOutcome<Maybe<CareProviderUnit>> careProviderUnit = hsaMapper.toCareProviderUnit(hsaUnitId.value);
 
-                    if(isValidResponse) {
-                        String careProviderHsaId = careUnitResponse.getCareGiver();
-                        String careUnitHsaId = careUnitResponse.getCareUnitHsaIdentity();
-
-                        Maybe<CareProviderUnit> careProviderUnit =
-                                hsaMapper.toCareProviderUnit(careProviderHsaId, careUnitHsaId);
-
-                        if(careProviderUnit.success) {
-                            CareSystem cs = new CareSystem(CareSystemSource.BFR, careProviderUnit.value);
-                            systems.add(new WithInfoType<CareSystem>(InformationType.UND, cs));
-                        }
+                    if(careProviderUnit.success) {
+                        CareSystem cs = new CareSystem(CareSystemSource.BFR, careProviderUnit.value.value);
+                        systems.add(new WithInfoType<CareSystem>(InformationType.UND, cs));
+                    } else {
+                        outcome = outcome.mapOutcome(careProviderUnit.outcome);
                     }
                 }
             }
@@ -97,13 +131,12 @@ public class RadiologySource implements CareSystems {
             } else {
                 return WithOutcome.unfulfilled(systems);
             }
-        } else {
-            // FIXME 2014-02-04 : Magnus Andersson > This call need to be removed when proper test data exists
-            return new CareSystemsImpl().byPatientId(ctx, patientId);
         }
+
+        return outcome;
     }
 
-    private Maybe<String> getHsaUnitId(Request req) {
+    private Maybe<String> extractHsaUnitId(Request req) {
         Maybe<String> hsaUnitId = Maybe.none();
         for( ExternalId eid : req.getPlacer().getLocationData().getExternalIds().getExternalId()) {
             if(eid.getType().getCode().equals(HSA_UNIT)) {
@@ -113,16 +146,7 @@ public class RadiologySource implements CareSystems {
         return hsaUnitId;
     }
 
-    private GetCareUnitResponseType getGetCareUnit(Maybe<String> hsaUnitId) throws HsaWsFault {
-        // FIXME 2014-02-03 : Magnus Andersson > Hard coded value, use config
-        return hsaOrgmaster.getCareUnit(
-                HsaWsUtil.getAttribute("SE165565594230-1000"),
-                HsaWsUtil.getAttribute(null),
-                HsaWsUtil.getLookupByHsaId(hsaUnitId.value)
-        );
-    }
-
-    private RequestList getIbRequests(String patientId, InfobrokerPersonIdType pidType) {
+    private RequestList ibRequest(String patientId, InfobrokerPersonIdType pidType) {
         AttributedURIType attribURIType = new AttributedURIType();
         PatientSearchOrder patientSearchOrder = new PatientSearchOrder();
         Search searchValue = new Search();

@@ -2,7 +2,9 @@ package se.vgregion.domain.decorators;
 
 import java.io.Serializable;
 
-public class Maybe<T extends Serializable> {
+public class Maybe<T extends Serializable> implements Serializable {
+    private static final long serialVersionUID = 3943760711697466919L;
+
     public final T value;
     public final boolean isEmtpy;
     public final boolean success;

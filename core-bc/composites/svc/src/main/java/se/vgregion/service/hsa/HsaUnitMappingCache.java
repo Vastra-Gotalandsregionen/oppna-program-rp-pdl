@@ -5,10 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import se.riv.hsa.hsaws.v3.HsaWsFault;
 import se.riv.hsa.hsaws.v3.HsaWsResponderInterface;
 import se.riv.hsa.hsawsresponder.v3.CareUnitType;
 import se.riv.hsa.hsawsresponder.v3.GetCareUnitListResponseType;
+import se.riv.hsa.hsawsresponder.v3.GetCareUnitResponseType;
 import se.vgregion.domain.decorators.Maybe;
+import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.pdl.CareProviderUnit;
 import se.vgregion.service.search.CareAgreement;
 import se.vgregion.service.search.HsaUnitMapper;
@@ -5291,6 +5294,41 @@ public class HsaUnitMappingCache implements HsaUnitMapper {
         LOGGER.debug("Could not find {} - {} amongst careProviderUnits with agreement.", careProviderHsaId, careUnitHsaId);
 
         return Maybe.none();
+    }
+
+    @Override
+    public WithOutcome<Maybe<CareProviderUnit>> toCareProviderUnit(String hsaUnitId) {
+        // FIXME 2014-02-03 : Magnus Andersson > Hard coded value, use config
+        Maybe<CareProviderUnit> emptyResult = Maybe.none();
+        WithOutcome<Maybe<CareProviderUnit>> outcome = WithOutcome.success(emptyResult);
+
+        try {
+            GetCareUnitResponseType careUnitResponse = hsaOrgmaster.getCareUnit(
+                HsaWsUtil.getAttribute("SE165565594230-1000"),
+                HsaWsUtil.getAttribute(null),
+                HsaWsUtil.getLookupByHsaId(hsaUnitId)
+            );
+
+            boolean isValidResponse =
+                careUnitResponse != null &&
+                    careUnitResponse.getCareGiver() != null &&
+                    careUnitResponse.getCareUnitHsaIdentity() != null;
+
+            if(isValidResponse) {
+                String careProviderHsaId = careUnitResponse.getCareGiver();
+                String careUnitHsaId = careUnitResponse.getCareUnitHsaIdentity();
+
+                Maybe<CareProviderUnit> careProviderUnit =
+                        toCareProviderUnit(careProviderHsaId, careUnitHsaId);
+
+                outcome = WithOutcome.success(careProviderUnit);
+            }
+        } catch (HsaWsFault hsaWsFault) {
+            outcome = WithOutcome.remoteFailure(emptyResult);
+            LOGGER.error("Error when performing lookup on Unit HSA-ID to CareUnit HSA-ID with HSA-ID {}.", hsaUnitId, hsaWsFault);
+        }
+
+        return outcome;
     }
 }
 

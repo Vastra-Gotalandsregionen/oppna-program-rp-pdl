@@ -67,35 +67,26 @@ public class DisplayInformation {
         SystemState<CareSystem> system,
         PdlUserState state
     ) {
-       boolean needsConfirmation =
-               system.blocked &&
+        return system.blocked &&
                system.needConfirmation &&
                !state.getCtx().value.currentAssignment.isOtherProviders();
-
-       return  needsConfirmation;
     }
 
     public static boolean displayUnblockInformation(
             SystemState<CareSystem> system,
             PdlUserState state
     ) {
-        boolean needsConfirmation =
-                system.blocked &&
+        return  system.blocked &&
                 system.needConfirmation &&
                 state.getCtx().value.currentAssignment.isOtherProviders();
-
-        return  needsConfirmation;
     }
 
     public static boolean displayBlockedAction(
             InfoTypeState<InformationType> infoType,
             PdlUserState state
     ) {
-        boolean displayBlockedAction =
-            infoType.containsBlocked.get(state.getCurrentVisibility()) &&
-            !infoType.viewBlocked &&
-            infoType.selected;
-
-        return displayBlockedAction;
+        return  infoType.containsBlocked.get(state.getCurrentVisibility()) &&
+                !infoType.viewBlocked &&
+                infoType.selected;
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
+import se.vgregion.domain.decorators.WithPatient;
 import se.vgregion.domain.logging.PdlEventLog;
 import se.vgregion.domain.logging.UserAction;
 import se.vgregion.domain.pdl.*;
@@ -38,8 +39,6 @@ public class PdlController {
     @Autowired
     @Qualifier("CareSystemsProxy")
     private CareSystems systems;
-    @Autowired
-    private PatientRepository patients;
     @Autowired
     private LogRepo logRepo;
     @Autowired
@@ -145,9 +144,14 @@ public class PdlController {
 
             LOGGER.trace("Searching for patient {} in care systems.", patientId);
 
-            state.setPatient(patients.byPatientId(patientId));
 
-            WithOutcome<ArrayList<WithInfoType<CareSystem>>> careSystems = systems.byPatientId(ctx, patientId);
+            WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> patientCareSystems = systems.byPatientId(ctx, patientId);
+
+            // Extract patient
+            state.setPatient(patientCareSystems.value.patient);
+
+            WithOutcome<ArrayList<WithInfoType<CareSystem>>> careSystems =
+                    patientCareSystems.mapValue(patientCareSystems.value.value);
 
             state.setSourcesNonSuccessOutcome(
                     !careSystems.success &&
@@ -265,7 +269,7 @@ public class PdlController {
                 log(UserAction.CONSENT);
             }
 
-            // Hand over to select info resource again. Provide the stashed information type id
+            // Hand over to select info resource again. Provide the stashed information decorator id
             selectInfoResource(state.getConsentInformationTypeId(), response);
         }
     }
@@ -298,7 +302,7 @@ public class PdlController {
             response.setRenderParameter("view", "view");
         } else {
             LOGGER.trace(
-                    "Request to select information type with id {} for patient {}",
+                    "Request to select information decorator with id {} for patient {}",
                     id,
                     state.getPatient().patientId
             );
@@ -341,7 +345,7 @@ public class PdlController {
             response.setRenderParameter("view", "view");
         } else {
             LOGGER.trace(
-                    "Request to show blocked information categorized with information type with id {} for patient {}",
+                    "Request to show blocked information categorized with information decorator with id {} for patient {}",
                     id,
                     state.getPatient().patientId
             );
@@ -366,7 +370,7 @@ public class PdlController {
             response.setRenderParameter("view", "view");
         } else {
             LOGGER.trace(
-                    "Request to select information type with id {} for patient {}",
+                    "Request to select information decorator with id {} for patient {}",
                     id,
                     state.getPatient().patientId
             );
@@ -391,7 +395,7 @@ public class PdlController {
             response.setRenderParameter("view", "view");
         } else {
             LOGGER.trace(
-                    "Request to select information type with id {} for patient {}",
+                    "Request to select information decorator with id {} for patient {}",
                     id,
                     state.getPatient().patientId
             );

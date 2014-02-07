@@ -19,8 +19,12 @@
     <%@ include file="progress.jsp" %>
 
     <div class="info">
-        <h3 class="legend">System med patientinformation för ${state.patient.patientDisplayName} (${state.patient.patientIdFormatted})</h3>
-
+        <h3 class="legend">System med patientinformation för
+            <c:choose>
+                <c:when test="${state.patient.haveInformation}">${state.patient.patientDisplayName} (${state.patient.patientIdFormatted}, ${state.patient.sexDisplayName})</c:when>
+                <c:otherwise>${state.patient.patientIdFormatted}</c:otherwise>
+            </c:choose>
+        </h3>
     </div>
     <div class="clearfix">
         <portlet:renderURL var="startUrl">

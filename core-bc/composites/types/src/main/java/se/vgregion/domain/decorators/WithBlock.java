@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * This class decorates a generic class with block information.
- * @param <T> Serializable type that should be decorated
+ * @param <T> Serializable decorator that should be decorated
  */
 public class WithBlock<T extends Serializable> implements Serializable {
     private static final long serialVersionUID = 42917220499451811L;

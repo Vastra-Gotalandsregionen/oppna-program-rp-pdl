@@ -5,10 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
+import se.vgregion.domain.decorators.WithPatient;
 import se.vgregion.domain.pdl.CareSystem;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.service.search.CareSystems;
-import se.vgregion.service.sources.RadiologySource;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ public class CareSystemsProxy implements CareSystems {
     RadiologySource radiologySource;
 
     @Override
-    public WithOutcome<ArrayList<WithInfoType<CareSystem>>> byPatientId(PdlContext ctx, String patientId) {
+    public WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> byPatientId(PdlContext ctx, String patientId) {
         return radiologySource.byPatientId(ctx, patientId);
     }
 }

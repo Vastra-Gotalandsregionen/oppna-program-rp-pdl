@@ -19,14 +19,12 @@ import se.riv.ehr.patientrelationship.administration.registerextendedpatientrela
 import se.vgregion.domain.decorators.WithBlock;
 import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
+import se.vgregion.domain.decorators.WithPatient;
 import se.vgregion.domain.pdl.*;
 import se.vgregion.service.MockContext;
-import se.vgregion.service.patient.KivPatientRepository;
 import se.vgregion.service.search.CareSystems;
-import se.vgregion.service.search.PatientRepository;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -51,11 +49,9 @@ public class PdlServiceSpecification {
 
     private PdlContext ctx;
     private Patient patient;
-    private List<WithInfoType<CareSystem>> careSystems;
 
     private static final String serviceHsaId = "SE2321000131-E000000000001";
-    private String otherProvider;
-    private String sameProvider;
+    private ArrayList<WithInfoType<CareSystem>> careSystems;
 
     @Before
     public void setuUp() {
@@ -69,11 +65,14 @@ public class PdlServiceSpecification {
 
         ctx = MockContext.getMockContext();
 
-        PatientRepository patients = new KivPatientRepository();
-        patient = patients.byPatientId("test");
 
         CareSystems systems = new CareSystemsMock();
-        careSystems = systems.byPatientId(ctx, patient.patientId).value;
+
+        WithPatient<ArrayList<WithInfoType<CareSystem>>> patientCareSystems =
+                systems.byPatientId(ctx, "patientid").value;
+
+        patient = patientCareSystems.patient;
+        careSystems = patientCareSystems.value;
     }
 
     @Test

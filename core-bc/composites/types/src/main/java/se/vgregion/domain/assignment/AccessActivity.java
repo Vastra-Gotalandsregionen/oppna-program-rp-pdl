@@ -11,8 +11,7 @@ public enum AccessActivity {
 
     public final String value;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccessActivity.class.getName());
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccessActivity.class);
 
     private AccessActivity(String value) {
         this.value = value;
@@ -25,7 +24,7 @@ public enum AccessActivity {
             }
         }
 
-        LOGGER.error("Value unkown type, got " + value + ", expected Läsa, Skriva or Signera.");
+        LOGGER.error("Value unkown decorator, got " + value + ", expected Läsa, Skriva or Signera.");
         return UNKNOWN;
     }
 }
