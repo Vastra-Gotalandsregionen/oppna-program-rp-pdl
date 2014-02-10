@@ -3,8 +3,8 @@ package se.vgregion.service.search;
 import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.decorators.WithPatient;
-import se.vgregion.domain.pdl.CareSystem;
 import se.vgregion.domain.pdl.PdlContext;
+import se.vgregion.domain.systems.CareSystem;
 
 import java.util.ArrayList;
 

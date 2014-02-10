@@ -1,8 +1,10 @@
 package se.vgregion.domain.pdl;
 
+import se.vgregion.domain.decorators.Outcome;
 import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.decorators.WithBlock;
 import se.vgregion.domain.decorators.WithInfoType;
+import se.vgregion.domain.systems.CareSystem;
 
 import java.io.Serializable;
 import java.util.ArrayList;

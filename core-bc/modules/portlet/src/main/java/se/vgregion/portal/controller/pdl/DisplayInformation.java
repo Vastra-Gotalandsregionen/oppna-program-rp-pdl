@@ -2,9 +2,9 @@ package se.vgregion.portal.controller.pdl;
 
 import se.vgregion.domain.decorators.InfoTypeState;
 import se.vgregion.domain.decorators.SystemState;
-import se.vgregion.domain.pdl.CareSystem;
+import se.vgregion.domain.systems.CareSystem;
 import se.vgregion.domain.pdl.InformationType;
-import se.vgregion.domain.pdl.Visibility;
+import se.vgregion.domain.systems.Visibility;
 
 public class DisplayInformation {
     private DisplayInformation() {

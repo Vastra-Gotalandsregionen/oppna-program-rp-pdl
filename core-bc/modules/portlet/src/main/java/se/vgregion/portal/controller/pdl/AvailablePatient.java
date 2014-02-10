@@ -1,9 +1,9 @@
 package se.vgregion.portal.controller.pdl;
 
 import se.vgregion.domain.decorators.WithInfoType;
-import se.vgregion.domain.pdl.CareSystem;
+import se.vgregion.domain.systems.CareSystem;
 import se.vgregion.domain.pdl.PdlContext;
-import se.vgregion.domain.pdl.Visibility;
+import se.vgregion.domain.systems.Visibility;
 
 import java.util.List;
 

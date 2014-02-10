@@ -1,34 +1,39 @@
-package se.vgregion.domain.pdl;
+package se.vgregion.domain.systems;
+
+import se.vgregion.domain.source.SourceReferences;
 
 import java.io.Serializable;
 
 public class CareSystem implements Serializable {
     private static final long serialVersionUID = -8149026774965825742L;
 
-    public final CareSystemSource source;
+    public final CareSystemViewer source;
     public final String careProviderHsaId;
     public final String careProviderDisplayName;
     public final String careUnitHsaId;
     public final String careUnitDisplayName;
     public final String displayId = java.util.UUID.randomUUID().toString(); // Used to keep track of Care System between requests.
+    public final SourceReferences references;
 
     public CareSystem(
-            CareSystemSource source,
+            CareSystemViewer source,
             String careProviderHsaId,
             String careProviderDisplayName,
             String careUnitHsaId,
-            String careUnitDisplayName
-    ) {
+            String careUnitDisplayName,
+            SourceReferences references) {
         this.source = source;
         this.careProviderHsaId = careProviderHsaId;
         this.careProviderDisplayName = careProviderDisplayName;
         this.careUnitHsaId = careUnitHsaId;
         this.careUnitDisplayName = careUnitDisplayName;
+        this.references = references;
     }
 
-    public CareSystem(CareSystemSource source,
-                      CareProviderUnit careProviderUnit) {
+    public CareSystem(CareSystemViewer source,
+                      CareProviderUnit careProviderUnit, SourceReferences references) {
         this.source = source;
+        this.references = references;
         this.careProviderHsaId = careProviderUnit.careProviderHsaId;
         this.careProviderDisplayName = careProviderUnit.careProviderDisplayName;
         this.careUnitHsaId = careProviderUnit.careUnitHsaId;
@@ -55,7 +60,7 @@ public class CareSystem implements Serializable {
         return careUnitDisplayName;
     }
 
-    public CareSystemSource getSource() {
+    public CareSystemViewer getSource() {
         return source;
     }
 

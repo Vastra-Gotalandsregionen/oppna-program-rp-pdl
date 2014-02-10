@@ -12,7 +12,7 @@ import se.riv.hsa.hsawsresponder.v3.GetCareUnitListResponseType;
 import se.riv.hsa.hsawsresponder.v3.GetCareUnitResponseType;
 import se.vgregion.domain.decorators.Maybe;
 import se.vgregion.domain.decorators.WithOutcome;
-import se.vgregion.domain.pdl.CareProviderUnit;
+import se.vgregion.domain.systems.CareProviderUnit;
 import se.vgregion.service.search.CareAgreement;
 import se.vgregion.service.search.HsaUnitMapper;
 

@@ -16,11 +16,9 @@ import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivt
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationRequestType;
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelation.v1.rivtabp21.RegisterExtendedPatientRelationResponderInterface;
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelationresponder.v1.RegisterExtendedPatientRelationRequestType;
-import se.vgregion.domain.decorators.WithBlock;
-import se.vgregion.domain.decorators.WithInfoType;
-import se.vgregion.domain.decorators.WithOutcome;
-import se.vgregion.domain.decorators.WithPatient;
+import se.vgregion.domain.decorators.*;
 import se.vgregion.domain.pdl.*;
+import se.vgregion.domain.systems.CareSystem;
 import se.vgregion.service.MockContext;
 import se.vgregion.service.search.CareSystems;
 

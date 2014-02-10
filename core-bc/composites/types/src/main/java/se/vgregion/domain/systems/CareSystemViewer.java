@@ -1,13 +1,13 @@
-package se.vgregion.domain.pdl;
+package se.vgregion.domain.systems;
 
-public enum CareSystemSource {
+public enum CareSystemViewer {
     BFR("Bild- och funktionsregistret"),
     RRE("Nya Remissregistret"),
     OTH("Annat sjukvårdsystem");
 
     public final String displayName;
 
-    CareSystemSource(String displayName) {
+    CareSystemViewer(String displayName) {
         this.displayName = displayName;
     }
 
@@ -17,7 +17,7 @@ public enum CareSystemSource {
 
     @Override
     public String toString() {
-        return "CareSystemSource{" +
+        return "CareSystemViewer{" +
                 "displayName='" + displayName + '\'' +
                 '}';
     }

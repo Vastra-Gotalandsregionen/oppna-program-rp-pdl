@@ -3,9 +3,9 @@ package se.vgregion.domain.assignment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.vgregion.domain.decorators.WithInfoType;
-import se.vgregion.domain.pdl.CareSystem;
+import se.vgregion.domain.systems.CareSystem;
 import se.vgregion.domain.pdl.InformationType;
-import se.vgregion.domain.pdl.Visibility;
+import se.vgregion.domain.systems.Visibility;
 
 import java.io.Serializable;
 import java.util.NavigableSet;

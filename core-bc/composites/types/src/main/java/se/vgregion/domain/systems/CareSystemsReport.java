@@ -1,10 +1,12 @@
-package se.vgregion.domain.pdl;
+package se.vgregion.domain.systems;
 
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.vgregion.domain.assignment.Assignment;
 import se.vgregion.domain.decorators.*;
+import se.vgregion.domain.pdl.InformationType;
+import se.vgregion.domain.pdl.PdlReport;
 
 import java.io.Serializable;
 import java.util.*;
@@ -290,16 +292,16 @@ public class CareSystemsReport implements Serializable {
     }
 
     private static  ArrayList<SystemState<CareSystem>> getOrCreateList(
-            TreeMap<InformationType, ArrayList<SystemState<CareSystem>>> categorizedSystems,
-            InformationType infoTypeState
+        TreeMap<InformationType, ArrayList<SystemState<CareSystem>>> categorizedSystems,
+        InformationType infoTypeState
     ) {
         return (categorizedSystems.containsKey(infoTypeState)) ?
-                categorizedSystems.get(infoTypeState) : new ArrayList<SystemState<CareSystem>>();
+            categorizedSystems.get(infoTypeState) : new ArrayList<SystemState<CareSystem>>();
     }
 
     private ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizeSystems(
-            Assignment currentAssignment,
-            ArrayList<WithInfoType<WithBlock<CareSystem>>> systems
+        Assignment currentAssignment,
+        ArrayList<WithInfoType<WithBlock<CareSystem>>> systems
     ) {
 
         ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems =
@@ -313,17 +315,17 @@ public class CareSystemsReport implements Serializable {
     }
 
     private void withVisiblitiy(
-            ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems,
-            WithInfoType<WithBlock<CareSystem>> sys,
-            Visibility visibility
+        ArrayList<WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems,
+        WithInfoType<WithBlock<CareSystem>> sys,
+        Visibility visibility
     ) {
         categorizedSystems.add(
-                sys.mapValue(
-                        new WithVisibility<WithBlock<CareSystem>>(
-                            visibility,
-                            sys.value
-                        )
+            sys.mapValue(
+                new WithVisibility<WithBlock<CareSystem>>(
+                    visibility,
+                    sys.value
                 )
+            )
         );
     }
 

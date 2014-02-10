@@ -12,19 +12,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
-import se.vgregion.domain.decorators.WithInfoType;
-import se.vgregion.domain.decorators.WithOutcome;
-import se.vgregion.domain.decorators.WithPatient;
+import se.vgregion.domain.decorators.*;
 import se.vgregion.domain.logging.PdlEventLog;
 import se.vgregion.domain.logging.UserAction;
 import se.vgregion.domain.pdl.*;
+import se.vgregion.domain.systems.CareSystem;
+import se.vgregion.domain.systems.CareSystemsReport;
+import se.vgregion.domain.systems.SummaryReport;
+import se.vgregion.domain.systems.Visibility;
 import se.vgregion.service.log.LogRepo;
-import se.vgregion.service.search.*;
+import se.vgregion.service.search.AccessControl;
+import se.vgregion.service.search.CareAgreement;
+import se.vgregion.service.search.CareSystems;
+import se.vgregion.service.search.PdlService;
 
 import javax.portlet.ActionResponse;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.TreeSet;
+import java.util.TreeMap;
 
 @Controller
 @RequestMapping(value = "VIEW")
@@ -67,11 +72,12 @@ public class PdlController {
         return "view";
     }
 
-    PdlEventLog newPdlEventLog() {
+    PdlEventLog newPdlEventLog(UserAction action) {
         PdlEventLog log = new PdlEventLog();
         Patient patient = state.getPatient();
         PdlContext ctx = state.getCtx().value;
 
+        log.setUserAction(action);
         log.setPatientDisplayName(patient.getPatientDisplayName());
         log.setPatientId(patient.getPatientId());
         log.setEmployeeDisplayName(ctx.employeeDisplayName);
@@ -83,41 +89,64 @@ public class PdlController {
         log.setCareUnitId(ctx.currentAssignment.careUnitHsaId);
         log.setCreationTime(new Date());
         log.setSearchSession(state.getSearchSession());
-        log.setSystemId("Regionportalen");
+        log.setSystemId("Regionportalen - Sök Patient PDL");
 
-        TreeSet viewedData = new TreeSet();
-
-        // This code must be changed whenever the view code is. So that it logs relevant information, such as what
-        // information is being displayed to the user.
-
-        // TODO 2013-12-20 : Magnus Andersson > Commenting out while refactoring
-//        Set<Map.Entry<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>>> entries = state.getCsReport().getAggregatedSystems().getValue().entrySet();
-//        for (Map.Entry<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> entry : entries) {
-//            if (state.getShouldBeVisible().get(entry.getKey().lowestVisibility) // state.shouldBeVisible[infoSelection.key.lowestVisibility] &&
-//                    && (entry.getKey().containsOnlyBlocked.get(state.getCurrentVisibility()) // (infoSelection.key.containsOnlyBlocked[state.currentVisibility]
-//                    && entry.getKey().viewBlocked // && infoSelection.key.viewBlocked ||
-//                    || entry.getKey().containsOnlyBlocked.get(state.getCurrentVisibility()) //!infoSelection.key.containsOnlyBlocked[state.currentVisibility])
-//            )) {
-//                ArrayList<SystemState<CareSystem>> items = entry.getValue();
-//                // {system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}
-//                for (SystemState<CareSystem> system : items) {
-//                    String providerHsaIdId = system.value.careProviderHsaId;
-//                    String unitHsaId = system.value.careUnitHsaId;
-//                    viewedData.add(providerHsaIdId + "/" + unitHsaId);
-//                }
-//            }
-//        }
-
-        log.setLogText(viewedData.toString());
+        boolean notAttest = action != UserAction.ATTEST_RELATION;
+        if(notAttest) {
+            Maybe<String> maybeText = viewedSystemsLog();
+            String text = maybeText.success ? maybeText.value : "";
+            log.setLogText(text);
+        }
 
         return log;
     }
 
+    private Maybe<String> viewedSystemsLog() {
+        StringBuilder viewedData = new StringBuilder();
+        if(state.getCsReport() != null) {
+            TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> careSystems =
+                    state.getCsReport().aggregatedSystems.value;
+
+            for(InfoTypeState<InformationType> key : careSystems.keySet()) {
+
+                viewedData.
+                        append("=== ").
+                        append(key.value.getDesc().toUpperCase()).
+                        append(" ===\n");
+
+                if(key.isSelected()) {
+                    for(SystemState<CareSystem> sys : careSystems.get(key)) {
+                        if(sys.selected) {
+                            viewedData.append("[X] ");
+                        } else if(sys.needConfirmation){
+                            viewedData.append("[B] ");
+                        } else {
+                            viewedData.append("[-] ");
+                        }
+
+                        viewedData.
+                                append(sys.value.careProviderDisplayName).
+                                append(" - ").
+                                append(sys.value.careUnitDisplayName);
+
+                        if(sys.blocked && sys.initiallyBlocked) {
+                            viewedData.append(" (Spärrad information)");
+                        } else if(!sys.blocked && sys.initiallyBlocked) {
+                            viewedData.append(" (Passerad spärr)");
+                        }
+                        viewedData.append("\n");
+                    }
+                    viewedData.append("\n");
+                }
+            }
+            return Maybe.some(viewedData.toString());
+        }
+        return Maybe.none();
+    }
+
     void log(UserAction action) {
-        // TODO 2013-12-20 : Magnus Andersson > Commented out because it causes null pointers at runtime.
-//        PdlEventLog log = newPdlEventLog();
-//        log.setUserAction(action);
-//        logRepo.persist(log);
+        PdlEventLog log = newPdlEventLog(action);
+        logRepo.persist(log);
     }
 
 
@@ -191,7 +220,7 @@ public class PdlController {
                 state.setCurrentAssignment(currentAssignment); // Must be here or null pointer exception since it calls calcVisibility
             }
 
-            log(UserAction.SEARCH);
+            log(UserAction.SEARCH_PATIENT);
             response.setRenderParameter("view", "pickInfoResource");
         } else {
             state.setCurrentProgress(PdlProgress.firstStep().nextStep());
@@ -226,7 +255,7 @@ public class PdlController {
 
             state.setPdlReport(newReport);
 
-            log(UserAction.RELATION);
+            log(UserAction.ATTEST_RELATION);
 
             response.setRenderParameter("view", "pickInfoResource");
         } else {
@@ -264,9 +293,9 @@ public class PdlController {
             );
 
             if(emergency) {
-                log(UserAction.CONSENT_EMERGENCY);
+                log(UserAction.EMERGENCY_CONSENT);
             } else {
-                log(UserAction.CONSENT);
+                log(UserAction.ATTEST_CONSENT);
             }
 
             // Hand over to select info resource again. Provide the stashed information decorator id
@@ -274,24 +303,6 @@ public class PdlController {
         }
     }
 
-    @ActionMapping("showOtherCareUnits")
-    public void showOtherCareUnits(ActionResponse response) {
-        if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
-            response.setRenderParameter("view", "view");
-        } else {
-            PdlContext ctx = state.getCtx().value;
-
-            LOGGER.trace(
-                    "Request to show more information within same care giver for employee {} and patient {}.",
-                    ctx.employeeHsaId,
-                    state.getPatient().patientId
-            );
-
-            log(UserAction.OTHER_CARE_UNITS);
-
-            response.setRenderParameter("view", "pickInfoResource");
-        }
-    }
 
     @ActionMapping("selectInfoResource")
     public void selectInfoResource(
@@ -326,7 +337,11 @@ public class PdlController {
 
                 state.setCsReport(newCsReport);
 
-                log(UserAction.INFORMATION_CHOICE);
+                if(sameProvider) {
+                    log(UserAction.REVEAL_OTHER_UNITS);
+                } else if(sameProvider) {
+                    log(UserAction.REVEAL_OTHER_PROVIDER);
+                }
 
                 response.setRenderParameter("view", "pickInfoResource");
             } else {
@@ -355,7 +370,7 @@ public class PdlController {
 
             state.setCsReport(newCsReport);
 
-            log(UserAction.SHOW_BLOCKED_INFORMATION);
+            log(UserAction.REVEAL_BLOCKED);
 
             response.setRenderParameter("view", "pickInfoResource");
         }
@@ -406,11 +421,9 @@ public class PdlController {
             state.setCsReport(newCsReport);
 
             if (revokeEmergency && confirmed) {
-                log(UserAction.BLOCK);
+                log(UserAction.PASS_BLOCKED);
             } else if (!revokeEmergency && confirmed) {
-                log(UserAction.BLOCK_EMERGENCY);
-            } else {
-                log(UserAction.INFORMATION_CHOICE);
+                log(UserAction.EMERGENCY_PASS_BLOCKED);
             }
 
             response.setRenderParameter("view", "pickInfoResource");
@@ -433,6 +446,8 @@ public class PdlController {
 
             SummaryReport sumReport = new SummaryReport(state.getCsReport().aggregatedSystems.value);
             state.setSumReport(sumReport);
+
+            log(UserAction.SUMMARY_SYSTEMS);
 
             response.setRenderParameter("view", "showSummary");
         }
@@ -462,4 +477,15 @@ public class PdlController {
         return accessControl.getContextByEmployeeId("SE2321000131-P000000000977");
     }
 
+    @Override
+    public String toString() {
+        return "PdlController{" +
+                "pdl=" + pdl +
+                ", state=" + state +
+                ", systems=" + systems +
+                ", logRepo=" + logRepo +
+                ", accessControl=" + accessControl +
+                ", careAgreement=" + careAgreement +
+                '}';
+    }
 }

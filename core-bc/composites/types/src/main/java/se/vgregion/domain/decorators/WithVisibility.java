@@ -1,6 +1,6 @@
 package se.vgregion.domain.decorators;
 
-import se.vgregion.domain.pdl.Visibility;
+import se.vgregion.domain.systems.Visibility;
 
 import java.io.Serializable;
 
@@ -22,8 +22,6 @@ public class WithVisibility<T extends Serializable> implements Serializable {
     public <N extends Serializable> WithVisibility<N> mapValue(N newValue) {
         return new WithVisibility<N>(visibility, newValue);
     }
-
-    // TODO: 2013-11-27 : Magnus Andersson > Add static methods to describe ENUM
 
     public Visibility getVisibility() {
         return visibility;

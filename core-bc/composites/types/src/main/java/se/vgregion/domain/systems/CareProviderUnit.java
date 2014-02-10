@@ -1,4 +1,4 @@
-package se.vgregion.domain.pdl;
+package se.vgregion.domain.systems;
 
 import java.io.Serializable;
 

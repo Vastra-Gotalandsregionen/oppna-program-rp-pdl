@@ -1,4 +1,4 @@
-package se.vgregion.domain.pdl;
+package se.vgregion.domain.systems;
 
 public enum Visibility {
     NOT_VISIBLE,          // Not visible at all

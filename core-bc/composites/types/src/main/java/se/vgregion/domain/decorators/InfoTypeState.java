@@ -1,6 +1,6 @@
 package se.vgregion.domain.decorators;
 
-import se.vgregion.domain.pdl.Visibility;
+import se.vgregion.domain.systems.Visibility;
 
 import java.io.Serializable;
 import java.util.Map;

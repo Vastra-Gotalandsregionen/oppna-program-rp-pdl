@@ -15,7 +15,13 @@ import se.vgregion.domain.decorators.Maybe;
 import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.decorators.WithPatient;
-import se.vgregion.domain.pdl.*;
+import se.vgregion.domain.pdl.InformationType;
+import se.vgregion.domain.pdl.Patient;
+import se.vgregion.domain.pdl.PdlContext;
+import se.vgregion.domain.source.RadiologySourceRefs;
+import se.vgregion.domain.systems.CareProviderUnit;
+import se.vgregion.domain.systems.CareSystem;
+import se.vgregion.domain.systems.CareSystemViewer;
 import se.vgregion.portal.bfr.infobroker.domain.InfobrokerPersonIdType;
 import se.vgregion.service.search.CareSystems;
 import se.vgregion.service.search.HsaUnitMapper;
@@ -116,8 +122,13 @@ public class RadiologySource implements CareSystems {
                     WithOutcome<Maybe<CareProviderUnit>> careProviderUnit = hsaMapper.toCareProviderUnit(hsaUnitId.value);
 
                     if(careProviderUnit.success) {
-                        CareSystem cs = new CareSystem(CareSystemSource.BFR, careProviderUnit.value.value);
-                        systems.add(new WithInfoType<CareSystem>(InformationType.UND, cs));
+                        if(careProviderUnit.value.success) {
+                            String infoBrokerId = req.getInfobrokerId();
+                            CareSystem cs = new CareSystem(CareSystemViewer.BFR, careProviderUnit.value.value, new RadiologySourceRefs(infoBrokerId));
+                            systems.add(new WithInfoType<CareSystem>(InformationType.UND, cs));
+                        } else {
+                            LOGGER.warn("Could not find care unit {} among care providers with agreement.", hsaUnitId.value);
+                        }
                     } else {
                         outcome = outcome.mapOutcome(careProviderUnit.outcome);
                     }

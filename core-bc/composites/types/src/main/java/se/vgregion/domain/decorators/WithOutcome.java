@@ -1,7 +1,5 @@
 package se.vgregion.domain.decorators;
 
-import se.vgregion.domain.pdl.Outcome;
-
 import java.io.Serializable;
 
 /**

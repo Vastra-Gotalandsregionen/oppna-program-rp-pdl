@@ -2,6 +2,7 @@ package se.vgregion.service.search;
 
 import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.pdl.*;
+import se.vgregion.domain.systems.CareSystem;
 
 import java.util.List;
 

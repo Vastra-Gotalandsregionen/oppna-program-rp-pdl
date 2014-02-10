@@ -2,9 +2,14 @@ package se.vgregion.domain.pdl;
 
 import org.junit.Before;
 import org.junit.Test;
+import se.vgregion.domain.decorators.Outcome;
 import se.vgregion.domain.decorators.WithBlock;
 import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
+import se.vgregion.domain.source.RadiologySourceRefs;
+import se.vgregion.domain.systems.CareSystem;
+import se.vgregion.domain.systems.CareSystemViewer;
+import se.vgregion.domain.systems.CareSystemsReport;
 
 import java.util.ArrayList;
 
@@ -24,17 +29,17 @@ public class CareSystemReportSpec {
 
         ctx = ctx.changeAssignment(MockContext.VE);
 
-        CareSystem sameUnit1 = new CareSystem(CareSystemSource.BFR, ctx.currentAssignment.careProviderHsaId, "VGR", ctx.currentAssignment.careUnitHsaId, "Unit 1");
-        CareSystem sameUnit2 = new CareSystem(CareSystemSource.RRE, ctx.currentAssignment.careProviderHsaId, "VGR", ctx.currentAssignment.careUnitHsaId, "Unit 1");
+        CareSystem sameUnit1 = new CareSystem(CareSystemViewer.BFR, ctx.currentAssignment.careProviderHsaId, "VGR", ctx.currentAssignment.careUnitHsaId, "Unit 1", new RadiologySourceRefs(null));
+        CareSystem sameUnit2 = new CareSystem(CareSystemViewer.RRE, ctx.currentAssignment.careProviderHsaId, "VGR", ctx.currentAssignment.careUnitHsaId, "Unit 1", new RadiologySourceRefs(null));
 
 
-        CareSystem otherUnit1 = new CareSystem(CareSystemSource.BFR, ctx.currentAssignment.careProviderHsaId, "VGR", "otherCareUnitHsaId", "Unit 2");
-        CareSystem otherUnit2 = new CareSystem(CareSystemSource.BFR, ctx.currentAssignment.careProviderHsaId, "VGR", "otherCareUnitHsaId", "Unit 2");
+        CareSystem otherUnit1 = new CareSystem(CareSystemViewer.BFR, ctx.currentAssignment.careProviderHsaId, "VGR", "otherCareUnitHsaId", "Unit 2", new RadiologySourceRefs(null));
+        CareSystem otherUnit2 = new CareSystem(CareSystemViewer.BFR, ctx.currentAssignment.careProviderHsaId, "VGR", "otherCareUnitHsaId", "Unit 2", new RadiologySourceRefs(null));
 
         ctx = ctx.changeAssignment(MockContext.SJF);
 
-        CareSystem otherProvider1 = new CareSystem(CareSystemSource.BFR, ctx.currentAssignment.careProviderHsaId, "Capio Axess Lundby", ctx.currentAssignment.careUnitHsaId, "Unit 3");
-        CareSystem otherProvider2 = new CareSystem(CareSystemSource.BFR, ctx.currentAssignment.careProviderHsaId, "Capio Axess Lundby", "otherCareUnitHsaId", "Unit 4");
+        CareSystem otherProvider1 = new CareSystem(CareSystemViewer.BFR, ctx.currentAssignment.careProviderHsaId, "Capio Axess Lundby", ctx.currentAssignment.careUnitHsaId, "Unit 3", new RadiologySourceRefs(null));
+        CareSystem otherProvider2 = new CareSystem(CareSystemViewer.BFR, ctx.currentAssignment.careProviderHsaId, "Capio Axess Lundby", "otherCareUnitHsaId", "Unit 4", new RadiologySourceRefs(null));
 
         ArrayList<WithInfoType<WithBlock<CareSystem>>> sourceSystems = new ArrayList<WithInfoType<WithBlock<CareSystem>>>();
         sourceSystems.add(wrapSystem(InformationType.LAK, false, sameUnit1));

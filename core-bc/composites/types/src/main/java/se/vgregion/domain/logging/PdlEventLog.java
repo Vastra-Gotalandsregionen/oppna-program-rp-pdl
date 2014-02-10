@@ -133,4 +133,19 @@ public class PdlEventLog extends ActorsLog {
         this.creationTime = creationTime;
     }
 
+    @Override
+    public String toString() {
+        return "PdlEventLog{" +
+                "uuid='" + uuid + '\'' +
+                ", creationTime=" + creationTime +
+                ", careUnitId='" + careUnitId + '\'' +
+                ", careUnitDisplayName='" + careUnitDisplayName + '\'' +
+                ", careProviderId='" + careProviderId + '\'' +
+                ", careProviderDisplayName='" + careProviderDisplayName + '\'' +
+                ", systemId='" + systemId + '\'' +
+                ", assignmentId='" + assignmentId + '\'' +
+                ", userAction=" + userAction +
+                ", logText='" + logText + '\'' +
+                '}';
+    }
 }

@@ -5,6 +5,9 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import se.vgregion.domain.pdl.*;
 import se.vgregion.domain.decorators.WithOutcome;
+import se.vgregion.domain.systems.CareSystemsReport;
+import se.vgregion.domain.systems.SummaryReport;
+import se.vgregion.domain.systems.Visibility;
 
 import java.io.Serializable;
 import java.util.HashMap;
