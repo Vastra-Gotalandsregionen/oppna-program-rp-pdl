@@ -24,7 +24,7 @@
   </modules>
 
   <properties>
-    <apache.cxf.version>2.4.1</apache.cxf.version>
+    <apache.cxf.version>2.7.8</apache.cxf.version>
     <ehr.blocking.version>2-RC2</ehr.blocking.version>
     <ehr.patientconsent.version>1</ehr.patientconsent.version>
     <ehr.patientrelationship.version>1</ehr.patientrelationship.version>

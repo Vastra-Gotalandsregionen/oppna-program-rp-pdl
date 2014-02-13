@@ -8,15 +8,8 @@
        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
        http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 
-  <import resource="classpath:/jpa-connector.xml"/>
-
-  <context:mbean-export />
-
-  <context:annotation-config />
-
   <context:component-scan base-package="se.vgregion.service" />
 
-  <task:annotation-driven />
 
   <jaxws:client id="checkBlocks"
                 serviceClass="se.riv.ehr.blocking.accesscontrol.checkblocks.v2.rivtabp21.CheckBlocksResponderInterface"

@@ -23,8 +23,10 @@ Generation time : 2013-10-08 14:16:23 CEST
   <modules>
     <module>composites/types</module>
     <module>composites/svc</module>
+    <module>composites/repo</module>
     <module>composites/schema</module>
-    <module>modules/portlet</module>
+    <module>modules/bfr-pdl-portlet</module>
+    <module>modules/pdl-portlet</module>
     <module>applications/core-bc</module>
   </modules>
 </project>
