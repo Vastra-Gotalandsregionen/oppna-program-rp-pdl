@@ -6,7 +6,7 @@ import se.vgregion.domain.decorators.SystemState;
 import se.vgregion.domain.logging.PdlEventLog;
 import se.vgregion.domain.logging.UserAction;
 import se.vgregion.domain.pdl.InformationType;
-import se.vgregion.domain.pdl.Patient;
+import se.vgregion.events.context.Patient;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.systems.CareSystem;
 import se.vgregion.repo.log.LogRepo;

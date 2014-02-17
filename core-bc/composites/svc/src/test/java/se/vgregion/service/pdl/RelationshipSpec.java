@@ -11,7 +11,7 @@ import se.riv.ehr.patientrelationship.v1.AccessingActorType;
 import se.riv.ehr.patientrelationship.v1.CheckResultType;
 import se.riv.ehr.patientrelationship.v1.ResultCodeType;
 import se.riv.ehr.patientrelationship.v1.ResultType;
-import se.vgregion.domain.pdl.Patient;
+import se.vgregion.events.context.Patient;
 import se.vgregion.domain.pdl.PdlContext;
 
 import static org.junit.Assert.assertEquals;

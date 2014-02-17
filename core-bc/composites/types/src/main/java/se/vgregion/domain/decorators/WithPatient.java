@@ -1,6 +1,6 @@
 package se.vgregion.domain.decorators;
 
-import se.vgregion.domain.pdl.Patient;
+import se.vgregion.events.context.Patient;
 
 import java.io.Serializable;
 

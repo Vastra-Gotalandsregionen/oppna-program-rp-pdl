@@ -13,6 +13,7 @@ import se.vgregion.domain.pdl.*;
 import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.systems.CareSystem;
+import se.vgregion.events.context.Patient;
 import se.vgregion.service.search.PdlService;
 
 import javax.annotation.PreDestroy;

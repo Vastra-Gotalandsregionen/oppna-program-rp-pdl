@@ -16,9 +16,10 @@ import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.decorators.WithPatient;
 import se.vgregion.domain.pdl.InformationType;
-import se.vgregion.domain.pdl.Patient;
+import se.vgregion.domain.pdl.PersonIdUtil;
+import se.vgregion.events.context.Patient;
 import se.vgregion.domain.pdl.PdlContext;
-import se.vgregion.domain.source.RadiologySourceRefs;
+import se.vgregion.events.context.sources.radiology.RadiologySourceRefs;
 import se.vgregion.domain.systems.CareProviderUnit;
 import se.vgregion.domain.systems.CareSystem;
 import se.vgregion.domain.systems.CareSystemViewer;
@@ -27,7 +28,11 @@ import se.vgregion.service.search.CareSystems;
 import se.vgregion.service.search.HsaUnitMapper;
 
 import javax.annotation.Resource;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class RadiologySource implements CareSystems {
@@ -102,7 +107,9 @@ public class RadiologySource implements CareSystems {
                     break;
             }
 
-            return unknownPatient.mapNameSex(firstName + " " + lastName, patientSex);
+            int age = PersonIdUtil.getAge(unknownPatient.patientId);
+
+            return unknownPatient.mapPatientInfo(firstName + " " + lastName, age, patientSex);
         }
         return unknownPatient;
     }
@@ -124,7 +131,20 @@ public class RadiologySource implements CareSystems {
                     if(careProviderUnit.success) {
                         if(careProviderUnit.value.success) {
                             String infoBrokerId = req.getInfobrokerId();
-                            CareSystem cs = new CareSystem(CareSystemViewer.BFR, careProviderUnit.value.value, new RadiologySourceRefs(infoBrokerId));
+                            Date requestDate = getDateFromGregorianCalendar(req.getPlacer().getLocationData().getCreatedInInfobroker());
+
+
+                            RadiologySourceRefs refs =
+                                    new RadiologySourceRefs(
+                                            requestDate,
+                                            aggregateNumImages(req.getExamination()),
+                                            careProviderUnit.value.value.careUnitDisplayName,
+                                            req.getPlacer().getLocationData().getName(),
+                                            examinationCodeAggregate(req.getExamination()),
+                                            statusCodeAggregate(req.getExamination()),
+                                            infoBrokerId
+                                    );
+                            CareSystem cs = new CareSystem(CareSystemViewer.BFR, careProviderUnit.value.value, refs);
                             systems.add(new WithInfoType<CareSystem>(InformationType.UND, cs));
                         } else {
                             LOGGER.warn("Could not find care unit {} among care providers with agreement.", hsaUnitId.value);
@@ -146,6 +166,63 @@ public class RadiologySource implements CareSystems {
 
         return outcome;
     }
+
+    private int aggregateNumImages(List<Examination> examinations) {
+        int i = 0;
+        if( examinations != null) {
+            for(Examination ex : examinations) {
+                if(ex.getNumberOfImages() != null) {
+                    i += ex.getNumberOfImages().intValue();
+                }
+            }
+        }
+        return i;
+    }
+
+    private String examinationCodeAggregate(List<Examination> examinations) {
+        StringBuilder sb = new StringBuilder();
+
+        if(examinations.size() > 0) {
+            for(Examination examination : examinations) {
+                if (examination.getCode() != null) {
+                    sb.append(examination.getCode().getDescription());
+                    if (examinations.size() > 1) {
+                        sb.append(" (");
+                        sb.append(examination.getNumberOfImages().intValue());
+                        sb.append(")");
+                    }
+
+                }
+            }
+        } else {
+            sb.append("- ? -");
+        }
+
+        return sb.toString();
+    }
+
+    private String statusCodeAggregate(List<Examination> examinations) {
+        StringBuilder sb = new StringBuilder();
+
+        if(examinations.size() > 0) {
+            for(Examination examination : examinations) {
+                // Examination status
+                if (examination.getStatus() != null) {
+                    sb.append(examination.getStatus());
+                } else {
+                    sb.append(" - ? - ");
+                }
+            }
+        } else {
+            sb.append("- ? -");
+        }
+
+        return sb.toString();
+    }
+
+
+
+
 
     private Maybe<String> extractHsaUnitId(Request req) {
         Maybe<String> hsaUnitId = Maybe.none();
@@ -173,5 +250,23 @@ public class RadiologySource implements CareSystems {
                 setPidType(pidType.getInfoBrokerTypeCode());
 
         return infoBroker.getRequestList(attribURIType, patientSearchOrder);
+    }
+
+    /**
+     * Will return 1912-12-12 12:12 if date is null.
+     *
+     * @param gregorianCal
+     *            date to convert
+     * @return converted date
+     */
+    private static Date getDateFromGregorianCalendar(XMLGregorianCalendar gregorianCal) {
+        Calendar returnDate = Calendar.getInstance();
+        if (gregorianCal != null) {
+            returnDate.set(gregorianCal.getYear(), gregorianCal.getMonth() - 1, gregorianCal.getDay(),
+                    gregorianCal.getHour(), gregorianCal.getMinute());
+        } else {
+            returnDate.set(1912, 11, 12, 12, 12);
+        }
+        return returnDate.getTime();
     }
 }

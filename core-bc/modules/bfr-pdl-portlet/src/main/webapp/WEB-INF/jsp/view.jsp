@@ -12,5 +12,5 @@
 
 <div class="clearfix">
     <h1>BFR</h1>
-    Bfr state = ${state.infobrokerIds}
+    Bfr state = ${state}
 </div>

@@ -1,8 +1,8 @@
-package se.vgregion.domain.source;
+package se.vgregion.events.context;
 
 
 import java.io.Serializable;
 
 public interface SourceReferences extends Serializable {
-
+    String targetCareSystem();
 }

@@ -9,9 +9,13 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.portlet.bind.annotation.EventMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
+import se.vgregion.events.context.PatientEvent;
 import se.vgregion.service.search.CareSystems;
 
+import javax.portlet.Event;
+import javax.portlet.EventRequest;
 import javax.portlet.RenderRequest;
 
 @Controller
@@ -29,18 +33,27 @@ public class BfrController {
 
     @ModelAttribute("state")
     public BfrState initState() {
-        return new BfrState();
+        return state;
     }
 
     @RenderMapping
     public String enterBfr(RenderRequest request) {
-
         return "view";
     }
 
     @RenderMapping(params = "view=view")
     public String start(final ModelMap model) {
         return "view";
+    }
+
+    @EventMapping("{http://pdl.portalen.vgregion.se/events}pctx.change")
+    public void changeListener(EventRequest request) {
+        Event event = request.getEvent();
+        PatientEvent patient = (PatientEvent) event.getValue();
+
+        LOGGER.debug("Got Patient event change. {}", patient);
+
+        state.setTicket(patient.ticket);
     }
 
 }

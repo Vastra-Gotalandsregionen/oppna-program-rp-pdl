@@ -104,6 +104,7 @@ Generation time : 2013-10-08 14:16:23 CEST
       <artifactId>oppna-program-rp-pdl-core-bc-composite-repo</artifactId>
       <version>${project.version}</version>
     </dependency>
+
   </dependencies>
 
   <profiles>

@@ -5,7 +5,7 @@ import org.mockito.stubbing.Answer;
 import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v2.CheckBlocksRequestType;
 import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v2.CheckBlocksResponseType;
 import se.riv.ehr.blocking.v2.*;
-import se.vgregion.domain.pdl.Patient;
+import se.vgregion.events.context.Patient;
 import se.vgregion.domain.pdl.PdlContext;
 
 import java.util.List;

@@ -8,6 +8,7 @@ import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.systems.CareSystemsReport;
 import se.vgregion.domain.systems.SummaryReport;
 import se.vgregion.domain.systems.Visibility;
+import se.vgregion.events.context.Patient;
 
 import java.io.Serializable;
 import java.util.HashMap;

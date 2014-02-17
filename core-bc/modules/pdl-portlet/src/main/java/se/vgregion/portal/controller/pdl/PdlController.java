@@ -24,6 +24,8 @@ import se.vgregion.domain.systems.CareSystem;
 import se.vgregion.domain.systems.CareSystemsReport;
 import se.vgregion.domain.systems.SummaryReport;
 import se.vgregion.domain.systems.Visibility;
+import se.vgregion.events.context.PatientEvent;
+import se.vgregion.events.context.PdlTicket;
 import se.vgregion.repo.log.LogRepo;
 import se.vgregion.service.search.AccessControl;
 import se.vgregion.service.search.CareAgreement;
@@ -32,6 +34,7 @@ import se.vgregion.service.search.PdlService;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 
 @Controller
@@ -374,6 +377,16 @@ public class PdlController {
             PdlLogger.log(UserAction.SUMMARY_SYSTEMS, logRepo, state);
 
             response.setRenderParameter("view", "showSummary");
+
+            // patient change event
+            QName qname = new QName("http://pdl.portalen.vgregion.se/events", "pctx.change");
+            PatientEvent patientEvent = new PatientEvent(
+                    new PdlTicket(
+                            state.getPatient(),
+                            sumReport.referencesList),
+                    ""
+            );
+            response.setEvent(qname, patientEvent);
         }
     }
 

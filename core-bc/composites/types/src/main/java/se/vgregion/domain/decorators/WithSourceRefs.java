@@ -1,6 +1,6 @@
 package se.vgregion.domain.decorators;
 
-import se.vgregion.domain.source.SourceReferences;
+import se.vgregion.events.context.SourceReferences;
 
 import java.io.Serializable;
 

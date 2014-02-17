@@ -11,7 +11,7 @@ import se.riv.ehr.patientconsent.v1.AccessingActorType;
 import se.riv.ehr.patientconsent.v1.AssertionTypeType;
 import se.riv.ehr.patientconsent.v1.ResultCodeType;
 import se.riv.ehr.patientconsent.v1.ResultType;
-import se.vgregion.domain.pdl.Patient;
+import se.vgregion.events.context.Patient;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.pdl.PdlReport;
 

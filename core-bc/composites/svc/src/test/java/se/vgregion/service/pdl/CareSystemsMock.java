@@ -5,9 +5,8 @@ import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.decorators.WithPatient;
 import se.vgregion.domain.pdl.InformationType;
-import se.vgregion.domain.pdl.Patient;
+import se.vgregion.events.context.Patient;
 import se.vgregion.domain.pdl.PdlContext;
-import se.vgregion.domain.source.RadiologySourceRefs;
 import se.vgregion.domain.systems.CareSystem;
 import se.vgregion.domain.systems.CareSystemViewer;
 import se.vgregion.service.search.CareSystems;
@@ -29,7 +28,7 @@ public class CareSystemsMock implements CareSystems {
                         "VGR",
                         "SE2321000131-S000000010252",
                         "Sahlgrenska, Radiologi 13",
-                        new RadiologySourceRefs(null))
+                        null)
         )
         );
         systems.add(
@@ -41,7 +40,7 @@ public class CareSystemsMock implements CareSystems {
                                 "VGR",
                                 "SE2321000131-S000000010251",
                                 "Östra Sjukhuset, Hud 32",
-                                new RadiologySourceRefs(null))
+                                null)
                 )
         );
         systems.add(
@@ -53,7 +52,7 @@ public class CareSystemsMock implements CareSystems {
                                 "VGR",
                                 "SE2321000131-S000000010252",
                                 "NU-Sjukvården, Psykiatri 65",
-                                new RadiologySourceRefs(null))
+                                null)
                 )
         );
         systems.add(
@@ -65,7 +64,7 @@ public class CareSystemsMock implements CareSystems {
                                 "VGR",
                                 "SE2321000131-S000000010254",
                                 "Östra Sjukhuset, Barn- och Ungdomspsykiatri 23",
-                                new RadiologySourceRefs(null))
+                                null)
                 )
         );
         systems.add(
@@ -77,7 +76,7 @@ public class CareSystemsMock implements CareSystems {
                                 "Capio Axess",
                                 "SE2321000132-S000000010254",
                                 "Lundby Sjukhus, Radiologi 54",
-                                new RadiologySourceRefs(null))
+                                null)
                 )
         );
 

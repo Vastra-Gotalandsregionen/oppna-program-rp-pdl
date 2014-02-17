@@ -22,6 +22,7 @@ Generation time : 2013-10-08 14:16:23 CEST
 
   <modules>
     <module>composites/types</module>
+    <module>composites/events</module>
     <module>composites/svc</module>
     <module>composites/repo</module>
     <module>composites/schema</module>

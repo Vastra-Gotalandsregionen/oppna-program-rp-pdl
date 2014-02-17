@@ -1,4 +1,4 @@
-package se.vgregion.domain.pdl;
+package se.vgregion.events.context;
 
 import java.io.Serializable;
 
@@ -20,6 +20,7 @@ public class Patient implements Serializable {
 
     public final String patientId;
     public final String patientDisplayName;
+    public final int age;
     public final Sex sex;
     public final boolean haveInformation;
 
@@ -27,12 +28,14 @@ public class Patient implements Serializable {
         this.patientId = patientId;
         this.patientDisplayName = "";
         this.sex = Sex.NODATA;
+        this.age = 0;
         this.haveInformation = false;
     }
 
-    public Patient(String patientId, String patientDisplayName, Sex sex) {
+    public Patient(String patientId, String patientDisplayName, int age, Sex sex) {
         this.patientId = patientId;
         this.patientDisplayName = patientDisplayName;
+        this.age = age;
         this.sex = sex;
         this.haveInformation = true;
     }
@@ -58,8 +61,8 @@ public class Patient implements Serializable {
         return new StringBuilder(patientId).insert(patientId.length()-4, "-").toString();
     }
 
-    public Patient mapNameSex(String newName, Sex newSex) {
-        return new Patient(patientId, newName, newSex);
+    public Patient mapPatientInfo(String newName, int newAge, Sex newSex) {
+        return new Patient(patientId, newName, newAge, newSex);
     }
 
     @Override

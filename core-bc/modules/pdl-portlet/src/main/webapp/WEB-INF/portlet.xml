@@ -51,8 +51,24 @@
     <security-role-ref>
       <role-name>user</role-name>
     </security-role-ref>
+
+    <supported-publishing-event>
+      <qname xmlns:x="http://pdl.portalen.vgregion.se/events">x:pctx.change</qname>
+    </supported-publishing-event>
+    <supported-publishing-event>
+      <qname xmlns:x="http://pdl.portalen.vgregion.se/events">x:pctx.reset</qname>
+    </supported-publishing-event>
   </portlet>
 
+  <event-definition>
+    <qname xmlns:x="http://pdl.portalen.vgregion.se/events">x:pctx.change</qname>
+    <value-type>se.vgregion.portal.patient.event.PatientEvent</value-type>
+  </event-definition>
+
+  <event-definition>
+    <qname xmlns:x="http://pdl.portalen.vgregion.se/events">x:pctx.reset</qname>
+    <value-type>java.lang.String</value-type>
+  </event-definition>
 </portlet-app>
 
 
