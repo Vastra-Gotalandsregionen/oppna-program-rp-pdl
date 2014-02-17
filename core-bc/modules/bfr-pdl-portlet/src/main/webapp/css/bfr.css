@@ -1,0 +1,23 @@
+.bfr table {
+    width: 100%;
+    border-spacing: 0.5rem;
+    border-collapse: collapse;
+    border: 1px solid black;
+}
+
+.bfr table thead {
+    background-color: lightgray;
+}
+
+.bfr table tr.even {
+    background-color: silver;
+}
+
+.bfr table tr.odd {
+    background-color: lightgray;
+}
+
+
+.bfr table th, .bfr table td {
+    padding: 1em;
+}

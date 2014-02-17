@@ -10,8 +10,42 @@
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
+<link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/css/bfr.css" />
+
 <div class="clearfix">
     <c:set var="patientInfoFor" value="Patientinformation Radiologi" scope="request"/>
     <%@ include file="patientInformationFor.jsp" %>
-    Bfr state = ${state}
+    <c:choose>
+        <c:when test="${state.ticket.success}">
+            <table>
+                <thead>
+                    <tr>
+                      <th scope="col">Remissdatum</th>
+                      <th scope="col">Bilder</th>
+                      <th scope="col">Remit. vårdenhet</th>
+                      <th scope="col">Remit. organisatorisk enhet</th>
+                      <th scope="col">Undersökningar</th>
+                      <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <c:forEach var="infoRow" items="${state.ticket.value.references}" varStatus="loopStatus">
+                    <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
+                        <td>${infoRow.requestDate}</td>
+                        <td>${infoRow.numImages}</td>
+                        <td>${infoRow.careUnitDisplayName}</td>
+                        <td>${infoRow.orgUnitDisplayName}</td>
+                        <td>${infoRow.examinations}</td>
+                        <td>${infoRow.status}</td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+        </c:when>
+        <c:otherwise>
+            <div class="clearfix callout callout-info">
+                Patientinformation saknas
+            </div>
+        </c:otherwise>
+    </c:choose>
 </div>
