@@ -1,4 +1,4 @@
-package se.vgregion.domain.pdl;
+package se.vgregion.events;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;

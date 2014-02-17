@@ -149,6 +149,11 @@ public class PdlController {
             }
 
             PdlLogger.log(UserAction.SEARCH_PATIENT, logRepo, state);
+
+            // Reset patient in other views
+            QName qname = new QName("http://pdl.portalen.vgregion.se/events", "pctx.reset");
+            response.setEvent(qname, new PatientEvent(null, null));
+
             response.setRenderParameter("view", "pickInfoResource");
         } else {
             state.setCurrentProgress(PdlProgress.firstStep().nextStep());

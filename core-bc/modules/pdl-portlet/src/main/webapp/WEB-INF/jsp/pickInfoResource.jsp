@@ -21,12 +21,8 @@
 
     <%@ include file="choose/searchOutcomeInfo.jsp" %>
     <div class="info">
-        <h3 class="legend">Patientinformation för
-            <c:choose>
-                <c:when test="${state.patient.haveInformation}">${state.patient.patientDisplayName} (${state.patient.patientIdFormatted}, ${state.patient.sexDisplayName})</c:when>
-                <c:otherwise>${state.patient.patientIdFormatted}</c:otherwise>
-            </c:choose>
-        </h3>
+        <c:set var="patientInfoFor" value="Patientinformation" scope="request"/>
+        <%@ include file="patientInformationFor.jsp" %>
         <c:choose>
             <c:when test="${state.patientInformationExist && state.pdlReport.hasRelationship.value}">
                 <%@ include file="choose/hasInformation.jsp" %>

@@ -19,12 +19,8 @@
     <%@ include file="progress.jsp" %>
 
     <div class="info">
-        <h3 class="legend">System med patientinformation för
-            <c:choose>
-                <c:when test="${state.patient.haveInformation}">${state.patient.patientDisplayName} (${state.patient.patientIdFormatted}, ${state.patient.sexDisplayName})</c:when>
-                <c:otherwise>${state.patient.patientIdFormatted}</c:otherwise>
-            </c:choose>
-        </h3>
+        <c:set var="patientInfoFor" value="System med patientinformation" scope="request"/>
+        <%@ include file="patientInformationFor.jsp" %>
     </div>
     <div class="clearfix">
         <portlet:renderURL var="startUrl">

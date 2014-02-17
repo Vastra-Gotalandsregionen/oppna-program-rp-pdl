@@ -16,13 +16,12 @@ import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.decorators.WithPatient;
 import se.vgregion.domain.pdl.InformationType;
-import se.vgregion.domain.pdl.PersonIdUtil;
-import se.vgregion.events.context.Patient;
 import se.vgregion.domain.pdl.PdlContext;
-import se.vgregion.events.context.sources.radiology.RadiologySourceRefs;
 import se.vgregion.domain.systems.CareProviderUnit;
 import se.vgregion.domain.systems.CareSystem;
 import se.vgregion.domain.systems.CareSystemViewer;
+import se.vgregion.events.context.Patient;
+import se.vgregion.events.context.sources.radiology.RadiologySourceRefs;
 import se.vgregion.portal.bfr.infobroker.domain.InfobrokerPersonIdType;
 import se.vgregion.service.search.CareSystems;
 import se.vgregion.service.search.HsaUnitMapper;
@@ -107,9 +106,7 @@ public class RadiologySource implements CareSystems {
                     break;
             }
 
-            int age = PersonIdUtil.getAge(unknownPatient.patientId);
-
-            return unknownPatient.mapPatientInfo(firstName + " " + lastName, age, patientSex);
+            return unknownPatient.mapPatientInfo(firstName + " " + lastName, patientSex);
         }
         return unknownPatient;
     }

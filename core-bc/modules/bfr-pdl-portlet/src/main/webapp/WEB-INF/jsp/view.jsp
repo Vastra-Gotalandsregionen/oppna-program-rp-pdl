@@ -11,6 +11,7 @@
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <div class="clearfix">
-    <h1>BFR</h1>
+    <c:set var="patientInfoFor" value="Patientinformation Radiologi" scope="request"/>
+    <%@ include file="patientInformationFor.jsp" %>
     Bfr state = ${state}
 </div>

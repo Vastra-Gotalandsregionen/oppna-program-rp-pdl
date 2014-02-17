@@ -46,6 +46,16 @@ public class BfrController {
         return "view";
     }
 
+    @EventMapping("{http://pdl.portalen.vgregion.se/events}pctx.reset")
+    public void resetListener(EventRequest request) {
+        Event event = request.getEvent();
+        PatientEvent patient = (PatientEvent) event.getValue();
+
+        LOGGER.debug("Got Patient event change. {}", patient);
+
+        state.setTicket(patient.ticket);
+    }
+
     @EventMapping("{http://pdl.portalen.vgregion.se/events}pctx.change")
     public void changeListener(EventRequest request) {
         Event event = request.getEvent();

@@ -16,11 +16,24 @@ public class Maybe<T extends Serializable> implements Serializable {
     }
 
     public static <S extends Serializable, S1 extends S> Maybe<S> some(S1 value) {
-        return new Maybe<S>(value, true);
+        boolean newSuccess = value != null;
+        return new Maybe<S>(value, newSuccess);
     }
 
     public static <S extends Serializable, S1 extends S> Maybe<S> none() {
         return new Maybe<S>(null, false);
+    }
+
+    public T getValue() {
+        return value;
+    }
+
+    public boolean isEmtpy() {
+        return isEmtpy;
+    }
+
+    public boolean isSuccess() {
+        return success;
     }
 
     @Override
