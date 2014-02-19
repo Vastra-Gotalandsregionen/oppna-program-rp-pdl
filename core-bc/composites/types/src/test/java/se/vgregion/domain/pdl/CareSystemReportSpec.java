@@ -9,6 +9,7 @@ import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.systems.CareSystem;
 import se.vgregion.domain.systems.CareSystemViewer;
 import se.vgregion.domain.systems.CareSystemsReport;
+import se.vgregion.events.context.SourceReferences;
 
 import java.util.ArrayList;
 
@@ -27,6 +28,8 @@ public class CareSystemReportSpec {
         ctx = MockContext.getMockContext();
 
         ctx = ctx.changeAssignment(MockContext.VE);
+
+        ArrayList<SourceReferences> references = new ArrayList<SourceReferences>();
 
         CareSystem sameUnit1 = new CareSystem(CareSystemViewer.BFR, ctx.currentAssignment.careProviderHsaId, "VGR", ctx.currentAssignment.careUnitHsaId, "Unit 1", null);
         CareSystem sameUnit2 = new CareSystem(CareSystemViewer.RRE, ctx.currentAssignment.careProviderHsaId, "VGR", ctx.currentAssignment.careUnitHsaId, "Unit 1", null);

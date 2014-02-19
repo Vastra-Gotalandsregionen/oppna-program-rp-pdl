@@ -61,6 +61,15 @@ public class WithInfoType<T extends Serializable> implements Serializable, Compa
 
     @Override
     public int compareTo(WithInfoType<T> o) {
-        return informationType.compareTo(o.informationType);
+        int infoType = informationType.compareTo(o.informationType);
+
+        boolean valueIsComparable = value instanceof Comparable && o.value instanceof Comparable;
+        if(infoType == 0 && valueIsComparable) {
+            Comparable v1 = (Comparable) value;
+            Comparable v2 = (Comparable) o.value;
+            return v1.compareTo(v2);
+        }
+
+        return infoType;
     }
 }

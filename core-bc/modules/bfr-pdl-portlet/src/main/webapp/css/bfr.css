@@ -1,20 +1,83 @@
+.bfr h3.legend {
+  border-bottom: 1px solid #d5e3ee;
+  color: #666;
+  display:block;
+  font-family: Ubuntu, Arial, Verdana, Helvetica, sans-serif;
+  font-weight: normal;
+  font-size: 1.6em;
+  margin: 20px 0 10px 0;
+  padding-bottom: 5px;
+  width: 100%;
+}
+
 .bfr table {
+    font-family: Ubuntu,Arial,Verdana,Helvetica,sans-serif;
     width: 100%;
     border-spacing: 0.5rem;
     border-collapse: collapse;
-    border: 1px solid black;
+    border: solid #c4ced5 1px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
 }
 
 .bfr table thead {
-    background-color: lightgray;
+    background-color: #eef5fa;
+    font-family: Ubuntu,Arial,Verdana,Helvetica,sans-serif;
+    font-size: 1.2em;
+}
+
+.bfr table tbody {
+   font-family: Ubuntu,Arial,Verdana,Helvetica,sans-serif;
+}
+
+.bfr table th {
+    font-weight: normal;
+    border-bottom: solid #c4ced5 1px;
+}
+
+.bfr table th:first-child {
+    -moz-border-radius: 3px 0 0 0;
+    -webkit-border-radius: 3px 0 0 0;
+    border-radius: 3px 0 0 0;
+}
+
+.bfr table th:last-child {
+    -moz-border-radius: 0 3px 0 0;
+    -webkit-border-radius: 0 3px 0 0;
+    border-radius: 0 3px 0 0;
+}
+
+.bfr table th:only-child{
+    -moz-border-radius: 3px 3px 0 0;
+    -webkit-border-radius: 3px 3px 0 0;
+    border-radius: 3px 3px 0 0;
+}
+
+.bfr table td:last-child {
+    -moz-border-radius: 0 0 3px 0;
+    -webkit-border-radius: 0 0 3px 0;
+    border-radius: 0 0 3px 0;
+}
+
+.bfr table td:first-child {
+    -moz-border-radius: 0 0 0 3px;
+    -webkit-border-radius: 0 0 0 3px;
+    border-radius: 0 0 0 3px;
+}
+
+.bfr table tD:only-child{
+    -moz-border-radius: 0 0 3px 3px;
+    -webkit-border-radius: 0 0 3px 3px;
+    border-radius: 0 0 3px 3px;
 }
 
 .bfr table tr.even {
-    background-color: silver;
+    /* background-color: silver; */
 }
 
 .bfr table tr.odd {
-    background-color: lightgray;
+    background-color: #eef5fa;
 }
 
 

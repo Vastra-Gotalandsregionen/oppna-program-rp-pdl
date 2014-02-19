@@ -2,6 +2,7 @@ package se.vgregion.service.sources;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
@@ -16,11 +17,13 @@ import java.util.ArrayList;
 public class CareSystemsProxy implements CareSystems {
 
     @Autowired
-    RadiologySource radiologySource;
+    @Qualifier("RadiologySource")
+    CareSystems radiologySource;
 
     @Override
     public WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> byPatientId(PdlContext ctx, String patientId) {
-        return radiologySource.byPatientId(ctx, patientId);
+        return Deduplication.remapDeduplicate(radiologySource.byPatientId(ctx, patientId));
     }
+
 
 }

@@ -5275,7 +5275,7 @@ public class HsaUnitMappingCache implements HsaUnitMapper {
         }
     }
 
-    @Scheduled(fixedDelay=150000)
+    @Scheduled(fixedDelay=1800000) // 30 min in milliseconds = 1 800 000
     public void updateCache() {
         LOGGER.debug("Attempting to update cache for CareUnit lists");
         Set<String> careProviders = careAgreements.careProvidersWithAgreement();

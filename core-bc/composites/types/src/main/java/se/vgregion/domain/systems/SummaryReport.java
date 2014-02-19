@@ -53,8 +53,8 @@ public class SummaryReport implements Serializable {
         List<SourceReferences> refs = new ArrayList<SourceReferences>();
         for(WithInfoType<ArrayList<CareSystem>> infoType : withInfoTypes) {
             for(CareSystem cs : infoType.value) {
-                SourceReferences rf = cs.references;
-                refs.add(rf);
+                List<SourceReferences> rf = cs.references;
+                refs.addAll(rf);
             }
         }
         return Collections.unmodifiableList(refs);

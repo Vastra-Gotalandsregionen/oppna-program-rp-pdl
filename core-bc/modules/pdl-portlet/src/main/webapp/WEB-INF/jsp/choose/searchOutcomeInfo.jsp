@@ -3,13 +3,13 @@
 <c:if test="${state.missingResults}">
     <div class="callout callout-info">
         <p class="label">Ett eller flera vårdsystem svarade med ofullständig information.</p>
-        <p>Ytterligare information kan finnas.</p>
+        <p>Ytterligare patientinformation kan finnas.</p>
     </div>
 </c:if>
 <c:if test="${state.sourcesNonSuccessOutcome}">
     <div class="callout callout-danger">
         <p class="label">En eller flera sökningar i vårdsystem misslyckades.</p>
-        <p>Ytterligare information kan finnas.</p>
+        <p>Ytterligare patientinformation kan finnas.</p>
     </div>
 </c:if>
 <c:if test="${state.pdlReport.hasNonSuccessOutcome}">

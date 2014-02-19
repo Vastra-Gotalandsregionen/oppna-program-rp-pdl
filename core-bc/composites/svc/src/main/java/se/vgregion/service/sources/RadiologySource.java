@@ -21,6 +21,7 @@ import se.vgregion.domain.systems.CareProviderUnit;
 import se.vgregion.domain.systems.CareSystem;
 import se.vgregion.domain.systems.CareSystemViewer;
 import se.vgregion.events.context.Patient;
+import se.vgregion.events.context.SourceReferences;
 import se.vgregion.events.context.sources.radiology.RadiologySourceRefs;
 import se.vgregion.portal.bfr.infobroker.domain.InfobrokerPersonIdType;
 import se.vgregion.service.search.CareSystems;
@@ -33,7 +34,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-@Service
+@Service("RadiologySource")
 public class RadiologySource implements CareSystems {
     private static final String HSA_UNIT = "HSA-ENHET";
 
@@ -131,8 +132,9 @@ public class RadiologySource implements CareSystems {
                             Date requestDate = getDateFromGregorianCalendar(req.getPlacer().getLocationData().getCreatedInInfobroker());
 
 
-                            RadiologySourceRefs refs =
-                                    new RadiologySourceRefs(
+                            ArrayList<SourceReferences> refs = new ArrayList<SourceReferences >();
+
+                            refs.add( new RadiologySourceRefs(
                                             requestDate,
                                             aggregateNumImages(req.getExamination()),
                                             careProviderUnit.value.value.careUnitDisplayName,
@@ -140,7 +142,10 @@ public class RadiologySource implements CareSystems {
                                             examinationCodeAggregate(req.getExamination()),
                                             statusCodeAggregate(req.getExamination()),
                                             infoBrokerId
-                                    );
+                                    )
+                            );
+
+
                             CareSystem cs = new CareSystem(CareSystemViewer.BFR, careProviderUnit.value.value, refs);
                             systems.add(new WithInfoType<CareSystem>(InformationType.UND, cs));
                         } else {

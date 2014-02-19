@@ -11,10 +11,10 @@
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/css/bfr.css" />
-
 <div class="clearfix">
     <c:set var="patientInfoFor" value="Patientinformation Radiologi" scope="request"/>
     <%@ include file="patientInformationFor.jsp" %>
+
     <c:choose>
         <c:when test="${state.ticket.success}">
             <table>

@@ -80,4 +80,10 @@ public class RadiologySourceRefs implements SourceReferences {
     public String targetCareSystem() {
         return SYSTEM_ID;
     }
+
+    @Override
+    public SourceReferences combine(SourceReferences references) {
+
+        return null;
+    }
 }
