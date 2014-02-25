@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!--
+This is the Schema-composite that produces a jar of JAX-WS interfaces (SEI) -
+and JAXB2 binding classes for the contained schemas.
+
+
+Template version: 1.5
+Generation time : 2013-10-08 14:16:23 CEST
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>se.vgregion.oppna-program-rp-pdl</groupId>
+    <artifactId>oppna-program-rp-pdl-pdl</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+  <groupId>se.vgregion.oppna-program-rp-pdl</groupId>
+  <artifactId>oppna-program-rp-pdl-pdl-composite-schema</artifactId>
+  <packaging>jar</packaging>
+  <name>${project.artifactId}</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>oppna-program-rp-pdl-pdl-composite-types</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxws</artifactId>
+      <version>${apache.cxf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-http</artifactId>
+      <version>${apache.cxf.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>se.rivta.tools</groupId>
+      <artifactId>ehr-blocking-schemas</artifactId>
+      <version>${ehr.blocking.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>se.rivta.tools</groupId>
+      <artifactId>ehr-patientconsent-schemas</artifactId>
+      <version>${ehr.patientconsent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>se.rivta.tools</groupId>
+      <artifactId>ehr-patientrelationship-schemas</artifactId>
+      <version>${ehr.patientrelationship.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>se.rivta.tools</groupId>
+      <artifactId>urn-riv-ehr-log-schemas</artifactId>
+      <version>${ehr.log.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>se.vgregion.icc.sd.hsaws2</groupId>
+      <artifactId>hsa-ws2-schemas</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>se.vgregion.bfr</groupId>
+      <artifactId>bfr-infobroker-wsclient-composite-svc</artifactId>
+      <version>2.3</version>
+    </dependency>
+  </dependencies>
+</project>

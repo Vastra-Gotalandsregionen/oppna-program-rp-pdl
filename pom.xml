@@ -20,7 +20,8 @@
   <name>${project.artifactId}</name>
 
   <modules>
-    <module>core-bc</module>
+    <module>pdl</module>
+    <module>bfr</module>
   </modules>
 
   <properties>
