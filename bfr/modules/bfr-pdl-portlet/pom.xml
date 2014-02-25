@@ -105,9 +105,9 @@ Generation time : 2013-10-08 14:16:23 CEST
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>se.vgregion.bfr</groupId>
-      <artifactId>bfr-infobroker-wsclient-composite-svc</artifactId>
-      <version>2.3</version>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>oppna-program-rp-pdl-bfr-composite-svc</artifactId>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 

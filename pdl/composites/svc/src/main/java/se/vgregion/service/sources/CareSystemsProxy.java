@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class CareSystemsProxy implements CareSystems {
 
     @Autowired
-    @Qualifier("RadiologySource")
+    @Qualifier("pdlRadiologySource")
     CareSystems radiologySource;
 
     @Override

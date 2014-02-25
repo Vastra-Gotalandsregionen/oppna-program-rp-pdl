@@ -1,32 +1,190 @@
 package se.vgregion.service.bfr;
 
 import com.mawell.ib.patientsearch.RequestOrder;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.w3._2005._08.addressing.AttributedURIType;
 import riv.ehr.ehrexchange.patienthistory._1.rivtabp20.PatientHistoryResponderInterface;
-import se.ecare.ib.exportmessage.Request;
-import se.vgregion.domain.bfr.Refferal;
+import se.ecare.ib.exportmessage.*;
+import se.vgregion.domain.bfr.Referral;
+import se.vgregion.domain.bfr.ReferralBuilder;
+import se.vgregion.domain.bfr.Study;
+import se.vgregion.domain.bfr.StudyReport;
 import se.vgregion.domain.decorators.WithOutcome;
 
 import javax.annotation.Resource;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
-@Service
+@Service("bfrRadiologySource")
 public class RadiologySource {
 
     @Resource(name = "infoBroker")
     private PatientHistoryResponderInterface infoBroker;
 
+    public static final String HTML_BREAK = "<br>";
+    public static final String NEWLINE_CHAR = "\n";
 
-    public WithOutcome<Refferal> requestByBrokerId(String brokerId) {
+    public WithOutcome<Referral> requestByBrokerId(String brokerId) {
         Request request = ibRequest(brokerId);
 
-        Refferal refferal = mapRequestToRequestDetails(request);
+        Referral referral = mapRequestToRequestDetails(request);
 
-        return WithOutcome.success(refferal);
+        return WithOutcome.success(referral);
     }
 
-    private Refferal mapRequestToRequestDetails(Request request) {
-        //return new Refferal();
+    private Referral mapRequestToRequestDetails(Request req) {
+        ReferralBuilder b = new ReferralBuilder();
+
+        b.statusList = getStatuses(req);
+        b.imageCount = sumNumImages(req.getExamination());
+        b.placingDate = getDateFromGregorianCalendar(req.getPlacer().getLocationData().getCreatedInInfobroker());
+        b.placerLocation = getLocationString(req.getPlacer().getLocationData());
+        b.fillerLocation = getLocationString(req.getFiller().getLocationData());
+        b.infoBrokerId = req.getInfobrokerId();
+        b.risId = req.getRisId();
+        b.priority = req.getPriority();
+        b.referringPhysicianName = getPhysicianName(req);
+        b.question = req.getQuestion();
+        b.anamnesis = req.getAnamnesis();
+        b.studies = getStudies(req.getExamination());
+
+        return b.buildReferral();
+    }
+
+    private List<Study> getStudies(List<Examination> examinations) {
+        ArrayList<Study> studies = new ArrayList<Study>();
+
+        for(Examination ex: examinations) {
+            String risId = ex.getRisId();
+
+            String code = "";
+            String description = "";
+
+            if(ex.getExaminationCode() != null) {
+                code = ex.getExaminationCode().getCode();
+                description = ex.getExaminationCode().getDescription();
+            }
+
+            Date date = getDateFromGregorianCalendar(ex.getDate());
+            int noOfImages = 0;
+
+            List<String> dicomSeriesStudyUids = getDicomSeriesUiid(ex);
+            List<StudyReport> studyReports = getStudyReports(ex);
+
+            Study stu = new Study(
+                risId,
+                code,
+                description,
+                date,
+                noOfImages,
+                studyReports,
+                dicomSeriesStudyUids
+            );
+
+            studies.add(stu);
+        }
+
+        return studies;
+    }
+
+    private List<String> getDicomSeriesUiid(Examination ex) {
+        List<String> dicomSeriesStudyUids = new ArrayList<String>();
+        for(DicomStudy dstudy : ex.getDicomStudy()) {
+            for(DicomSeries series: dstudy.getDicomSeries()) {
+                dicomSeriesStudyUids.add(series.getSeriesUid());
+            }
+        }
+        return dicomSeriesStudyUids;
+    }
+
+    private List<StudyReport> getStudyReports(Examination ex) {
+        List<StudyReport> studyReports = new ArrayList<StudyReport>();
+
+        for(ReportData rep : ex.getReports().getReport()) {
+            String status = rep.getStatus().getName();
+            Date d = getDateFromGregorianCalendar(rep.getDate());
+
+            StringBuilder sb = new StringBuilder();
+            if (rep.getSigner() != null && rep.getSigner().getUserData() != null) {
+                rep.getSigner().getUserData().getFirstName();
+                sb.append(" ");
+                sb.append(rep.getSigner().getUserData().getLastName());
+            }
+            String signer = sb.toString().trim();
+            String text = replaceNewlineWithHtmlBreak(rep.getText());
+
+            studyReports.add(new StudyReport(status,d,signer,text));
+        }
+        return studyReports;
+    }
+
+    private List<String> getExaminationDescriptions(List<Examination> examinations) {
+        ArrayList<String> examinationDescriptionList = new ArrayList<String>();
+        StringBuilder sb = new StringBuilder();
+
+        if(examinations != null) {
+            for(Examination ex : examinations) {
+                int numImages = sumDicomNumImages(ex);
+                sb.append(ex.getExaminationCode().getDescription());
+                sb.append(" (");
+                sb.append(numImages);
+                sb.append(")");
+            }
+        }
+
+        return null;
+    }
+
+    private int sumDicomNumImages(Examination examination) {
+        int i = 0;
+        List<DicomStudy> dicomStudies = examination.getDicomStudy();
+        if(dicomStudies != null && dicomStudies.size() > 0) {
+            for( DicomStudy study : examination.getDicomStudy()) {
+                for(DicomSeries series : study.getDicomSeries()) {
+                    i += series.getNumberOfImages().intValue();
+                }
+            }
+        }
+        return i;
+    }
+
+
+    private int sumNumImages(List<Examination> examinations) {
+        int i = 0;
+        if( examinations != null) {
+            for(Examination ex : examinations) {
+                for( DicomStudy study : ex.getDicomStudy()) {
+                    for(DicomSeries series : study.getDicomSeries()) {
+                        i += series.getNumberOfImages().intValue();
+                    }
+                }
+            }
+        }
+        return i;
+    }
+
+    private String getPhysicianName(Request req) {
+        StringBuilder sb = new StringBuilder();
+        if (req.getSubmitter() != null && req.getSubmitter().getUserData() != null) {
+            sb.append(req.getSubmitter().getUserData().getFirstName());
+            sb.append(" ");
+            sb.append(req.getSubmitter().getUserData().getLastName());
+        }
+        return sb.toString();
+    }
+
+    private List<String> getStatuses(Request req) {
+        List<String> statuses = new ArrayList<String>();
+        if(req.getReports() != null) {
+            for(ReportData rep : req.getReports().getReport()) {
+                statuses.add(req.getStatus().getName());
+            }
+        }
+        return statuses;
     }
 
     private Request ibRequest(String brokerId) {
@@ -36,6 +194,54 @@ public class RadiologySource {
         reqOrder.setInfobrokerId(brokerId);
 
         return infoBroker.getRequest(attribURIType, reqOrder);
+    }
+
+    private static String getLocationString(LocationData locationData) {
+        StringBuilder sb = new StringBuilder();
+        if (locationData != null) {
+            if (!StringUtils.isEmpty(locationData.getName())) {
+                sb.append(locationData.getName());
+            }
+            if (!StringUtils.isEmpty(locationData.getHospitalName())) {
+                if (sb.length() > 0) {
+                    sb.append(", ");
+                }
+                sb.append(locationData.getHospitalName());
+            }
+            if (!StringUtils.isEmpty(locationData.getRegionName())) {
+                if (sb.length() > 0) {
+                    sb.append(", ");
+                }
+                sb.append(locationData.getRegionName());
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Will return 1912-12-12 12:12 if date is null.
+     *
+     * @param gregorianCal
+     *            date to convert
+     * @return converted date
+     */
+    private static Date getDateFromGregorianCalendar(XMLGregorianCalendar gregorianCal) {
+        Calendar returnDate = Calendar.getInstance();
+        if (gregorianCal != null) {
+            returnDate.set(gregorianCal.getYear(), gregorianCal.getMonth() - 1, gregorianCal.getDay(),
+                    gregorianCal.getHour(), gregorianCal.getMinute());
+        } else {
+            returnDate.set(1912, 11, 12, 12, 12);
+        }
+        return returnDate.getTime();
+    }
+
+    private static String replaceNewlineWithHtmlBreak(String source) {
+        String result = "";
+        if (source != null) {
+            result = source.replace(NEWLINE_CHAR, HTML_BREAK);
+        }
+        return result;
     }
 
 }

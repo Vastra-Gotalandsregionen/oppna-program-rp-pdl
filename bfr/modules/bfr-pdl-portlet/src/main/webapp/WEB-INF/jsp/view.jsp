@@ -11,6 +11,7 @@
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/css/bfr.css" />
+
 <div class="clearfix">
     <c:set var="patientInfoFor" value="Patientinformation Radiologi" scope="request"/>
     <%@ include file="patientInformationFor.jsp" %>
@@ -30,13 +31,16 @@
                 </thead>
                 <tbody>
                 <c:forEach var="infoRow" items="${state.ticket.value.references}" varStatus="loopStatus">
+                    <portlet:actionURL name="showReferral" var="showReferralUrl">
+                        <portlet:param name="requestId" value="${infoRow.key}" />
+                    </portlet:actionURL>
                     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
-                        <td>${infoRow.requestDate}</td>
-                        <td>${infoRow.numImages}</td>
-                        <td>${infoRow.careUnitDisplayName}</td>
-                        <td>${infoRow.orgUnitDisplayName}</td>
-                        <td>${infoRow.examinations}</td>
-                        <td>${infoRow.status}</td>
+                        <td><a href="${showReferralUrl}">${infoRow.value.requestDate}</a></td>
+                        <td>${infoRow.value.numImages}</td>
+                        <td>${infoRow.value.careUnitDisplayName}</td>
+                        <td>${infoRow.value.orgUnitDisplayName}</td>
+                        <td>${infoRow.value.examinations}</td>
+                        <td>${infoRow.value.status}</td>
                     </tr>
                 </c:forEach>
                 </tbody>

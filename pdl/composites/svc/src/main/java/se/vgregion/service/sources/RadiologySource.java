@@ -31,7 +31,7 @@ import javax.annotation.Resource;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 
-@Service("RadiologySource")
+@Service("pdlRadiologySource")
 public class RadiologySource implements CareSystems {
     private static final String HSA_UNIT = "HSA-ENHET";
 

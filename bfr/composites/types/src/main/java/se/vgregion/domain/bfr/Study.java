@@ -1,7 +1,8 @@
 package se.vgregion.domain.bfr;
 
 import java.io.Serializable;
-import java.math.BigInteger;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -12,25 +13,41 @@ public class Study implements Serializable {
     public final String code;
     public final String description;
     public final Date date;
-    public final BigInteger noOfImages;
+    public final int noOfImages;
+    @SuppressWarnings("serial")
     public final List<StudyReport> studyReports;
-    public final String dicomSeriesStudyUids;
+    public final List<String> dicomSeriesStudyUids;
+
+    public static final Comparator<Study> studyDateDescendingComparator = new Comparator<Study>() {
+        public int compare(Study study1, Study study2) {
+            Date date1 = study1.getDate();
+            Date date2 = study2.getDate();
+            if (date1 == null && date2 == null) {
+                return 0;
+            } else if (date2 == null) {
+                return -1;
+            } else if (date1 == null) {
+                return 1;
+            }
+            return date2.compareTo(date1);
+        }
+    };
 
     public Study(
-            String risId,
+             String risId,
              String code,
              String description,
              Date date,
-             BigInteger noOfImages,
+             int noOfImages,
              List<StudyReport> studyReports,
-             String dicomSeriesStudyUids
+             List<String> dicomSeriesStudyUids
     ) {
         this.risId = risId;
         this.code = code;
         this.description = description;
         this.date = date;
         this.noOfImages = noOfImages;
-        this.studyReports = studyReports;
+        this.studyReports = Collections.unmodifiableList(studyReports);
         this.dicomSeriesStudyUids = dicomSeriesStudyUids;
     }
 
@@ -50,7 +67,7 @@ public class Study implements Serializable {
         return date;
     }
 
-    public BigInteger getNoOfImages() {
+    public int getNoOfImages() {
         return noOfImages;
     }
 
@@ -58,7 +75,7 @@ public class Study implements Serializable {
         return studyReports;
     }
 
-    public String getDicomSeriesStudyUids() {
+    public List<String> getDicomSeriesStudyUid() {
         return dicomSeriesStudyUids;
     }
 

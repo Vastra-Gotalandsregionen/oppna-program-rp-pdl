@@ -81,8 +81,15 @@ public class DeduplicationSpec {
         ArrayList<WithInfoType<CareSystem>> result = Deduplication.deduplicate(testSystems);
 
         assertEquals(2, result.size());
-        assertEquals(1, result.get(0).value.references.size());
-        assertEquals(2, result.get(1).value.references.size());
+
+        // Hack.
+        if(result.get(0).value.careUnitHsaId.equals(unitId)) {
+            assertEquals(2, result.get(0).value.references.size());
+            assertEquals(1, result.get(1).value.references.size());
+        } else {
+            assertEquals(1, result.get(0).value.references.size());
+            assertEquals(2, result.get(1).value.references.size());
+        }
 
     }
 
