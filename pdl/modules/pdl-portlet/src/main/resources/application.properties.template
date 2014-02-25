@@ -1,4 +1,4 @@
-## Place this file with property values in ${user.home}/.pdl/ with name application.properties
+## Place this file with property values in ${user.home}/.rp/pdl/ with name application.properties
 
 # Global
 TP_HOST=<your.host.se>

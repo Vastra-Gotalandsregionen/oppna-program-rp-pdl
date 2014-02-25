@@ -1,10 +1,7 @@
 package se.vgregion.domain.bfr;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class Study implements Serializable {
     private static final long serialVersionUID = 7588464572431043701L;
@@ -14,9 +11,9 @@ public class Study implements Serializable {
     public final String description;
     public final Date date;
     public final int noOfImages;
-    @SuppressWarnings("serial")
     public final List<StudyReport> studyReports;
     public final List<String> dicomSeriesStudyUids;
+    public final List<String> studyUrls;
 
     public static final Comparator<Study> studyDateDescendingComparator = new Comparator<Study>() {
         public int compare(Study study1, Study study2) {
@@ -48,7 +45,19 @@ public class Study implements Serializable {
         this.date = date;
         this.noOfImages = noOfImages;
         this.studyReports = Collections.unmodifiableList(studyReports);
-        this.dicomSeriesStudyUids = dicomSeriesStudyUids;
+        this.dicomSeriesStudyUids = Collections.unmodifiableList(dicomSeriesStudyUids);
+        this.studyUrls = new ArrayList<String>();
+    }
+
+    private Study(Study prev, List<String> urls ) {
+        this.risId = prev.risId;
+        this.code = prev.code;
+        this.description = prev.description;
+        this.date = prev.date;
+        this.noOfImages = prev.noOfImages;
+        this.studyReports = prev.studyReports;
+        this.dicomSeriesStudyUids = prev.dicomSeriesStudyUids;
+        this.studyUrls = Collections.unmodifiableList(urls);
     }
 
     public String getRisId() {
@@ -75,8 +84,16 @@ public class Study implements Serializable {
         return studyReports;
     }
 
-    public List<String> getDicomSeriesStudyUid() {
+    public List<String> getDicomSeriesStudyUids() {
         return dicomSeriesStudyUids;
+    }
+
+    public List<String> getStudyUrls() {
+        return studyUrls;
+    }
+
+    public Study mapStudyUrls( List<String> urls ) {
+        return new Study(this, urls);
     }
 
     @Override

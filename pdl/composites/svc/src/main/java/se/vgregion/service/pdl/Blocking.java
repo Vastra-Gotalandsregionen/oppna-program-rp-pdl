@@ -18,6 +18,7 @@ import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.systems.CareSystem;
 import se.vgregion.events.context.Patient;
+import se.vgregion.domain.pdl.PdlContext;
 
 import java.io.Serializable;
 import java.util.ArrayList;

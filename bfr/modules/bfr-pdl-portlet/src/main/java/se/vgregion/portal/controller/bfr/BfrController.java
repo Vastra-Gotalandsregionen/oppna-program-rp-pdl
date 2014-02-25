@@ -18,6 +18,7 @@ import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.events.context.PatientEvent;
 import se.vgregion.events.context.sources.radiology.RadiologySourceRefs;
 import se.vgregion.service.bfr.RadiologySource;
+import se.vgregion.service.bfr.ZeroFootPrintUrls;
 
 import javax.portlet.ActionResponse;
 import javax.portlet.Event;
@@ -37,6 +38,9 @@ public class BfrController {
     @Autowired
     @Qualifier("bfrRadiologySource")
     RadiologySource radiologySource;
+
+    @Autowired
+    private ZeroFootPrintUrls zfpUrls;
 
     @ModelAttribute("state")
     public BfrState initState() {
@@ -64,7 +68,13 @@ public class BfrController {
             WithOutcome<Referral> referralDetails =
                     radiologySource.requestByBrokerId(ref.infoBrokerId);
 
-            state.setCurrentReferral(referralDetails);
+            state.setCurrentReferral(
+                    zfpUrls.addZfpUrls(
+                            referralDetails,
+                            state.getTicket().value.userContext.employeeHsaId
+                    )
+            );
+
             response.setRenderParameter("view", "showReferral");
         }
     }

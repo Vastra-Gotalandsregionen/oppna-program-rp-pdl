@@ -20,10 +20,10 @@
         <sec:keyStore
                 type="${pdl.tjp.keystore.type}"
                 password="${pdl.tjp.keystore.password}"
-                file="${user.home}/.pdl/${pdl.tjp.keystore.name}"/>
+                file="${user.home}/.rp/pdl/${pdl.tjp.keystore.name}"/>
       </sec:keyManagers>
       <sec:trustManagers>
-        <sec:certStore file="${user.home}/.pdl/${pdl.tjp.trustcert.name}" />
+        <sec:certStore file="${user.home}/.rp/pdl/${pdl.tjp.trustcert.name}" />
       </sec:trustManagers>
     </http:tlsClientParameters>
   </http:conduit>

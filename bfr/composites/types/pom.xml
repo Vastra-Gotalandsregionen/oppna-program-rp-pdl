@@ -27,6 +27,25 @@ Generation time : 2013-10-08 14:16:23 CEST
       <artifactId>oppna-program-rp-pdl-pdl-composite-events</artifactId>
       <version>${project.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>oppna-program-rp-pdl-pdl-composite-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- Base64 -->
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.9</version>
+    </dependency>
+    <!-- For rounding dates -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.1</version>
+    </dependency>
   </dependencies>
 
 </project>

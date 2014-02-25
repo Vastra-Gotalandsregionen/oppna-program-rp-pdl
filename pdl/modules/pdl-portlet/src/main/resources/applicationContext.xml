@@ -11,9 +11,9 @@
   <bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     <property name="locations">
       <list>
-        <value>file:${user.home}/.pdl/application.properties</value>
-        <value>file:${user.home}/.pdl/security.properties</value>
-        <value>file:${user.home}/.pdl/datasource.properties</value>
+        <value>file:${user.home}/.rp/pdl/application.properties</value>
+        <value>file:${user.home}/.rp/pdl/security.properties</value>
+        <value>file:${user.home}/.rp/pdl/datasource.properties</value>
       </list>
     </property>
     <property name="ignoreResourceNotFound" value="false"/>

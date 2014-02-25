@@ -26,6 +26,7 @@ import se.vgregion.domain.systems.SummaryReport;
 import se.vgregion.domain.systems.Visibility;
 import se.vgregion.events.context.PatientEvent;
 import se.vgregion.events.context.PdlTicket;
+import se.vgregion.events.context.UserContext;
 import se.vgregion.repo.log.LogRepo;
 import se.vgregion.service.search.AccessControl;
 import se.vgregion.service.search.CareAgreement;
@@ -388,7 +389,12 @@ public class PdlController {
             PatientEvent patientEvent = new PatientEvent(
                     new PdlTicket(
                             state.getPatient(),
-                            sumReport.referencesList),
+                            sumReport.referencesList,
+                            new UserContext(
+                                    state.getCtx().value.employeeDisplayName,
+                                    state.getCtx().value.employeeHsaId
+                            )
+                    ),
                     ""
             );
             response.setEvent(qname, patientEvent);

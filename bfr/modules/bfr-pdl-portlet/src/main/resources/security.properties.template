@@ -1,0 +1,18 @@
+## Place this file with property values in ${user.home}/.rp/bfr/ with name secure.properties
+
+# Mawell Zero Footprint
+ZFP_HOST=<your.ip.or.url>
+
+# ZFP ECB
+zfp.password=<password.to.access.zfp>
+zfp.ecbkey=<ecb.encryption.key>
+
+# Plaintext token
+# 0 = id (study id)
+# 1 = user name (for se.vgregion.repo.logging only)
+# 2 = expiration timestamp: yyyyMMddHHmmss
+zfp.token=sui={0}&lights=off&un={1}&pw=${zfp.password}|{2}
+
+# Url with encrypted token
+# 0 = encrypted key to the end of URL
+zfp.url=http://${ZFP_HOST}/ZFP?mode=Inbound#pl={0}

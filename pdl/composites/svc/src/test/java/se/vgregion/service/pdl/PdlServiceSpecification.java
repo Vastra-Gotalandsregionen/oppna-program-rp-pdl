@@ -20,6 +20,7 @@ import se.vgregion.domain.decorators.*;
 import se.vgregion.domain.pdl.*;
 import se.vgregion.domain.systems.CareSystem;
 import se.vgregion.events.context.Patient;
+import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.service.MockContext;
 import se.vgregion.service.search.CareSystems;
 

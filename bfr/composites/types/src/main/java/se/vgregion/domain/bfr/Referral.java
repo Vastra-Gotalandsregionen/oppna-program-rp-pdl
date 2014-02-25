@@ -1,6 +1,7 @@
 package se.vgregion.domain.bfr;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +37,22 @@ public class Referral implements Serializable {
         this.question = referralBuilder.question;
         this.anamnesis = referralBuilder.anamnesis;
         this.studies = Collections.unmodifiableList(referralBuilder.studies);
+    }
+
+    private Referral(Referral referral, List<Study> studies) {
+        this.displayId = referral.displayId;
+        this.statusList = referral.statusList;
+        this.imageCount = referral.imageCount;
+        this.placingDate = referral.placingDate;
+        this.placerLocation = referral.placerLocation;
+        this.fillerLocation = referral.fillerLocation;
+        this.infoBrokerId = referral.infoBrokerId;
+        this.risId = referral.risId;
+        this.priority = referral.priority;
+        this.referringPhysicianName = referral.referringPhysicianName;
+        this.question = referral.question;
+        this.anamnesis = referral.anamnesis;
+        this.studies = Collections.unmodifiableList(studies);
     }
 
     public List<String> getStatusList() {
@@ -88,6 +105,10 @@ public class Referral implements Serializable {
 
     public String getDisplayId() {
         return displayId;
+    }
+
+    public Referral mapStudies(ArrayList<Study> studies) {
+        return new Referral(this, studies);
     }
 
     @Override

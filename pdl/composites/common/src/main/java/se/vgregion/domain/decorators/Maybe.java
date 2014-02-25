@@ -24,6 +24,11 @@ public class Maybe<T extends Serializable> implements Serializable {
         return new Maybe<S>(null, false);
     }
 
+    public <N extends Serializable, N1 extends N> Maybe<N> mapValue(N1 newValue) {
+        boolean newSuccess = newValue != null;
+        return new Maybe<N>(newValue, newSuccess);
+    }
+
     public T getValue() {
         return value;
     }

@@ -1,3 +1,5 @@
+## Place this file with property values in ${user.home}/.rp/pdl/ with name datasource.properties
+
 #====================================================
 # Use for in-memory Postgresql tests
 #====================================================

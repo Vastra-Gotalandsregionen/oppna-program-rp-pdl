@@ -1,1 +1,4 @@
-## Place this file with property values in ${user.home}/.bfr/ with name application.properties
+## Place this file with property values in ${user.home}/.rp/bfr/ with name application.properties
+
+ws.endpoint.pdl.infoBroker=https://<your.infobroker.host>:<your.infobroker.port>/patient-history/PatientHistory
+

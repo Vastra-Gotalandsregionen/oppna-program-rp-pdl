@@ -72,8 +72,11 @@ public class RadiologySource {
             Date date = getDateFromGregorianCalendar(ex.getDate());
             int noOfImages = 0;
 
-            List<String> dicomSeriesStudyUids = getDicomSeriesUiid(ex);
             List<StudyReport> studyReports = getStudyReports(ex);
+            List<String> dicomSeriesUiids = getDicomSeriesUiid(ex);
+
+            // FIXME 2014-02-25 : Magnus Andersson > Mock data!
+            dicomSeriesUiids.add("1.2.752.30.104.1144953.9231176.20130413113626");
 
             Study stu = new Study(
                 risId,
@@ -82,7 +85,7 @@ public class RadiologySource {
                 date,
                 noOfImages,
                 studyReports,
-                dicomSeriesStudyUids
+                dicomSeriesUiids
             );
 
             studies.add(stu);
@@ -94,9 +97,10 @@ public class RadiologySource {
     private List<String> getDicomSeriesUiid(Examination ex) {
         List<String> dicomSeriesStudyUids = new ArrayList<String>();
         for(DicomStudy dstudy : ex.getDicomStudy()) {
-            for(DicomSeries series: dstudy.getDicomSeries()) {
-                dicomSeriesStudyUids.add(series.getSeriesUid());
-            }
+            dicomSeriesStudyUids.add(dstudy.getStudyUid());
+            // for(DicomSeries series: dstudy.getDicomSeries()) {
+            //     dicomSeriesStudyUids.add(series.getSeriesUid());
+            // }
         }
         return dicomSeriesStudyUids;
     }
@@ -120,23 +124,6 @@ public class RadiologySource {
             studyReports.add(new StudyReport(status,d,signer,text));
         }
         return studyReports;
-    }
-
-    private List<String> getExaminationDescriptions(List<Examination> examinations) {
-        ArrayList<String> examinationDescriptionList = new ArrayList<String>();
-        StringBuilder sb = new StringBuilder();
-
-        if(examinations != null) {
-            for(Examination ex : examinations) {
-                int numImages = sumDicomNumImages(ex);
-                sb.append(ex.getExaminationCode().getDescription());
-                sb.append(" (");
-                sb.append(numImages);
-                sb.append(")");
-            }
-        }
-
-        return null;
     }
 
     private int sumDicomNumImages(Examination examination) {

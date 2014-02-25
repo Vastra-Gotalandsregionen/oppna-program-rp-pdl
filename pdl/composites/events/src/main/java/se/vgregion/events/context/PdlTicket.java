@@ -9,22 +9,25 @@ public class PdlTicket implements Serializable {
     private static final long serialVersionUID = -8430279685177330801L;
 
     public final Patient patient;
-
-    /*
-    * Since the original list must be an array list the resulting unmodifiable list is also serializable
-    * For more info see: http://docs.oracle.com/javase/7/docs/api/java/util/Collections.html#unmodifiableList(java.util.List)
-    * 2014-02-13 : Magnus Andersson
-    */
-    @SuppressWarnings("serial")
+    public final UserContext userContext;
     public final Map<String, SourceReferences> references;
 
-    public PdlTicket(Patient patient, Map<String, SourceReferences> references) {
+    public PdlTicket(
+            Patient patient,
+            Map<String, SourceReferences> references,
+            UserContext userContext
+    ) {
         this.patient = patient;
+        this.userContext = userContext;
         this.references = Collections.unmodifiableMap(references);
     }
 
     public Patient getPatient() {
         return patient;
+    }
+
+    public UserContext getUserContext() {
+        return userContext;
     }
 
     public Map<String, SourceReferences> getReferences() {
@@ -34,7 +37,8 @@ public class PdlTicket implements Serializable {
     @Override
     public String toString() {
         return "PdlTicket{" +
-                "patient='" + patient + '\'' +
+                "patient=" + patient +
+                ", userContext=" + userContext +
                 ", references=" + references +
                 '}';
     }

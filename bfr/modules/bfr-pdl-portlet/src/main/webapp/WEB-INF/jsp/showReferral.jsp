@@ -16,13 +16,54 @@
     <%@ include file="patientInformationFor.jsp" %>
 
     <c:choose>
-        <c:when test="${state.ticket.success}">
-            ${state.currentReferral}
+        <c:when test="${state.ticket.success && state.currentReferral.success}">
+            <ul>
+                <li>RisId: ${state.currentReferral.value.risId}</li>
+                <li>Prioritet: ${state.currentReferral.value.priority}</li>
+                <li>Placeringsdatum: ${state.currentReferral.value.placingDate}</li>
+                <li>Utförande enhet: ${state.currentReferral.value.fillerLocation}</li>
+                <li>Remitterande enhet: ${state.currentReferral.value.placerLocation}</li>
+                <li>Remitterande läkare: ${state.currentReferral.value.referringPhysicianName}</li>
+                <li>Frågeställning: ${state.currentReferral.value.question}</li>
+                <li>Anamnes: ${state.currentReferral.value.anamnesis}</li>
+            </ul>
+            <c:forEach var="study" items="${state.currentReferral.value.studies}" varStatus="studiesStatus">
+                <ul>
+                    <ul>
+                        <li>Studier</li>
+                        <c:forEach var="url" items="${study.studyUrls}" varStatus="urlStatus">
+                            <li><a href="${url}" target="_blank">Bild ${urlStatus.index}</a></li>
+                        </c:forEach>
+                    </ul>
+                    <li>Undersökning: ${study.risId}</li>
+                    <li>Utförandedatum: ${study.date}</li>
+                    <li>${study.description}</li>
+                    <li>Serie: ${study.noOfImages}</li>
+                    <li>
+                        <c:forEach var="report" items="${study.studyReports}" varStatus="reportStatus">
+                            <ul>
+                                <li>Undersökningssvar - ${report.status}</li>
+                                <li>Svarsdatum: ${report.date}</li>
+                                <li>Svarande läkare: ${report.signer}</li>
+                                <li>Svarstext: ${report.text}</li>
+                            </ul>
+                        </c:forEach>
+                    </li>
+                </ul>
+            </c:forEach>
         </c:when>
         <c:otherwise>
             <div class="clearfix callout callout-info">
-                Patientinformation saknas
+                Kan ej hitta information
             </div>
         </c:otherwise>
     </c:choose>
 </div>
+
+
+<!--
+  public final String status;
+    public final Date date;
+    public final String signer;
+    public final String text;
+    -->

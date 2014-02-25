@@ -9,11 +9,10 @@ public class StudyReport {
     public final String text;
 
     public StudyReport(
-        String status,
-        Date date,
-        String signer,
-        String text
-    ) {
+            String status,
+            Date date,
+            String signer,
+            String text) {
         this.status = status;
         this.date = date;
         this.signer = signer;
