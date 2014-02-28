@@ -18,15 +18,19 @@
 
     <c:choose>
         <c:when test="${state.ticket.success}">
-            <table>
+            <!-- IE < 10 does not like giving a tbody a height.  The workaround here applies the scrolling to a wrapped <div>. -->
+            <!--[if lte IE 9]>
+            <div class="old_ie_wrapper">
+            <!--<![endif]-->
+            <table class="fixed_headers">
                 <thead>
                     <tr>
-                      <th scope="col">Remissdatum</th>
-                      <th scope="col">Bilder</th>
-                      <th scope="col">Remitterande vårdenhet</th>
-                      <th scope="col">Remitterande organisatorisk enhet</th>
-                      <th scope="col">Undersökningar</th>
-                      <th scope="col">Status</th>
+                      <th class="text" scope="col">Remissdatum</th>
+                      <th class="text" scope="col">Bilder</th>
+                      <th class="text" scope="col">Remitterande vårdenhet</th>
+                      <th class="text" scope="col">Remitterande organisatorisk enhet</th>
+                      <th class="text" scope="col">Undersökningar</th>
+                      <th class="text" scope="col">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,6 +49,9 @@
                 </c:forEach>
                 </tbody>
             </table>
+            <!--[if lte IE 9]>
+            </div>
+            <!--<![endif]-->
         </c:when>
         <c:otherwise>
             <div class="clearfix callout callout-info">
@@ -52,4 +59,7 @@
             </div>
         </c:otherwise>
     </c:choose>
+
+    <%@ include file="showReferral.jsp" %>
+
 </div>

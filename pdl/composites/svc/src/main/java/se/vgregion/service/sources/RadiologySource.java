@@ -103,10 +103,9 @@ public class RadiologySource implements CareSystems {
                 result.getPatient().getPatientData().getLastName() != null);
 
         if(hasPatientInfo) {
-            String firstName = result.getPatient().getPatientData().getFirstName();
-            String lastName = result.getPatient().getPatientData().getLastName();
-
             Patient.Sex patientSex = Patient.Sex.UNKNOWN;
+
+            String patientNameSecret = replaceNameWhenHidden(result);
 
             switch (result.getPatient().getPatientData().getSex()) {
                 case MALE:
@@ -117,9 +116,16 @@ public class RadiologySource implements CareSystems {
                     break;
             }
 
-            return unknownPatient.mapPatientInfo(firstName + " " + lastName, patientSex);
+            return unknownPatient.mapPatientInfo(patientNameSecret, patientSex);
         }
         return unknownPatient;
+    }
+
+    private String replaceNameWhenHidden(RequestList result) {
+        String firstName = result.getPatient().getPatientData().getFirstName();
+        String lastName = result.getPatient().getPatientData().getLastName();
+        String patientName = firstName + " " + lastName;
+        return (result.getPatient().getPatientData().isHiddenIdentity()) ? patientName.replaceAll(".","*") : patientName;
     }
 
     private WithOutcome<ArrayList<WithInfoType<CareSystem>>> getMapRadiologyResult(RequestList result) throws HsaWsFault {

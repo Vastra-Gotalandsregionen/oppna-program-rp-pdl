@@ -1,3 +1,51 @@
+.bfr ul {
+    list-style: none;
+    margin: 0;
+}
+
+.bfr ul>li {
+    padding: 1em;
+    float: left;
+    width: 100%;
+}
+
+.bfr #showReferral {
+    margin-top: 1em;
+    float: left;
+    width: 100%;
+    border: solid #c4ced5 1px;
+}
+
+.bfr .key {
+    float: left;
+    width: 30%;
+    font-weight: normal;
+    font-family: Ubuntu,Arial,Verdana,Helvetica,sans-serif;
+    font-size: 1.05em;
+    color: #666;
+}
+
+.bfr .value {
+    float: left;
+    width: 70%;
+}
+
+.bfr #referralContainer {
+    width: 45%;
+    float:left;
+    margin: 0px;
+    padding: 0;
+}
+
+.bfr #studiesContainer {
+    width: 55%;
+    float:left;
+    margin: -1px;
+    padding: 0;
+    border: solid #c4ced5 1px;
+    background: white;
+}
+
 .bfr h3.legend {
   border-bottom: 1px solid #d5e3ee;
   color: #666;
@@ -66,17 +114,16 @@
     border-radius: 0 0 0 3px;
 }
 
-.bfr table tD:only-child{
+.bfr table td:only-child{
     -moz-border-radius: 0 0 3px 3px;
     -webkit-border-radius: 0 0 3px 3px;
     border-radius: 0 0 3px 3px;
 }
 
-.bfr table tr.even {
-    /* background-color: silver; */
+.bfr .even {
 }
 
-.bfr table tr.odd {
+.bfr .odd {
     background-color: #eef5fa;
 }
 
@@ -84,3 +131,5 @@
 .bfr table th, .bfr table td {
     padding: 1em;
 }
+/*
+*/

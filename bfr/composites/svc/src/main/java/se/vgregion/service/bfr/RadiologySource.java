@@ -2,6 +2,8 @@ package se.vgregion.service.bfr;
 
 import com.mawell.ib.patientsearch.RequestOrder;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.w3._2005._08.addressing.AttributedURIType;
 import riv.ehr.ehrexchange.patienthistory._1.rivtabp20.PatientHistoryResponderInterface;
@@ -14,6 +16,7 @@ import se.vgregion.domain.decorators.WithOutcome;
 
 import javax.annotation.Resource;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.ws.WebServiceException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -21,6 +24,7 @@ import java.util.List;
 
 @Service("bfrRadiologySource")
 public class RadiologySource {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RadiologySource.class);
 
     @Resource(name = "infoBroker")
     private PatientHistoryResponderInterface infoBroker;
@@ -29,11 +33,15 @@ public class RadiologySource {
     public static final String NEWLINE_CHAR = "\n";
 
     public WithOutcome<Referral> requestByBrokerId(String brokerId) {
-        Request request = ibRequest(brokerId);
+        try {
+            Request request = ibRequest(brokerId);
+            Referral referral = mapRequestToRequestDetails(request);
 
-        Referral referral = mapRequestToRequestDetails(request);
-
-        return WithOutcome.success(referral);
+            return WithOutcome.success(referral);
+        } catch (WebServiceException e) {
+            LOGGER.error("Could not complete request with info broker id {}", brokerId, e);
+            return WithOutcome.commFailure(null);
+        }
     }
 
     private Referral mapRequestToRequestDetails(Request req) {

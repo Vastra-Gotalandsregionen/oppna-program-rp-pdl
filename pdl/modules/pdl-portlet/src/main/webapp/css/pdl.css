@@ -36,28 +36,28 @@
 }
 
 .pdl .callout-action {
-	background-color: #fff;
-	float: left;
-	position: relative;
-	padding: 10px;
+    background-color: #fff;
+    float: left;
+    position: relative;
+    padding: 10px;
 }
 
 .pdl .callout-action a {
-	background: url(../images/icon_arrow_right_blue.png) center right no-repeat;
-	line-height: 16px;
-	min-height: 16px;
-	padding-right: 20px;
-	text-decoration: none;
+    background: url(../images/icon_arrow_right_blue.png) center right no-repeat;
+    line-height: 16px;
+    min-height: 16px;
+    padding-right: 20px;
+    text-decoration: none;
 }
 
 .pdl .callout-info.callout-action a {
-	background-image: url(../images/icon_arrow_right_blue.png);
-	color: #31708f;
+    background-image: url(../images/icon_arrow_right_blue.png);
+    color: #31708f;
 }
 
 .pdl .callout-danger.callout-action a {
-	background-image: url(../images/icon_arrow_right_red.png);
-	color: #bd5856;
+    background-image: url(../images/icon_arrow_right_red.png);
+    color: #bd5856;
 }
 
 .pdl .callout-info h4 {
@@ -83,7 +83,7 @@
 }
 
 .pdl ul.infotypes > li .callout-action {
-	margin: 0;
+    margin: 0;
 }
 
 .pdl ul.infotypes > li.active {
@@ -95,7 +95,7 @@
 }
 
 .pdl ul.infotypes > li a {
-	text-decoration: none;
+    text-decoration: none;
 }
 
 .pdl ul.infotypes > li > ul {

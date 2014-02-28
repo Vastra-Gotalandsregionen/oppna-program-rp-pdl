@@ -1,69 +1,42 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/portlet" prefix="portlet" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-
-<%@ taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %>
-<%@ taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
-<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
-<%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
-<%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
-
-<link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/css/bfr.css" />
-<div class="clearfix">
-    <c:set var="patientInfoFor" value="Patientinformation Radiologi" scope="request"/>
-    <%@ include file="patientInformationFor.jsp" %>
-
-    <c:choose>
-        <c:when test="${state.ticket.success && state.currentReferral.success}">
-            <ul>
-                <li>RisId: ${state.currentReferral.value.risId}</li>
-                <li>Prioritet: ${state.currentReferral.value.priority}</li>
-                <li>Placeringsdatum: ${state.currentReferral.value.placingDisplayDate}</li>
-                <li>Utförande enhet: ${state.currentReferral.value.fillerLocation}</li>
-                <li>Remitterande enhet: ${state.currentReferral.value.placerLocation}</li>
-                <li>Remitterande läkare: ${state.currentReferral.value.referringPhysicianName}</li>
-                <li>Frågeställning: ${state.currentReferral.value.question}</li>
-                <li>Anamnes: ${state.currentReferral.value.anamnesis}</li>
-            </ul>
+<c:if test="${state.ticket.success && state.currentReferral.success}">
+<div id="showReferral">
+    <div id="referralContainer">
+    <ul>
+        <li><span class="key">RisId</span><span class="value">${state.currentReferral.value.risId}</span></li>
+        <li class="odd"><span class="key">Prioritet</span><span class="value">${state.currentReferral.value.priority}</span></li>
+        <li><span class="key">Placeringsdatum</span><span class="value">${state.currentReferral.value.placingDisplayDate}</span></li>
+        <li class="odd"><span class="key">Utförande enhet</span><span class="value">${state.currentReferral.value.fillerLocation}</span></li>
+        <li><span class="key">Remitterande enhet</span><span class="value">${state.currentReferral.value.placerLocation}</span></li>
+        <li class="odd"><span class="key">Remitterande läkare</span><span class="value">${state.currentReferral.value.referringPhysicianName}</span></li>
+        <li><span class="key">Frågeställning</span><span class="value">${state.currentReferral.value.question}</span></li>
+        <li class="odd"><span class="key">Anamnes</span><span class="value">${state.currentReferral.value.anamnesis}</span></li>
+    </ul>
+    </div>
+    <div id="studiesContainer">
+        <ul>
+            <li><span class="key"><b>Studier</b></span></li>
             <c:forEach var="study" items="${state.currentReferral.value.studies}" varStatus="studiesStatus">
-                <ul>
-                    <ul>
-                        <li>Studier</li>
+                <li class="${studiesStatus.index % 2 == 0 ? 'even' : 'odd'}"><span class="key">Undersökning</span><span class="value">${study.risId}</span></li>
+                <li class="${studiesStatus.index % 2 == 0 ? 'even' : 'odd'}"><span class="key">Utförandedatum</span><span class="value">${study.displayDate}</span></li>
+                <li class="${studiesStatus.index % 2 == 0 ? 'even' : 'odd'}"><span class="key">Beskrivning</span><span class="value">${study.code} - ${study.description}</span></li>
+                <li class="${studiesStatus.index % 2 == 0 ? 'even' : 'odd'}">
+                    <span class="key">Serier (${study.noOfImages})</span>
+                    <span class="value">
                         <c:forEach var="url" items="${study.studyUrls}" varStatus="urlStatus">
-                            <li><a href="${url}" target="_blank">Bild ${urlStatus.index}</a></li>
+                            <a href="${url}" target="_blank">Bildserie ${urlStatus.index+1}</a>&nbsp;
                         </c:forEach>
-                    </ul>
-                    <li>Undersökning: ${study.risId}</li>
-                    <li>Utförandedatum: ${study.displayDate}</li>
-                    <li>${study.description}</li>
-                    <li>Serie: ${study.noOfImages}</li>
-                    <li>
-                        <c:forEach var="report" items="${study.studyReports}" varStatus="reportStatus">
-                            <ul>
-                                <li>Undersökningssvar - ${report.status}</li>
-                                <li>Svarsdatum: ${report.displayDate}</li>
-                                <li>Svarande läkare: ${report.signer}</li>
-                                <li>Svarstext: ${report.text}</li>
-                            </ul>
-                        </c:forEach>
-                    </li>
-                </ul>
+                    </span>
+                </li>
+                <c:forEach var="report" items="${study.studyReports}" varStatus="reportStatus">
+                    <li class="${studiesStatus.index % 2 == 0 ? 'even' : 'odd'}"><span class="key">Undersökningssvar</span><span class="value">${report.status}</span></li>
+                    <li class="${studiesStatus.index % 2 == 0 ? 'even' : 'odd'}"><span class="key">Svarsdatum</span><span class="value">${report.displayDate}</span></li>
+                    <li class="${studiesStatus.index % 2 == 0 ? 'even' : 'odd'}"><span class="key">Svarande läkare</span><span class="value">${report.signer}</span></li>
+                    <li class="${studiesStatus.index % 2 == 0 ? 'even' : 'odd'}"><span class="key">Svarstext</span><span class="value">${report.text}</span></li>
+                </c:forEach>
             </c:forEach>
-        </c:when>
-        <c:otherwise>
-            <div class="clearfix callout callout-info">
-                Kan ej hitta information
-            </div>
-        </c:otherwise>
-    </c:choose>
+        </ul>
+    </div>
 </div>
-
-
-<!--
-  public final String status;
-    public final Date date;
-    public final String signer;
-    public final String text;
-    -->
+</c:if>

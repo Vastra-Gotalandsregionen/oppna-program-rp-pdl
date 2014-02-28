@@ -75,13 +75,8 @@ public class BfrController {
                     )
             );
 
-            response.setRenderParameter("view", "showReferral");
+            response.setRenderParameter("view", "view");
         }
-    }
-
-    @RenderMapping(params = "view=showReferral")
-    public String showReferral(final ModelMap model) {
-        return "showReferral";
     }
 
     @EventMapping("{http://pdl.portalen.vgregion.se/events}pctx.reset")
