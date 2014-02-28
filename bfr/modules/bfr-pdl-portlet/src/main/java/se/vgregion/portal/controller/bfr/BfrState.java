@@ -9,9 +9,12 @@ import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.events.context.Patient;
 import se.vgregion.events.context.PdlTicket;
 
+import java.io.Serializable;
+
 @Component
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class BfrState {
+public class BfrState implements Serializable {
+    private static final long serialVersionUID = 6000047137847271688L;
 
     private Maybe<PdlTicket> ticket;
     private WithOutcome<Referral> currentReferral;

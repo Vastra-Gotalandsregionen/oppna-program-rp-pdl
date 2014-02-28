@@ -23,8 +23,8 @@
                     <tr>
                       <th scope="col">Remissdatum</th>
                       <th scope="col">Bilder</th>
-                      <th scope="col">Remit. vårdenhet</th>
-                      <th scope="col">Remit. organisatorisk enhet</th>
+                      <th scope="col">Remitterande vårdenhet</th>
+                      <th scope="col">Remitterande organisatorisk enhet</th>
                       <th scope="col">Undersökningar</th>
                       <th scope="col">Status</th>
                     </tr>
@@ -35,7 +35,7 @@
                         <portlet:param name="requestId" value="${infoRow.key}" />
                     </portlet:actionURL>
                     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
-                        <td><a href="${showReferralUrl}">${infoRow.value.requestDate}</a></td>
+                        <td><a href="${showReferralUrl}">${infoRow.value.requestDisplayDate}</a></td>
                         <td>${infoRow.value.numImages}</td>
                         <td>${infoRow.value.careUnitDisplayName}</td>
                         <td>${infoRow.value.orgUnitDisplayName}</td>

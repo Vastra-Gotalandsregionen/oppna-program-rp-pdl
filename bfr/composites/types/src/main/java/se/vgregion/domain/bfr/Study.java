@@ -1,5 +1,7 @@
 package se.vgregion.domain.bfr;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
+
 import java.io.Serializable;
 import java.util.*;
 
@@ -10,6 +12,7 @@ public class Study implements Serializable {
     public final String code;
     public final String description;
     public final Date date;
+    public final String displayDate;
     public final int noOfImages;
     public final List<StudyReport> studyReports;
     public final List<String> dicomSeriesStudyUids;
@@ -43,6 +46,7 @@ public class Study implements Serializable {
         this.code = code;
         this.description = description;
         this.date = date;
+        this.displayDate = DateFormatUtils.format(date, "yyyy-MM-dd HH:mm");
         this.noOfImages = noOfImages;
         this.studyReports = Collections.unmodifiableList(studyReports);
         this.dicomSeriesStudyUids = Collections.unmodifiableList(dicomSeriesStudyUids);
@@ -54,6 +58,7 @@ public class Study implements Serializable {
         this.code = prev.code;
         this.description = prev.description;
         this.date = prev.date;
+        this.displayDate = prev.displayDate;
         this.noOfImages = prev.noOfImages;
         this.studyReports = prev.studyReports;
         this.dicomSeriesStudyUids = prev.dicomSeriesStudyUids;
@@ -74,6 +79,10 @@ public class Study implements Serializable {
 
     public Date getDate() {
         return date;
+    }
+
+    public String getDisplayDate() {
+        return displayDate;
     }
 
     public int getNoOfImages() {
@@ -103,9 +112,11 @@ public class Study implements Serializable {
                 ", code='" + code + '\'' +
                 ", description='" + description + '\'' +
                 ", date=" + date +
+                ", displayDate='" + displayDate + '\'' +
                 ", noOfImages=" + noOfImages +
                 ", studyReports=" + studyReports +
-                ", dicomSeriesStudyUids='" + dicomSeriesStudyUids + '\'' +
+                ", dicomSeriesStudyUids=" + dicomSeriesStudyUids +
+                ", studyUrls=" + studyUrls +
                 '}';
     }
 }

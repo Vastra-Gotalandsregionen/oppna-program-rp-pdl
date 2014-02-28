@@ -1,5 +1,7 @@
 package se.vgregion.domain.bfr;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +15,7 @@ public class Referral implements Serializable {
     public final List<String> statusList;
     public final int imageCount;
     public final Date placingDate;
+    public final String placingDisplayDate;
     public final String placerLocation; // The unit that placed the request (the department of the referring physician)
     public final String fillerLocation; // The unit that registered the request (the radiology department)
     public final String infoBrokerId;
@@ -28,6 +31,7 @@ public class Referral implements Serializable {
         this.statusList = Collections.unmodifiableList(referralBuilder.statusList);
         this.imageCount = referralBuilder.imageCount;
         this.placingDate = referralBuilder.placingDate;
+        this.placingDisplayDate = DateFormatUtils.format(placingDate, "yyyy-MM-dd HH:mm");
         this.placerLocation = referralBuilder.placerLocation;
         this.fillerLocation = referralBuilder.fillerLocation;
         this.infoBrokerId = referralBuilder.infoBrokerId;
@@ -44,6 +48,7 @@ public class Referral implements Serializable {
         this.statusList = referral.statusList;
         this.imageCount = referral.imageCount;
         this.placingDate = referral.placingDate;
+        this.placingDisplayDate = referral.placingDisplayDate;
         this.placerLocation = referral.placerLocation;
         this.fillerLocation = referral.fillerLocation;
         this.infoBrokerId = referral.infoBrokerId;
@@ -65,6 +70,10 @@ public class Referral implements Serializable {
 
     public Date getPlacingDate() {
         return placingDate;
+    }
+
+    public String getPlacingDisplayDate() {
+        return placingDisplayDate;
     }
 
     public String getPlacerLocation() {
@@ -118,6 +127,7 @@ public class Referral implements Serializable {
                 ", statusList=" + statusList +
                 ", imageCount=" + imageCount +
                 ", placingDate=" + placingDate +
+                ", placingDisplayDate='" + placingDisplayDate + '\'' +
                 ", placerLocation='" + placerLocation + '\'' +
                 ", fillerLocation='" + fillerLocation + '\'' +
                 ", infoBrokerId='" + infoBrokerId + '\'' +

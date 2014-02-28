@@ -12,6 +12,6 @@
 
   <jaxws:client id="infoBroker"
                 serviceClass="riv.ehr.ehrexchange.patienthistory._1.rivtabp20.PatientHistoryResponderInterface"
-                address="${ws.endpoint.pdl.infoBroker}" />
+                address="${ws.endpoint.bfr.infoBroker}" />
 
 </beans>

@@ -20,7 +20,7 @@
             <ul>
                 <li>RisId: ${state.currentReferral.value.risId}</li>
                 <li>Prioritet: ${state.currentReferral.value.priority}</li>
-                <li>Placeringsdatum: ${state.currentReferral.value.placingDate}</li>
+                <li>Placeringsdatum: ${state.currentReferral.value.placingDisplayDate}</li>
                 <li>Utförande enhet: ${state.currentReferral.value.fillerLocation}</li>
                 <li>Remitterande enhet: ${state.currentReferral.value.placerLocation}</li>
                 <li>Remitterande läkare: ${state.currentReferral.value.referringPhysicianName}</li>
@@ -36,14 +36,14 @@
                         </c:forEach>
                     </ul>
                     <li>Undersökning: ${study.risId}</li>
-                    <li>Utförandedatum: ${study.date}</li>
+                    <li>Utförandedatum: ${study.displayDate}</li>
                     <li>${study.description}</li>
                     <li>Serie: ${study.noOfImages}</li>
                     <li>
                         <c:forEach var="report" items="${study.studyReports}" varStatus="reportStatus">
                             <ul>
                                 <li>Undersökningssvar - ${report.status}</li>
-                                <li>Svarsdatum: ${report.date}</li>
+                                <li>Svarsdatum: ${report.displayDate}</li>
                                 <li>Svarande läkare: ${report.signer}</li>
                                 <li>Svarstext: ${report.text}</li>
                             </ul>

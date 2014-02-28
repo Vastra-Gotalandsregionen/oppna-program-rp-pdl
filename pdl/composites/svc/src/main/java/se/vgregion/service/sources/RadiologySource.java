@@ -30,6 +30,7 @@ import se.vgregion.service.search.HsaUnitMapper;
 import javax.annotation.Resource;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
+import java.util.concurrent.*;
 
 @Service("pdlRadiologySource")
 public class RadiologySource implements CareSystems {
@@ -47,6 +48,18 @@ public class RadiologySource implements CareSystems {
     @Resource(name = "hsaOrgmaster")
     private HsaWsResponderInterface hsaOrgmaster;
 
+    private ExecutorService executorService =
+            Executors.newCachedThreadPool(new ThreadFactory() {
+                private final ThreadFactory threadFactory = Executors.defaultThreadFactory();
+
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread thread = threadFactory.newThread(r);
+                    thread.setName("Radiology-HSA-threadpool-" + thread.getName());
+                    thread.setDaemon(true);
+                    return thread;
+                }
+            });
 
     @Override
     public WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> byPatientId(
@@ -62,7 +75,7 @@ public class RadiologySource implements CareSystems {
 
 
             WithOutcome<ArrayList<WithInfoType<CareSystem>>> outcome =
-                    getMapRadiologyResult(ctx, patientId, result);
+                    getMapRadiologyResult(result);
 
             Patient patient = extractPatient(result, unknownPatient);
 
@@ -109,51 +122,12 @@ public class RadiologySource implements CareSystems {
         return unknownPatient;
     }
 
-    private WithOutcome<ArrayList<WithInfoType<CareSystem>>> getMapRadiologyResult(PdlContext ctx, String patientId, RequestList result) throws HsaWsFault {
+    private WithOutcome<ArrayList<WithInfoType<CareSystem>>> getMapRadiologyResult(RequestList result) throws HsaWsFault {
         ArrayList<WithInfoType<CareSystem>> systems = new ArrayList<WithInfoType<CareSystem>>();
         WithOutcome<ArrayList<WithInfoType<CareSystem>>> outcome = WithOutcome.success(systems);
 
         if(result != null && result.getRequest().size() > 0)  {
-            for(Request req : result.getRequest()) {
-
-                Maybe<String> hsaUnitId = extractHsaUnitId(req);
-
-                if(hsaUnitId.success) {
-                    // TODO 2014-02-03 : Magnus Andersson > Do this in parallell all unit hsa id:s, list for futures.
-
-                    WithOutcome<Maybe<CareProviderUnit>> careProviderUnit = hsaMapper.toCareProviderUnit(hsaUnitId.value);
-
-                    if(careProviderUnit.success) {
-                        if(careProviderUnit.value.success) {
-                            String infoBrokerId = req.getInfobrokerId();
-                            Date requestDate = getDateFromGregorianCalendar(req.getPlacer().getLocationData().getCreatedInInfobroker());
-
-
-                            Map<String,SourceReferences> refs = new HashMap<String,SourceReferences>();
-
-                            RadiologySourceRefs value = new RadiologySourceRefs(
-                                    requestDate,
-                                    aggregateNumImages(req.getExamination()),
-                                    careProviderUnit.value.value.careUnitDisplayName,
-                                    req.getPlacer().getLocationData().getName(),
-                                    examinationCodeAggregate(req.getExamination()),
-                                    statusCodeAggregate(req.getExamination()),
-                                    infoBrokerId
-                            );
-
-                            String key = value.id;
-                            refs.put(key, value);
-
-                            CareSystem cs = new CareSystem(CareSystemViewer.BFR, careProviderUnit.value.value, refs);
-                            systems.add(new WithInfoType<CareSystem>(InformationType.UND, cs));
-                        } else {
-                            LOGGER.warn("Could not find care unit {} among care providers with agreement.", hsaUnitId.value);
-                        }
-                    } else {
-                        outcome = outcome.mapOutcome(careProviderUnit.outcome);
-                    }
-                }
-            }
+            systems = mapSystemsAsync(result);
 
             boolean allRequestWithHsaId = systems.size() == result.getRequest().size();
 
@@ -165,6 +139,77 @@ public class RadiologySource implements CareSystems {
         }
 
         return outcome;
+    }
+
+    private ArrayList<WithInfoType<CareSystem>> mapSystemsAsync(final RequestList result) {
+        List<Future<Maybe<WithInfoType<CareSystem>>>> futures =
+                new ArrayList<Future<Maybe<WithInfoType<CareSystem>>>>();
+
+        for(final Request req : result.getRequest()) {
+            final Maybe<String> hsaUnitId = extractHsaUnitId(req);
+
+            if(hsaUnitId.success) {
+
+                Callable<Maybe<WithInfoType<CareSystem>>> call = new Callable<Maybe<WithInfoType<CareSystem>>>(){
+                    public Maybe<WithInfoType<CareSystem>> call() throws Exception {
+                        return mapSystem(req, hsaUnitId);
+                    }
+                };
+
+                Future<Maybe<WithInfoType<CareSystem>>> future = executorService.submit(call);
+                futures.add(future);
+            }
+        }
+
+        ArrayList<WithInfoType<CareSystem>> systems = new ArrayList<WithInfoType<CareSystem>>();
+
+        for(Future<Maybe<WithInfoType<CareSystem>>> f : futures) {
+            try {
+                Maybe<WithInfoType<CareSystem>> res = f.get();
+                if(res.success) {
+                    systems.add(res.value);
+                }
+            } catch (InterruptedException e) {
+                LOGGER.error("Unable to complete HSA-mapping", e);
+            } catch (ExecutionException e) {
+                LOGGER.error("Unable to complete HSA-mapping", e);
+            }
+        }
+
+        return systems;
+    }
+
+    private Maybe<WithInfoType<CareSystem>> mapSystem(Request req, Maybe<String> hsaUnitId) {
+        WithOutcome<Maybe<CareProviderUnit>> careProviderUnit = hsaMapper.toCareProviderUnit(hsaUnitId.value);
+
+        if(careProviderUnit.success) {
+            if(careProviderUnit.value.success) {
+                String infoBrokerId = req.getInfobrokerId();
+                Date requestDate = getDateFromGregorianCalendar(req.getPlacer().getLocationData().getCreatedInInfobroker());
+
+
+                Map<String,SourceReferences> refs = new HashMap<String,SourceReferences>();
+
+                RadiologySourceRefs value = new RadiologySourceRefs(
+                        requestDate,
+                        aggregateNumImages(req.getExamination()),
+                        careProviderUnit.value.value.careUnitDisplayName,
+                        req.getPlacer().getLocationData().getName(),
+                        examinationCodeAggregate(req.getExamination()),
+                        statusCodeAggregate(req.getExamination()),
+                        infoBrokerId
+                );
+
+                String key = value.id;
+                refs.put(key, value);
+
+                CareSystem cs = new CareSystem(CareSystemViewer.BFR, careProviderUnit.value.value, refs);
+                return Maybe.some(new WithInfoType<CareSystem>(InformationType.UND, cs));
+            } else {
+                LOGGER.warn("Could not find care unit {} among care providers with agreement.", hsaUnitId.value);
+            }
+        }
+        return Maybe.none();
     }
 
     private int aggregateNumImages(List<Examination> examinations) {

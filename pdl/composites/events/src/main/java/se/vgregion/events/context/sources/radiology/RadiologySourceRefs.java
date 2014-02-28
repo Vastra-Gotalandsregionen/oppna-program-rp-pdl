@@ -1,5 +1,6 @@
 package se.vgregion.events.context.sources.radiology;
 
+import org.apache.commons.lang.time.DateFormatUtils;
 import se.vgregion.events.context.SourceReferences;
 
 import java.util.Date;
@@ -10,6 +11,7 @@ public class RadiologySourceRefs implements SourceReferences {
     private static final long serialVersionUID = 6013888161146061222L;
 
     public final Date requestDate;
+    public final String requestDisplayDate;
     public final int numImages;
     public final String id;
     public final String careUnitDisplayName;
@@ -29,6 +31,7 @@ public class RadiologySourceRefs implements SourceReferences {
     ) {
         this.id = java.util.UUID.randomUUID().toString();
         this.requestDate = requestDate;
+        this.requestDisplayDate = DateFormatUtils.format(requestDate, "yyyy-MM-dd HH:mm");
         this.numImages = numImages;
         this.careUnitDisplayName = careUnitDisplayName;
         this.orgUnitDisplayName = orgUnitDisplayName;
@@ -39,6 +42,10 @@ public class RadiologySourceRefs implements SourceReferences {
 
     public Date getRequestDate() {
         return requestDate;
+    }
+
+    public String getRequestDisplayDate() {
+        return requestDisplayDate;
     }
 
     public int getNumImages() {
@@ -70,6 +77,17 @@ public class RadiologySourceRefs implements SourceReferences {
     }
 
     @Override
+    public String targetCareSystem() {
+        return SYSTEM_ID;
+    }
+
+    @Override
+    public SourceReferences combine(SourceReferences references) {
+
+        return null;
+    }
+
+    @Override
     public String toString() {
         return "RadiologySourceRefs{" +
                 "requestDate=" + requestDate +
@@ -80,16 +98,5 @@ public class RadiologySourceRefs implements SourceReferences {
                 ", status='" + status + '\'' +
                 ", infoBrokerId='" + infoBrokerId + '\'' +
                 '}';
-    }
-
-    @Override
-    public String targetCareSystem() {
-        return SYSTEM_ID;
-    }
-
-    @Override
-    public SourceReferences combine(SourceReferences references) {
-
-        return null;
     }
 }

@@ -17,8 +17,8 @@ import se.vgregion.service.search.CareAgreement;
 import se.vgregion.service.search.HsaUnitMapper;
 
 import javax.annotation.Resource;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 class CareProviderUnitHsaId {
@@ -5284,19 +5284,6 @@ public class HsaUnitMappingCache implements HsaUnitMapper {
 
 
     @Override
-    public Maybe<CareProviderUnit> toCareProviderUnit(String careProviderHsaId, String careUnitHsaId) {
-        CareProviderUnitHsaId key = new CareProviderUnitHsaId(careProviderHsaId, careUnitHsaId);
-
-        if(careProviderUnitsByUnitHsaId.get().containsKey(key)) {
-            return Maybe.some(careProviderUnitsByUnitHsaId.get().get(key));
-        }
-
-        LOGGER.debug("Could not find {} - {} amongst careProviderUnits with agreement.", careProviderHsaId, careUnitHsaId);
-
-        return Maybe.none();
-    }
-
-    @Override
     public WithOutcome<Maybe<CareProviderUnit>> toCareProviderUnit(String hsaUnitId) {
         // FIXME 2014-02-03 : Magnus Andersson > Hard coded value, use config
         Maybe<CareProviderUnit> emptyResult = Maybe.none();
@@ -5304,15 +5291,15 @@ public class HsaUnitMappingCache implements HsaUnitMapper {
 
         try {
             GetCareUnitResponseType careUnitResponse = hsaOrgmaster.getCareUnit(
-                HsaWsUtil.getAttribute("SE165565594230-1000"),
-                HsaWsUtil.getAttribute(null),
-                HsaWsUtil.getLookupByHsaId(hsaUnitId)
+                    HsaWsUtil.getAttribute("SE165565594230-1000"),
+                    HsaWsUtil.getAttribute(null),
+                    HsaWsUtil.getLookupByHsaId(hsaUnitId)
             );
 
             boolean isValidResponse =
-                careUnitResponse != null &&
-                    careUnitResponse.getCareGiver() != null &&
-                    careUnitResponse.getCareUnitHsaIdentity() != null;
+                    careUnitResponse != null &&
+                            careUnitResponse.getCareGiver() != null &&
+                            careUnitResponse.getCareUnitHsaIdentity() != null;
 
             if(isValidResponse) {
                 String careProviderHsaId = careUnitResponse.getCareGiver();
@@ -5329,6 +5316,19 @@ public class HsaUnitMappingCache implements HsaUnitMapper {
         }
 
         return outcome;
+    }
+
+    @Override
+    public Maybe<CareProviderUnit> toCareProviderUnit(String careProviderHsaId, String careUnitHsaId) {
+        CareProviderUnitHsaId key = new CareProviderUnitHsaId(careProviderHsaId, careUnitHsaId);
+
+        if(careProviderUnitsByUnitHsaId.get().containsKey(key)) {
+            return Maybe.some(careProviderUnitsByUnitHsaId.get().get(key));
+        }
+
+        LOGGER.debug("Could not find {} - {} amongst careProviderUnits with agreement.", careProviderHsaId, careUnitHsaId);
+
+        return Maybe.none();
     }
 }
 
