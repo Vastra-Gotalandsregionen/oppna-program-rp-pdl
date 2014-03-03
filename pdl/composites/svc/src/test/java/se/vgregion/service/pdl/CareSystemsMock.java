@@ -9,6 +9,7 @@ import se.vgregion.events.context.Patient;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.systems.CareSystem;
 import se.vgregion.domain.systems.CareSystemViewer;
+import se.vgregion.portal.bfr.infobroker.domain.InfobrokerPersonIdType;
 import se.vgregion.service.search.CareSystems;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 public class CareSystemsMock implements CareSystems {
 
     @Override
-    public WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> byPatientId(PdlContext ctx, String patientId) {
+    public WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> byPatientId(PdlContext ctx, String patientId, InfobrokerPersonIdType patientIdType) {
         //noinspection unchecked
         ArrayList<WithInfoType<CareSystem>> systems = new ArrayList<WithInfoType<CareSystem>>();
         systems.add(    new WithInfoType<CareSystem>(

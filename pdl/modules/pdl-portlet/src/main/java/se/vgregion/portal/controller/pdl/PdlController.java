@@ -27,6 +27,7 @@ import se.vgregion.domain.systems.Visibility;
 import se.vgregion.events.context.PatientEvent;
 import se.vgregion.events.context.PdlTicket;
 import se.vgregion.events.context.UserContext;
+import se.vgregion.portal.bfr.infobroker.domain.InfobrokerPersonIdType;
 import se.vgregion.repo.log.LogRepo;
 import se.vgregion.service.search.AccessControl;
 import se.vgregion.service.search.CareAgreement;
@@ -37,6 +38,8 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "VIEW")
@@ -69,6 +72,11 @@ public class PdlController {
         return state;
     }
 
+    @ModelAttribute(value = "infobrokerPersonIdTypeList")
+    public List<InfobrokerPersonIdType> getInfobrokerPersonIdTypeList() {
+        return Arrays.asList(InfobrokerPersonIdType.values());
+    }
+
     @RenderMapping
     public String enterSearchPatient() {
         state.reset(); // Make sure state is reset when user navigates to the start page.
@@ -85,6 +93,7 @@ public class PdlController {
     @ActionMapping("searchPatient")
     public void searchPatientInformation(
             @RequestParam String patientId,
+            @RequestParam String patientIdType,
             @RequestParam String currentAssignment,
             @RequestParam boolean reset,
             ActionResponse response
@@ -100,10 +109,11 @@ public class PdlController {
 
             PdlContext ctx = state.getCtx().value;
 
-            LOGGER.trace("Searching for patient {} in care systems.", patientId);
+            LOGGER.trace("Searching for patient {} - {} in care systems.", patientId, patientIdType);
 
+            InfobrokerPersonIdType pidtype = InfobrokerPersonIdType.valueOf(patientIdType);
 
-            WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> patientCareSystems = systems.byPatientId(ctx, patientId);
+            WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> patientCareSystems = systems.byPatientId(ctx, patientId, pidtype);
 
             // Extract patient
             state.setPatient(patientCareSystems.value.patient);

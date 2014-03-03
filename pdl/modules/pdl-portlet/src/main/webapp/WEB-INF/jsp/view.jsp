@@ -39,7 +39,22 @@
                         <aui:input name="patientId" cssClass="element-field" type="text" label="" />
                     </aui:field-wrapper>
                     <span class="element-field-help">
-                        Patient-ID ska anges på formatet ÅÅÅÅMMDDXXXX.
+                        Patient-ID
+                    </span>
+                </div>
+                <div class="${elementWrapCssClass}">
+                    <aui:field-wrapper cssClass="element-field-wrap">
+                        <label for="<portlet:namespace />title">
+                            <span>Typ av Patient ID</span>
+                        </label>
+                        <aui:select name="patientIdType" cssClass="element-field" label="">
+                            <c:forEach items="${infobrokerPersonIdTypeList}" var="pidtype">
+                                <aui:option value="${pidtype}" label="${pidtype.description}" selected="${'PAT_PERS_NR' == pidtype.infoBrokerTypeCode}"/>
+                            </c:forEach>
+                        </aui:select>
+                    </aui:field-wrapper>
+                    <span class="element-field-help">
+                        Typ av Patient ID.
                     </span>
                 </div>
                 <div class="${elementWrapCssClass}">

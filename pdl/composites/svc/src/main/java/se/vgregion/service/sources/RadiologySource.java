@@ -63,16 +63,14 @@ public class RadiologySource implements CareSystems {
 
     @Override
     public WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> byPatientId(
-            PdlContext ctx, String patientId
+            PdlContext ctx,
+            String patientId,
+            InfobrokerPersonIdType patientIdType
     ) {
         Patient unknownPatient = new Patient(patientId);
 
         try {
-            // FIXME 2014-01-22 : Magnus Andersson > HACK to prepare for workshop.
-            InfobrokerPersonIdType pidType = (!patientId.equals("20090226D077")) ? InfobrokerPersonIdType.PAT_PERS_NR : InfobrokerPersonIdType.SU_PAT_RES_NR;
-
-            RequestList result = ibRequest(patientId, pidType);
-
+            RequestList result = ibRequest(patientId, patientIdType);
 
             WithOutcome<ArrayList<WithInfoType<CareSystem>>> outcome =
                     getMapRadiologyResult(result);

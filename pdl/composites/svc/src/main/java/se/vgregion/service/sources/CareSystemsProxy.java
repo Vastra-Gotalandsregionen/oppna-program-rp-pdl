@@ -9,6 +9,7 @@ import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.decorators.WithPatient;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.systems.CareSystem;
+import se.vgregion.portal.bfr.infobroker.domain.InfobrokerPersonIdType;
 import se.vgregion.service.search.CareSystems;
 
 import java.util.ArrayList;
@@ -21,8 +22,8 @@ public class CareSystemsProxy implements CareSystems {
     CareSystems radiologySource;
 
     @Override
-    public WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> byPatientId(PdlContext ctx, String patientId) {
-        return Deduplication.remapDeduplicate(radiologySource.byPatientId(ctx, patientId));
+    public WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> byPatientId(PdlContext ctx, String patientId, InfobrokerPersonIdType patientIdType) {
+        return Deduplication.remapDeduplicate(radiologySource.byPatientId(ctx, patientId, patientIdType));
     }
 
 
