@@ -32,6 +32,7 @@ public class PdlLogger {
         log.setPatientId(patient.getPatientId());
         log.setEmployeeDisplayName(ctx.employeeDisplayName);
         log.setEmployeeId(ctx.employeeHsaId);
+        log.setAssignmentDisplayName(ctx.currentAssignment.assignmentDisplayName);
         log.setAssignmentId(ctx.currentAssignment.assignmentHsaId);
         log.setCareProviderDisplayName(ctx.currentAssignment.careProviderDisplayName);
         log.setCareProviderId(ctx.currentAssignment.careProviderHsaId);
@@ -41,12 +42,9 @@ public class PdlLogger {
         log.setSearchSession(state.getSearchSession());
         log.setSystemId("Regionportalen - Sök Patient PDL");
 
-        boolean notAttest = action != UserAction.ATTEST_RELATION;
-        if(notAttest) {
-            Maybe<String> maybeText = viewedSystemsLog(state);
-            String text = maybeText.success ? maybeText.value : "";
-            log.setLogText(text);
-        }
+        Maybe<String> maybeText = viewedSystemsLog(state);
+        String text = maybeText.success ? maybeText.value : "";
+        log.setLogText(text);
 
         return log;
     }
@@ -57,39 +55,52 @@ public class PdlLogger {
             TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> careSystems =
                     state.getCsReport().aggregatedSystems.value;
 
-            for(InfoTypeState<InformationType> key : careSystems.keySet()) {
+            boolean sameProviders =
+                    !state.getCtx().value.currentAssignment.isOtherProviders();
 
-                viewedData.
-                        append("=== ").
-                        append(key.value.getDesc().toUpperCase()).
-                        append(" ===\n");
+            boolean otherProviders =
+                    state.getCtx().value.currentAssignment.isOtherProviders() &&
+                    state.getPdlReport().consent.value.hasConsent;
 
-                if(key.isSelected()) {
-                    for(SystemState<CareSystem> sys : careSystems.get(key)) {
-                        if(sys.selected) {
-                            viewedData.append("[X] ");
-                        } else if(sys.needConfirmation){
-                            viewedData.append("[B] ");
-                        } else {
-                            viewedData.append("[-] ");
+            if(state.getPdlReport().hasRelationship.value && (sameProviders || otherProviders)) {
+                for(InfoTypeState<InformationType> key : careSystems.keySet()) {
+                    viewedData.
+                            append("=== ").
+                            append(key.value.getDesc().toUpperCase()).
+                            append(" ===\n");
+
+                    if(key.isSelected()) {
+                        for(SystemState<CareSystem> sys : careSystems.get(key)) {
+                            if(!sys.blocked || key.viewBlocked) {
+                                if(sys.selected) {
+                                    viewedData.append("[X] ");
+                                } else if(sys.blocked && (sys.initiallyBlocked || sys.needConfirmation)){
+                                    viewedData.append("[S] ");
+                                } else {
+                                    viewedData.append("[ ] ");
+                                }
+
+                                viewedData.
+                                        append(sys.value.careProviderDisplayName).
+                                        append(" - ").
+                                        append(sys.value.careUnitDisplayName);
+
+                                if(!sys.blocked && sys.initiallyBlocked) {
+                                    viewedData.append(" (Passerad spärr)");
+                                } else if(sys.blocked && sys.initiallyBlocked) {
+                                    viewedData.append(" (Aktiv spärr)");
+                                }
+
+                                viewedData.append("\n");
+                            }
                         }
-
-                        viewedData.
-                                append(sys.value.careProviderDisplayName).
-                                append(" - ").
-                                append(sys.value.careUnitDisplayName);
-
-                        if(sys.blocked && sys.initiallyBlocked) {
-                            viewedData.append(" (Spärrad information)");
-                        } else if(!sys.blocked && sys.initiallyBlocked) {
-                            viewedData.append(" (Passerad spärr)");
+                        if(key.containsBlocked.get(state.getCurrentVisibility()) && !key.viewBlocked) {
+                            viewedData.append("(Visa vårdenheter med spärrad information)");
                         }
-                        viewedData.append("\n");
                     }
-                    viewedData.append("\n");
                 }
+                return Maybe.some(viewedData.toString());
             }
-            return Maybe.some(viewedData.toString());
         }
         return Maybe.none();
     }

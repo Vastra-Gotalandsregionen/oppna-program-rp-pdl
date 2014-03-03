@@ -28,11 +28,6 @@
             </c:when>
         </c:choose>
         <c:if test="${pdl:displayUnblockConfirmation(system, state)}">
-            <portlet:actionURL name="toggleInformation" var="toggleInformationEmergencyUrl">
-                <portlet:param name="id" value="${system.id}" />
-                <portlet:param name="confirmed" value="true" />
-                <portlet:param name="revokeEmergency" value="true" />
-            </portlet:actionURL>
             <portlet:actionURL name="cancelRevokeConfirmation" var="cancelRevokeConfirmationUrl">
                 <portlet:param name="id" value="${system.id}" />
             </portlet:actionURL>
@@ -40,6 +35,11 @@
                 <portlet:param name="id" value="${system.id}" />
                 <portlet:param name="confirmed" value="true" />
                 <portlet:param name="revokeEmergency" value="false" />
+            </portlet:actionURL>
+            <portlet:actionURL name="toggleInformation" var="toggleInformationEmergencyUrl">
+                <portlet:param name="id" value="${system.id}" />
+                <portlet:param name="confirmed" value="true" />
+                <portlet:param name="revokeEmergency" value="true" />
             </portlet:actionURL>
             <div class="unlock">
                 <b>Passera spärr</b> för ${system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}

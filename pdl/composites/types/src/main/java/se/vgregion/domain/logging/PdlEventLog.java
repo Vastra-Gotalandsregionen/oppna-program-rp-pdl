@@ -41,6 +41,9 @@ public class PdlEventLog extends ActorsLog {
     @Column(name = "system_id", updatable = false)
     private String systemId; // HsaId
 
+    @Column(name = "assignment_display_name", updatable = false)
+    private String assignmentDisplayName;
+
     @Column(name = "assignment_id", updatable = false)
     private String assignmentId; // HsaId
 
@@ -105,6 +108,14 @@ public class PdlEventLog extends ActorsLog {
         return assignmentId;
     }
 
+    public String getAssignmentDisplayName() {
+        return assignmentDisplayName;
+    }
+
+    public void setAssignmentDisplayName(String assignmentDisplayName) {
+        this.assignmentDisplayName = assignmentDisplayName;
+    }
+
     public void setAssignmentId(String assignmentId) {
         this.assignmentId = assignmentId;
     }
@@ -143,6 +154,7 @@ public class PdlEventLog extends ActorsLog {
                 ", careProviderId='" + careProviderId + '\'' +
                 ", careProviderDisplayName='" + careProviderDisplayName + '\'' +
                 ", systemId='" + systemId + '\'' +
+                ", assignmentDisplayName='" + assignmentDisplayName + '\'' +
                 ", assignmentId='" + assignmentId + '\'' +
                 ", userAction=" + userAction +
                 ", logText='" + logText + '\'' +

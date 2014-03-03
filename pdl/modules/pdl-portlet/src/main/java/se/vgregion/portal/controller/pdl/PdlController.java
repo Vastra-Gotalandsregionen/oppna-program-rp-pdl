@@ -354,9 +354,9 @@ public class PdlController {
             state.setCsReport(newCsReport);
 
             if (revokeEmergency && confirmed) {
-                PdlLogger.log(UserAction.PASS_BLOCKED, logRepo, state);
-            } else if (!revokeEmergency && confirmed) {
                 PdlLogger.log(UserAction.EMERGENCY_PASS_BLOCKED, logRepo, state);
+            } else if (!revokeEmergency && confirmed) {
+                PdlLogger.log(UserAction.PASS_BLOCKED, logRepo, state);
             }
 
             response.setRenderParameter("view", "pickInfoResource");
@@ -380,7 +380,7 @@ public class PdlController {
             SummaryReport sumReport = new SummaryReport(state.getCsReport().aggregatedSystems.value);
             state.setSumReport(sumReport);
 
-            PdlLogger.log(UserAction.SUMMARY_SYSTEMS, logRepo, state);
+            PdlLogger.log(UserAction.SUMMARY_CARE_SYSTEMS, logRepo, state);
 
             response.setRenderParameter("view", "showSummary");
 
