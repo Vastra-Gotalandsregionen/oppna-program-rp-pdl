@@ -109,11 +109,13 @@ public class PdlController {
 
             PdlContext ctx = state.getCtx().value;
 
-            LOGGER.trace("Searching for patient {} - {} in care systems.", patientId, patientIdType);
+            String patientIdTrimmed = trimmedPatientId(patientId);
+
+            LOGGER.trace("Searching for patient {} - {} in care systems.", patientIdTrimmed, patientIdType);
 
             InfobrokerPersonIdType pidtype = InfobrokerPersonIdType.valueOf(patientIdType);
 
-            WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> patientCareSystems = systems.byPatientId(ctx, patientId, pidtype);
+            WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> patientCareSystems = systems.byPatientId(ctx, patientIdTrimmed, pidtype);
 
             // Extract patient
             state.setPatient(patientCareSystems.value.patient);
@@ -156,6 +158,10 @@ public class PdlController {
             state.setCurrentProgress(PdlProgress.firstStep().nextStep());
             response.setRenderParameter("view", "pickInfoResource");
         }
+    }
+
+    private String trimmedPatientId(String patientId) {
+        return patientId.replace("-","").trim();
     }
 
     private PdlReport fetchPdlReport(PdlContext ctx, WithOutcome<ArrayList<WithInfoType<CareSystem>>> careSystems) {

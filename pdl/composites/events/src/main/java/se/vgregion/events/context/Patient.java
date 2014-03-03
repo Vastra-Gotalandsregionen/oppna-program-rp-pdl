@@ -75,7 +75,10 @@ public class Patient implements Serializable {
 
     // Format 193404231234 into 19340423-1234
     public String getPatientIdFormatted() {
-        return new StringBuilder(patientId).insert(patientId.length()-4, "-").toString();
+        return new StringBuilder(patientId).
+                insert(patientId.length()-4, "-").
+                insert(2,"-").
+                toString();
     }
 
     public Patient mapPatientInfo(String newName, Sex newSex) {
