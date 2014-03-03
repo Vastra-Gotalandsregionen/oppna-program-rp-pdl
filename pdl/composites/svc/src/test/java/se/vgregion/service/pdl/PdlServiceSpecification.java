@@ -21,6 +21,7 @@ import se.vgregion.domain.pdl.*;
 import se.vgregion.domain.systems.CareSystem;
 import se.vgregion.events.context.Patient;
 import se.vgregion.domain.pdl.PdlContext;
+import se.vgregion.portal.bfr.infobroker.domain.InfobrokerPersonIdType;
 import se.vgregion.service.MockContext;
 import se.vgregion.service.search.CareSystems;
 
@@ -69,7 +70,7 @@ public class PdlServiceSpecification {
         CareSystems systems = new CareSystemsMock();
 
         WithPatient<ArrayList<WithInfoType<CareSystem>>> patientCareSystems =
-                systems.byPatientId(ctx, "patientid").value;
+                systems.byPatientId(ctx, "patientid", InfobrokerPersonIdType.PAT_PERS_NR).value;
 
         patient = patientCareSystems.patient;
         careSystems = patientCareSystems.value;

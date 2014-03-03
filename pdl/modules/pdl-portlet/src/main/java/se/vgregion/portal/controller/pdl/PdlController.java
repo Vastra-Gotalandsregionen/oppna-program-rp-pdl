@@ -130,30 +130,16 @@ public class PdlController {
 
             if(careSystems.value.size() > 0) {
 
-                boolean availablePatient = AvailablePatient.check(ctx, careSystems.value);
+                PdlReport newReport = null;
 
-                PdlReport pdlReport = pdl.pdlReport(
-                        ctx,
-                        state.getPatient(),
-                        careSystems.value
-                );
-
-                PdlReport newReport = pdlReport;
-
-                // TGP equivalent, create patient relationship
-                if (availablePatient && pdlReport.hasPatientInformation && !pdlReport.hasRelationship.value) {
-                    newReport = pdl.patientRelationship(
-                        ctx,
-                        pdlReport,
-                        state.getPatient().patientId,
-                        "Automatiskt skapad patientrelation: Patient finns tillgänglig sedan innan hos egen vårdenhet.",
-                        1,
-                        RoundedTimeUnit.NEAREST_HALF_HOUR
-                    );
+                // Security Services only supports Social Security Number or Samordningsnummer.
+                if(pidtype == InfobrokerPersonIdType.PAT_PERS_NR || pidtype == InfobrokerPersonIdType.PAT_SAMO_NR) {
+                    newReport = fetchPdlReport(ctx, careSystems);
+                } else {
+                    newReport = PdlReport.defaultReport(careSystems);
                 }
 
                 CareSystemsReport csReport = new CareSystemsReport(ctx.assignments.get(currentAssignment), newReport);
-
                 state.setPdlReport(newReport);
                 state.setCsReport(csReport);
                 state.setCurrentAssignment(currentAssignment); // Must be here or null pointer exception since it calls calcVisibility
@@ -170,6 +156,31 @@ public class PdlController {
             state.setCurrentProgress(PdlProgress.firstStep().nextStep());
             response.setRenderParameter("view", "pickInfoResource");
         }
+    }
+
+    private PdlReport fetchPdlReport(PdlContext ctx, WithOutcome<ArrayList<WithInfoType<CareSystem>>> careSystems) {
+        boolean availablePatient = AvailablePatient.check(ctx, careSystems.value);
+
+        PdlReport pdlReport = pdl.pdlReport(
+                ctx,
+                state.getPatient(),
+                careSystems.value
+        );
+
+        PdlReport newReport = pdlReport;
+
+        // TGP equivalent, create patient relationship
+        if (availablePatient && pdlReport.hasPatientInformation && !pdlReport.hasRelationship.value) {
+            newReport = pdl.patientRelationship(
+                ctx,
+                pdlReport,
+                state.getPatient().patientId,
+                "Automatiskt skapad patientrelation: Patient finns tillgänglig sedan innan hos egen vårdenhet.",
+                1,
+                RoundedTimeUnit.NEAREST_HALF_HOUR
+            );
+        }
+        return newReport;
     }
 
     @ActionMapping("establishRelation")

@@ -72,10 +72,34 @@ public class PdlReport implements Serializable {
         return hasNonSuccessOutcome;
     }
 
-
     public boolean isHasPatientInformation() {
         return hasPatientInformation;
     }
+
+    public static PdlReport defaultReport(WithOutcome<ArrayList<WithInfoType<CareSystem>>> careSystems) {
+        ArrayList<WithInfoType<WithBlock<CareSystem>>> checkedSystems =
+                new ArrayList<WithInfoType<WithBlock<CareSystem>>>();
+
+        for(WithInfoType<CareSystem> system: careSystems.value) {
+            WithBlock<CareSystem> withBlock = WithBlock.unblocked(system.value);
+            WithInfoType<WithBlock<CareSystem>> withInfoType = system.mapValue(withBlock);
+            checkedSystems.add(withInfoType);
+        }
+        WithOutcome<ArrayList<WithInfoType<WithBlock<CareSystem>>>> checkedSystemsOutcome =
+                careSystems.mapValue(checkedSystems);
+
+
+        WithOutcome<CheckedConsent> checkedConsent = WithOutcome.success(new CheckedConsent(ConsentType.None,true));
+
+        WithOutcome<Boolean> hasRelationship = WithOutcome.success(true);
+
+        return new PdlReport(
+                checkedSystemsOutcome,
+                checkedConsent,
+                hasRelationship
+        );
+    }
+
 
     @Override
     public String toString() {
@@ -89,6 +113,6 @@ public class PdlReport implements Serializable {
     }
 
     public enum ConsentType {
-        Consent, Emergency
+        Consent, Emergency, None
     }
 }
