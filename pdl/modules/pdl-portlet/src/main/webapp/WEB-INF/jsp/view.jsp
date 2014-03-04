@@ -54,7 +54,7 @@
                         </aui:select>
                     </aui:field-wrapper>
                     <span class="element-field-help">
-                        Typ av Patient ID.
+                        Typ av Patient-ID.
                     </span>
                 </div>
                 <div class="${elementWrapCssClass}">
