@@ -275,11 +275,19 @@ public class RadiologySource implements CareSystems {
 
     private Maybe<String> extractHsaUnitId(Request req) {
         Maybe<String> hsaUnitId = Maybe.none();
-        for( ExternalId eid : req.getPlacer().getLocationData().getExternalIds().getExternalId()) {
-            if(eid.getType().getCode().equals(HSA_UNIT)) {
-                hsaUnitId = Maybe.some(eid.getValue());
+
+        boolean hasData = req.getPlacer() != null &&
+                req.getPlacer().getLocationData() != null &&
+                req.getPlacer().getLocationData().getExternalIds() != null;
+
+        if(hasData) {
+            for( ExternalId eid : req.getPlacer().getLocationData().getExternalIds().getExternalId()) {
+                if(eid.getType().getCode().equals(HSA_UNIT)) {
+                    hsaUnitId = Maybe.some(eid.getValue());
+                }
             }
         }
+
         return hsaUnitId;
     }
 
