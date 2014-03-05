@@ -24,6 +24,7 @@ import se.vgregion.domain.systems.CareSystem;
 import se.vgregion.domain.systems.CareSystemsReport;
 import se.vgregion.domain.systems.SummaryReport;
 import se.vgregion.domain.systems.Visibility;
+import se.vgregion.events.PersonIdUtil;
 import se.vgregion.events.context.PatientEvent;
 import se.vgregion.events.context.PdlTicket;
 import se.vgregion.events.context.UserContext;
@@ -115,45 +116,54 @@ public class PdlController {
 
             InfobrokerPersonIdType pidtype = InfobrokerPersonIdType.valueOf(patientIdType);
 
-            WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> patientCareSystems = systems.byPatientId(ctx, patientIdTrimmed, pidtype);
+            boolean isValid = (pidtype == InfobrokerPersonIdType.PAT_PERS_NR || pidtype == InfobrokerPersonIdType.PAT_SAMO_NR) ?
+                patientIdTrimmed.length() == 12 && PersonIdUtil.personIdIsValid(patientIdTrimmed) : true;
 
-            // Extract patient
-            state.setPatient(patientCareSystems.value.patient);
+            if(isValid) {
 
-            WithOutcome<ArrayList<WithInfoType<CareSystem>>> careSystems =
-                    patientCareSystems.mapValue(patientCareSystems.value.value);
+                WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> patientCareSystems = systems.byPatientId(ctx, patientIdTrimmed, pidtype);
 
-            state.setSourcesNonSuccessOutcome(
-                    !careSystems.success &&
-                    careSystems.outcome != Outcome.UNFULFILLED_FAILURE
-            );
+                // Extract patient
+                state.setPatient(patientCareSystems.value.patient);
 
-            state.setMissingResults(careSystems.outcome == Outcome.UNFULFILLED_FAILURE);
+                WithOutcome<ArrayList<WithInfoType<CareSystem>>> careSystems =
+                        patientCareSystems.mapValue(patientCareSystems.value.value);
 
-            if(careSystems.value.size() > 0) {
+                state.setSourcesNonSuccessOutcome(
+                        !careSystems.success &&
+                        careSystems.outcome != Outcome.UNFULFILLED_FAILURE
+                );
 
-                PdlReport newReport = null;
+                state.setMissingResults(careSystems.outcome == Outcome.UNFULFILLED_FAILURE);
 
-                // Security Services only supports Social Security Number or Samordningsnummer.
-                if(pidtype == InfobrokerPersonIdType.PAT_PERS_NR || pidtype == InfobrokerPersonIdType.PAT_SAMO_NR) {
-                    newReport = fetchPdlReport(ctx, careSystems);
-                } else {
-                    newReport = PdlReport.defaultReport(careSystems);
+                if(careSystems.value.size() > 0) {
+
+                    PdlReport newReport = null;
+
+                    // Security Services only supports Social Security Number or Samordningsnummer.
+                    if(pidtype == InfobrokerPersonIdType.PAT_PERS_NR || pidtype == InfobrokerPersonIdType.PAT_SAMO_NR) {
+                        newReport = fetchPdlReport(ctx, careSystems);
+                    } else {
+                        newReport = PdlReport.defaultReport(careSystems);
+                    }
+
+                    CareSystemsReport csReport = new CareSystemsReport(ctx.assignments.get(currentAssignment), newReport);
+                    state.setPdlReport(newReport);
+                    state.setCsReport(csReport);
+                    state.setCurrentAssignment(currentAssignment); // Must be here or null pointer exception since it calls calcVisibility
                 }
 
-                CareSystemsReport csReport = new CareSystemsReport(ctx.assignments.get(currentAssignment), newReport);
-                state.setPdlReport(newReport);
-                state.setCsReport(csReport);
-                state.setCurrentAssignment(currentAssignment); // Must be here or null pointer exception since it calls calcVisibility
+                PdlLogger.log(UserAction.SEARCH_PATIENT, logRepo, state);
+
+                // Reset patient in other views
+                QName qname = new QName("http://pdl.portalen.vgregion.se/events", "pctx.reset");
+                response.setEvent(qname, new PatientEvent(null, null));
+
+                response.setRenderParameter("view", "pickInfoResource");
+            } else {
+                state.setInvalid(true);
+                response.setRenderParameter("view", "view");
             }
-
-            PdlLogger.log(UserAction.SEARCH_PATIENT, logRepo, state);
-
-            // Reset patient in other views
-            QName qname = new QName("http://pdl.portalen.vgregion.se/events", "pctx.reset");
-            response.setEvent(qname, new PatientEvent(null, null));
-
-            response.setRenderParameter("view", "pickInfoResource");
         } else {
             state.setCurrentProgress(PdlProgress.firstStep().nextStep());
             response.setRenderParameter("view", "pickInfoResource");

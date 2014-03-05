@@ -38,6 +38,7 @@ public class PdlUserState implements Serializable {
     private String consentInformationTypeId = null;
     private boolean sourcesNonSuccessOutcome = false;
     private boolean missingResults = false;
+    private boolean invalid = false;
 
     private void calcVisibility() {
         shouldBeVisible.clear();
@@ -65,6 +66,7 @@ public class PdlUserState implements Serializable {
     public void reset() {
         patientInformationExist = false;
         sourcesNonSuccessOutcome = false;
+        invalid = false;
         missingResults = false;
         pdlReport = null;
         csReport = null;
@@ -176,6 +178,14 @@ public class PdlUserState implements Serializable {
         this.missingResults = missingResults;
     }
 
+    public boolean isInvalid() {
+        return invalid;
+    }
+
+    public void setInvalid(boolean invalid) {
+        this.invalid = invalid;
+    }
+
     @Override
     public String toString() {
         return "PdlUserState{" +
@@ -192,6 +202,7 @@ public class PdlUserState implements Serializable {
                 ", consentInformationTypeId='" + consentInformationTypeId + '\'' +
                 ", sourcesNonSuccessOutcome=" + sourcesNonSuccessOutcome +
                 ", missingResults=" + missingResults +
+                ", invalid=" + invalid +
                 '}';
     }
 }

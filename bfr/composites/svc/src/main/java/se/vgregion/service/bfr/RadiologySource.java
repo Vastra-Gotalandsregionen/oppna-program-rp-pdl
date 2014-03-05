@@ -56,8 +56,8 @@ public class RadiologySource {
         b.risId = req.getRisId();
         b.priority = req.getPriority();
         b.referringPhysicianName = getPhysicianName(req);
-        b.question = req.getQuestion();
-        b.anamnesis = req.getAnamnesis();
+        b.question = replaceNewlineWithHtmlBreak(req.getQuestion());
+        b.anamnesis = replaceNewlineWithHtmlBreak(req.getAnamnesis());
         b.studies = getStudies(req.getExamination());
 
         return b.buildReferral();
@@ -78,13 +78,13 @@ public class RadiologySource {
             }
 
             Date date = getDateFromGregorianCalendar(ex.getDate());
-            int noOfImages = 0;
+            int noOfImages = sumStudyImages(ex);
 
             List<StudyReport> studyReports = getStudyReports(ex);
             List<String> dicomSeriesUiids = getDicomSeriesUiid(ex);
 
             // FIXME 2014-02-25 : Magnus Andersson > Mock data!
-            dicomSeriesUiids.add("1.2.752.30.104.1144953.9231176.20130413113626");
+            //dicomSeriesUiids.add("1.2.752.30.104.1144953.9231176.20130413113626");
 
             Study stu = new Study(
                 risId,
@@ -106,9 +106,6 @@ public class RadiologySource {
         List<String> dicomSeriesStudyUids = new ArrayList<String>();
         for(DicomStudy dstudy : ex.getDicomStudy()) {
             dicomSeriesStudyUids.add(dstudy.getStudyUid());
-            // for(DicomSeries series: dstudy.getDicomSeries()) {
-            //     dicomSeriesStudyUids.add(series.getSeriesUid());
-            // }
         }
         return dicomSeriesStudyUids;
     }
@@ -116,20 +113,22 @@ public class RadiologySource {
     private List<StudyReport> getStudyReports(Examination ex) {
         List<StudyReport> studyReports = new ArrayList<StudyReport>();
 
-        for(ReportData rep : ex.getReports().getReport()) {
-            String status = rep.getStatus().getName();
-            Date d = getDateFromGregorianCalendar(rep.getDate());
+        if(ex.getReports() != null) {
+            for(ReportData rep : ex.getReports().getReport()) {
+                String status = rep.getStatus().getName();
+                Date d = getDateFromGregorianCalendar(rep.getDate());
 
-            StringBuilder sb = new StringBuilder();
-            if (rep.getSigner() != null && rep.getSigner().getUserData() != null) {
-                rep.getSigner().getUserData().getFirstName();
-                sb.append(" ");
-                sb.append(rep.getSigner().getUserData().getLastName());
+                StringBuilder sb = new StringBuilder();
+                if (rep.getSigner() != null && rep.getSigner().getUserData() != null) {
+                    rep.getSigner().getUserData().getFirstName();
+                    sb.append(" ");
+                    sb.append(rep.getSigner().getUserData().getLastName());
+                }
+                String signer = sb.toString().trim();
+                String text = replaceNewlineWithHtmlBreak(rep.getText());
+
+                studyReports.add(new StudyReport(status,d,signer,text));
             }
-            String signer = sb.toString().trim();
-            String text = replaceNewlineWithHtmlBreak(rep.getText());
-
-            studyReports.add(new StudyReport(status,d,signer,text));
         }
         return studyReports;
     }
@@ -147,16 +146,21 @@ public class RadiologySource {
         return i;
     }
 
+    private int sumStudyImages(Examination ex) {
+        int i = 0;
+        for( DicomStudy study : ex.getDicomStudy()) {
+            for(DicomSeries series : study.getDicomSeries()) {
+                i += series.getNumberOfImages().intValue();
+            }
+        }
+        return i;
+    }
 
     private int sumNumImages(List<Examination> examinations) {
         int i = 0;
         if( examinations != null) {
             for(Examination ex : examinations) {
-                for( DicomStudy study : ex.getDicomStudy()) {
-                    for(DicomSeries series : study.getDicomSeries()) {
-                        i += series.getNumberOfImages().intValue();
-                    }
-                }
+                i += sumStudyImages(ex);
             }
         }
         return i;
@@ -176,7 +180,7 @@ public class RadiologySource {
         List<String> statuses = new ArrayList<String>();
         if(req.getReports() != null) {
             for(ReportData rep : req.getReports().getReport()) {
-                statuses.add(req.getStatus().getName());
+                statuses.add(rep.getStatus().getName());
             }
         }
         return statuses;

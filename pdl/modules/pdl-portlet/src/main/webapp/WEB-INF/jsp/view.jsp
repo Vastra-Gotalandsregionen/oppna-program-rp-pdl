@@ -11,6 +11,38 @@
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/css/pdl.css" />
+<!%--
+<liferay-util:html-bottom>
+    <script type="text/javascript">
+           AUI().use(
+              'aui-base',
+              'aui-form-validator',
+              function(A) {
+                var rules = {
+                     <portlet:namespace/>userName: {
+                     required: true,
+                     alphanum:true
+                 },
+               };
+               var fieldStrings = {
+                 <portlet:namespace/>userName: {
+                   required: 'Skriv in patientid i detta fältet.'
+                 },
+               };
+               new A.FormValidator(
+                 {
+                    boundingBox: '#<portlet:namespace/>fm2',
+                    fieldStrings: fieldStrings,
+                    rules: rules,
+                    showAllMessages:true
+                 }
+               );
+             }
+           );
+    </script>
+</liferay-util:html-bottom>
+--%>
+
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
 
@@ -23,20 +55,18 @@
 
         <%@ include file="search/pdlInfoCallout.jsp" %>
 
-        <h3 class="legend">S&ouml;k patientinformation</h3>
-
-        <aui:form action="${searchPatientUrl}" name="searchPatientForm" cssClass="pdl-form" method="post">
-            <aui:fieldset label="">
+        <aui:form id="pdlSearchForm" action="${searchPatientUrl}" name="searchPatientForm" cssClass="pdl-form" method="post">
+            <aui:fieldset>
                     <c:set var="elementWrapCssClass" scope="page" value="element-wrap" />
                     <c:if test="${status.error}">
                         <c:set var="elementWrapCssClass" scope="page" value="element-wrap element-has-errors" />
                     </c:if>
                 <div class="${elementWrapCssClass}">
                     <aui:field-wrapper cssClass="element-field-wrap">
-                        <label for="<portlet:namespace />title">
+                        <label for="<portlet:namespace />patientId">
                             <span>Patient-ID</span>
                         </label>
-                        <aui:input name="patientId" cssClass="element-field" type="text" label="" />
+                        <aui:input name="patientId" autocomplete="off" cssClass="element-field" type="text" label=""/>
                     </aui:field-wrapper>
                     <span class="element-field-help">
                         Patient-ID
@@ -44,7 +74,7 @@
                 </div>
                 <div class="${elementWrapCssClass}">
                     <aui:field-wrapper cssClass="element-field-wrap">
-                        <label for="<portlet:namespace />title">
+                        <label for="<portlet:namespace />patientIdType">
                             <span>Typ av Patient ID</span>
                         </label>
                         <aui:select name="patientIdType" cssClass="element-field" label="">
@@ -59,7 +89,7 @@
                 </div>
                 <div class="${elementWrapCssClass}">
                     <aui:field-wrapper cssClass="element-field-wrap">
-                        <label for="<portlet:namespace />title">
+                        <label for="<portlet:namespace />currentAssignment">
                             <span>Aktuellt uppdrag</span>
                         </label>
                         <aui:select name="currentAssignment" cssClass="element-field" label="">

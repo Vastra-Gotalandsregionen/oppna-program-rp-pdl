@@ -70,8 +70,8 @@ public class BfrController {
 
             state.setCurrentReferral(
                     zfpUrls.addZfpUrls(
-                            referralDetails,
-                            state.getTicket().value.userContext.employeeHsaId
+                        referralDetails,
+                        state.getTicket().value.userContext.employeeHsaId
                     )
             );
 
