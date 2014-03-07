@@ -103,7 +103,7 @@ public class PdlController {
             // Login has timed out and the user had to login, thus loosing the parameter for search.
             state.setCurrentProgress(PdlProgress.firstStep());
             response.setRenderParameter("view", "view");
-        } else if(reset){ // Support for going back without redoing the search
+        } else if(reset) { // Support for going back without redoing the search
             state.reset(); // Make sure reset is called here when user uses back button and submits again.
             PdlProgress now = state.getCurrentProgress();
             state.setCurrentProgress(now.nextStep());
@@ -249,7 +249,7 @@ public class PdlController {
                 state.getPatient().patientId
             );
 
-            // FIXME 2013-10-21 : Magnus Andersson > Should choose between consent or emergency. Also add possiblility to be represented by someone?
+            // FIXME 2013-10-21 : Magnus Andersson > Add possiblility to be represented by someone?
             state.setPdlReport(
                 pdl.patientConsent(
                     ctx,

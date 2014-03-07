@@ -17,6 +17,7 @@
                 <c:when test="${state.currentProgress == 'CHOOSE' || state.currentProgress == 'SYSTEMS'}">
                     <portlet:actionURL name="searchPatient" var="searchPatientUrl">
                         <portlet:param name="patientId" value="${state.patient.patientId}" />
+                        <portlet:param name="patientIdType" value="" />
                         <portlet:param name="currentAssignment" value="${state.ctx.value.currentAssignment}" />
                         <portlet:param name="reset" value="false" />
                     </portlet:actionURL>

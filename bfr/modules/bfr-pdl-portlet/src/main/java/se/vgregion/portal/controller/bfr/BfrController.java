@@ -87,6 +87,7 @@ public class BfrController {
         LOGGER.debug("Got Patient event change. {}", patient);
 
         state.setTicket(patient.ticket);
+        state.setCurrentReferral(null);
     }
 
     @EventMapping("{http://pdl.portalen.vgregion.se/events}pctx.change")

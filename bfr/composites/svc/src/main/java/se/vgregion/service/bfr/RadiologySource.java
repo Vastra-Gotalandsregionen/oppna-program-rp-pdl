@@ -83,9 +83,6 @@ public class RadiologySource {
             List<StudyReport> studyReports = getStudyReports(ex);
             List<String> dicomSeriesUiids = getDicomSeriesUiid(ex);
 
-            // FIXME 2014-02-25 : Magnus Andersson > Mock data!
-            //dicomSeriesUiids.add("1.2.752.30.104.1144953.9231176.20130413113626");
-
             Study stu = new Study(
                 risId,
                 code,
