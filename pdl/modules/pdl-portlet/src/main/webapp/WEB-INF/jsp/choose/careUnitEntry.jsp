@@ -42,7 +42,8 @@
                 <portlet:param name="revokeEmergency" value="true" />
             </portlet:actionURL>
             <div class="unlock">
-                <b>Passera spärr</b> för ${system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}
+                <p><b>Passera spärr</b> för ${system.value.careProviderDisplayName} - ${system.value.careUnitDisplayName}</p>
+                <a id="link" href="http://www.vgregion.se/sv/Vastra-Gotalandsregionen/startsida/Vard-och-halsa/Sa-styrs-varden/Halso--och-sjukvardsavdelningen/Patientdatalagen/" target="_blank">Visa information om Patientdatalagen</a><i class="icon link_external"></i>
                 <div class="clearfix">
                     <a href="${cancelRevokeConfirmationUrl}" class="link-button-mod button-simple">Avbryt</a>
                     <a href="${toggleInformationConsentUrl}" class="link-button-mod button-simple">Passera spärr med medgivande</a>

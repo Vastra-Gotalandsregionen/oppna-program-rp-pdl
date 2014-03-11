@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 import org.w3._2005._08.addressing.AttributedURIType;
 import riv.ehr.ehrexchange.patienthistory._1.rivtabp20.PatientHistoryResponderInterface;
 import se.ecare.ib.exportmessage.ExternalId;
-import se.riv.hsa.hsaws.v3.HsaWsFault;
-import se.riv.hsa.hsaws.v3.HsaWsResponderInterface;
 import se.vgregion.domain.decorators.Maybe;
 import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
@@ -26,6 +24,8 @@ import se.vgregion.events.context.sources.radiology.RadiologySourceRefs;
 import se.vgregion.portal.bfr.infobroker.domain.InfobrokerPersonIdType;
 import se.vgregion.service.search.CareSystems;
 import se.vgregion.service.search.HsaUnitMapper;
+import urn.riv.hsa.HsaWs.v3.HsaWsFault;
+import urn.riv.hsa.HsaWs.v3.HsaWsResponderInterface;
 
 import javax.annotation.Resource;
 import javax.xml.datatype.XMLGregorianCalendar;

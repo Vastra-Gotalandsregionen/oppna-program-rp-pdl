@@ -142,6 +142,12 @@
     background-image: url('../images/icon_checkbox_checked.png');
     margin-right: 7px;
 }
+.pdl i.link_external {
+    background-image: url('../images/icon_link_external.png');
+    width: 13px;
+    height: 13px;
+    margin-left: 6px;
+}
 
 .pdl i.arrow_right_blue {
     background-image: url('../images/icon_arrow_right_blue.png');
@@ -222,6 +228,10 @@
    background-color: #f2dede;
    border-color:#ebccd1;
    color: #bd5856;
+}
+
+.pdl .unlock a#link {
+    text-decoration: underline;
 }
 
 .pdl .unlock a {

@@ -121,7 +121,8 @@ public class PdlController {
 
             if(isValid) {
 
-                WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> patientCareSystems = systems.byPatientId(ctx, patientIdTrimmed, pidtype);
+                WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> patientCareSystems =
+                        systems.byPatientId(ctx, patientIdTrimmed, pidtype);
 
                 // Extract patient
                 state.setPatient(patientCareSystems.value.patient);
@@ -171,7 +172,10 @@ public class PdlController {
     }
 
     private String trimmedPatientId(String patientId) {
-        return patientId.replace("-","").trim();
+        return patientId.
+                replace("-", "").
+                replace(" ", "").
+                trim();
     }
 
     private PdlReport fetchPdlReport(PdlContext ctx, WithOutcome<ArrayList<WithInfoType<CareSystem>>> careSystems) {
@@ -436,6 +440,11 @@ public class PdlController {
             );
             response.setEvent(qname, patientEvent);
         }
+    }
+
+    @RenderMapping(params = "edit=edit")
+    public String admin(final ModelMap model) {
+        return "admin";
     }
 
     @RenderMapping(params = "view=view")

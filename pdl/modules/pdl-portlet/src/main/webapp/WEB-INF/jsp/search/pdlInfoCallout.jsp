@@ -2,5 +2,5 @@
 
 <div class="clearfix callout callout-info">
     <p class="label">Alla dina val loggförs</p>
-    <p>Dessa val kommer att i efterhand <a href="http://www.vgregion.se/sv/Vastra-Gotalandsregionen/startsida/Vard-och-halsa/Sa-styrs-varden/Halso--och-sjukvardsavdelningen/Patientdatalagen/">granskas enligt patientdatalagen.</a>	</p>
+    <p>Dessa val kommer att i efterhand <a href="http://www.vgregion.se/sv/Vastra-Gotalandsregionen/startsida/Vard-och-halsa/Sa-styrs-varden/Halso--och-sjukvardsavdelningen/Patientdatalagen/" target="_blank">granskas enligt Patientdatalagen.</a><i class="icon link_external"></i></p>
 </div>

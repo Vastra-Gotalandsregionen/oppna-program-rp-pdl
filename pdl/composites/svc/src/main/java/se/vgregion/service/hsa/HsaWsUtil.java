@@ -1,7 +1,7 @@
 package se.vgregion.service.hsa;
 
 import org.w3c.addressing.v1.AttributedURIType;
-import se.riv.hsa.hsawsresponder.v3.LookupHsaObjectType;
+import urn.riv.hsa.HsaWsResponder.v3.LookupHsaObjectType;
 
 public class HsaWsUtil {
 

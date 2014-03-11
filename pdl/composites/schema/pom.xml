@@ -60,9 +60,9 @@ Generation time : 2013-10-08 14:16:23 CEST
       <version>${ehr.log.version}</version>
     </dependency>
     <dependency>
-      <groupId>se.vgregion.icc.sd.hsaws2</groupId>
-      <artifactId>hsa-ws2-schemas</artifactId>
-      <version>1.0.0</version>
+      <groupId>se.rivta.tools</groupId>
+      <artifactId>hsa-orgmaster</artifactId>
+      <version>3.19</version>
     </dependency>
     <dependency>
       <groupId>se.vgregion.bfr</groupId>
