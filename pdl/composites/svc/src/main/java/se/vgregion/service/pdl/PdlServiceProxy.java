@@ -147,7 +147,8 @@ public class PdlServiceProxy implements PdlService {
             int duration,
             RoundedTimeUnit roundedTimeUnit
     ) {
-        return report; // FIXME  2013-11-15 : Magnus Andersson > Report not updated.
+        // We're intentionally passing blocks in the app, not in security services here.
+        return report;
     }
 
 

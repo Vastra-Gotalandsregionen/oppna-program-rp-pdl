@@ -3,6 +3,7 @@ package se.vgregion.service.hsa;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import se.vgregion.domain.decorators.Maybe;
@@ -77,7 +78,10 @@ public class HsaUnitMappingCache implements HsaUnitMapper {
     @Autowired
     private CareAgreement careAgreements;
 
-    public static void doCacheUpdate(Set<String> careProviders, HsaWsResponderInterface hsaOrgmaster) {
+    @Value("${pdl.orgMasterServicesHsaId}")
+    private String orgmasterHsaId;
+
+    public static void doCacheUpdate(Set<String> careProviders, HsaWsResponderInterface hsaOrgmaster, String logicalAddressHsaId) {
 
         ConcurrentHashMap<CareProviderUnitHsaId, CareProviderUnit> replaceCareProviderUnits =
                 new ConcurrentHashMap<CareProviderUnitHsaId, CareProviderUnit>();
@@ -87,9 +91,8 @@ public class HsaUnitMappingCache implements HsaUnitMapper {
 
                 LOGGER.debug("Lookup for care provider id {}.", careProvider);
 
-                // FIXME 2014-02-03 : Magnus Andersson > Hard coded value, use config
                 GetCareUnitListResponseType careUnitList = hsaOrgmaster.getCareUnitList(
-                        HsaWsUtil.getAttribute("SE165565594230-1000"),
+                        HsaWsUtil.getAttribute(logicalAddressHsaId),
                         HsaWsUtil.getAttribute(java.util.UUID.randomUUID().toString()),
                         HsaWsUtil.getLookupByHsaId(careProvider)
                 );
@@ -124,19 +127,18 @@ public class HsaUnitMappingCache implements HsaUnitMapper {
     public void updateCache() {
         LOGGER.debug("Attempting to update cache for CareUnit lists");
         Set<String> careProviders = careAgreements.careProvidersWithAgreement();
-        doCacheUpdate(careProviders, hsaOrgmaster);
+        doCacheUpdate(careProviders, hsaOrgmaster, orgmasterHsaId);
     }
 
 
     @Override
     public WithOutcome<Maybe<CareProviderUnit>> toCareProviderUnit(String hsaUnitId) {
-        // FIXME 2014-02-03 : Magnus Andersson > Hard coded value, use config
         Maybe<CareProviderUnit> emptyResult = Maybe.none();
         WithOutcome<Maybe<CareProviderUnit>> outcome = WithOutcome.success(emptyResult);
 
         try {
             GetCareUnitResponseType careUnitResponse = hsaOrgmaster.getCareUnit(
-                    HsaWsUtil.getAttribute("SE165565594230-1000"),
+                    HsaWsUtil.getAttribute(orgmasterHsaId),
                     HsaWsUtil.getAttribute(null),
                     HsaWsUtil.getLookupByHsaId(hsaUnitId)
             );

@@ -4,6 +4,7 @@ import org.apache.cxf.common.i18n.UncheckedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.w3c.addressing.v1.AttributedURIType;
 import se.vgregion.domain.assignment.Access;
@@ -37,10 +38,12 @@ public class HsaAccessControl implements AccessControl {
     @Autowired
     private CareAgreement agreementService;
 
+    @Value("${pdl.orgMasterServicesHsaId}")
+    private String orgmasterHsaId;
+
     @Override
     public WithOutcome<PdlContext> getContextByEmployeeId(String hsaId) {
-        // FIXME 2014-02-03 : Magnus Andersson > Hard coded value, use config
-        AttributedURIType to = HsaWsUtil.getAttribute("SE165565594230-1000");
+        AttributedURIType to = HsaWsUtil.getAttribute(orgmasterHsaId);
 
         GetMiuForPersonType miuRequest = new GetMiuForPersonType();
         miuRequest.setHsaIdentity(hsaId);
