@@ -29,7 +29,7 @@
         <ul class="section-navigation-list clearfix">
             <c:forEach items="${state.sumReport.careSystems}" var="systemEntry">
                 <li>
-                    <a href="#">
+                    <a href="${systemEntry.key.childPage}">
                         <span class="inner">
                             <span class="title">${systemEntry.key.displayName}</span>
                             <span class="description">

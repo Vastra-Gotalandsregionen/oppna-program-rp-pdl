@@ -131,5 +131,18 @@
 .bfr table th, .bfr table td {
     padding: 1em;
 }
-/*
-*/
+
+.bfr i.icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    vertical-align: text-top;
+}
+
+.bfr i.link_external {
+    background-image: url('../images/icon_link_external.png');
+    width: 13px;
+    height: 13px;
+    margin-left: 6px;
+}

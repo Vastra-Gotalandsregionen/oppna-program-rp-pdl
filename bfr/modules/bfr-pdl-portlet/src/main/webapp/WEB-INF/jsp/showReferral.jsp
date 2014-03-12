@@ -26,7 +26,7 @@
                     <span class="key">Bilder (${study.noOfImages})</span>
                     <span class="value">
                         <c:forEach var="url" items="${study.studyUrls}" varStatus="urlStatus">
-                            <a href="${url}" target="_blank">Bildserie ${urlStatus.index+1}</a>&nbsp;
+                            <a href="${url}" target="_blank">Bildserie ${urlStatus.index+1}</a><i class="icon link_external"></i><c:if test="${!urlStatus.last}">, </c:if>
                         </c:forEach>
                     </span>
                 </li>
