@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
-import se.vgregion.domain.decorators.Outcome;
-import se.vgregion.domain.decorators.WithInfoType;
-import se.vgregion.domain.decorators.WithOutcome;
-import se.vgregion.domain.decorators.WithPatient;
+import se.vgregion.domain.decorators.*;
 import se.vgregion.domain.logging.UserAction;
+import se.vgregion.domain.pdl.InformationType;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.pdl.PdlReport;
 import se.vgregion.domain.pdl.RoundedTimeUnit;
@@ -322,6 +320,33 @@ public class PdlController {
                 state.setConsentInformationTypeId(id); // Save the id until after consent has been established
                 response.setRenderParameter("view", "establishConsent");
             }
+        }
+    }
+
+    @ActionMapping("toggleAllCheckboxes")
+    public void toggleAllInfoResource(
+            @RequestParam String id,
+            ActionResponse response
+    ) {
+        if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
+            response.setRenderParameter("view", "view");
+        } else {
+
+            for(InfoTypeState<InformationType> key: state.getCsReport().aggregatedSystems.value.keySet()) {
+                if(key.id.equals(id)) {
+                    for(SystemState<CareSystem> system : state.getCsReport().aggregatedSystems.value.get(key)) {
+                        boolean selectable =
+                                !system.isSelected() &&
+                                !system.blocked &&
+                                state.getShouldBeVisible().get(system.visibility.toString());
+
+                        if(selectable) {
+                            toggleInformation(system.id, false, false, response);
+                        }
+                    }
+                }
+            }
+            response.setRenderParameter("view", "pickInfoResource");
         }
     }
 

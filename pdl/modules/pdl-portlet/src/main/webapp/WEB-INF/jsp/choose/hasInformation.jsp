@@ -2,7 +2,14 @@
 
 <ul class="infotypes">
     <c:forEach items="${state.csReport.aggregatedSystems.value}" var="infoSelection">
-        <li class="active">${infoSelection.key.value.desc}</li>
+        <li class="active">${infoSelection.key.value.desc}
+            <c:if test="${pdl:expandInfoType(infoSelection.key, state)}">
+                <portlet:actionURL name="toggleAllCheckboxes" var="toggleAllCheckboxesUrl">
+                    <portlet:param name="id" value="${infoSelection.key.id}" />
+                </portlet:actionURL>
+                <a href="${toggleAllCheckboxesUrl}"><i class="icon check_all"></i></a>
+            </c:if>
+        </li>
         <portlet:actionURL name="selectInfoResource" var="selectInfoResourceUrl">
             <portlet:param name="id" value="${infoSelection.key.id}" />
         </portlet:actionURL>

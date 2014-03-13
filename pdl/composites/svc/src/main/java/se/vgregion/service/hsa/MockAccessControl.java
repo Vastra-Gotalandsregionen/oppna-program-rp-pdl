@@ -88,8 +88,8 @@ public class MockAccessControl implements AccessControl {
                 new Assignment(
                         VE,
                         "Vård och behandling",
-                        careProviderHsaId,
-                        careUnitHsaId,
+                        "SE2321000131-E000000000001",
+                        "SE2321000131-E000000001052",
                         "careProviderDisplayNameSame",
                         "careUnitDisplayNameSame",
                         sameProviders

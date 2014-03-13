@@ -7,7 +7,7 @@
         <li><span class="key">Remiss-ID</span><span class="value">${state.currentReferral.value.risId}</span></li>
         <li class="odd"><span class="key">Prioritet</span><span class="value">${state.currentReferral.value.priority}</span></li>
         <li><span class="key">Antal bilder</span><span class="value">${state.currentReferral.value.imageCount}</span></li>
-        <li class="odd"><span class="key">Placeringsdatum</span><span class="value">${state.currentReferral.value.placingDisplayDate}</span></li>
+        <li class="odd"><span class="key">Remissdatum</span><span class="value">${state.currentReferral.value.placingDisplayDate}</span></li>
         <li><span class="key">Utförande enhet</span><span class="value">${state.currentReferral.value.fillerLocation}</span></li>
         <li class="odd"><span class="key">Remitterande enhet</span><span class="value">${state.currentReferral.value.placerLocation}</span></li>
         <li><span class="key">Remitterande läkare</span><span class="value">${state.currentReferral.value.referringPhysicianName}</span></li>
