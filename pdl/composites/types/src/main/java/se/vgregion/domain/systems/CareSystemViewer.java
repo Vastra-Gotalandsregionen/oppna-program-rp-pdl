@@ -1,9 +1,9 @@
 package se.vgregion.domain.systems;
 
 public enum CareSystemViewer {
-    BFR("Bild- och funktionsregistret", "bfr-pdl"),
-    RRE("Nya Remissregistret", "ny-remiss"),
-    OTH("Annat sjukvårdsystem", "an-sjuk");
+    BFR("Bild- och funktionsregistret", "pub-bfr-pdl"),
+    RRE("Nya Remissregistret", "pub-ny-remiss"),
+    OTH("Annat sjukvårdsystem", "pub-an-sjuk");
 
     public final String displayName;
     public final String childPage;

@@ -176,12 +176,12 @@
 
 .pdl i.check_all {
     background-image: url('../images/icon_check_all.png');
-    margin-left: 7px;
+    margin-right: 2px;
 }
 
 .pdl i.uncheck_all {
     background-image: url('../images/icon_uncheck_all.png');
-    margin-left: 7px;
+    margin-right: 2px;
 }
 
 .pdl .showCareUnits {
