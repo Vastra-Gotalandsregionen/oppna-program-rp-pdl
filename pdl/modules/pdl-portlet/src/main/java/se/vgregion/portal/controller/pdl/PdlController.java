@@ -142,8 +142,8 @@ public class PdlController {
                     PdlReport newReport = null;
 
                     PortletPreferences prefs = request.getPreferences();
-                    int timeUnits = Integer.parseInt(prefs.getValue("establishRelationTimeUnits", "1"));
-                    RoundedTimeUnit duration = RoundedTimeUnit.valueOf(prefs.getValue("establishRelationDuration", RoundedTimeUnit.NEAREST_DAY.toString()));
+                    int timeUnits = Integer.parseInt(prefs.getValue("establishRelationDuration", "1"));
+                    RoundedTimeUnit duration = RoundedTimeUnit.valueOf(prefs.getValue("establishRelationTimeUnits", RoundedTimeUnit.NEAREST_DAY.toString()));
 
                     // Security Services only supports Social Security Number or Samordningsnummer.
                     if(pidtype == InfobrokerPersonIdType.PAT_PERS_NR || pidtype == InfobrokerPersonIdType.PAT_SAMO_NR) {
@@ -229,8 +229,8 @@ public class PdlController {
             );
 
             PortletPreferences prefs = request.getPreferences();
-            int timeUnits = Integer.parseInt(prefs.getValue("establishRelationTimeUnits", "1"));
-            RoundedTimeUnit duration = RoundedTimeUnit.valueOf(prefs.getValue("establishRelationDuration", RoundedTimeUnit.NEAREST_DAY.toString()));
+            int timeUnits = Integer.parseInt(prefs.getValue("establishRelationDuration", "1"));
+            RoundedTimeUnit duration = RoundedTimeUnit.valueOf(prefs.getValue("establishRelationTimeUnits", RoundedTimeUnit.NEAREST_DAY.toString()));
 
             PdlReport newReport = pdl.patientRelationship(
                 ctx,
@@ -268,8 +268,8 @@ public class PdlController {
             );
 
             PortletPreferences prefs = request.getPreferences();
-            int timeUnits = Integer.parseInt(prefs.getValue("establishConsentTimeUnits", "7"));
-            RoundedTimeUnit duration = RoundedTimeUnit.valueOf(prefs.getValue("establishConsentDuration", RoundedTimeUnit.NEAREST_DAY.toString()));
+            int timeUnits = Integer.parseInt(prefs.getValue("establishConsentDuration", "7"));
+            RoundedTimeUnit duration = RoundedTimeUnit.valueOf(prefs.getValue("establishConsentTimeUnits", RoundedTimeUnit.NEAREST_DAY.toString()));
 
 
             // FIXME 2013-10-21 : Magnus Andersson > Add possiblility to be represented by someone?
