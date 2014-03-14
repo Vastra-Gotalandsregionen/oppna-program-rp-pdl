@@ -1,8 +1,19 @@
 package se.vgregion.domain.pdl;
 
 public enum RoundedTimeUnit {
-    NEAREST_MONTH,
-    NEAREST_DAY,
-    NEAREST_HOUR,
-    NEAREST_HALF_HOUR
+    NEAREST_MONTH("Månader"),
+    NEAREST_DAY("Dagar"),
+    NEAREST_HOUR("Timmar"),
+    NEAREST_HALF_HOUR("Halvtimmar");
+
+    public final String description;
+
+    private RoundedTimeUnit(String description) {
+
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }

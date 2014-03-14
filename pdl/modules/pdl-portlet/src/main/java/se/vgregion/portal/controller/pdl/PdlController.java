@@ -35,6 +35,7 @@ import se.vgregion.service.search.PdlService;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+import javax.portlet.PortletPreferences;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -95,6 +96,7 @@ public class PdlController {
             @RequestParam String patientIdType,
             @RequestParam String currentAssignment,
             @RequestParam boolean reset,
+            ActionRequest request,
             ActionResponse response
     ) {
         if(patientId == null) {
@@ -139,9 +141,13 @@ public class PdlController {
 
                     PdlReport newReport = null;
 
+                    PortletPreferences prefs = request.getPreferences();
+                    int timeUnits = Integer.parseInt(prefs.getValue("establishRelationTimeUnits", "1"));
+                    RoundedTimeUnit duration = RoundedTimeUnit.valueOf(prefs.getValue("establishRelationDuration", RoundedTimeUnit.NEAREST_DAY.toString()));
+
                     // Security Services only supports Social Security Number or Samordningsnummer.
                     if(pidtype == InfobrokerPersonIdType.PAT_PERS_NR || pidtype == InfobrokerPersonIdType.PAT_SAMO_NR) {
-                        newReport = fetchPdlReport(ctx, careSystems);
+                        newReport = fetchPdlReport(ctx, careSystems, timeUnits, duration);
                     } else {
                         newReport = PdlReport.defaultReport(careSystems);
                     }
@@ -176,7 +182,11 @@ public class PdlController {
                 trim();
     }
 
-    private PdlReport fetchPdlReport(PdlContext ctx, WithOutcome<ArrayList<WithInfoType<CareSystem>>> careSystems) {
+    private PdlReport fetchPdlReport(
+            PdlContext ctx,
+            WithOutcome<ArrayList<WithInfoType<CareSystem>>> careSystems,
+            int establishRelationTimeUnits,
+            RoundedTimeUnit establishRelationDuration) {
         boolean availablePatient = AvailablePatient.check(ctx, careSystems.value);
 
         PdlReport pdlReport = pdl.pdlReport(
@@ -194,8 +204,8 @@ public class PdlController {
                 pdlReport,
                 state.getPatient().patientId,
                 "Automatiskt skapad patientrelation: Patient finns tillgänglig sedan innan hos egen vårdenhet.",
-                1,
-                RoundedTimeUnit.NEAREST_HALF_HOUR
+                establishRelationTimeUnits,
+                establishRelationDuration
             );
         }
         return newReport;
@@ -203,6 +213,7 @@ public class PdlController {
 
     @ActionMapping("establishRelation")
     public void establishRelationship(
+            ActionRequest request,
             ActionResponse response,
             @RequestParam boolean confirmed
     ) {
@@ -217,13 +228,17 @@ public class PdlController {
                 state.getPatient().patientId
             );
 
+            PortletPreferences prefs = request.getPreferences();
+            int timeUnits = Integer.parseInt(prefs.getValue("establishRelationTimeUnits", "1"));
+            RoundedTimeUnit duration = RoundedTimeUnit.valueOf(prefs.getValue("establishRelationDuration", RoundedTimeUnit.NEAREST_DAY.toString()));
+
             PdlReport newReport = pdl.patientRelationship(
                 ctx,
                 state.getPdlReport(),
                 state.getPatient().patientId,
                 "Reason",
-                1,
-                RoundedTimeUnit.NEAREST_HALF_HOUR
+                timeUnits,
+                duration
             );
 
             state.setPdlReport(newReport);
@@ -237,6 +252,7 @@ public class PdlController {
 
     @ActionMapping("establishConsent")
     public void establishConsent(
+            ActionRequest request,
             ActionResponse response,
             @RequestParam boolean emergency
     ) {
@@ -251,6 +267,11 @@ public class PdlController {
                 state.getPatient().patientId
             );
 
+            PortletPreferences prefs = request.getPreferences();
+            int timeUnits = Integer.parseInt(prefs.getValue("establishConsentTimeUnits", "7"));
+            RoundedTimeUnit duration = RoundedTimeUnit.valueOf(prefs.getValue("establishConsentDuration", RoundedTimeUnit.NEAREST_DAY.toString()));
+
+
             // FIXME 2013-10-21 : Magnus Andersson > Add possiblility to be represented by someone?
             state.setPdlReport(
                 pdl.patientConsent(
@@ -258,8 +279,8 @@ public class PdlController {
                     state.getPdlReport(),
                     state.getPatient().patientId,
                     "Reason",
-                    1,
-                    RoundedTimeUnit.NEAREST_HALF_HOUR,
+                    timeUnits,
+                    duration,
                     ( emergency ) ? PdlReport.ConsentType.Emergency : PdlReport.ConsentType.Consent
                 )
             );

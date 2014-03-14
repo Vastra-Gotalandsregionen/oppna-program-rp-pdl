@@ -36,7 +36,7 @@
     <portlet-preferences>
       <preference>
         <name>portlet-setup-show-borders</name>
-        <value>false</value>
+        <value>true</value>
       </preference>
     </portlet-preferences>
     <security-role-ref>
@@ -59,6 +59,7 @@
       <qname xmlns:x="http://pdl.portalen.vgregion.se/events">x:pctx.reset</qname>
     </supported-publishing-event>
   </portlet>
+
 
   <event-definition>
     <qname xmlns:x="http://pdl.portalen.vgregion.se/events">x:pctx.change</qname>
