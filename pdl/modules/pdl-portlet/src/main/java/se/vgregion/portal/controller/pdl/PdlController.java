@@ -18,10 +18,7 @@ import se.vgregion.domain.pdl.InformationType;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.pdl.PdlReport;
 import se.vgregion.domain.pdl.RoundedTimeUnit;
-import se.vgregion.domain.systems.CareSystem;
-import se.vgregion.domain.systems.CareSystemsReport;
-import se.vgregion.domain.systems.SummaryReport;
-import se.vgregion.domain.systems.Visibility;
+import se.vgregion.domain.systems.*;
 import se.vgregion.events.PersonIdUtil;
 import se.vgregion.events.context.PatientEvent;
 import se.vgregion.events.context.PdlTicket;
@@ -37,6 +34,7 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletPreferences;
 import javax.xml.namespace.QName;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -451,7 +449,7 @@ public class PdlController {
     }
 
     @ActionMapping("goToSummary")
-    public void goToSummary(ActionRequest request, ActionResponse response) {
+    public void goToSummary(ActionRequest request, ActionResponse response) throws IOException {
         if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
         } else {
@@ -469,7 +467,6 @@ public class PdlController {
 
             PdlLogger.log(UserAction.SUMMARY_CARE_SYSTEMS, logRepo, state);
 
-            response.setRenderParameter("view", "showSummary");
 
             // patient change event
             QName qname = new QName("http://pdl.portalen.vgregion.se/events", "pctx.change");
@@ -484,7 +481,16 @@ public class PdlController {
                     ),
                     ""
             );
+
             response.setEvent(qname, patientEvent);
+
+            if(sumReport.careSystems.size() == 1) {
+                CareSystemViewer first = sumReport.careSystems.keySet().iterator().next();
+                String redirect = first.getChildPage();
+                response.sendRedirect("/"+redirect);
+            } else {
+                response.setRenderParameter("view", "showSummary");
+            }
         }
     }
 

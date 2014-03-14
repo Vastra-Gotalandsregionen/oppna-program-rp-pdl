@@ -35,7 +35,7 @@
     <portlet-preferences>
       <preference>
         <name>portlet-setup-show-borders</name>
-        <value>false</value>
+        <value>true</value>
       </preference>
     </portlet-preferences>
     <security-role-ref>
