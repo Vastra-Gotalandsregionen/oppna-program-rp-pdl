@@ -201,7 +201,7 @@ public class PdlController {
                 ctx,
                 pdlReport,
                 state.getPatient().patientId,
-                "Automatiskt skapad patientrelation: Patient finns tillgänglig sedan innan hos egen vårdenhet.",
+                "VGR Portal PDL Service. Patient finns tillgänglig sedan innan hos egen vårdenhet.",
                 establishRelationTimeUnits,
                 establishRelationDuration
             );
@@ -234,7 +234,7 @@ public class PdlController {
                 ctx,
                 state.getPdlReport(),
                 state.getPatient().patientId,
-                "Reason",
+                "VGR Portal PDL Service",
                 timeUnits,
                 duration
             );
@@ -269,14 +269,13 @@ public class PdlController {
             int timeUnits = Integer.parseInt(prefs.getValue("establishConsentDuration", "7"));
             RoundedTimeUnit duration = RoundedTimeUnit.valueOf(prefs.getValue("establishConsentTimeUnits", RoundedTimeUnit.NEAREST_DAY.toString()));
 
-
             // FIXME 2013-10-21 : Magnus Andersson > Add possiblility to be represented by someone?
             state.setPdlReport(
                 pdl.patientConsent(
                     ctx,
                     state.getPdlReport(),
                     state.getPatient().patientId,
-                    "Reason",
+                    "VGR Portal PDL Service",
                     timeUnits,
                     duration,
                     ( emergency ) ? PdlReport.ConsentType.Emergency : PdlReport.ConsentType.Consent
@@ -357,7 +356,8 @@ public class PdlController {
                         boolean selectable =
                                 !system.isSelected() &&
                                 !system.blocked &&
-                                state.getShouldBeVisible().get(system.visibility.toString());
+                                (system.visibility == Visibility.SAME_CARE_UNIT ||
+                                state.getShouldBeVisible().get(system.visibility.toString()));
 
                         if(selectable) {
                             toggleInformation(system.id, false, false, response);
