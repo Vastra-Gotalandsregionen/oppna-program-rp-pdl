@@ -91,7 +91,7 @@
                         <label for="<portlet:namespace />patientId">
                             <span>Patient-ID</span>
                         </label>
-                        <aui:input name="patientId" autocomplete="off" cssClass="element-field" type="text" label=""/>
+                        <aui:input name="patientId" autocomplete="off" cssClass="element-field" type="text" label="" autoFocus="true"/>
                     </aui:field-wrapper>
                     <span class="element-field-help">
                         Patient-ID. Personnummer och Samordningsnummer anges på formatet YYYYMMDD-NNNN

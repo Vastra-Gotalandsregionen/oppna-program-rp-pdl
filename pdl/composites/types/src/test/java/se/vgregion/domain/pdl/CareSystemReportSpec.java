@@ -32,7 +32,7 @@ public class CareSystemReportSpec {
         ArrayList<SourceReferences> references = new ArrayList<SourceReferences>();
 
         CareSystem sameUnit1 = new CareSystem(CareSystemViewer.BFR, ctx.currentAssignment.careProviderHsaId, "VGR", ctx.currentAssignment.careUnitHsaId, "Unit 1", null);
-        CareSystem sameUnit2 = new CareSystem(CareSystemViewer.RRE, ctx.currentAssignment.careProviderHsaId, "VGR", ctx.currentAssignment.careUnitHsaId, "Unit 1", null);
+        CareSystem sameUnit2 = new CareSystem(CareSystemViewer.BFR, ctx.currentAssignment.careProviderHsaId, "VGR", ctx.currentAssignment.careUnitHsaId, "Unit 1", null);
 
 
         CareSystem otherUnit1 = new CareSystem(CareSystemViewer.BFR, ctx.currentAssignment.careProviderHsaId, "VGR", "otherCareUnitHsaId", "Unit 2", null);

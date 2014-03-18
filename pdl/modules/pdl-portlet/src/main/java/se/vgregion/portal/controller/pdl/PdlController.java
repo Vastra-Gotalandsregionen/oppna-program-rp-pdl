@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -60,9 +61,14 @@ public class PdlController {
     @Autowired
     private CareAgreement careAgreement;
 
+    @Value("${pdl.careapps}")
+    private String careapps;
 
     @ModelAttribute("state")
     public PdlUserState initState() {
+        if(careapps != null && state.getCareSystemUrls() != null) {
+            state.setCareSystemUrls(careapps);
+        }
         if (state.getCtx() == null) {
             WithOutcome<PdlContext> ctx = currentContext();
             state.setCtx(ctx);
@@ -486,8 +492,11 @@ public class PdlController {
 
             if(sumReport.careSystems.size() == 1) {
                 CareSystemViewer first = sumReport.careSystems.keySet().iterator().next();
-                String redirect = first.getChildPage();
-                response.sendRedirect("/"+redirect);
+
+                // FIXME: 2014-03-18: Magnus Andersson > Remove this when properties work in Portlet-project.
+                String redirect = (state.getCareSystemUrls()==null)? "/pub-bfr-pdl": state.getCareSystemUrls().get(first.systemKey);
+
+                response.sendRedirect(redirect);
             } else {
                 response.setRenderParameter("view", "showSummary");
             }

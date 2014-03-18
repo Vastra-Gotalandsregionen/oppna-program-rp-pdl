@@ -14,7 +14,7 @@
 
   <!-- The name of each <http:conduit> configuration is matched to the url used by CXF RS. -->
   <!-- The name value containing the URL pattern can NOT be loaded from a property file -->
-  <http:conduit name="https://esbtest.vgregion.se.*">
+  <http:conduit name="https://rtjptest.vgregion.se.*">
     <http:tlsClientParameters disableCNCheck="true">
       <sec:keyManagers keyPassword="${pdl.tjp.keystore.password}">
         <sec:keyStore
@@ -24,6 +24,48 @@
       </sec:keyManagers>
       <sec:trustManagers>
         <sec:certStore file="${user.home}/.rp/pdl/${pdl.tjp.trustcert.name}" />
+      </sec:trustManagers>
+    </http:tlsClientParameters>
+  </http:conduit>
+
+  <http:conduit name="https://esbtest.vgregion.se.*">
+    <http:tlsClientParameters disableCNCheck="true">
+      <sec:keyManagers keyPassword="${pdl.tjp.keystore.password}">
+        <sec:keyStore
+                type="${pdl.tjp.keystore.type}"
+                password="${pdl.tjp.keystore.password}"
+                file="${user.home}/.rp/pdl/${pdl.tjp.keystore.name}"/>
+      </sec:keyManagers>
+      <sec:trustManagers>
+        <sec:certStore file="${user.home}/.rp/pdl/${pdl.hsa.trustcert.name}" />
+      </sec:trustManagers>
+    </http:tlsClientParameters>
+  </http:conduit>
+
+  <http:conduit name="https://rtjp.vgregion.se.*">
+    <http:tlsClientParameters disableCNCheck="true">
+      <sec:keyManagers keyPassword="${pdl.tjp.keystore.password}">
+        <sec:keyStore
+                type="${pdl.tjp.keystore.type}"
+                password="${pdl.tjp.keystore.password}"
+                file="${user.home}/.rp/pdl/${pdl.tjp.keystore.name}"/>
+      </sec:keyManagers>
+      <sec:trustManagers>
+        <sec:certStore file="${user.home}/.rp/pdl/${pdl.tjp.trustcert.name}" />
+      </sec:trustManagers>
+    </http:tlsClientParameters>
+  </http:conduit>
+
+  <http:conduit name="https://esb.vgregion.se.*">
+    <http:tlsClientParameters disableCNCheck="true">
+      <sec:keyManagers keyPassword="${pdl.tjp.keystore.password}">
+        <sec:keyStore
+                type="${pdl.tjp.keystore.type}"
+                password="${pdl.tjp.keystore.password}"
+                file="${user.home}/.rp/pdl/${pdl.tjp.keystore.name}"/>
+      </sec:keyManagers>
+      <sec:trustManagers>
+        <sec:certStore file="${user.home}/.rp/pdl/${pdl.hsa.trustcert.name}" />
       </sec:trustManagers>
     </http:tlsClientParameters>
   </http:conduit>

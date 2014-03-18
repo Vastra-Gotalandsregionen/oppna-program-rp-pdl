@@ -47,12 +47,6 @@
                 serviceClass="urn.riv.hsa.HsaWs.v3.HsaWsResponderInterface"
                 address="${ws.endpoint.pdl.hsaOrgmaster}" />
 
-  <!--
-  <jaxws:client id="hsaOrgmaster"
-                serviceClass="se.riv.hsa.hsaws.v3.HsaWsResponderInterface"
-                address="${ws.endpoint.pdl.hsaOrgmaster}" />
-  -->
-
   <jaxws:client id="infoBroker"
                 serviceClass="riv.ehr.ehrexchange.patienthistory._1.rivtabp20.PatientHistoryResponderInterface"
                 address="${ws.endpoint.pdl.infoBroker}" />
