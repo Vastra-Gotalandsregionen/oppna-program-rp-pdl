@@ -42,4 +42,8 @@ public class PdlTicket implements Serializable {
                 ", references=" + references +
                 '}';
     }
+
+    public PdlTicket mapSourceReferences(Map<String, SourceReferences> filteredReferences) {
+            return new PdlTicket(patient, filteredReferences, userContext);
+    }
 }

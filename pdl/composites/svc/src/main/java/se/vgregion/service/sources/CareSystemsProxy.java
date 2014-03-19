@@ -15,7 +15,7 @@ import se.vgregion.service.search.CareSystems;
 import java.util.ArrayList;
 
 @Service("CareSystemsProxy")
-public class CareSystemsProxy implements CareSystems {
+public class  CareSystemsProxy implements CareSystems {
 
     @Autowired
     @Qualifier("pdlRadiologySource")

@@ -17,7 +17,7 @@
     <%@ include file="patientInformationFor.jsp" %>
 
     <c:choose>
-        <c:when test="${state.ticket.success}">
+        <c:when test="${state.refs.success}">
             <!-- IE < 10 does not like giving a tbody a height.  The workaround here applies the scrolling to a wrapped <div>. -->
             <!--[if lte IE 9]>
             <div class="old_ie_wrapper">
@@ -34,17 +34,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                <c:forEach var="infoRow" items="${state.ticket.value.references}" varStatus="loopStatus">
+                <c:forEach var="infoRow" items="${state.refs.value}" varStatus="loopStatus">
                     <portlet:actionURL name="showReferral" var="showReferralUrl">
-                        <portlet:param name="requestId" value="${infoRow.key}" />
+                        <portlet:param name="requestId" value="${infoRow.id}" />
                     </portlet:actionURL>
-                    <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
-                        <td><a href="${showReferralUrl}">${infoRow.value.requestDisplayDate}</a></td>
-                        <td>${infoRow.value.numImages}</td>
-                        <td>${infoRow.value.careUnitDisplayName}</td>
-                        <td>${infoRow.value.orgUnitDisplayName}</td>
-                        <td>${infoRow.value.examinations}</td>
-                        <td>${infoRow.value.status}</td>
+                    <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'} ${state.currentReferral.success && state.currentReferral.value.infoBrokerId == infoRow.infoBrokerId ? 'selected' : ''}">
+                        <td><a href="${showReferralUrl}">${infoRow.requestDisplayDate}</a></td>
+                        <td>${infoRow.numImages}</td>
+                        <td>${infoRow.careUnitDisplayName}</td>
+                        <td>${infoRow.orgUnitDisplayName}</td>
+                        <td>${infoRow.examinations}</td>
+                        <td>${infoRow.status}</td>
                     </tr>
                 </c:forEach>
                 </tbody>

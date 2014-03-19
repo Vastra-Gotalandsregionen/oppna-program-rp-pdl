@@ -1,6 +1,7 @@
 package se.vgregion.events.context;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class PatientEvent implements Serializable {
 
@@ -48,5 +49,9 @@ public class PatientEvent implements Serializable {
                 "ticket=" + ticket +
                 ", signedPdlXmlTicket='" + signedPdlXmlTicket + '\'' +
                 '}';
+    }
+
+    public PatientEvent mapSourceReferences(Map<String, SourceReferences> filteredReferences) {
+            return new PatientEvent(ticket.mapSourceReferences(filteredReferences), signedPdlXmlTicket);
     }
 }

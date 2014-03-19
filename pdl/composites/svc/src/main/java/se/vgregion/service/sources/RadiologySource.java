@@ -269,10 +269,6 @@ public class RadiologySource implements CareSystems {
         return sb.toString();
     }
 
-
-
-
-
     private Maybe<String> extractHsaUnitId(Request req) {
         Maybe<String> hsaUnitId = Maybe.none();
 

@@ -17,12 +17,9 @@ import se.vgregion.domain.decorators.WithOutcome;
 import javax.annotation.Resource;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.WebServiceException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-@Service("bfrRadiologySource")
+@Service("BfrRadiologySource")
 public class RadiologySource {
     private static final Logger LOGGER = LoggerFactory.getLogger(RadiologySource.class);
 
@@ -81,6 +78,8 @@ public class RadiologySource {
             int noOfImages = sumStudyImages(ex);
 
             List<StudyReport> studyReports = getStudyReports(ex);
+            Collections.sort(studyReports, StudyReport.studyReportDateDescendingComparator);
+
             List<String> dicomSeriesUiids = getDicomSeriesUiid(ex);
 
             Study stu = new Study(
@@ -95,6 +94,8 @@ public class RadiologySource {
 
             studies.add(stu);
         }
+
+        Collections.sort(studies, Study.studyDateDescendingComparator);
 
         return studies;
     }

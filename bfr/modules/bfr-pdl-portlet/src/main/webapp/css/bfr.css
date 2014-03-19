@@ -7,6 +7,22 @@
     padding: 1em;
     float: left;
     width: 100%;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.bfr #referralHeader {
+    float: left;
+    width: 100%;
+    border-bottom: solid #c4ced5 1px;
+    background-color: #eef5fa;
+    font-family: Ubuntu,Arial,Verdana,Helvetica,sans-serif;
+    font-size: 1.2em;
+    padding: 1em;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .bfr #showReferral {
@@ -118,6 +134,10 @@
     -moz-border-radius: 0 0 3px 3px;
     -webkit-border-radius: 0 0 3px 3px;
     border-radius: 0 0 3px 3px;
+}
+
+.bfr .selected {
+    font-weight: bold;
 }
 
 .bfr .even {

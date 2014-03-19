@@ -3,6 +3,7 @@ package se.vgregion.events.context.sources.radiology;
 import org.apache.commons.lang.time.DateFormatUtils;
 import se.vgregion.events.context.SourceReferences;
 
+import java.util.Comparator;
 import java.util.Date;
 
 public class RadiologySourceRefs implements SourceReferences {
@@ -39,6 +40,13 @@ public class RadiologySourceRefs implements SourceReferences {
         this.status = status;
         this.infoBrokerId = infoBrokerId;
     }
+
+    public static Comparator<RadiologySourceRefs> dateDescComparator = new Comparator<RadiologySourceRefs>() {
+        @Override
+        public int compare(RadiologySourceRefs o1, RadiologySourceRefs o2) {
+            return (o1 == null && o2 == null ) ? 0 : (o1 == null) ? 1 : (o2 == null) ? -1 : o2.requestDate.compareTo(o1.requestDate);
+        }
+    };
 
     public Date getRequestDate() {
         return requestDate;
@@ -83,8 +91,7 @@ public class RadiologySourceRefs implements SourceReferences {
 
     @Override
     public SourceReferences combine(SourceReferences references) {
-
-        return null;
+        throw new IllegalAccessError("Unimplemented method.");
     }
 
     @Override

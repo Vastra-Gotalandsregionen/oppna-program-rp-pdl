@@ -3,6 +3,7 @@ package se.vgregion.domain.decorators;
 import se.vgregion.domain.systems.Visibility;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Map;
 
 public class InfoTypeState<T extends Serializable> implements Serializable, Comparable<InfoTypeState> {
@@ -54,7 +55,7 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
         this.containsOtherUnits = containsOtherUnits;
         this.containsOtherProviders = containsOtherProviders;
         this.selected = selected;
-        this.containsBlocked = containsBlocked;
+        this.containsBlocked = Collections.unmodifiableMap(containsBlocked);
         this.viewBlocked = viewBlocked;
         this.id = id;
         this.value = value;
@@ -74,7 +75,7 @@ public class InfoTypeState<T extends Serializable> implements Serializable, Comp
         this.lowestVisibility = lowestVisibility;
         this.showSameCareUnit = showSameCareUnit;
         this.selected = selected;
-        this.containsBlocked = containsBlocked;
+        this.containsBlocked = Collections.unmodifiableMap(containsBlocked);
         this.containsOtherUnits = containsOtherUnits;
         this.containsOtherProviders = containsOtherProviders;
         this.viewBlocked = viewBlocked;

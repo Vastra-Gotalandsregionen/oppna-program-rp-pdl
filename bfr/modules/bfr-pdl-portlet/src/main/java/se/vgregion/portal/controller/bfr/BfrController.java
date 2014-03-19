@@ -16,6 +16,7 @@ import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import se.vgregion.domain.bfr.Referral;
 import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.events.context.PatientEvent;
+import se.vgregion.events.context.SourceReferences;
 import se.vgregion.events.context.sources.radiology.RadiologySourceRefs;
 import se.vgregion.service.bfr.RadiologySource;
 import se.vgregion.service.bfr.ZeroFootPrintUrls;
@@ -24,6 +25,8 @@ import javax.portlet.ActionResponse;
 import javax.portlet.Event;
 import javax.portlet.EventRequest;
 import javax.portlet.RenderRequest;
+import java.util.ArrayList;
+import java.util.Collections;
 
 @Controller
 @RequestMapping(value = "VIEW")
@@ -31,12 +34,11 @@ import javax.portlet.RenderRequest;
 public class BfrController {
     private static final Logger LOGGER = LoggerFactory.getLogger(BfrController.class.getName());
 
-
     @Autowired
     private BfrState state;
 
     @Autowired
-    @Qualifier("bfrRadiologySource")
+    @Qualifier("BfrRadiologySource")
     RadiologySource radiologySource;
 
     @Autowired
@@ -62,8 +64,8 @@ public class BfrController {
             @RequestParam String requestId,
             ActionResponse response
     ) {
-        if(state.getTicket().success) {
-            RadiologySourceRefs ref = (RadiologySourceRefs) state.getTicket().value.references.get(requestId);
+        if(state.getRefs().success) {
+            RadiologySourceRefs ref = (RadiologySourceRefs) state.getTicket().value.getReferences().get(requestId);
 
             WithOutcome<Referral> referralDetails =
                     radiologySource.requestByBrokerId(ref.infoBrokerId);
@@ -93,11 +95,29 @@ public class BfrController {
     @EventMapping("{http://pdl.portalen.vgregion.se/events}pctx.change")
     public void changeListener(EventRequest request) {
         Event event = request.getEvent();
-        PatientEvent patient = (PatientEvent) event.getValue();
+        PatientEvent patientEvent = (PatientEvent) event.getValue();
+        ArrayList<RadiologySourceRefs> filteredRefs = filterBfrReferences(patientEvent);
+        LOGGER.debug("Got Patient event change. {}", filteredRefs);
 
-        LOGGER.debug("Got Patient event change. {}", patient);
+        state.setRefs(filteredRefs);
+        state.setTicket(patientEvent.ticket);
+    }
 
-        state.setTicket(patient.ticket);
+    private ArrayList<RadiologySourceRefs> filterBfrReferences(PatientEvent patientEvent) {
+        ArrayList<RadiologySourceRefs> filteredReferences = new ArrayList<RadiologySourceRefs>();
+
+        for(String refKey : patientEvent.ticket.references.keySet()) {
+            SourceReferences entry = patientEvent.ticket.references.get(refKey);
+
+            if(entry.targetCareSystem().equals(RadiologySourceRefs.SYSTEM_ID) &&
+               entry instanceof RadiologySourceRefs) {
+                RadiologySourceRefs convEntry = (RadiologySourceRefs) entry;
+                filteredReferences.add(convEntry);
+            }
+        }
+
+        Collections.sort(filteredReferences, RadiologySourceRefs.dateDescComparator);
+        return filteredReferences;
     }
 
 }

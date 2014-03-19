@@ -96,6 +96,15 @@ public class CareSystemsReport implements Serializable {
         return false;
     }
 
+    private static Comparator<SystemState<CareSystem>> systemNameDescComparator = new Comparator<SystemState<CareSystem>>() {
+        @Override
+        public int compare(SystemState<CareSystem> o1, SystemState<CareSystem> o2) {
+            String n1 = o1.value.careProviderDisplayName + " " + o1.value.careUnitDisplayName;
+            String n2 = o2.value.careProviderDisplayName + " " + o2.value.careUnitDisplayName;
+            return n1.compareToIgnoreCase(n2);
+        }
+    };
+
     private TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> calcInfoTypeState(
             TreeMap<InformationType, ArrayList<SystemState<CareSystem>>> aggregatedSystems
     ) {
@@ -104,7 +113,9 @@ public class CareSystemsReport implements Serializable {
 
         for(Map.Entry<InformationType, ArrayList<SystemState<CareSystem>>> entry : aggregatedSystems.entrySet()) {
             InformationType key = entry.getKey();
-            ArrayList <SystemState<CareSystem>> value = entry.getValue();
+            ArrayList<SystemState<CareSystem>> systems = entry.getValue();
+            Collections.sort(systems, systemNameDescComparator);
+
             Visibility lowestVisibility = Visibility.OTHER_CARE_PROVIDER;
             Map<Visibility, Boolean> containsBlocked = new HashMap<Visibility, Boolean>();
             boolean containsOtherUnits = false;
@@ -115,7 +126,7 @@ public class CareSystemsReport implements Serializable {
                 containsBlocked.put(v, false);
             }
 
-            for(SystemState<CareSystem> v : value) {
+            for(SystemState<CareSystem> v : systems) {
 
                 // Does this info decorator contain blocked information?
                 containsBlocked.put(
@@ -142,7 +153,7 @@ public class CareSystemsReport implements Serializable {
                     containsOtherProviders
             );
 
-            infoTypeStateMap.put(mappedKey, value);
+            infoTypeStateMap.put(mappedKey, systems);
         }
 
         return infoTypeStateMap;

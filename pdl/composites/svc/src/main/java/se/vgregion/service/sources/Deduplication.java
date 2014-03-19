@@ -80,7 +80,8 @@ public class Deduplication {
                 InfoTypeCareSystemKey key =
                         new InfoTypeCareSystemKey(elem);
 
-                if(deduplicated.containsKey(key) && deduplicated.get(key).value.displayId.equals(elem.value.displayId)) {
+                if(deduplicated.containsKey(key) &&
+                   deduplicated.get(key).value.displayId.equals(elem.value.displayId)) {
                     continue;
                 }
 
