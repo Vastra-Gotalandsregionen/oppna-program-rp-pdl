@@ -490,7 +490,7 @@ public class PdlController {
             response.setEvent(qname, patientEvent);
             model.addAttribute("careSystemUrls", this.careSystemUrls.getUrls());
 
-            if(sumReport.careSystems.size() < 1) {
+            if(sumReport.careSystems.size() == 1) {
                 CareSystemViewer first = sumReport.careSystems.keySet().iterator().next();
 
                 Maybe<String> redirect = this.careSystemUrls.getUrlForSystem(first.systemKey);
