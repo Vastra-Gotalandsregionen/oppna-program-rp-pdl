@@ -25,7 +25,7 @@
             <table class="fixed_headers">
                 <thead>
                     <tr>
-                      <th class="text" scope="col">Remissdatum</th>
+                      <th class="text" scope="col">Datum</th>
                       <th class="text" scope="col">Bilder</th>
                       <th class="text" scope="col">Remitterande vårdenhet</th>
                       <th class="text" scope="col">Remitterande organisatorisk enhet</th>

@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +30,7 @@ import se.vgregion.service.search.AccessControl;
 import se.vgregion.service.search.CareAgreement;
 import se.vgregion.service.search.CareSystems;
 import se.vgregion.service.search.PdlService;
+import se.vgregion.service.sources.CareSystemUrls;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -60,15 +61,11 @@ public class PdlController {
     private AccessControl accessControl;
     @Autowired
     private CareAgreement careAgreement;
-
-    @Value("${pdl.careapps}")
-    private String careapps;
+    @Autowired
+    private CareSystemUrls careSystemUrls;
 
     @ModelAttribute("state")
     public PdlUserState initState() {
-        if(careapps != null && state.getCareSystemUrls() != null) {
-            state.setCareSystemUrls(careapps);
-        }
         if (state.getCtx() == null) {
             WithOutcome<PdlContext> ctx = currentContext();
             state.setCtx(ctx);
@@ -455,7 +452,9 @@ public class PdlController {
     }
 
     @ActionMapping("goToSummary")
-    public void goToSummary(ActionRequest request, ActionResponse response) throws IOException {
+    public void goToSummary(Model model,
+                            ActionRequest request,
+                            ActionResponse response) throws IOException {
         if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
         } else {
@@ -489,14 +488,18 @@ public class PdlController {
             );
 
             response.setEvent(qname, patientEvent);
+            model.addAttribute("careSystemUrls", this.careSystemUrls.getUrls());
 
-            if(sumReport.careSystems.size() == 1) {
+            if(sumReport.careSystems.size() < 1) {
                 CareSystemViewer first = sumReport.careSystems.keySet().iterator().next();
 
-                // FIXME: 2014-03-18: Magnus Andersson > Remove this when properties work in Portlet-project.
-                String redirect = (state.getCareSystemUrls()==null)? "/pub-bfr-pdl": state.getCareSystemUrls().get(first.systemKey);
+                Maybe<String> redirect = this.careSystemUrls.getUrlForSystem(first.systemKey);
 
-                response.sendRedirect(redirect);
+                if(redirect.success) {
+                    response.sendRedirect(redirect.value);
+                } else {
+                    response.setRenderParameter("view", "showSummary");
+                }
             } else {
                 response.setRenderParameter("view", "showSummary");
             }

@@ -39,7 +39,6 @@ public class PdlUserState implements Serializable {
     private boolean sourcesNonSuccessOutcome = false;
     private boolean missingResults = false;
     private boolean invalid = false;
-    private Map<String, String> careSystemUrls;
 
     private void calcVisibility() {
         shouldBeVisible.clear();
@@ -185,21 +184,6 @@ public class PdlUserState implements Serializable {
 
     public void setInvalid(boolean invalid) {
         this.invalid = invalid;
-    }
-
-    public Map<String, String> getCareSystemUrls() {
-        return careSystemUrls;
-    }
-
-    public void setCareSystemUrls(String careSystemsProperty) {
-        this.careSystemUrls = new HashMap<String, String>();
-
-        String[] keyvalues = careSystemsProperty.split(",");
-
-        for(String keyvalue : keyvalues) {
-            String[] pair = keyvalue.split("=");
-            careSystemUrls.put(pair[0], pair[1]);
-        }
     }
 
     @Override
