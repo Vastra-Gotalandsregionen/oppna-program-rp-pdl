@@ -31,6 +31,12 @@
     </dependency>
 
     <dependency>
+      <groupId>se.vgregion.commons-util</groupId>
+      <artifactId>commons-util-core-bc-composite-svc-ldap</artifactId>
+      <version>3.21</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
     </dependency>
@@ -46,12 +52,6 @@
       <version>${apache.cxf.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <!-- For rounding dates -->
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -64,5 +64,18 @@
       <artifactId>ejb3-persistence</artifactId>
       <version>1.0.2.GA</version>
     </dependency>
+
+    <!-- For test -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 </project>

@@ -14,6 +14,7 @@
         <value>file:${user.home}/.rp/pdl/application.properties</value>
         <value>file:${user.home}/.rp/pdl/security.properties</value>
         <value>file:${user.home}/.rp/pdl/datasource.properties</value>
+        <value>file:${user.home}/.rp/pdl/ldap.properties</value>
       </list>
     </property>
     <property name="ignoreResourceNotFound" value="false"/>
@@ -26,6 +27,7 @@
   <import resource="classpath*:/service-security.xml"/> <!-- REMOVE if SSL certificates are not needed -->
   <import resource="classpath*:/service-context.xml"/>
   <import resource="classpath*:/repo-context.xml"/>
+  <import resource="classpath*:/ldap-context.xml"/>
 
 </beans>
 

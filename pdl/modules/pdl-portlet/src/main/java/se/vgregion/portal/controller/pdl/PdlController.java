@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
+import se.vgregion.domain.assignment.Assignment;
 import se.vgregion.domain.decorators.*;
 import se.vgregion.domain.logging.UserAction;
 import se.vgregion.domain.pdl.InformationType;
@@ -25,8 +26,9 @@ import se.vgregion.events.context.PatientEvent;
 import se.vgregion.events.context.PdlTicket;
 import se.vgregion.events.context.UserContext;
 import se.vgregion.portal.bfr.infobroker.domain.InfobrokerPersonIdType;
+import se.vgregion.portal.util.UserUtil;
 import se.vgregion.repo.log.LogRepo;
-import se.vgregion.service.search.AccessControl;
+import se.vgregion.service.search.*;import se.vgregion.service.search.AccessControl;
 import se.vgregion.service.search.CareAgreement;
 import se.vgregion.service.search.CareSystems;
 import se.vgregion.service.search.PdlService;
@@ -35,11 +37,10 @@ import se.vgregion.service.sources.CareSystemUrls;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletPreferences;
+import javax.portlet.PortletRequest;
 import javax.xml.namespace.QName;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "VIEW")
@@ -63,11 +64,15 @@ public class PdlController {
     private CareAgreement careAgreement;
     @Autowired
     private CareSystemUrls careSystemUrls;
+    @Autowired
+    private LdapService ldapService;
+
+    private UserUtil userUtil = new UserUtil();
 
     @ModelAttribute("state")
-    public PdlUserState initState() {
-        if (state.getCtx() == null) {
-            WithOutcome<PdlContext> ctx = currentContext();
+    public PdlUserState initState(PortletRequest request) {
+        if (state == null || state.getCtx() == null) {
+            WithOutcome<PdlContext> ctx = currentContext(request);
             state.setCtx(ctx);
         }
         return state;
@@ -79,10 +84,10 @@ public class PdlController {
     }
 
     @RenderMapping
-    public String enterSearchPatient() {
+    public String enterSearchPatient(PortletRequest request) {
         state.reset(); // Make sure state is reset when user navigates to the start page.
         if (state.getCtx() == null) {
-            WithOutcome<PdlContext> ctx = currentContext();
+            WithOutcome<PdlContext> ctx = currentContext(request);
             state.setCtx(ctx);
         }
         return "view";
@@ -531,8 +536,23 @@ public class PdlController {
         return "showSummary";
     }
 
-    private WithOutcome<PdlContext> currentContext() {
-        return accessControl.getContextByEmployeeId("SE2321000131-P000000000977");
+    private WithOutcome<PdlContext> currentContext(PortletRequest request) {
+        String hsaIdFromRequest = userUtil.getHsaIdFromRequestHeader(request);
+
+        WithOutcome<String> hsaId;
+        if (hsaIdFromRequest != null && !"".equals(hsaIdFromRequest)) {
+            hsaId = WithOutcome.success(hsaIdFromRequest);
+        } else {
+            // Try looking it up in ldap
+            String vgrId = userUtil.getUserId(request);
+            hsaId = ldapService.getHsaIdByVgrId(vgrId);
+        }
+
+        if (hsaId.success) {
+            return accessControl.getContextByEmployeeId(hsaId.value);
+        } else {
+            return hsaId.mapValue(new PdlContext("", "", new TreeMap<String, Assignment>()));
+        }
     }
 
     @Override

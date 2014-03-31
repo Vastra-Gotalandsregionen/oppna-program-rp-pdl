@@ -60,6 +60,10 @@
     </supported-publishing-event>
   </portlet>
 
+  <user-attribute>
+    <description>User Login ID</description>
+    <name>user.login.id</name>
+  </user-attribute>
 
   <event-definition>
     <qname xmlns:x="http://pdl.portalen.vgregion.se/events">x:pctx.change</qname>
@@ -70,6 +74,7 @@
     <qname xmlns:x="http://pdl.portalen.vgregion.se/events">x:pctx.reset</qname>
     <value-type>java.lang.String</value-type>
   </event-definition>
+
 </portlet-app>
 
 

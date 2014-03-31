@@ -1,0 +1,6 @@
+## Place this file with property values in ${user.home}/.rp/pdl/ with name application.properties
+
+LDAP.BIND.URL=
+LDAP.BASE=
+LDAP.BIND.DN=
+LDAP.BIND.PW=
