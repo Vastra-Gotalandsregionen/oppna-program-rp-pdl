@@ -20,7 +20,7 @@
     <%@ include file="progress.jsp" %>
 
     <%@ include file="choose/searchOutcomeInfo.jsp" %>
-    <div class="info">
+    <div class="clearfix info">
         <c:set var="patientInfoFor" value="Patientinformation" scope="request"/>
         <%@ include file="patientInformationFor.jsp" %>
         <c:choose>

@@ -13,4 +13,4 @@
     </div>
     <a href="${startUrl}" class="link-button-mod">&laquo; Sök igen</a>
     <a href="${establishRelationUrl}" class="link-button-mod link-button-mod-danger">Jag intygar patientrelation &raquo;</a>
-<div>
+</div>
