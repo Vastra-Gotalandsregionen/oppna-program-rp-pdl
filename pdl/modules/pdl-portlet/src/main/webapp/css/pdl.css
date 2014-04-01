@@ -166,12 +166,12 @@
 
 .pdl i.locked {
     background-image: url('../images/icon_padlock.png');
-    float: right;
+    margin-left: 3px;
 }
 
 .pdl i.unlocked {
     background-image: url('../images/icon_padlock_open.png');
-    float: right;
+    margin-left: 3px;
 }
 
 .pdl i.check_all {

@@ -2,24 +2,21 @@
 
 <c:if test="${state.ticket.success && state.currentReferral.success}">
 <div id="showReferral">
-    <div id="referralHeader">
-        ${state.currentReferral.value.placingDisplayDate} - ${state.currentReferral.value.risId}
-    </div>
     <div id="referralContainer">
-    <ul>
+    <ul class="clearfix">
         <li><span class="key">Remiss-ID</span><span class="value">${state.currentReferral.value.risId}</span></li>
-        <li class="odd"><span class="key">Prioritet</span><span class="value">${state.currentReferral.value.priority}</span></li>
+        <li><span class="key">Prioritet</span><span class="value">${state.currentReferral.value.priority}</span></li>
         <li><span class="key">Antal bilder</span><span class="value">${state.currentReferral.value.imageCount}</span></li>
-        <li class="odd"><span class="key">Datum</span><span class="value">${state.currentReferral.value.placingDisplayDate}</span></li>
+        <li><span class="key">Datum</span><span class="value">${state.currentReferral.value.placingDisplayDate}</span></li>
         <li><span class="key">Utförande enhet</span><span class="value">${state.currentReferral.value.fillerLocation}</span></li>
-        <li class="odd"><span class="key">Remitterande enhet</span><span class="value">${state.currentReferral.value.placerLocation}</span></li>
+        <li><span class="key">Remitterande enhet</span><span class="value">${state.currentReferral.value.placerLocation}</span></li>
         <li><span class="key">Remitterande läkare</span><span class="value">${state.currentReferral.value.referringPhysicianName}</span></li>
-        <li class="odd"><span class="key">Frågeställning</span><span class="value">${state.currentReferral.value.question}</span></li>
+        <li><span class="key">Frågeställning</span><span class="value">${state.currentReferral.value.question}</span></li>
         <li><span class="key">Anamnes</span><span class="value">${state.currentReferral.value.anamnesis}</span></li>
     </ul>
     </div>
     <div id="studiesContainer">
-        <ul>
+        <ul class="clearfix">
             <li><span class="key"><b>Undersökningar</b></span></li>
             <c:forEach var="study" items="${state.currentReferral.value.studies}" varStatus="studiesStatus">
                 <li class="${studiesStatus.index % 2 == 0 ? 'even' : 'odd'}"><span class="key">Remiss-ID</span><span class="value">${study.risId}</span></li>
