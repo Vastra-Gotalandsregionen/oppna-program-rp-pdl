@@ -12,6 +12,8 @@
        http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
+  <!-- Info Broker uses IP-restriction for security, no conduit is used -->
+
   <!-- The name of each <http:conduit> configuration is matched to the url used by CXF RS. -->
   <!-- The name value containing the URL pattern can NOT be loaded from a property file -->
   <!--<http:conduit name="https://esbtest.vgregion.se.*">
