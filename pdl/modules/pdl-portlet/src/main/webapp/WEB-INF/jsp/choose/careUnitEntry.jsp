@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <c:if test="${pdl:displayCareUnit(infoSelection.key, system, state)}">
-    <li>
+    <li class="${systemStatus.last ? 'last-no-border' : ''}">
         <portlet:actionURL name="toggleInformation" var="toggleInformationUrl">
             <portlet:param name="id" value="${system.id}" />
             <portlet:param name="confirmed" value="false" />

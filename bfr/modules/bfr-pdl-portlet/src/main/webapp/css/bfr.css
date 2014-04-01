@@ -1,7 +1,6 @@
 .bfr ul {
     list-style: none;
     margin: 0;
-    padding: 1em;
 }
 
 .bfr ul>li {
@@ -14,28 +13,10 @@
     box-sizing: border-box;
 }
 
-.bfr #referralHeader {
-    float: left;
-    width: 100%;
-    border-bottom: solid #c4ced5 1px;
-    background-color: #eef5fa;
-    font-family: Ubuntu,Arial,Verdana,Helvetica,sans-serif;
-    font-size: 1.2em;
-    padding: 1em;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
-.bfr #showReferral {
-    margin-top: 1em;
-    float: left;
-    width: 100%;
-    border: solid #c4ced5 1px;
-}
 
 .bfr .key {
     float: left;
-    width: 30%;
+    width: 40%;
     font-weight: normal;
     font-family: Ubuntu,Arial,Verdana,Helvetica,sans-serif;
     font-size: 1.05em;
@@ -44,23 +25,67 @@
 
 .bfr .value {
     float: left;
-    width: 70%;
+    width: 60%;
+}
+
+.ie7 .bfr #referralContainer {
+    width: 45%;
+    float: left;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.ie7 .bfr #studiesContainer {
+    width: 45%;
+    float: left;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.ie7 .bfr #showReferral {
+    float: left;
+    width: 100%;
+    border: none;
+}
+
+.bfr #showReferral {
+    float: left;
+    width: 100%;
+    border: solid #c4ced5 1px;
 }
 
 .bfr #referralContainer {
     width: 45%;
     float:left;
     margin: 0px;
-    padding: 0;
+    padding: 1em;
+    border-right: solid #c4ced5 1px;
+    box-sizing: border-box;
 }
 
 .bfr #studiesContainer {
     width: 55%;
     float:left;
-    margin: -1px;
-    padding: 0;
-    border: solid #c4ced5 1px;
-    background: white;
+    margin-left: -1px;
+    padding: 1em;
+    border-left: solid #c4ced5 1px;
+    box-sizing: border-box;
+}
+
+.bfr #studiesContainer ul {
+    border-top: solid #c4ced5 1px;
+    padding: 1em 0em;
+}
+
+.bfr #studiesContainer ul:first-child {
+    border-top: none;
+    padding: 0 0 1em 0;
+}
+
+.bfr #studiesContainer ul:last-child {
+    padding-bottom: 0;
 }
 
 .bfr h3.legend {
@@ -99,42 +124,6 @@
 .bfr table th {
     font-weight: normal;
     border-bottom: solid #c4ced5 1px;
-}
-
-.bfr table th:first-child {
-    -moz-border-radius: 3px 0 0 0;
-    -webkit-border-radius: 3px 0 0 0;
-    border-radius: 3px 0 0 0;
-}
-
-.bfr table th:last-child {
-    -moz-border-radius: 0 3px 0 0;
-    -webkit-border-radius: 0 3px 0 0;
-    border-radius: 0 3px 0 0;
-}
-
-.bfr table th:only-child{
-    -moz-border-radius: 3px 3px 0 0;
-    -webkit-border-radius: 3px 3px 0 0;
-    border-radius: 3px 3px 0 0;
-}
-
-.bfr table td:last-child {
-    -moz-border-radius: 0 0 3px 0;
-    -webkit-border-radius: 0 0 3px 0;
-    border-radius: 0 0 3px 0;
-}
-
-.bfr table td:first-child {
-    -moz-border-radius: 0 0 0 3px;
-    -webkit-border-radius: 0 0 0 3px;
-    border-radius: 0 0 0 3px;
-}
-
-.bfr table td:only-child{
-    -moz-border-radius: 0 0 3px 3px;
-    -webkit-border-radius: 0 0 3px 3px;
-    border-radius: 0 0 3px 3px;
 }
 
 .bfr .selected {

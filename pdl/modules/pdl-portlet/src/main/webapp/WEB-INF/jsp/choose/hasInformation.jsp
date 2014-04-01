@@ -18,7 +18,7 @@
             <c:when test="${pdl:expandInfoType(infoSelection.key, state)}">
                 <li class="sublist">
                     <ul>
-                        <c:forEach var="system" items="${infoSelection.value}">
+                        <c:forEach var="system" items="${infoSelection.value}" varStatus="systemStatus">
                             <%@ include file="careUnitEntry.jsp" %>
                         </c:forEach>
                         <%@ include file="blockedEntries.jsp" %>

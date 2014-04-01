@@ -38,7 +38,8 @@
                     <portlet:actionURL name="showReferral" var="showReferralUrl">
                         <portlet:param name="requestId" value="${infoRow.id}" />
                     </portlet:actionURL>
-                    <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'} ${state.currentReferral.success && state.currentReferral.value.infoBrokerId == infoRow.infoBrokerId ? 'selected' : ''}">
+                    <c:set var="rowClass" value="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}"/>
+                    <tr class="${rowClass}">
                         <td><a href="${showReferralUrl}">${infoRow.requestDisplayDate}</a></td>
                         <td>${infoRow.numImages}</td>
                         <td>${infoRow.careUnitDisplayName}</td>
@@ -46,6 +47,13 @@
                         <td>${infoRow.examinations}</td>
                         <td>${infoRow.status}</td>
                     </tr>
+                    <c:if test="${state.ticket.success && state.currentReferral.success && infoRow.infoBrokerId eq state.currentReferral.value.infoBrokerId}">
+                        <tr class="${rowClass}">
+                            <td colspan="6">
+                                <%@ include file="showReferral.jsp" %>
+                            </td>
+                        </tr>
+                    </c:if>
                 </c:forEach>
                 </tbody>
             </table>
@@ -59,7 +67,5 @@
             </div>
         </c:otherwise>
     </c:choose>
-
-    <%@ include file="showReferral.jsp" %>
 
 </div>
