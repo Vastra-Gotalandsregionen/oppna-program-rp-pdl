@@ -12,7 +12,7 @@
             </portlet:renderURL>
             <a href="${startUrl}">S&ouml;k patientinformation</a>
         </li>
-        <li class="first <c:choose><c:when test="${state.currentProgress == 'CHOOSE'}">current-unstarted</c:when><c:when test="${state.currentProgress == 'SYSTEMS'}">done-current</c:when></c:choose>">
+        <li class="<c:choose><c:when test="${state.currentProgress == 'CHOOSE'}">current-unstarted</c:when><c:when test="${state.currentProgress == 'SYSTEMS'}">done-current</c:when></c:choose>">
             <c:choose>
                 <c:when test="${state.currentProgress == 'CHOOSE' || state.currentProgress == 'SYSTEMS'}">
                     <portlet:actionURL name="searchPatient" var="searchPatientUrl">
@@ -28,7 +28,7 @@
                 </c:otherwise>
             </c:choose>
         </li>
-        <li class="first <c:if test="${state.currentProgress == 'SYSTEMS'}">done-current</c:if>">
+        <li class="last <c:if test="${state.currentProgress == 'SYSTEMS'}">done-current</c:if>">
             <c:choose>
                 <c:when test="${state.currentProgress == 'SYSTEMS'}">
                     <portlet:actionURL name="showSummary" var="showSummaryUrl" />
