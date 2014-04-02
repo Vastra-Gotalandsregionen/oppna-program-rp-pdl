@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <c:if test="${pdl:displayShowMore(infoSelection.key, state)}">
-    <li>
+    <li class="last-no-border">
         <div class="clearfix">
             <div class="callout callout-info callout-action">
                 <a href="${selectInfoResourceUrl}">
