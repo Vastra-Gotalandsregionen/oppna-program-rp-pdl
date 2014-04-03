@@ -14,6 +14,7 @@ import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.EventMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import se.vgregion.domain.bfr.Referral;
+import se.vgregion.domain.decorators.Outcome;
 import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.events.context.PatientEvent;
 import se.vgregion.events.context.SourceReferences;
@@ -62,20 +63,25 @@ public class BfrController {
     @ActionMapping("showReferral")
     public void showReferral(
             @RequestParam String requestId,
+            @RequestParam boolean expand,
             ActionResponse response
     ) {
         if(state.getRefs().success) {
-            RadiologySourceRefs ref = (RadiologySourceRefs) state.getTicket().value.getReferences().get(requestId);
+            if(expand) {
+                RadiologySourceRefs ref = (RadiologySourceRefs) state.getTicket().value.getReferences().get(requestId);
 
-            WithOutcome<Referral> referralDetails =
-                    radiologySource.requestByBrokerId(ref.infoBrokerId);
+                WithOutcome<Referral> referralDetails =
+                        radiologySource.requestByBrokerId(ref.infoBrokerId);
 
-            state.setCurrentReferral(
-                    zfpUrls.addZfpUrls(
-                        referralDetails,
-                        state.getTicket().value.userContext.employeeHsaId
-                    )
-            );
+                state.setCurrentReferral(
+                        zfpUrls.addZfpUrls(
+                            referralDetails,
+                            state.getTicket().value.userContext.employeeHsaId
+                        )
+                );
+            } else {
+                state.setCurrentReferral(state.getCurrentReferral().mapOutcome(Outcome.UNFULFILLED_FAILURE));
+            }
 
             response.setRenderParameter("view", "view");
         }

@@ -35,8 +35,10 @@
                 </thead>
                 <tbody>
                 <c:forEach var="infoRow" items="${state.refs.value}" varStatus="loopStatus">
+                    <c:set var="expand" value="${state.ticket.success && state.currentReferral.success && infoRow.infoBrokerId eq state.currentReferral.value.infoBrokerId}" />
                     <portlet:actionURL name="showReferral" var="showReferralUrl">
                         <portlet:param name="requestId" value="${infoRow.id}" />
+                        <portlet:param name="expand" value="${expand ? false : true}" />
                     </portlet:actionURL>
                     <c:set var="rowClass" value="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}"/>
                     <tr class="${rowClass}">
@@ -47,7 +49,7 @@
                         <td>${infoRow.examinations}</td>
                         <td>${infoRow.status}</td>
                     </tr>
-                    <c:if test="${state.ticket.success && state.currentReferral.success && infoRow.infoBrokerId eq state.currentReferral.value.infoBrokerId}">
+                    <c:if test="${expand}">
                         <tr class="${rowClass}">
                             <td colspan="6">
                                 <%@ include file="showReferral.jsp" %>
