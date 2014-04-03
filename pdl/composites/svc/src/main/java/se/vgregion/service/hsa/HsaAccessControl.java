@@ -62,15 +62,15 @@ public class HsaAccessControl implements AccessControl {
                     TreeSet<Access> access = new TreeSet<Access>();
 
                     // Filter out non VoB assignments.
-                    if(miu.getMiuPurpose().equals(VoB)) {
+                    if (miu.getMiuPurpose().equals(VoB)) {
 
                         for (String miuRight : miu.getMiuRights().getMiuRight()) {
-                            if(miuRight.contains(ALL)) {
+                            if (miuRight.contains(ALL)) {
                                 // Special case, expand ALL to all information types
                                 ArrayList<String> mius = expandAllMiu(miuRight);
-                                    for(String m : mius) {
-                                        access.add(Access.fromMiuRights(m));
-                                    }
+                                for (String m : mius) {
+                                    access.add(Access.fromMiuRights(m));
+                                }
                             } else {
                                 access.add(Access.fromMiuRights(miuRight));
                             }
@@ -84,11 +84,11 @@ public class HsaAccessControl implements AccessControl {
                                 miu.getCareGiverName(),
                                 miu.getCareUnitName(),
                                 access
-                            );
+                        );
 
                         boolean hasAgreement = agreementService.hasCareAgreement(assignment.getCareProviderHsaId());
 
-                        if(hasAgreement) {
+                        if (hasAgreement) {
                             assignments.put(miu.getHsaIdentity(), assignment);
                         }
                     }
@@ -101,12 +101,12 @@ public class HsaAccessControl implements AccessControl {
                 return WithOutcome.success(context);
             }
         } catch (HsaWsFault hsaWsFault) {
-            LOGGER.error("Unable to do lookup for HSA-ID {}. Faultinfo: {}.", hsaId, hsaWsFault.getFaultInfo());
+            LOGGER.error("Unable to do lookup for HSA-ID {}. Faultinfo: {}.", hsaId, hsaWsFault.getFaultInfo().getMessage());
             return WithOutcome.clientError(new PdlContext("", hsaId, new TreeMap<String, Assignment>()));
-        } catch (UncheckedException cfxFault ) {
+        } catch (UncheckedException cfxFault) {
             LOGGER.error("Unable to do lookup because of communication error.", cfxFault);
             return WithOutcome.commFailure(new PdlContext("", hsaId, new TreeMap<String, Assignment>()));
-        } catch (RuntimeException ex ) {
+        } catch (RuntimeException ex) {
             LOGGER.error("Unable to do lookup, undefined error.", ex);
             return WithOutcome.clientError(new PdlContext("", hsaId, new TreeMap<String, Assignment>()));
         }
@@ -120,7 +120,7 @@ public class HsaAccessControl implements AccessControl {
         String activity = rights[0];
         String scope = rights[2];
         ArrayList<String> mius = new ArrayList<String>();
-        for(InformationType i : InformationType.values()) {
+        for (InformationType i : InformationType.values()) {
             mius.add(activity + ";" + i.toString().toLowerCase() + ";" + scope);
         }
 
