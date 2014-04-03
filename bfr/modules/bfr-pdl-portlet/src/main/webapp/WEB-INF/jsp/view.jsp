@@ -13,9 +13,19 @@
 <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/css/bfr.css" />
 
 <div class="clearfix">
+    <c:if test="${state.currentReferral.failure && state.currentReferral.outcome != 'UNFULFILLED_FAILURE'}">
+       <div class="callout callout-danger">
+           Tjänst för att hämta remiss
+           <c:choose>
+               <c:when test="${state.currentReferral.outcome == 'CLIENT_FAILURE'}">misslyckades på grund av ett klientfel.</c:when>
+               <c:when test="${state.currentReferral.outcome == 'COMMUNICATION_FAILURE'}">misslyckades på grund av ett kommunikationsfel.</c:when>
+               <c:when test="${state.currentReferral.outcome == 'REMOTE_FAILURE'}">misslyckades på grund av ett fel i säkerhetstjänsterna.</c:when>
+           </c:choose>
+       </div>
+    </c:if>
+
     <c:set var="patientInfoFor" value="Patientinformation Radiologi" scope="request"/>
     <%@ include file="patientInformationFor.jsp" %>
-
     <c:choose>
         <c:when test="${state.refs.success}">
             <!-- IE < 10 does not like giving a tbody a height.  The workaround here applies the scrolling to a wrapped <div>. -->
@@ -35,7 +45,9 @@
                 </thead>
                 <tbody>
                 <c:forEach var="infoRow" items="${state.refs.value}" varStatus="loopStatus">
+
                     <c:set var="expand" value="${state.ticket.success && state.currentReferral.success && infoRow.infoBrokerId eq state.currentReferral.value.infoBrokerId}" />
+
                     <portlet:actionURL name="showReferral" var="showReferralUrl">
                         <portlet:param name="requestId" value="${infoRow.id}" />
                         <portlet:param name="expand" value="${expand ? false : true}" />
@@ -49,13 +61,13 @@
                         <td>${infoRow.examinations}</td>
                         <td>${infoRow.status}</td>
                     </tr>
-                    <c:if test="${expand}">
-                        <tr class="${rowClass}">
-                            <td colspan="6">
-                                <%@ include file="showReferral.jsp" %>
-                            </td>
-                        </tr>
-                    </c:if>
+                        <c:if test="${expand && state.currentReferral.success}">
+                            <tr class="${rowClass}">
+                                <td colspan="6">
+                                    <%@ include file="showReferral.jsp" %>
+                                </td>
+                            </tr>
+                        </c:if>
                 </c:forEach>
                 </tbody>
             </table>

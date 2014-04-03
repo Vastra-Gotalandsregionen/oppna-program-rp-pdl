@@ -12,11 +12,13 @@ public class WithOutcome<T extends Serializable> implements Serializable {
     public final T value;
     public final Outcome outcome;
     public final boolean success;
+    public final boolean failure;
 
     private WithOutcome(Outcome status, T value) {
         this.value = value;
         this.outcome = status;
         this.success = status == Outcome.SUCCESS;
+        this.failure = !success;
     }
 
     public T getValue() {
@@ -29,6 +31,10 @@ public class WithOutcome<T extends Serializable> implements Serializable {
 
     public boolean isSuccess() {
         return success;
+    }
+
+    public boolean isFailure() {
+        return failure;
     }
 
     public WithOutcome<T> mapOutcome(Outcome newOutcome) {
@@ -73,6 +79,8 @@ public class WithOutcome<T extends Serializable> implements Serializable {
         return "WithOutcome{" +
                 "value=" + value +
                 ", outcome=" + outcome +
+                ", success=" + success +
+                ", failure=" + failure +
                 '}';
     }
 }
