@@ -104,8 +104,8 @@ public class PdlController {
             @RequestParam boolean reset,
             ActionRequest request,
             ActionResponse response,
-            ModelMap modelMap
-    ) {
+            Model model
+    ) throws IOException {
         if(patientId == null) {
             // Login has timed out and the user had to login, thus loosing the parameter for search.
             state.setCurrentProgress(PdlProgress.firstStep());
@@ -144,7 +144,9 @@ public class PdlController {
 
                 state.setMissingResults(careSystems.outcome == Outcome.UNFULFILLED_FAILURE);
 
-                if(careSystems.value.size() > 0) {
+                boolean hasCareSystems = careSystems.value.size() > 0;
+
+                if(hasCareSystems) {
 
                     PdlReport newReport = null;
 
@@ -163,7 +165,10 @@ public class PdlController {
                     state.setPdlReport(newReport);
                     state.setCsReport(csReport);
                     state.setCurrentAssignment(currentAssignment); // Must be here or null pointer exception since it calls calcVisibility
+
+
                 }
+
 
                 PdlLogger.log(UserAction.SEARCH_PATIENT, logRepo, state);
 
@@ -171,11 +176,11 @@ public class PdlController {
                 QName qname = new QName("http://pdl.portalen.vgregion.se/events", "pctx.reset");
                 response.setEvent(qname, new PatientEvent(null, null));
 
-                if (state.getPdlReport().hasRelationship.value && onlySameCareUnit(state)) {
-                    for (InfoTypeState<InformationType> key : state.getCsReport().aggregatedSystems.value.keySet()) {
-                        toggleAllInfoResource(key.getId(), response);
-                        showSummary(modelMap);
-                    }
+                if (hasCareSystems &&
+                    state.getPdlReport().hasRelationship.value &&
+                    onlySameCareUnit(state))
+                {
+                    shortcutDirectlyToViewer(request, response, model);
                 } else {
                     response.setRenderParameter("view", "pickInfoResource");
                 }
@@ -187,6 +192,13 @@ public class PdlController {
             state.setCurrentProgress(PdlProgress.firstStep().nextStep());
             response.setRenderParameter("view", "pickInfoResource");
         }
+    }
+
+    private void shortcutDirectlyToViewer(ActionRequest request, ActionResponse response, Model model) throws IOException {
+        for (InfoTypeState<InformationType> key : state.getCsReport().aggregatedSystems.value.keySet()) {
+            toggleAllInfoTypes(key.getId());
+        }
+        goToSummary(model, request, response);
     }
 
     private boolean onlySameCareUnit(PdlUserState state) {
@@ -241,8 +253,9 @@ public class PdlController {
     public void establishRelationship(
             ActionRequest request,
             ActionResponse response,
+            Model model,
             @RequestParam boolean confirmed
-    ) {
+    ) throws IOException {
         if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
         } else if(confirmed) {
@@ -270,7 +283,14 @@ public class PdlController {
             state.setPdlReport(newReport);
 
             PdlLogger.log(UserAction.ATTEST_RELATION, logRepo, state);
-            response.setRenderParameter("view", "pickInfoResource");
+
+            if (state.getPdlReport().hasRelationship.value &&
+                onlySameCareUnit(state))
+            {
+                shortcutDirectlyToViewer(request, response, model);
+            } else {
+                response.setRenderParameter("view", "pickInfoResource");
+            }
         } else {
             response.setRenderParameter("view", "pickInfoResource");
         }
@@ -378,21 +398,8 @@ public class PdlController {
             response.setRenderParameter("view", "view");
         } else {
 
-            for(InfoTypeState<InformationType> key: state.getCsReport().aggregatedSystems.value.keySet()) {
-                if(key.id.equals(id)) {
-                    for(SystemState<CareSystem> system : state.getCsReport().aggregatedSystems.value.get(key)) {
-                        boolean selectable =
-                                !system.isSelected() &&
-                                !system.blocked &&
-                                (system.visibility == Visibility.SAME_CARE_UNIT ||
-                                state.getShouldBeVisible().get(system.visibility.toString()));
+            toggleAllInfoTypes(id);
 
-                        if(selectable) {
-                            toggleInformation(system.id, false, false, response);
-                        }
-                    }
-                }
-            }
             response.setRenderParameter("view", "pickInfoResource");
         }
     }
@@ -461,18 +468,40 @@ public class PdlController {
                     state.getPatient().patientId
             );
 
-            CareSystemsReport newCsReport =
-                    state.getCsReport().toggleInformation(id, confirmed);
-
-            state.setCsReport(newCsReport);
-
-            if (revokeEmergency && confirmed) {
-                PdlLogger.log(UserAction.EMERGENCY_PASS_BLOCKED, logRepo, state);
-            } else if (!revokeEmergency && confirmed) {
-                PdlLogger.log(UserAction.PASS_BLOCKED, logRepo, state);
-            }
+            toggleOneInfoType(id, confirmed, revokeEmergency);
 
             response.setRenderParameter("view", "pickInfoResource");
+        }
+    }
+
+    private void toggleAllInfoTypes(String id) {
+        for(InfoTypeState<InformationType> key: state.getCsReport().aggregatedSystems.value.keySet()) {
+            if(key.id.equals(id)) {
+                for(SystemState<CareSystem> system : state.getCsReport().aggregatedSystems.value.get(key)) {
+                    boolean selectable =
+                            !system.isSelected() &&
+                                    !system.blocked &&
+                                    (system.visibility == Visibility.SAME_CARE_UNIT ||
+                                            state.getShouldBeVisible().get(system.visibility.toString()));
+
+                    if(selectable) {
+                        toggleOneInfoType(system.id, false, false);
+                    }
+                }
+            }
+        }
+    }
+
+    private void toggleOneInfoType(String id, boolean confirmed, boolean revokeEmergency) {
+        CareSystemsReport newCsReport =
+                state.getCsReport().toggleInformation(id, confirmed);
+
+        state.setCsReport(newCsReport);
+
+        if (revokeEmergency && confirmed) {
+            PdlLogger.log(UserAction.EMERGENCY_PASS_BLOCKED, logRepo, state);
+        } else if (!revokeEmergency && confirmed) {
+            PdlLogger.log(UserAction.PASS_BLOCKED, logRepo, state);
         }
     }
 
