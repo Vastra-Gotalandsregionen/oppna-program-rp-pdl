@@ -61,6 +61,7 @@ public class PdlController {
     @Qualifier("MockAccessControl")
     private AccessControl accessControl;
     @Autowired
+    @Qualifier("CareAgreementMock")
     private CareAgreement careAgreement;
     @Autowired
     private CareSystemUrls careSystemUrls;

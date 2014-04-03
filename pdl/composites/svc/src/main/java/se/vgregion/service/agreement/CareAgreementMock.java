@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
-@Service
+@Service("CareAgreementMock")
 public class CareAgreementMock implements CareAgreement {
 
     private static final Set<String> careProviderAgreement;
