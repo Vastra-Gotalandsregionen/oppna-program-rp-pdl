@@ -7,7 +7,6 @@
         <li><span class="key">Remiss-ID</span><span class="value">${state.currentReferral.value.risId}</span></li>
         <li><span class="key">Prioritet</span><span class="value">${state.currentReferral.value.priority}</span></li>
         <li><span class="key">Antal bilder</span><span class="value">${state.currentReferral.value.imageCount}</span></li>
-        <li><span class="key">Datum</span><span class="value">${state.currentReferral.value.placingDisplayDate}</span></li>
         <li><span class="key">Utförande enhet</span><span class="value">${state.currentReferral.value.fillerLocation}</span></li>
         <li><span class="key">Remitterande enhet</span><span class="value">${state.currentReferral.value.placerLocation}</span></li>
         <li><span class="key">Remitterande läkare</span><span class="value">${state.currentReferral.value.referringPhysicianName}</span></li>
@@ -18,8 +17,6 @@
     <div id="studiesContainer">
         <c:forEach var="study" items="${state.currentReferral.value.studies}" varStatus="studiesStatus">
             <ul class="clearfix">
-                <li><span class="key"><b>Undersökning</b></span></li>
-                <li class="${studiesStatus.index % 2 == 0 ? 'even' : 'odd'}"><span class="key">Remiss-ID</span><span class="value">${study.risId}</span></li>
                 <li class="${studiesStatus.index % 2 == 0 ? 'even' : 'odd'}"><span class="key">Undersökningsdatum</span><span class="value">${study.displayDate}</span></li>
                 <li class="${studiesStatus.index % 2 == 0 ? 'even' : 'odd'}"><span class="key">Beskrivning</span><span class="value">${study.code} - ${study.description}</span></li>
                 <li class="${studiesStatus.index % 2 == 0 ? 'even' : 'odd'}">

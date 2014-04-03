@@ -17,7 +17,7 @@
 .bfr .key {
     float: left;
     width: 40%;
-    font-weight: normal;
+    font-weight: bold;
     font-family: Ubuntu,Arial,Verdana,Helvetica,sans-serif;
     font-size: 1.05em;
     color: #666;
@@ -113,8 +113,8 @@
 
 .bfr table thead {
     background-color: #eef5fa;
-    font-family: Ubuntu,Arial,Verdana,Helvetica,sans-serif;
-    font-size: 1.2em;
+    font-size: 1em;
+    font-weight: bold;
 }
 
 .bfr table tbody {
@@ -122,7 +122,6 @@
 }
 
 .bfr table th {
-    font-weight: normal;
     border-bottom: solid #c4ced5 1px;
 }
 
