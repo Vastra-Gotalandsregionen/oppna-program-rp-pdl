@@ -206,7 +206,7 @@ public class PdlController {
         TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> systems =
                 state.getCsReport().aggregatedSystems.value;
         for (InfoTypeState<InformationType> key : systems.keySet()) {
-            if (key.containsOtherUnits && key.containsOtherProviders) {
+            if (key.containsOtherUnits || key.containsOtherProviders) {
                 return false;
             }
         }
