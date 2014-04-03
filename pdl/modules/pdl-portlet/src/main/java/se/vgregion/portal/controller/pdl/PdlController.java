@@ -123,10 +123,10 @@ public class PdlController {
 
             InfobrokerPersonIdType pidtype = InfobrokerPersonIdType.valueOf(patientIdType);
 
-            boolean isValid = (pidtype == InfobrokerPersonIdType.PAT_PERS_NR || pidtype == InfobrokerPersonIdType.PAT_SAMO_NR) ?
+            boolean isValidPatientId = (pidtype == InfobrokerPersonIdType.PAT_PERS_NR || pidtype == InfobrokerPersonIdType.PAT_SAMO_NR) ?
                 patientIdTrimmed.length() == 12 && PersonIdUtil.personIdIsValid(patientIdTrimmed) : true;
 
-            if(isValid) {
+            if(isValidPatientId) {
 
                 WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> patientCareSystems =
                         systems.byPatientId(ctx, patientIdTrimmed, pidtype);
@@ -189,6 +189,7 @@ public class PdlController {
                 response.setRenderParameter("view", "view");
             }
         } else {
+
             state.setCurrentProgress(PdlProgress.firstStep().nextStep());
             response.setRenderParameter("view", "pickInfoResource");
         }

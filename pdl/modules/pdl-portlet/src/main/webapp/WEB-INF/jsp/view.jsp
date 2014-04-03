@@ -11,55 +11,6 @@
 <%@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 
 <link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/css/pdl.css" />
-<liferay-util:html-bottom>
-    <script type="text/javascript">
-           AUI().use(
-              'aui-base',
-              'aui-form-validator',
-              function(A) {
-                var rules = {
-                     <portlet:namespace/>patientId: {
-                     required: true,
-                     alphanum: true,
-                     rangeLength: [10, 12]
-                 },
-                 patientId: {
-                      required: true,
-                      alphanum: true,
-                      rangeLength: [10, 12]
-                  }
-               };
-               var fieldStrings = {
-                 <portlet:namespace/>patientId: {
-                   required: 'Skriv in patientid i detta fältet.',
-                 },
-                 patientId: {
-                    required: 'Skriv in patientid i detta fältet.',
-                  }
-               };
-               new A.FormValidator(
-                 {
-                    boundingBox: '#<portlet:namespace/>pdlSearchForm',
-                    fieldContainer: 'span',
-                    fieldStrings: fieldStrings,
-                    rules: rules,
-                    showAllMessages:true
-                 }
-               );
-
-               new A.FormValidator(
-                {
-                   boundingBox: '#test',
-                   fieldContainer: 'p',
-                   fieldStrings: fieldStrings,
-                   rules: rules,
-                   showAllMessages:true
-                }
-              );
-             }
-           );
-    </script>
-</liferay-util:html-bottom>
 
 <portlet:defineObjects />
 <liferay-theme:defineObjects />
@@ -72,14 +23,6 @@
     <c:if test="${state.ctx.success}">
 
         <%@ include file="search/pdlInfoCallout.jsp" %>
-        <%--
-        <form id="test">
-           <p>
-             <label class="aui-field-label" for="patientId">PatientId:</label>
-             <input type="text" name="patientId" id="patientId" />
-           </p>
-        </form>
-        --%>
         <aui:form id="pdlSearchForm" action="${searchPatientUrl}" name="searchPatientForm" cssClass="pdl-form" method="post">
             <aui:fieldset>
                     <c:set var="elementWrapCssClass" scope="page" value="element-wrap" />
