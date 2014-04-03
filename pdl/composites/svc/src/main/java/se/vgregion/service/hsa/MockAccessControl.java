@@ -39,7 +39,6 @@ public class MockAccessControl implements AccessControl {
                 )
         );
 
-
         TreeSet<Access> sameCareGiver = new TreeSet<Access>(
                 Arrays.asList(
                         Access.fromMiuRights("Läsa;lak;VG"),
@@ -95,7 +94,6 @@ public class MockAccessControl implements AccessControl {
                         sameProviders
                 )
         );
-
 
         return new PdlContext(
                 "Ludvig Läkare",

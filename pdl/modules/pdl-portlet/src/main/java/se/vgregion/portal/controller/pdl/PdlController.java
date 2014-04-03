@@ -103,7 +103,8 @@ public class PdlController {
             @RequestParam String currentAssignment,
             @RequestParam boolean reset,
             ActionRequest request,
-            ActionResponse response
+            ActionResponse response,
+            ModelMap modelMap
     ) {
         if(patientId == null) {
             // Login has timed out and the user had to login, thus loosing the parameter for search.
@@ -170,7 +171,14 @@ public class PdlController {
                 QName qname = new QName("http://pdl.portalen.vgregion.se/events", "pctx.reset");
                 response.setEvent(qname, new PatientEvent(null, null));
 
-                response.setRenderParameter("view", "pickInfoResource");
+                if (state.getPdlReport().hasRelationship.value && onlySameCareUnit(state)) {
+                    for (InfoTypeState<InformationType> key : state.getCsReport().aggregatedSystems.value.keySet()) {
+                        toggleAllInfoResource(key.getId(), response);
+                        showSummary(modelMap);
+                    }
+                } else {
+                    response.setRenderParameter("view", "pickInfoResource");
+                }
             } else {
                 state.setInvalid(true);
                 response.setRenderParameter("view", "view");
@@ -179,6 +187,18 @@ public class PdlController {
             state.setCurrentProgress(PdlProgress.firstStep().nextStep());
             response.setRenderParameter("view", "pickInfoResource");
         }
+    }
+
+    private boolean onlySameCareUnit(PdlUserState state) {
+
+        TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> systems =
+                state.getCsReport().aggregatedSystems.value;
+        for (InfoTypeState<InformationType> key : systems.keySet()) {
+            if (key.containsOtherUnits && key.containsOtherProviders) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private String trimmedPatientId(String patientId) {

@@ -3,10 +3,13 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:task="http://www.springframework.org/schema/task"
        xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xmlns:cxf="http://cxf.apache.org/core"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
-       http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+       http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+       http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
   <context:component-scan base-package="se.vgregion.service" />
 
@@ -51,4 +54,20 @@
                 serviceClass="riv.ehr.ehrexchange.patienthistory._1.rivtabp20.PatientHistoryResponderInterface"
                 address="${ws.endpoint.pdl.infoBroker}" />
 
+
+  <cxf:bus>
+    <cxf:outInterceptors>
+      <ref bean="loggingOutInterceptor"/>
+    </cxf:outInterceptors>
+    <cxf:inInterceptors>
+      <ref bean="loggingInInterceptor"/>
+    </cxf:inInterceptors>
+  </cxf:bus>
+
+  <bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor">
+    <property name="prettyLogging" value="true"/>
+  </bean>
+  <bean id="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor">
+    <property name="prettyLogging" value="true"/>
+  </bean>
 </beans>

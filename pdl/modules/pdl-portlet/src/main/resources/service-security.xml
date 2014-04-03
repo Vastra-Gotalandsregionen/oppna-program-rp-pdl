@@ -74,20 +74,4 @@
   <import resource="classpath:META-INF/cxf/cxf.xml"/>
   <import resource="classpath:META-INF/cxf/cxf-extension-jaxws.xml"/>
 
-  <cxf:bus>
-    <cxf:outInterceptors>
-      <ref bean="loggingOutInterceptor"/>
-    </cxf:outInterceptors>
-    <cxf:inInterceptors>
-      <ref bean="loggingInInterceptor"/>
-    </cxf:inInterceptors>
-  </cxf:bus>
-
-  <bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor">
-    <property name="prettyLogging" value="true"/>
-  </bean>
-  <bean id="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor">
-    <property name="prettyLogging" value="true"/>
-  </bean>
-
 </beans>
