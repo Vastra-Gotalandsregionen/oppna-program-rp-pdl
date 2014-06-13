@@ -32,7 +32,8 @@ public class RadiologySourceRefs implements SourceReferences {
     ) {
         this.id = java.util.UUID.randomUUID().toString();
         this.requestDate = requestDate;
-        this.requestDisplayDate = DateFormatUtils.format(requestDate, "yyyy-MM-dd HH:mm");
+        this.requestDisplayDate = requestDate == null ? "- ? -"
+                : DateFormatUtils.format(requestDate, "yyyy-MM-dd HH:mm");
         this.numImages = numImages;
         this.careUnitDisplayName = careUnitDisplayName;
         this.orgUnitDisplayName = orgUnitDisplayName;

@@ -46,7 +46,7 @@ public class RadiologySource {
 
         b.statusList = getStatuses(req);
         b.imageCount = sumNumImages(req.getExamination());
-        b.placingDate = getDateFromGregorianCalendar(req.getPlacer().getLocationData().getCreatedInInfobroker());
+        b.placingDate = getDateFromGregorianCalendar(req.getCreatedInRis());
         b.placerLocation = getLocationString(req.getPlacer().getLocationData());
         b.fillerLocation = getLocationString(req.getFiller().getLocationData());
         b.infoBrokerId = req.getInfobrokerId();

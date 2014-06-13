@@ -15,7 +15,7 @@ public class CareAgreementMock implements CareAgreement {
     static {
         TreeSet<String> agreements = new TreeSet<String>();
         agreements.add(VGR);
-        //agreements.add("SE5565189692-0001");
+        agreements.add("SE5565189692-0001"); // Capio
         careProviderAgreement = Collections.unmodifiableSet(agreements);
     }
 

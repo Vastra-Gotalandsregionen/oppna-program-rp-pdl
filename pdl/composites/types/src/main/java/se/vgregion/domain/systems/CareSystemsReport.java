@@ -23,9 +23,9 @@ public class CareSystemsReport implements Serializable {
     public CareSystemsReport(Assignment currentAssignment, PdlReport pdlReport) {
 
         ArrayList<WithInfoType<WithBlock<CareSystem>>> careSystems =
-            filerByAssignment(
-                currentAssignment,
-                pdlReport.systems.value
+            filterByAssignment(
+                    currentAssignment,
+                    pdlReport.systems.value
             );
 
         ArrayList <WithInfoType<WithVisibility<WithBlock<CareSystem>>>> categorizedSystems =
@@ -235,7 +235,7 @@ public class CareSystemsReport implements Serializable {
         return report;
     }
 
-    private ArrayList<WithInfoType<WithBlock<CareSystem>>> filerByAssignment(
+    private ArrayList<WithInfoType<WithBlock<CareSystem>>> filterByAssignment(
             Assignment assignment,
             ArrayList<WithInfoType<WithBlock<CareSystem>>> systems
     ) {

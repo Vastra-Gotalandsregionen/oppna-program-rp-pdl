@@ -46,7 +46,7 @@ public class Study implements Serializable {
         this.code = code;
         this.description = description;
         this.date = date;
-        this.displayDate = DateFormatUtils.format(date, "yyyy-MM-dd HH:mm");
+        this.displayDate = date == null ? "- ? -" : DateFormatUtils.format(date, "yyyy-MM-dd HH:mm");
         this.noOfImages = noOfImages;
         this.studyReports = Collections.unmodifiableList(studyReports);
         this.dicomSeriesStudyUids = Collections.unmodifiableList(dicomSeriesStudyUids);

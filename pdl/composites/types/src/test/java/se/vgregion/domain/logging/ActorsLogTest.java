@@ -1,7 +1,7 @@
 package se.vgregion.domain.logging;
 
 import junit.framework.Assert;
-import org.apache.commons.collections.BeanMap;
+import org.apache.commons.beanutils.BeanMap;
 import org.junit.Test;
 
 public class ActorsLogTest {

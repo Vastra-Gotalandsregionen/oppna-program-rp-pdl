@@ -19,7 +19,7 @@ public class StudyReport {
             String text) {
         this.status = status;
         this.date = date;
-        this.displayDate = DateFormatUtils.format(date, "yyyy-MM-dd HH:mm");
+        this.displayDate = date == null ? "- ? -" : DateFormatUtils.format(date, "yyyy-MM-dd HH:mm");
         this.signer = signer;
         this.text = text;
     }

@@ -189,8 +189,14 @@ public class RadiologySource implements CareSystems {
         if(careProviderUnit.success) {
             if(careProviderUnit.value.success) {
                 String infoBrokerId = req.getInfobrokerId();
-                Date requestDate = getDateFromGregorianCalendar(req.getPlacer().getLocationData().getCreatedInInfobroker());
 
+                // Don't know any better way of getting a date. Is this even shown in gui?
+                Date requestDate;
+                if (req.getExamination().size() != 1) {
+                    requestDate = null;
+                } else {
+                    requestDate = getDateFromGregorianCalendar(req.getExamination().get(0).getDate());
+                }
 
                 Map<String,SourceReferences> refs = new HashMap<String,SourceReferences>();
 
@@ -318,7 +324,7 @@ public class RadiologySource implements CareSystems {
             returnDate.set(gregorianCal.getYear(), gregorianCal.getMonth() - 1, gregorianCal.getDay(),
                     gregorianCal.getHour(), gregorianCal.getMinute());
         } else {
-            returnDate.set(1912, 11, 12, 12, 12);
+            return null;
         }
         return returnDate.getTime();
     }

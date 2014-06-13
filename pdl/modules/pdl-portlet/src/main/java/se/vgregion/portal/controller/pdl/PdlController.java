@@ -153,7 +153,7 @@ public class PdlController {
 
                     PortletPreferences prefs = request.getPreferences();
                     int timeUnits = Integer.parseInt(prefs.getValue("establishRelationDuration", "1"));
-                    RoundedTimeUnit duration = RoundedTimeUnit.valueOf(prefs.getValue("establishRelationTimeUnits", RoundedTimeUnit.NEAREST_DAY.toString()));
+                    RoundedTimeUnit duration = RoundedTimeUnit.valueOf(prefs.getValue("establishRelationTimeUnit", RoundedTimeUnit.NEAREST_DAY.toString()));
 
                     // Security Services only supports Social Security Number or Samordningsnummer.
                     if(pidtype == InfobrokerPersonIdType.PAT_PERS_NR || pidtype == InfobrokerPersonIdType.PAT_SAMO_NR) {
@@ -166,10 +166,7 @@ public class PdlController {
                     state.setPdlReport(newReport);
                     state.setCsReport(csReport);
                     state.setCurrentAssignment(currentAssignment); // Must be here or null pointer exception since it calls calcVisibility
-
-
                 }
-
 
                 PdlLogger.log(UserAction.SEARCH_PATIENT, logRepo, state);
 
@@ -270,16 +267,16 @@ public class PdlController {
             );
 
             PortletPreferences prefs = request.getPreferences();
-            int timeUnits = Integer.parseInt(prefs.getValue("establishRelationDuration", "1"));
-            RoundedTimeUnit duration = RoundedTimeUnit.valueOf(prefs.getValue("establishRelationTimeUnits", RoundedTimeUnit.NEAREST_DAY.toString()));
+            int duration = Integer.parseInt(prefs.getValue("establishRelationDuration", "1"));
+            RoundedTimeUnit timeUnit = RoundedTimeUnit.valueOf(prefs.getValue("establishRelationTimeUnit", RoundedTimeUnit.NEAREST_DAY.toString()));
 
             PdlReport newReport = pdl.patientRelationship(
                 ctx,
                 state.getPdlReport(),
                 state.getPatient().patientId,
                 "VGR Portal PDL Service",
-                timeUnits,
-                duration
+                duration,
+                timeUnit
             );
 
             state.setPdlReport(newReport);
@@ -316,8 +313,8 @@ public class PdlController {
             );
 
             PortletPreferences prefs = request.getPreferences();
-            int timeUnits = Integer.parseInt(prefs.getValue("establishConsentDuration", "7"));
-            RoundedTimeUnit duration = RoundedTimeUnit.valueOf(prefs.getValue("establishConsentTimeUnits", RoundedTimeUnit.NEAREST_DAY.toString()));
+            int duration = Integer.parseInt(prefs.getValue("establishConsentDuration", "7"));
+            RoundedTimeUnit timeUnit = RoundedTimeUnit.valueOf(prefs.getValue("establishConsentTimeUnit", RoundedTimeUnit.NEAREST_DAY.toString()));
 
             // FIXME 2013-10-21 : Magnus Andersson > Add possiblility to be represented by someone?
             state.setPdlReport(
@@ -326,8 +323,8 @@ public class PdlController {
                     state.getPdlReport(),
                     state.getPatient().patientId,
                     "VGR Portal PDL Service",
-                    timeUnits,
                     duration,
+                    timeUnit,
                     ( emergency ) ? PdlReport.ConsentType.Emergency : PdlReport.ConsentType.Consent
                 )
             );

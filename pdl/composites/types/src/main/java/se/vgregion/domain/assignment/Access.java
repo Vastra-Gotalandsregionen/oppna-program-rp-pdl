@@ -9,7 +9,7 @@ public class Access implements Serializable, Comparable<Access> {
     public final boolean hasHsaId;
     public final AccessActivity accessActivity;
     public final InformationType infoType;
-    public final String scope;
+    public final String scope; // VE, VG, SJF or an HSA-ID
 
     private Access(boolean hasHsaId, AccessActivity accessActivity, InformationType infoType, String scope) {
         this.hasHsaId = hasHsaId;
