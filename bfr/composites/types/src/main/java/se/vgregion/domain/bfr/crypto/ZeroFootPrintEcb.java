@@ -65,7 +65,6 @@ public class ZeroFootPrintEcb {
                 replace(PASSWORD, password).
                 replace(TIME, creationDateString);
 
-        System.out.println("Plaintext = " + plainText);
         try {
             byte[] encrypted = encrypt(
                     plainText.getBytes("UTF-8"),
@@ -93,18 +92,6 @@ public class ZeroFootPrintEcb {
     {
         Cipher cipher = getCipher(keyBytes, Cipher.ENCRYPT_MODE);
         return cipher.doFinal(message);
-    }
-
-    static String decrypt(byte[] message, byte[] keyBytes) throws
-            NoSuchPaddingException,
-            NoSuchAlgorithmException,
-            InvalidKeyException,
-            BadPaddingException,
-            IllegalBlockSizeException,
-            UnsupportedEncodingException
-    {
-        Cipher decipher = getCipher(keyBytes, Cipher.DECRYPT_MODE);
-        return new String(decipher.doFinal(message), "UTF-8");
     }
 
     private static Cipher getCipher(byte[] keyBytes, int mode) throws

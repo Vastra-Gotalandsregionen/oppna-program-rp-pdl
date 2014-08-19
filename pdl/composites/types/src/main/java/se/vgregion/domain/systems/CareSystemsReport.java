@@ -83,7 +83,6 @@ public class CareSystemsReport implements Serializable {
         this.selectedInfoResource = selectedInfoResource;
     }
 
-
     private boolean containsSameCareUnit(TreeMap<InfoTypeState<InformationType>, ArrayList<SystemState<CareSystem>>> systems) {
         for(InfoTypeState<InformationType> key : systems.keySet()) {
             for(SystemState<CareSystem> sys : systems.get(key)) {

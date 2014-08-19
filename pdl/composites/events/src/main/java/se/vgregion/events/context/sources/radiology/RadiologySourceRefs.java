@@ -45,7 +45,27 @@ public class RadiologySourceRefs implements SourceReferences {
     public static Comparator<RadiologySourceRefs> dateDescComparator = new Comparator<RadiologySourceRefs>() {
         @Override
         public int compare(RadiologySourceRefs o1, RadiologySourceRefs o2) {
-            return (o1 == null && o2 == null ) ? 0 : (o1 == null) ? 1 : (o2 == null) ? -1 : o2.requestDate.compareTo(o1.requestDate);
+            if (o1 == null && o2 == null) {
+                return 0;
+            }
+            if (o1 == null) {
+                return 1;
+            }
+            if (o2 == null) {
+                return -1;
+            }
+            // None null now
+            if (o1.requestDate == null && o2.requestDate == null) {
+                return 0;
+            }
+            if (o1.requestDate == null) {
+                return 1;
+            }
+            if (o2.requestDate == null) {
+                return -1;
+            }
+            // No requestDate is null
+            return o2.requestDate.compareTo(o1.requestDate);
         }
     };
 

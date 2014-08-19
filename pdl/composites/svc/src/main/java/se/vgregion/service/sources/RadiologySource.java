@@ -70,7 +70,7 @@ public class RadiologySource implements CareSystems {
         Patient unknownPatient = new Patient(patientId);
 
         try {
-            RequestList result = ibRequest(patientId, patientIdType);
+            RequestList result = infoBrokerRequest(patientId, patientIdType);
 
             WithOutcome<ArrayList<WithInfoType<CareSystem>>> outcome =
                     getMapRadiologyResult(result);
@@ -293,7 +293,7 @@ public class RadiologySource implements CareSystems {
         return hsaUnitId;
     }
 
-    private RequestList ibRequest(String patientId, InfobrokerPersonIdType pidType) {
+    private RequestList infoBrokerRequest(String patientId, InfobrokerPersonIdType pidType) {
         AttributedURIType attribURIType = new AttributedURIType();
         PatientSearchOrder patientSearchOrder = new PatientSearchOrder();
         Search searchValue = new Search();

@@ -17,6 +17,7 @@ import se.vgregion.domain.bfr.Referral;
 import se.vgregion.domain.decorators.Outcome;
 import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.events.context.PatientEvent;
+import se.vgregion.events.context.PdlTicket;
 import se.vgregion.events.context.SourceReferences;
 import se.vgregion.events.context.sources.radiology.RadiologySourceRefs;
 import se.vgregion.service.bfr.RadiologySource;
@@ -68,17 +69,15 @@ public class BfrController {
     ) {
         if(state.getRefs().success) {
             if(expand) {
-                RadiologySourceRefs ref = (RadiologySourceRefs) state.getTicket().value.getReferences().get(requestId);
+                PdlTicket pdlTicket = state.getTicket().value;
 
-                WithOutcome<Referral> referralDetails =
-                        radiologySource.requestByBrokerId(ref.infoBrokerId);
+                RadiologySourceRefs ref = (RadiologySourceRefs) pdlTicket.getReferences().get(requestId);
 
-                state.setCurrentReferral(
-                        zfpUrls.addZfpUrls(
-                            referralDetails,
-                            state.getTicket().value.userContext.employeeHsaId
-                        )
-                );
+                WithOutcome<Referral> referralDetails = radiologySource.requestByBrokerId(ref.infoBrokerId);
+
+                referralDetails = zfpUrls.addZfpUrls(referralDetails, pdlTicket.userContext.employeeHsaId);
+
+                state.setCurrentReferral(referralDetails);
             } else {
                 state.setCurrentReferral(state.getCurrentReferral().mapOutcome(Outcome.UNFULFILLED_FAILURE));
             }
@@ -100,13 +99,19 @@ public class BfrController {
 
     @EventMapping("{http://pdl.portalen.vgregion.se/events}pctx.change")
     public void changeListener(EventRequest request) {
-        Event event = request.getEvent();
-        PatientEvent patientEvent = (PatientEvent) event.getValue();
-        ArrayList<RadiologySourceRefs> filteredRefs = filterBfrReferences(patientEvent);
-        LOGGER.debug("Got Patient event change. {}", filteredRefs);
+        try {
+            Event event = request.getEvent();
+            PatientEvent patientEvent = (PatientEvent) event.getValue();
+            ArrayList<RadiologySourceRefs> filteredRefs = filterBfrReferences(patientEvent);
+            LOGGER.debug("Got Patient event change. {}", filteredRefs);
 
-        state.setRefs(filteredRefs);
-        state.setTicket(patientEvent.ticket);
+            state.setRefs(filteredRefs);
+            state.setTicket(patientEvent.ticket);
+        } catch (RuntimeException e) {
+            // Noticed that exceptions thrown here may be swallowed unnoticed otherwise.
+            LOGGER.error(e.getMessage(), e);
+            throw e;
+        }
     }
 
     private ArrayList<RadiologySourceRefs> filterBfrReferences(PatientEvent patientEvent) {
@@ -115,8 +120,7 @@ public class BfrController {
         for(String refKey : patientEvent.ticket.references.keySet()) {
             SourceReferences entry = patientEvent.ticket.references.get(refKey);
 
-            if(entry.targetCareSystem().equals(RadiologySourceRefs.SYSTEM_ID) &&
-               entry instanceof RadiologySourceRefs) {
+            if(entry.targetCareSystem().equals(RadiologySourceRefs.SYSTEM_ID) && entry instanceof RadiologySourceRefs) {
                 RadiologySourceRefs convEntry = (RadiologySourceRefs) entry;
                 filteredReferences.add(convEntry);
             }
