@@ -28,7 +28,14 @@ Generation time : 2013-10-08 14:16:23 CEST
       <version>${project.version}</version>
     </dependency>
 
-    <dependency>
+      <dependency>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcprov-jdk16</artifactId>
+          <version>1.46</version>
+          <scope>compile</scope>
+      </dependency>
+
+      <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>oppna-program-rp-pdl-pdl-composite-common</artifactId>
       <version>${project.version}</version>

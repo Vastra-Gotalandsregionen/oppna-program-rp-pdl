@@ -8,6 +8,7 @@ ul.rp-progress-bar {
 
 ul.rp-progress-bar li {
     background: transparent url(../images/rp-progressbar/arrow-white-white.png) center right no-repeat;
+    background-size: contain;
     border: 1px solid #c4ced5;
     border-width: 1px 0 1px 0;
     color: #80868b;

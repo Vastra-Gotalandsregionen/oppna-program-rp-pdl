@@ -38,7 +38,7 @@
                 <portlet:renderURL var="startUrl">
                     <portlet:param name="jspPage" value="/WEB-INF/jsp/view.jsp" />
                 </portlet:renderURL>
-                <a href="${startUrl}" class="link-button-mod">&laquo; Ny sökning</a>
+                <a href="${startUrl}" class="link-button-mod">&laquo; Tillbaka</a>
             </c:otherwise>
         </c:choose>
 

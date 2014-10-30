@@ -32,29 +32,20 @@
                 <div class="${elementWrapCssClass}">
                     <aui:field-wrapper cssClass="element-field-wrap">
                         <label for="<portlet:namespace />patientId">
-                            <span>Patient-ID</span>
+                            <span>Patient-ID (personnummer)</span>
                         </label>
-                        <aui:input name="patientId" autocomplete="off" cssClass="element-field" type="text" label="" autoFocus="true"/>
+                        <c:choose>
+                            <c:when test="${not empty sessionPatientId}">
+                                <aui:input name="thisIsDisabledSoItWontBePosted" disabled="true" value="${sessionPatientId}" autocomplete="off" cssClass="element-field" type="text" label=""/>
+                                <aui:input name="patientId" value="${sessionPatientId}" type="hidden"/>
+                            </c:when>
+                        </c:choose>
+
                     </aui:field-wrapper>
-                    <span class="element-field-help">
-                        Patient-ID. Personnummer och Samordningsnummer anges på formatet YYYYMMDD-NNNN
-                    </span>
                 </div>
-                <div class="${elementWrapCssClass}">
-                    <aui:field-wrapper cssClass="element-field-wrap">
-                        <label for="<portlet:namespace />patientIdType">
-                            <span>Typ av Patient ID</span>
-                        </label>
-                        <aui:select name="patientIdType" cssClass="element-field" label="">
-                            <c:forEach items="${infobrokerPersonIdTypeList}" var="pidtype">
-                                <aui:option value="${pidtype}" label="${pidtype.description}" selected="${'PAT_PERS_NR' == pidtype.infoBrokerTypeCode}"/>
-                            </c:forEach>
-                        </aui:select>
-                    </aui:field-wrapper>
-                    <span class="element-field-help">
-                        Typ av Patient-ID.
-                    </span>
-                </div>
+
+                <aui:input name="patientIdType" value="PAT_PERS_NR" type="hidden" />
+                
                 <div class="${elementWrapCssClass}">
                     <aui:field-wrapper cssClass="element-field-wrap">
                         <label for="<portlet:namespace />currentAssignment">

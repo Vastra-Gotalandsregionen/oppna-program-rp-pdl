@@ -4,15 +4,17 @@ package se.vgregion.domain.bfr.crypto;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.vgregion.domain.decorators.Maybe;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Security;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -20,14 +22,25 @@ public class ZeroFootPrintEcb {
     private static final Logger LOGGER = LoggerFactory.getLogger(ZeroFootPrintEcb.class);
 
     private static final String KEY_SPEC_TYPE = "DESede";
-    private static final String CRYPTO = "DESede/ECB/PKCS5Padding";
+    private static final String CRYPTO = "DESede/ECB/PKCS7Padding";
     private static final String STUDY_UID = "<study-uid>";
     private static final String USER_NAME = "<user-name>";
     private static final String PASSWORD = "<password>";
     private static final String TIME = "<datetime-created>";
-    private static final String PATTERN =  "sui="+STUDY_UID+"&un="+USER_NAME+"&pw="+PASSWORD+"|"+TIME;
+    private static final String PATTERN =  "viewall&sui="+STUDY_UID+"&un="+USER_NAME+"&pw="+PASSWORD+"|"+TIME;
+
+// Mycket möjlig todo - implementera en huvudstudie med flera komplementstudier. Detta kräver andra parametrar så det
+// kan vara enklast att ha två olika patterns beroende på om endast en eller flera studier ska visas. Tomma värden ska
+// inte skickas med, d.v.s. hela parametern ska bort om inget värde finns.
+//    private static final String PATTERN =  "viewall&primarySui="+STUDY_UID+"&un="+USER_NAME+"&pw="+PASSWORD+"|"+TIME;
+/* lägg till sui={studyUid}\{studyUid}\{studyUid} */
 
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
     public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for ( int j = 0; j < bytes.length; j++ ) {
@@ -88,8 +101,8 @@ public class ZeroFootPrintEcb {
             NoSuchAlgorithmException,
             InvalidKeyException,
             BadPaddingException,
-            IllegalBlockSizeException
-    {
+            IllegalBlockSizeException,
+            NoSuchProviderException {
         Cipher cipher = getCipher(keyBytes, Cipher.ENCRYPT_MODE);
         return cipher.doFinal(message);
     }
@@ -97,10 +110,10 @@ public class ZeroFootPrintEcb {
     private static Cipher getCipher(byte[] keyBytes, int mode) throws
             NoSuchAlgorithmException,
             NoSuchPaddingException,
-            InvalidKeyException
-    {
+            InvalidKeyException,
+            NoSuchProviderException {
         SecretKey key = new SecretKeySpec(keyBytes, KEY_SPEC_TYPE);
-        Cipher cipher = Cipher.getInstance(CRYPTO);
+        Cipher cipher = Cipher.getInstance(CRYPTO, "BC");
         cipher.init(mode, key);
         return cipher;
     }

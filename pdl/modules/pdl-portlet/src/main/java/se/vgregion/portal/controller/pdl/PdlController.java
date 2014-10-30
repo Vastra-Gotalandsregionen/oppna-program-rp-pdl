@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import se.vgregion.domain.assignment.Assignment;
@@ -44,7 +41,7 @@ import java.util.*;
 
 @Controller
 @RequestMapping(value = "VIEW")
-@SessionAttributes("state")
+@SessionAttributes({"state", "sessionPatientId"})
 public class PdlController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PdlController.class.getName());
 
@@ -79,18 +76,33 @@ public class PdlController {
         return state;
     }
 
+    @ModelAttribute("sessionPatientId")
+    public String getSessionPatientId(PortletRequest request, Model model) {
+        String patientId = request.getParameter("patientId");
+        if (patientId != null) {
+            model.addAttribute("sessionPatientId", patientId);
+        }
+        return patientId;
+    }
+
     @ModelAttribute(value = "infobrokerPersonIdTypeList")
     public List<InfobrokerPersonIdType> getInfobrokerPersonIdTypeList() {
         return Arrays.asList(InfobrokerPersonIdType.values());
     }
 
     @RenderMapping
-    public String enterSearchPatient(PortletRequest request) {
+    public String enterSearchPatient(PortletRequest request, Model model) {
         state.reset(); // Make sure state is reset when user navigates to the start page.
         if (state.getCtx() == null) {
             WithOutcome<PdlContext> ctx = currentContext(request);
             state.setCtx(ctx);
         }
+
+        String patientId = request.getParameter("patientId");
+        if (patientId != null) {
+            model.addAttribute("sessionPatientId", patientId);
+        }
+
         return "view";
     }
 
@@ -428,7 +440,7 @@ public class PdlController {
         }
     }
 
-     @ActionMapping("cancelRevokeConfirmation")
+    @ActionMapping("cancelRevokeConfirmation")
     public void cancelRevokeConfirmation(
             @RequestParam String id,
             ActionResponse response
@@ -601,6 +613,14 @@ public class PdlController {
         } else {
             return hsaId.mapValue(new PdlContext("", "", new TreeMap<String, Assignment>()));
         }
+    }
+
+    @ExceptionHandler(Exception.class)
+    public String handleException(Exception exception) {
+
+        LOGGER.error(exception.getMessage(), exception);
+
+        return "errorPage";
     }
 
     @Override
