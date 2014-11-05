@@ -1,5 +1,7 @@
 package se.vgregion.portal.controller.pdl;
 
+import com.liferay.portal.util.Portal;
+import com.liferay.portal.util.PortalUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,7 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.util.*;
@@ -44,6 +47,8 @@ import java.util.*;
 @SessionAttributes({"state", "sessionPatientId"})
 public class PdlController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PdlController.class.getName());
+
+    private Portal portal;
 
     @Autowired
     private PdlService pdl;
@@ -67,6 +72,10 @@ public class PdlController {
 
     private UserUtil userUtil = new UserUtil();
 
+    public PdlController() {
+        this.portal = PortalUtil.getPortal();
+    }
+
     @ModelAttribute("state")
     public PdlUserState initState(PortletRequest request) {
         if (state == null || state.getCtx() == null) {
@@ -80,6 +89,9 @@ public class PdlController {
     public String getSessionPatientId(PortletRequest request, Model model) {
         String patientId = request.getParameter("patientId");
         if (patientId != null) {
+            // PatientId is only allowed to be set with POST requests.
+            validatePostRequest(request, model);
+
             model.addAttribute("sessionPatientId", patientId);
         }
         return patientId;
@@ -100,6 +112,9 @@ public class PdlController {
 
         String patientId = request.getParameter("patientId");
         if (patientId != null) {
+            // PatientId is only allowed to be set with POST requests.
+            validatePostRequest(request, model);
+
             model.addAttribute("sessionPatientId", patientId);
         }
 
@@ -612,6 +627,17 @@ public class PdlController {
             return accessControl.getContextByEmployeeId(hsaId.value);
         } else {
             return hsaId.mapValue(new PdlContext("", "", new TreeMap<String, Assignment>()));
+        }
+    }
+
+    private void validatePostRequest(PortletRequest request, Model model) {
+        // Some validation
+        HttpServletRequest httpServletRequest = portal.getHttpServletRequest(request);
+        if (!httpServletRequest.getMethod().equalsIgnoreCase("POST")) {
+            String logMessage = "Only POST requests are allowed when patientIt is sent.";
+            LOGGER.error(logMessage);
+            model.addAttribute("errorMessage", "Anropet var inte korrekt eller så har ett tekniskt fel uppstått.");
+            throw new IllegalArgumentException(logMessage);
         }
     }
 

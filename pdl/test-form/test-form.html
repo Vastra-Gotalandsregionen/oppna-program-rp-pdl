@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <!--<meta charset="ISO-8859-1">-->
+    <title></title>
+
+    <style type="text/css">
+        input {
+            position: absolute;
+            left: 130px;
+        }
+    </style>
+
+</head>
+<body>
+    <form action="http://vgrportal-local.vgregion.se:7080/group/privata/sok-patient/-/pdl/notused" method="post">
+    <!--<form action="http://localhost:7080/group/pdl/sok-patient/-/pdl/notused" method="post">-->
+        <div><label for="pid">Person-nr</label> <input id="pid" name="patientId" value="yyyyMMdd-xxxx"/></div>
+        <div><input type="submit" value="posta"/></div>
+    </form>
+</body>
+</html>

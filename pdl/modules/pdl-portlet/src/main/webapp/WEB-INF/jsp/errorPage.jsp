@@ -2,4 +2,6 @@
 
 <div class="callout callout-danger">
     <p class="label">Ett tekniskt fel inträffade.</p>
+    <p class="label">${errorMessage}</p>
+
 </div>

@@ -27,7 +27,7 @@ public class ZeroFootPrintEcb {
     private static final String USER_NAME = "<user-name>";
     private static final String PASSWORD = "<password>";
     private static final String TIME = "<datetime-created>";
-    private static final String PATTERN =  "viewall&sui="+STUDY_UID+"&un="+USER_NAME+"&pw="+PASSWORD+"|"+TIME;
+    private static final String PATTERN =  "viewall&sui="+STUDY_UID+"&un="+USER_NAME+"&custom="+USER_NAME+"&pw="+PASSWORD+"|"+TIME;
 
 // Mycket möjlig todo - implementera en huvudstudie med flera komplementstudier. Detta kräver andra parametrar så det
 // kan vara enklast att ha två olika patterns beroende på om endast en eller flera studier ska visas. Tomma värden ska
@@ -77,6 +77,8 @@ public class ZeroFootPrintEcb {
                 replace(USER_NAME, username).
                 replace(PASSWORD, password).
                 replace(TIME, creationDateString);
+
+        LOGGER.info("Plaintext token: " + plainText);
 
         try {
             byte[] encrypted = encrypt(
