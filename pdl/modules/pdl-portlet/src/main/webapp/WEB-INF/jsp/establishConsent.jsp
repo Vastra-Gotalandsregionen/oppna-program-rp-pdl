@@ -42,6 +42,6 @@
 
    <a href="${searchPatientUrl}" class="link-button-mod">&laquo; Avbryt</a>
    <a href="${establishConsentUrl}" class="link-button-mod">Jag har inhämtat patientens samtycke &raquo;</a>
-   <a href="${establishConsentEmergencyUrl}" class="link-button-mod link-button-mod-danger">Nödsituation &raquo;</i></a>
+   <a href="${establishConsentEmergencyUrl}" class="link-button-mod link-button-mod-danger">Nödsituation &raquo;</a>
 </div>
 

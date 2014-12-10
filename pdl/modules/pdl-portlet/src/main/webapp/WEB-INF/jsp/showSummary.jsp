@@ -57,7 +57,7 @@
             <portlet:param name="currentAssignment" value="${state.ctx.value.currentAssignment.assignmentHsaId}" />
             <portlet:param name="reset" value="false" />
         </portlet:actionURL>
-        <a href="${startUrl}" class="link-button-mod">&laquo; Ny sökning</a>
+        <a href="${startUrl}" class="link-button-mod">&laquo; Tillbaka</a>
         <a href="${searchPatientUrl}" class="link-button-mod">&laquo; Förändra dina val</a>
     </div>
 </div>

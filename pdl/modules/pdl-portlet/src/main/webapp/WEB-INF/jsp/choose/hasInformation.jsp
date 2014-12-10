@@ -42,7 +42,7 @@
     <portlet:renderURL var="startUrl">
         <portlet:param name="jspPage" value="/WEB-INF/jsp/view.jsp" />
     </portlet:renderURL>
-    <a href="${startUrl}" class="link-button-mod">&laquo; Ny sökning</a>
+    <a href="${startUrl}" class="link-button-mod">&laquo; Tillbaka</a>
     <portlet:actionURL name="goToSummary" var="goToSummaryUrl" />
     <c:if test="${state.csReport.selectedInfoResource}">
         <a href="${goToSummaryUrl}" class="link-button-mod link-button-mod-proceed">Gå vidare &raquo;</a>
