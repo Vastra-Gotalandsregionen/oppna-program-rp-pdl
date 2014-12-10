@@ -1,7 +1,5 @@
-package se.vgregion.portal.controller.pdl;
+package se.vgregion.portal.controller.pdl.admin;
 
-import com.liferay.portal.util.Portal;
-import com.liferay.portal.util.PortalUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +7,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.portlet.bind.annotation.ActionMapping;
 import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import se.vgregion.domain.assignment.Assignment;
@@ -25,6 +26,11 @@ import se.vgregion.events.context.PatientEvent;
 import se.vgregion.events.context.PdlTicket;
 import se.vgregion.events.context.UserContext;
 import se.vgregion.portal.bfr.infobroker.domain.InfobrokerPersonIdType;
+import se.vgregion.portal.controller.pdl.AvailablePatient;
+import se.vgregion.portal.controller.pdl.production.PdlController;
+import se.vgregion.portal.controller.pdl.PdlLogger;
+import se.vgregion.portal.controller.pdl.PdlProgress;
+import se.vgregion.portal.controller.pdl.PdlUserState;
 import se.vgregion.portal.util.UserUtil;
 import se.vgregion.repo.log.LogRepo;
 import se.vgregion.service.search.*;import se.vgregion.service.search.AccessControl;
@@ -37,18 +43,16 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.util.*;
 
+// TODO Extract common parts from PdlController and PdlAdminController to a base class
 @Controller
 @RequestMapping(value = "VIEW")
-@SessionAttributes({"state", "sessionPatientId"})
-public class PdlController {
+@SessionAttributes("state")
+public class PdlAdminController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PdlController.class.getName());
-
-    private Portal portal;
 
     @Autowired
     private PdlService pdl;
@@ -72,10 +76,6 @@ public class PdlController {
 
     private UserUtil userUtil = new UserUtil();
 
-    public PdlController() {
-        this.portal = PortalUtil.getPortal();
-    }
-
     @ModelAttribute("state")
     public PdlUserState initState(PortletRequest request) {
         if (state == null || state.getCtx() == null) {
@@ -85,40 +85,19 @@ public class PdlController {
         return state;
     }
 
-    @ModelAttribute("sessionPatientId")
-    public String getSessionPatientId(PortletRequest request, Model model) {
-        String patientId = request.getParameter("patientId");
-        if (patientId != null) {
-            // PatientId is only allowed to be set with POST requests.
-            validatePostRequest(request, model);
-
-            model.addAttribute("sessionPatientId", patientId);
-        }
-        return patientId;
-    }
-
     @ModelAttribute(value = "infobrokerPersonIdTypeList")
     public List<InfobrokerPersonIdType> getInfobrokerPersonIdTypeList() {
         return Arrays.asList(InfobrokerPersonIdType.values());
     }
 
     @RenderMapping
-    public String enterSearchPatient(PortletRequest request, Model model) {
+    public String enterSearchPatient(PortletRequest request) {
         state.reset(); // Make sure state is reset when user navigates to the start page.
         if (state.getCtx() == null) {
             WithOutcome<PdlContext> ctx = currentContext(request);
             state.setCtx(ctx);
         }
-
-        String patientId = request.getParameter("patientId");
-        if (patientId != null) {
-            // PatientId is only allowed to be set with POST requests.
-            validatePostRequest(request, model);
-
-            model.addAttribute("sessionPatientId", patientId);
-        }
-
-        return "view";
+        return "admin/view";
     }
 
     private final static String personSamordningsNummerRegex =
@@ -152,7 +131,7 @@ public class PdlController {
             InfobrokerPersonIdType pidtype = InfobrokerPersonIdType.valueOf(patientIdType);
 
             boolean isValidPatientId = (pidtype == InfobrokerPersonIdType.PAT_PERS_NR || pidtype == InfobrokerPersonIdType.PAT_SAMO_NR) ?
-                patientIdTrimmed.length() == 12 && PersonIdUtil.personIdIsValid(patientIdTrimmed) : true;
+                    patientIdTrimmed.length() == 12 && PersonIdUtil.personIdIsValid(patientIdTrimmed) : true;
 
             if(isValidPatientId) {
 
@@ -167,7 +146,7 @@ public class PdlController {
 
                 state.setSourcesNonSuccessOutcome(
                         !careSystems.success &&
-                        careSystems.outcome != Outcome.UNFULFILLED_FAILURE
+                                careSystems.outcome != Outcome.UNFULFILLED_FAILURE
                 );
 
                 state.setMissingResults(careSystems.outcome == Outcome.UNFULFILLED_FAILURE);
@@ -202,8 +181,8 @@ public class PdlController {
                 response.setEvent(qname, new PatientEvent(null, null));
 
                 if (hasCareSystems &&
-                    state.getPdlReport().hasRelationship.value &&
-                    onlySameCareUnit(state))
+                        state.getPdlReport().hasRelationship.value &&
+                        onlySameCareUnit(state))
                 {
                     shortcutDirectlyToViewer(request, response, model);
                 } else {
@@ -264,12 +243,12 @@ public class PdlController {
         // TGP equivalent, create patient relationship
         if (availablePatient && pdlReport.hasPatientInformation && !pdlReport.hasRelationship.value) {
             newReport = pdl.patientRelationship(
-                ctx,
-                pdlReport,
-                state.getPatient().patientId,
-                "VGR Portal PDL Service. Patient finns tillgänglig sedan innan hos egen vårdenhet.",
-                establishRelationTimeUnits,
-                establishRelationDuration
+                    ctx,
+                    pdlReport,
+                    state.getPatient().patientId,
+                    "VGR Portal PDL Service. Patient finns tillgänglig sedan innan hos egen vårdenhet.",
+                    establishRelationTimeUnits,
+                    establishRelationDuration
             );
         }
         return newReport;
@@ -288,9 +267,9 @@ public class PdlController {
             PdlContext ctx = state.getCtx().value;
 
             LOGGER.trace(
-                "Request to create relationship between employee {} and patient {}.",
-                ctx.employeeHsaId,
-                state.getPatient().patientId
+                    "Request to create relationship between employee {} and patient {}.",
+                    ctx.employeeHsaId,
+                    state.getPatient().patientId
             );
 
             PortletPreferences prefs = request.getPreferences();
@@ -298,12 +277,12 @@ public class PdlController {
             RoundedTimeUnit timeUnit = RoundedTimeUnit.valueOf(prefs.getValue("establishRelationTimeUnit", RoundedTimeUnit.NEAREST_DAY.toString()));
 
             PdlReport newReport = pdl.patientRelationship(
-                ctx,
-                state.getPdlReport(),
-                state.getPatient().patientId,
-                "VGR Portal PDL Service",
-                duration,
-                timeUnit
+                    ctx,
+                    state.getPdlReport(),
+                    state.getPatient().patientId,
+                    "VGR Portal PDL Service",
+                    duration,
+                    timeUnit
             );
 
             state.setPdlReport(newReport);
@@ -311,7 +290,7 @@ public class PdlController {
             PdlLogger.log(UserAction.ATTEST_RELATION, logRepo, state);
 
             if (state.getPdlReport().hasRelationship.value &&
-                onlySameCareUnit(state))
+                    onlySameCareUnit(state))
             {
                 shortcutDirectlyToViewer(request, response, model);
             } else {
@@ -334,9 +313,9 @@ public class PdlController {
             PdlContext ctx = state.getCtx().value;
 
             LOGGER.trace(
-                "Request to create consent between employee {} and patient {}.",
-                ctx.employeeHsaId,
-                state.getPatient().patientId
+                    "Request to create consent between employee {} and patient {}.",
+                    ctx.employeeHsaId,
+                    state.getPatient().patientId
             );
 
             PortletPreferences prefs = request.getPreferences();
@@ -345,15 +324,15 @@ public class PdlController {
 
             // FIXME 2013-10-21 : Magnus Andersson > Add possiblility to be represented by someone?
             state.setPdlReport(
-                pdl.patientConsent(
-                    ctx,
-                    state.getPdlReport(),
-                    state.getPatient().patientId,
-                    "VGR Portal PDL Service",
-                    duration,
-                    timeUnit,
-                    ( emergency ) ? PdlReport.ConsentType.Emergency : PdlReport.ConsentType.Consent
-                )
+                    pdl.patientConsent(
+                            ctx,
+                            state.getPdlReport(),
+                            state.getPatient().patientId,
+                            "VGR Portal PDL Service",
+                            duration,
+                            timeUnit,
+                            ( emergency ) ? PdlReport.ConsentType.Emergency : PdlReport.ConsentType.Consent
+                    )
             );
 
             if(emergency) {
@@ -385,7 +364,7 @@ public class PdlController {
 
             boolean otherProviders =
                     state.getCtx().value.currentAssignment.isOtherProviders() &&
-                    state.getPdlReport().consent.value.hasConsent;
+                            state.getPdlReport().consent.value.hasConsent;
 
             boolean sameProvider = !state.getCtx().value.currentAssignment.isOtherProviders();
 
@@ -593,7 +572,7 @@ public class PdlController {
 
     @RenderMapping(params = "view=view")
     public String start(final ModelMap model) {
-        return "view";
+        return "admin/view";
     }
 
     @RenderMapping(params = "view=establishConsent")
@@ -628,25 +607,6 @@ public class PdlController {
         } else {
             return hsaId.mapValue(new PdlContext("", "", new TreeMap<String, Assignment>()));
         }
-    }
-
-    private void validatePostRequest(PortletRequest request, Model model) {
-        // Some validation
-        HttpServletRequest httpServletRequest = portal.getHttpServletRequest(request);
-        if (!httpServletRequest.getMethod().equalsIgnoreCase("POST")) {
-            String logMessage = "Only POST requests are allowed when patientIt is sent.";
-            LOGGER.error(logMessage);
-            model.addAttribute("errorMessage", "Anropet var inte korrekt eller så har ett tekniskt fel uppstått.");
-            throw new IllegalArgumentException(logMessage);
-        }
-    }
-
-    @ExceptionHandler(Exception.class)
-    public String handleException(Exception exception) {
-
-        LOGGER.error(exception.getMessage(), exception);
-
-        return "errorPage";
     }
 
     @Override

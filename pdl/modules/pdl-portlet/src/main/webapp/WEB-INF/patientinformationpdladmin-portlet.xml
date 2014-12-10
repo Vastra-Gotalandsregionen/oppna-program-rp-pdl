@@ -25,12 +25,10 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
         >
 
-  <context:component-scan base-package="se.vgregion.portal.controller.pdl.production"/>
+  <context:component-scan base-package="se.vgregion.portal.controller.pdl.admin"/>
 
-    <bean class="se.vgregion.portal.controller.pdl.PdlEditController"/>
-    <bean class="se.vgregion.portal.controller.pdl.PdlUserState"/>
-
-  <!--<context:property-placeholder location="file:${user.home}/.rp/pdl/application.properties" />-->
+  <bean class="se.vgregion.portal.controller.pdl.PdlEditController"/>
+  <bean class="se.vgregion.portal.controller.pdl.PdlUserState"/>
 
   <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>

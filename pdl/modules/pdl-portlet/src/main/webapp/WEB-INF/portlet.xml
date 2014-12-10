@@ -60,6 +60,53 @@
     </supported-publishing-event>
   </portlet>
 
+  <portlet>
+    <portlet-name>patientinformation-pdl-admin</portlet-name>
+    <display-name>Search Patient Information with PDL</display-name>
+    <portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
+    <init-param>
+      <name>check-auth-token</name>
+      <value>true</value>
+    </init-param>
+    <expiration-cache>0</expiration-cache>
+    <supports>
+      <mime-type>text/html</mime-type>
+      <portlet-mode>view</portlet-mode>
+      <portlet-mode>edit</portlet-mode>
+    </supports>
+    <resource-bundle>content/Language</resource-bundle>
+    <portlet-info>
+      <title>Sök patientinformation med stöd för PDL Admin</title>
+      <short-title>PatientInformationPdlAdmin</short-title>
+      <keywords>PLD Patient Information</keywords>
+    </portlet-info>
+    <portlet-preferences>
+      <preference>
+        <name>portlet-setup-show-borders</name>
+        <value>true</value>
+      </preference>
+    </portlet-preferences>
+    <security-role-ref>
+      <role-name>administrator</role-name>
+    </security-role-ref>
+    <security-role-ref>
+      <role-name>guest</role-name>
+    </security-role-ref>
+    <security-role-ref>
+      <role-name>power-user</role-name>
+    </security-role-ref>
+    <security-role-ref>
+      <role-name>user</role-name>
+    </security-role-ref>
+
+    <supported-publishing-event>
+      <qname xmlns:x="http://pdl.portalen.vgregion.se/events">x:pctx.change</qname>
+    </supported-publishing-event>
+    <supported-publishing-event>
+      <qname xmlns:x="http://pdl.portalen.vgregion.se/events">x:pctx.reset</qname>
+    </supported-publishing-event>
+  </portlet>
+
   <user-attribute>
     <description>User Login ID</description>
     <name>user.login.id</name>

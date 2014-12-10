@@ -4,6 +4,7 @@
 <display>
   <category name="Patientdatalagen">
     <portlet id="patientinformation-pdl" />
+    <portlet id="patientinformation-pdl-admin" />
   </category>
 
 </display>

@@ -11,6 +11,11 @@
         <requires-namespaced-parameters>false</requires-namespaced-parameters>
         <css-class-wrapper>pdl</css-class-wrapper>
     </portlet>
+    <portlet>
+        <portlet-name>patientinformation-pdl-admin</portlet-name>
+        <requires-namespaced-parameters>false</requires-namespaced-parameters>
+        <css-class-wrapper>pdl</css-class-wrapper>
+    </portlet>
     <role-mapper>
         <role-name>administrator</role-name>
         <role-link>Administrator</role-link>
