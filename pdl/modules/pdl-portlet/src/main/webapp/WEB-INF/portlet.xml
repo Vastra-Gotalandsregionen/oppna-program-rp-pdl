@@ -39,18 +39,6 @@
         <value>true</value>
       </preference>
     </portlet-preferences>
-    <security-role-ref>
-      <role-name>administrator</role-name>
-    </security-role-ref>
-    <security-role-ref>
-      <role-name>guest</role-name>
-    </security-role-ref>
-    <security-role-ref>
-      <role-name>power-user</role-name>
-    </security-role-ref>
-    <security-role-ref>
-      <role-name>user</role-name>
-    </security-role-ref>
 
     <supported-publishing-event>
       <qname xmlns:x="http://pdl.portalen.vgregion.se/events">x:pctx.change</qname>
@@ -86,18 +74,6 @@
         <value>true</value>
       </preference>
     </portlet-preferences>
-    <security-role-ref>
-      <role-name>administrator</role-name>
-    </security-role-ref>
-    <security-role-ref>
-      <role-name>guest</role-name>
-    </security-role-ref>
-    <security-role-ref>
-      <role-name>power-user</role-name>
-    </security-role-ref>
-    <security-role-ref>
-      <role-name>user</role-name>
-    </security-role-ref>
 
     <supported-publishing-event>
       <qname xmlns:x="http://pdl.portalen.vgregion.se/events">x:pctx.change</qname>

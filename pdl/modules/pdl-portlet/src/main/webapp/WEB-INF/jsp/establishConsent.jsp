@@ -34,13 +34,13 @@
     </portlet:actionURL>
 
     <div class="clearfix callout callout-info">
-        <p class="label">Du måste inhämta patientens samtycke</p>
+        <p class="label">Samtycke från patient saknas för din vårdgivare. Du måste inhämta patientens samtycke.</p>
         <p>Det finns patientinformation hos annan vårdgivare för ${state.patient.patientDisplayName}. För att få information från andra vårdgivare behöver du inhämta patientens samtycke.</p>
         <p>Råder en nödsituation kan detta steget passeras. Ditt val loggförs.<p>
         <p><a href="http://www.vgregion.se/sv/Vastra-Gotalandsregionen/startsida/Vard-och-halsa/Sa-styrs-varden/Halso--och-sjukvardsavdelningen/Patientdatalagen/" target="_blank">Visa information om Patientdatalagen</a><i class="icon link_external"></i></p>
     </div>
 
-   <a href="${searchPatientUrl}" class="link-button-mod">&laquo; Avbryt</a>
+   <a href="${searchPatientUrl}" class="link-button-mod">&laquo; Tillbaka</a>
    <a href="${establishConsentUrl}" class="link-button-mod">Jag har inhämtat patientens samtycke &raquo;</a>
    <a href="${establishConsentEmergencyUrl}" class="link-button-mod link-button-mod-danger">Nödsituation &raquo;</a>
 </div>
