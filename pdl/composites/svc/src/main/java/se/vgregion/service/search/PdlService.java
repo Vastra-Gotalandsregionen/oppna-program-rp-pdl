@@ -1,5 +1,6 @@
 package se.vgregion.service.search;
 
+import se.vgregion.domain.assignment.Assignment;
 import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.pdl.*;
 import se.vgregion.domain.systems.CareSystem;
@@ -9,6 +10,7 @@ import se.vgregion.domain.pdl.PdlContext;
 import java.util.List;
 
 public interface PdlService {
+
     enum UnblockType {
         CONSENT, EMERGENCY
     }
@@ -21,11 +23,26 @@ public interface PdlService {
      * @param patient Patient information
      * @param careSystems Care Systems to generate report for
      */
+    @Deprecated
     PdlReport pdlReport(
             PdlContext ctx,
             Patient patient,
             List<WithInfoType<CareSystem>> careSystems
     );
+
+    /**
+     * <p>Generate initial PDL Report.</p>
+     *
+     *
+     * @param ctx PDL Context
+     * @param patient Patient information
+     * @param careSystems Care Systems to generate report for
+     * @param currentAssignment The assignment the user has chosen
+     */
+    PdlReport pdlReport(PdlContext ctx,
+                        Patient patient,
+                        List<WithInfoType<CareSystem>> careSystems,
+                        Assignment currentAssignment);
 
     /**
      * <p>Attempts to establish the patient consent for shared care provider journaling. Returns a new PdlReport containing the updated information</p>

@@ -28,7 +28,7 @@ import se.vgregion.portal.bfr.infobroker.domain.InfobrokerPersonIdType;
 import se.vgregion.portal.controller.pdl.AvailablePatient;
 import se.vgregion.portal.controller.pdl.PdlLogger;
 import se.vgregion.portal.controller.pdl.PdlProgress;
-import se.vgregion.portal.controller.pdl.PdlUserState;
+import se.vgregion.portal.controller.pdl.common.PdlUserState;
 import se.vgregion.portal.util.UserUtil;
 import se.vgregion.repo.log.LogRepo;
 import se.vgregion.service.search.*;import se.vgregion.service.search.AccessControl;

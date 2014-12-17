@@ -9,6 +9,7 @@ import se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckCo
 import se.riv.ehr.patientconsent.administration.registerextendedconsent.v1.rivtabp21.RegisterExtendedConsentResponderInterface;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelation.v1.rivtabp21.RegisterExtendedPatientRelationResponderInterface;
+import se.vgregion.domain.assignment.Assignment;
 import se.vgregion.domain.pdl.*;
 import se.vgregion.domain.decorators.WithOutcome;
 import se.vgregion.domain.decorators.WithInfoType;
@@ -73,6 +74,7 @@ public class PdlServiceProxy implements PdlService {
     }
 
     @Override
+    @Deprecated
     public PdlReport pdlReport(
             final PdlContext ctx,
             Patient patient,
@@ -86,7 +88,23 @@ public class PdlServiceProxy implements PdlService {
                 checkBlocks,
                 checkConsent,
                 checkRelationship,
-                executorService
+                executorService,
+                null
+        );
+    }
+
+    @Override
+    public PdlReport pdlReport(PdlContext ctx, Patient patient, List<WithInfoType<CareSystem>> careSystems, Assignment currentAssignment) {
+        return Report.generateReport(
+                servicesHsaId,
+                ctx,
+                patient,
+                careSystems,
+                checkBlocks,
+                checkConsent,
+                checkRelationship,
+                executorService,
+                currentAssignment
         );
     }
 

@@ -9,6 +9,7 @@ import se.vgregion.domain.pdl.InformationType;
 import se.vgregion.events.context.Patient;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.domain.systems.CareSystem;
+import se.vgregion.portal.controller.pdl.common.PdlUserState;
 import se.vgregion.repo.log.LogRepo;
 
 import java.util.ArrayList;

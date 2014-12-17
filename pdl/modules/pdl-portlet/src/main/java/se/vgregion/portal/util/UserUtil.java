@@ -25,7 +25,7 @@ public class UserUtil {
     public String getHsaIdFromRequestHeader(PortletRequest request) {
         HttpServletRequest httpServletRequest = PortalUtil.getHttpServletRequest(request);
 
-        String hsaIdentity = httpServletRequest.getHeader("hsaid");
+        String hsaIdentity = httpServletRequest.getHeader("hsaidentity");
 
         return hsaIdentity;
     }

@@ -26,9 +26,9 @@
         >
 
   <context:component-scan base-package="se.vgregion.portal.controller.pdl.admin"/>
+  <context:component-scan base-package="se.vgregion.portal.controller.pdl.common"/>
 
   <bean class="se.vgregion.portal.controller.pdl.PdlEditController"/>
-  <bean class="se.vgregion.portal.controller.pdl.PdlUserState"/>
 
   <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>

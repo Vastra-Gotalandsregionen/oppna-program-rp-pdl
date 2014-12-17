@@ -26,9 +26,9 @@
         >
 
   <context:component-scan base-package="se.vgregion.portal.controller.pdl.production"/>
+  <context:component-scan base-package="se.vgregion.portal.controller.pdl.common"/>
 
     <bean class="se.vgregion.portal.controller.pdl.PdlEditController"/>
-    <bean class="se.vgregion.portal.controller.pdl.PdlUserState"/>
 
   <!--<context:property-placeholder location="file:${user.home}/.rp/pdl/application.properties" />-->
 

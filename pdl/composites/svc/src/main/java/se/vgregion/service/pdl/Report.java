@@ -12,6 +12,7 @@ import se.riv.ehr.patientconsent.accesscontrol.checkconsentresponder.v1.CheckCon
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationRequestType;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationResponseType;
+import se.vgregion.domain.assignment.Assignment;
 import se.vgregion.domain.decorators.WithBlock;
 import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
@@ -45,7 +46,8 @@ public class Report {
             final CheckBlocksResponderInterface checkBlocks,
             final CheckConsentResponderInterface checkConsent,
             final CheckPatientRelationResponderInterface checkRelationship,
-            final ExecutorService executorService
+            final ExecutorService executorService,
+            final Assignment currentAssignment
     ) {
 
         // Start multiple requests
@@ -54,15 +56,18 @@ public class Report {
 
         Future<WithOutcome<CheckedConsent>> consentFuture;
 
-        if(ctx.currentAssignment.isOtherProviders()) {
+        // TODO as soon as the deprecated method which sends null as currentAssigment this should be cleaned up.
+        // TODO I.e. currentAssigment is the only assignment to be used.
+        Assignment legacyCodeAssignment = currentAssignment != null ? currentAssignment : ctx.currentAssignment;
+        if (legacyCodeAssignment.isOtherProviders()) {
             consentFuture =
-                consent(
-                    servicesHsaId,
-                    ctx,
-                    patient.patientId,
-                    checkConsent,
-                    executorService
-                );
+                    consent(
+                            servicesHsaId,
+                            ctx,
+                            patient.patientId,
+                            checkConsent,
+                            executorService
+                    );
         } else {
             // Return dummy false value. This will not be used since the assignment is only within same care giver.
             consentFuture = consentNotNeeded(executorService);
@@ -78,11 +83,39 @@ public class Report {
         WithOutcome<CheckedConsent> checkedConsent =
                 consentWithFallback(consentFuture, patient.patientId);
 
-        WithOutcome<Boolean> hasRelationship =
-                relationshipWithFallback(relationshipFuture, patient.patientId);
+        WithOutcome<Boolean> hasRelationship;
+        // TODO This if-else should also be removed.
+        if (currentAssignment != null) {
+            boolean hasAnyRelationship = hasAnyPatientInfoInCurrentAssignmentUnit(careSystems, currentAssignment);
+
+            if (hasAnyRelationship) {
+                hasRelationship = WithOutcome.success(hasAnyRelationship);
+            } else {
+                hasRelationship = relationshipWithFallback(relationshipFuture, patient.patientId);
+            }
+        } else {
+            hasRelationship = relationshipWithFallback(relationshipFuture, patient.patientId);
+        }
 
         return new PdlReport(checkedSystems, checkedConsent, hasRelationship);
     }
+
+    private static boolean hasAnyPatientInfoInCurrentAssignmentUnit(List<WithInfoType<CareSystem>> careSystems, Assignment currentAssignment) {
+        boolean match = false;
+
+        outer:
+        for (WithInfoType<CareSystem> foundSystemsWithPatientInfo : careSystems) {
+            String currentHsaIdForUnitWithPatientInfo = foundSystemsWithPatientInfo.value.careUnitHsaId;
+
+            if (currentHsaIdForUnitWithPatientInfo.equals(currentAssignment.careUnitHsaId)) {
+                match = true;
+                break outer;
+            }
+        }
+
+        return match;
+    }
+
 
     private static WithOutcome<Boolean> relationshipWithFallback(Future<WithOutcome<Boolean>> relationshipFuture, String patientId) {
         WithOutcome<Boolean> hasRelationship = WithOutcome.clientError(true);
@@ -92,7 +125,7 @@ public class Report {
             LOGGER.error("Failed to fetch relationship for patientId {} during report generation. Using fallback response.", patientId, e);
         } catch (ExecutionException e) {
             LOGGER.error("Failed to fetch relationship for patientId {} during report generation. Using fallback response.", patientId, e);
-        }  catch (WebServiceException e) {
+        } catch (WebServiceException e) {
             LOGGER.error("Failed to fetch relationship for patientId {} during report generation. Using fallback response.", patientId, e);
             hasRelationship = WithOutcome.commFailure(true);
         } catch (SoapFault e) {
@@ -149,6 +182,7 @@ public class Report {
     /**
      * <p>Maps List&lt;WithInfoType&lt;CareSystem&gt;&gt; to List&lt;WithInfoType&lt;WithBlock&lt;CareSystem&gt;&gt;&gt;.</p>
      * <p>None of the mapped care systems will have a block.</p>
+     *
      * @param careSystems Care systems to map
      * @return
      */
@@ -157,7 +191,7 @@ public class Report {
     ) {
         ArrayList<WithInfoType<WithBlock<CareSystem>>> fallbackSystems = new ArrayList<WithInfoType<WithBlock<CareSystem>>>();
 
-        for(WithInfoType<CareSystem> cs : careSystems) {
+        for (WithInfoType<CareSystem> cs : careSystems) {
             WithBlock<CareSystem> unblockedSystem = WithBlock.unblocked(cs.value);
             WithInfoType<WithBlock<CareSystem>> infotypeWithFallbackBlock = cs.mapValue(unblockedSystem);
             fallbackSystems.add(infotypeWithFallbackBlock);
@@ -173,8 +207,8 @@ public class Report {
             final CheckPatientRelationResponderInterface checkRelationship,
             ExecutorService executorService
     ) {
-        Callable<WithOutcome<Boolean>> relationshipAsync = new Callable<WithOutcome<Boolean>>(){
-            public WithOutcome<Boolean>call() throws Exception {
+        Callable<WithOutcome<Boolean>> relationshipAsync = new Callable<WithOutcome<Boolean>>() {
+            public WithOutcome<Boolean> call() throws Exception {
                 return checkRelationship(servicesHsaId, ctx, patientId, checkRelationship);
             }
         };
@@ -189,7 +223,7 @@ public class Report {
             final CheckConsentResponderInterface checkConsent,
             ExecutorService executorService
     ) {
-        Callable<WithOutcome<CheckedConsent>> consentAsync = new Callable<WithOutcome<CheckedConsent>>(){
+        Callable<WithOutcome<CheckedConsent>> consentAsync = new Callable<WithOutcome<CheckedConsent>>() {
             public WithOutcome<CheckedConsent> call() throws Exception {
                 return checkConsent(servicesHsaId, ctx, patientId, checkConsent);
             }
@@ -266,7 +300,8 @@ public class Report {
     }
 
     private static Future<WithOutcome<CheckedConsent>> consentNotNeeded(ExecutorService executorService) {
-        Future<WithOutcome<CheckedConsent>> consentFuture;Callable<WithOutcome<CheckedConsent>> consentCallable =
+        Future<WithOutcome<CheckedConsent>> consentFuture;
+        Callable<WithOutcome<CheckedConsent>> consentCallable =
                 new Callable<WithOutcome<CheckedConsent>>() {
                     public WithOutcome<CheckedConsent> call() {
                         return WithOutcome.success(new CheckedConsent(PdlReport.ConsentType.Consent, false));

@@ -4,10 +4,26 @@
     <c:forEach items="${state.csReport.aggregatedSystems.value}" var="infoSelection">
         <li class="active">
             <c:if test="${pdl:expandInfoType(infoSelection.key, state)}">
+                <c:choose>
+                    <c:when test="${state.toggleAllInfoResourceState eq 'SELECT'}">
+                        <c:set var="toggleClass" value="unchecked"/>
+                        <c:set var="toggleTitle" value="Välj alla"/>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="toggleClass" value="checked"/>
+                        <c:set var="toggleTitle" value="Avmarkera alla"/>
+                    </c:otherwise>
+                </c:choose>
                 <portlet:actionURL name="toggleAllCheckboxes" var="toggleAllCheckboxesUrl">
                     <portlet:param name="id" value="${infoSelection.key.id}" />
+                    <portlet:param name="selectOrDeselect" value="${state.toggleAllInfoResourceState}" />
                 </portlet:actionURL>
-                <a href="${toggleAllCheckboxesUrl}"><i class="icon check_all"></i></a>
+                <a class="toggle-all-link" href="${toggleAllCheckboxesUrl}">
+                    <i class="icon ${toggleClass}"></i>
+                    <div class="tooltip">
+                        ${toggleTitle}
+                    </div>
+                </a>
             </c:if>
             ${infoSelection.key.value.desc}
         </li>

@@ -28,6 +28,12 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>oppna-program-rp-pdl-pdl-composite-schema</artifactId>
       <version>${project.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.codehaus.woodstox</groupId>
+          <artifactId>wstx-asl</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>

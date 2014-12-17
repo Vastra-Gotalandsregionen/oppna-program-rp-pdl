@@ -30,7 +30,7 @@ import se.vgregion.portal.controller.pdl.AvailablePatient;
 import se.vgregion.portal.controller.pdl.production.PdlController;
 import se.vgregion.portal.controller.pdl.PdlLogger;
 import se.vgregion.portal.controller.pdl.PdlProgress;
-import se.vgregion.portal.controller.pdl.PdlUserState;
+import se.vgregion.portal.controller.pdl.common.PdlUserState;
 import se.vgregion.portal.util.UserUtil;
 import se.vgregion.repo.log.LogRepo;
 import se.vgregion.service.search.*;import se.vgregion.service.search.AccessControl;
@@ -163,7 +163,7 @@ public class PdlAdminController {
 
                     // Security Services only supports Social Security Number or Samordningsnummer.
                     if(pidtype == InfobrokerPersonIdType.PAT_PERS_NR || pidtype == InfobrokerPersonIdType.PAT_SAMO_NR) {
-                        newReport = fetchPdlReport(ctx, careSystems, timeUnits, duration);
+                        newReport = fetchPdlReport(ctx, careSystems, timeUnits, duration, ctx.assignments.get(currentAssignment));
                     } else {
                         newReport = PdlReport.defaultReport(careSystems);
                     }
@@ -201,7 +201,7 @@ public class PdlAdminController {
 
     private void shortcutDirectlyToViewer(ActionRequest request, ActionResponse response, Model model) throws IOException {
         for (InfoTypeState<InformationType> key : state.getCsReport().aggregatedSystems.value.keySet()) {
-            toggleAllInfoTypes(key.getId());
+            toggleAllInfoTypes(key.getId(), PdlUserState.SelectOrDeselect.SELECT);
         }
         goToSummary(model, request, response);
     }
@@ -229,13 +229,14 @@ public class PdlAdminController {
             PdlContext ctx,
             WithOutcome<ArrayList<WithInfoType<CareSystem>>> careSystems,
             int establishRelationTimeUnits,
-            RoundedTimeUnit establishRelationDuration) {
+            RoundedTimeUnit establishRelationDuration, Assignment currentAssignment) {
         boolean availablePatient = AvailablePatient.check(ctx, careSystems.value);
 
         PdlReport pdlReport = pdl.pdlReport(
                 ctx,
                 state.getPatient(),
-                careSystems.value
+                careSystems.value,
+                currentAssignment
         );
 
         PdlReport newReport = pdlReport;
@@ -397,13 +398,20 @@ public class PdlAdminController {
     @ActionMapping("toggleAllCheckboxes")
     public void toggleAllInfoResource(
             @RequestParam String id,
+            @RequestParam(value = "selectOrDeselect") PdlUserState.SelectOrDeselect selectOrDeselect,
             ActionResponse response
     ) {
         if (state.getCurrentProgress().equals(PdlProgress.firstStep())) {
             response.setRenderParameter("view", "view");
         } else {
 
-            toggleAllInfoTypes(id);
+            toggleAllInfoTypes(id, selectOrDeselect);
+
+            PdlUserState.SelectOrDeselect oppositeState =
+                    selectOrDeselect.equals(PdlUserState.SelectOrDeselect.SELECT)
+                            ? PdlUserState.SelectOrDeselect.DESELECT : PdlUserState.SelectOrDeselect.SELECT;
+
+            state.setToggleAllInfoResourceState(oppositeState);
 
             response.setRenderParameter("view", "pickInfoResource");
         }
@@ -479,18 +487,32 @@ public class PdlAdminController {
         }
     }
 
-    private void toggleAllInfoTypes(String id) {
+    private void toggleAllInfoTypes(String id, PdlUserState.SelectOrDeselect selectOrDeselect) {
         for(InfoTypeState<InformationType> key: state.getCsReport().aggregatedSystems.value.keySet()) {
             if(key.id.equals(id)) {
                 for(SystemState<CareSystem> system : state.getCsReport().aggregatedSystems.value.get(key)) {
-                    boolean selectable =
-                            !system.isSelected() &&
-                                    !system.blocked &&
-                                    (system.visibility == Visibility.SAME_CARE_UNIT ||
-                                            state.getShouldBeVisible().get(system.visibility.toString()));
+                    if (selectOrDeselect.equals(PdlUserState.SelectOrDeselect.SELECT)) {
+                        boolean selectable = !system.isSelected() && !system.blocked &&
+                                (system.visibility == Visibility.SAME_CARE_UNIT || (
+                                        state.getCurrentVisibility().toString().equals(system.visibility.toString())));
 
-                    if(selectable) {
-                        toggleOneInfoType(system.id, false, false);
+                        if (selectable) {
+                            toggleOneInfoType(system.id, false, false);
+                        }
+                    } else if (selectOrDeselect.equals(PdlUserState.SelectOrDeselect.DESELECT)) {
+                        // Same as in previous block except for only selected systems are deselectable.
+                        // We also don't check whether whether the system has the right visibility since a deselect is
+                        // never dangerous.
+                        boolean deselectable = system.isSelected() && !system.blocked &&
+                                (system.visibility == Visibility.SAME_CARE_UNIT ||
+                                        state.getShouldBeVisible().get(system.visibility.toString()));
+
+                        if (deselectable) {
+                            toggleOneInfoType(system.id, false, false);
+                        }
+                    } else {
+                        throw new RuntimeException("Should not happen. SelectOrDeselect should be either SELECT or"
+                                + " DESELECT.");
                     }
                 }
             }
@@ -620,4 +642,6 @@ public class PdlAdminController {
                 ", careAgreement=" + careAgreement +
                 '}';
     }
+
+
 }

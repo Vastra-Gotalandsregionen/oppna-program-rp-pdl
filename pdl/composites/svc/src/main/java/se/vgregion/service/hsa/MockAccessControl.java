@@ -23,10 +23,10 @@ public class MockAccessControl implements AccessControl {
 
     @Override
     public WithOutcome<PdlContext> getContextByEmployeeId(String hsaId) {
-        return WithOutcome.success(getMockContext());
+        return WithOutcome.success(getMockContext(hsaId));
     }
 
-    public static PdlContext getMockContext() {
+    public static PdlContext getMockContext(String hsaId) {
 
         TreeMap<String, Assignment> assignments = new TreeMap<String, Assignment>();
 
@@ -75,7 +75,8 @@ public class MockAccessControl implements AccessControl {
                         VG,
                         "Vård och behandling - Utökad",
                         careProviderHsaId,
-                        careUnitHsaId,
+                        "SE2321000131-E000000000774", // Verksamhet Kirurgi Sahlgrenska (där har Tian Testberg info)
+//                        careUnitHsaId,
                         "careProviderDisplayNameSame",
                         "careUnitDisplayNameSame",
                         sameCareGiver
@@ -97,7 +98,8 @@ public class MockAccessControl implements AccessControl {
 
         return new PdlContext(
                 "Ludvig Läkare",
-                "SE2321000131-P000000069215",
+                hsaId,
+//                "SE2321000131-P000000069215", // Susanne Lindqvist
                 assignments
 
         );

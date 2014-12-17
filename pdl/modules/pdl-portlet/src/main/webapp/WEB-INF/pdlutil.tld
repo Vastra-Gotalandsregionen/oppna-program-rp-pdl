@@ -13,7 +13,7 @@
     <display-name>Show Information Type</display-name>
     <name>expandInfoType</name>
     <function-class>se.vgregion.portal.controller.pdl.DisplayInformation</function-class>
-    <function-signature>boolean expandInfoType(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.portal.controller.pdl.PdlUserState)</function-signature>
+    <function-signature>boolean expandInfoType(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.portal.controller.pdl.common.PdlUserState)</function-signature>
   </function>
 
   <function>
@@ -21,7 +21,7 @@
     <display-name>Show Information Type</display-name>
     <name>displayCareUnit</name>
     <function-class>se.vgregion.portal.controller.pdl.DisplayInformation</function-class>
-    <function-signature>boolean displayCareUnit(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.domain.decorators.SystemState, se.vgregion.portal.controller.pdl.PdlUserState)</function-signature>
+    <function-signature>boolean displayCareUnit(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.domain.decorators.SystemState, se.vgregion.portal.controller.pdl.common.PdlUserState)</function-signature>
   </function>
 
   <function>
@@ -29,7 +29,7 @@
     <display-name>Show more Information Type</display-name>
     <name>displayShowMore</name>
     <function-class>se.vgregion.portal.controller.pdl.DisplayInformation</function-class>
-    <function-signature>boolean displayShowMore(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.portal.controller.pdl.PdlUserState)</function-signature>
+    <function-signature>boolean displayShowMore(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.portal.controller.pdl.common.PdlUserState)</function-signature>
   </function>
 
   <function>
@@ -37,7 +37,7 @@
     <display-name>Show other units</display-name>
     <name>displayOtherUnits</name>
     <function-class>se.vgregion.portal.controller.pdl.DisplayInformation</function-class>
-    <function-signature>boolean displayOtherUnits(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.portal.controller.pdl.PdlUserState)</function-signature>
+    <function-signature>boolean displayOtherUnits(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.portal.controller.pdl.common.PdlUserState)</function-signature>
   </function>
 
   <function>
@@ -45,7 +45,7 @@
     <display-name>Show other providers</display-name>
     <name>displayOtherProviders</name>
     <function-class>se.vgregion.portal.controller.pdl.DisplayInformation</function-class>
-    <function-signature>boolean displayOtherProviders(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.portal.controller.pdl.PdlUserState)</function-signature>
+    <function-signature>boolean displayOtherProviders(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.portal.controller.pdl.common.PdlUserState)</function-signature>
   </function>
 
   <function>
@@ -53,7 +53,7 @@
     <display-name>Show block dialog</display-name>
     <name>displayUnblockConfirmation</name>
     <function-class>se.vgregion.portal.controller.pdl.DisplayInformation</function-class>
-    <function-signature>boolean displayUnblockConfirmation(se.vgregion.domain.decorators.SystemState, se.vgregion.portal.controller.pdl.PdlUserState)</function-signature>
+    <function-signature>boolean displayUnblockConfirmation(se.vgregion.domain.decorators.SystemState, se.vgregion.portal.controller.pdl.common.PdlUserState)</function-signature>
   </function>
 
   <function>
@@ -61,7 +61,7 @@
     <display-name>Show block information for SJF</display-name>
     <name>displayUnblockInformation</name>
     <function-class>se.vgregion.portal.controller.pdl.DisplayInformation</function-class>
-    <function-signature>boolean displayUnblockInformation(se.vgregion.domain.decorators.SystemState, se.vgregion.portal.controller.pdl.PdlUserState)</function-signature>
+    <function-signature>boolean displayUnblockInformation(se.vgregion.domain.decorators.SystemState, se.vgregion.portal.controller.pdl.common.PdlUserState)</function-signature>
   </function>
 
   <function>
@@ -69,7 +69,7 @@
     <display-name>Action to view blocked care units</display-name>
     <name>displayBlockedAction</name>
     <function-class>se.vgregion.portal.controller.pdl.DisplayInformation</function-class>
-    <function-signature>boolean displayBlockedAction(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.portal.controller.pdl.PdlUserState)</function-signature>
+    <function-signature>boolean displayBlockedAction(se.vgregion.domain.decorators.InfoTypeState, se.vgregion.portal.controller.pdl.common.PdlUserState)</function-signature>
   </function>
 
 </taglib>

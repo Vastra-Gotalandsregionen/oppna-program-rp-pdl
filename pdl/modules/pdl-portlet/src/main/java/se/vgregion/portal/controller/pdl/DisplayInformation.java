@@ -5,6 +5,7 @@ import se.vgregion.domain.decorators.SystemState;
 import se.vgregion.domain.systems.CareSystem;
 import se.vgregion.domain.pdl.InformationType;
 import se.vgregion.domain.systems.Visibility;
+import se.vgregion.portal.controller.pdl.common.PdlUserState;
 
 public class DisplayInformation {
     private DisplayInformation() {

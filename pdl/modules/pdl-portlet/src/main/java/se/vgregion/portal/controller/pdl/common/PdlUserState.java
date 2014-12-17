@@ -1,15 +1,17 @@
-package se.vgregion.portal.controller.pdl;
+package se.vgregion.portal.controller.pdl.common;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
-import se.vgregion.domain.pdl.*;
+import se.vgregion.domain.assignment.Assignment;
 import se.vgregion.domain.decorators.WithOutcome;
+import se.vgregion.domain.pdl.PdlContext;
+import se.vgregion.domain.pdl.PdlReport;
 import se.vgregion.domain.systems.CareSystemsReport;
 import se.vgregion.domain.systems.SummaryReport;
 import se.vgregion.domain.systems.Visibility;
 import se.vgregion.events.context.Patient;
-import se.vgregion.domain.pdl.PdlContext;
+import se.vgregion.portal.controller.pdl.PdlProgress;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -39,22 +41,17 @@ public class PdlUserState implements Serializable {
     private boolean sourcesNonSuccessOutcome = false;
     private boolean missingResults = false;
     private boolean invalid = false;
+    private SelectOrDeselect toggleAllInfoResourceState = SelectOrDeselect.SELECT; // Initially the action is to select.
 
     private void calcVisibility() {
         shouldBeVisible.clear();
-        shouldBeVisible.put(
-                Visibility.SAME_CARE_UNIT.name(),
-                pdlReport.hasRelationship.value);
 
-        shouldBeVisible.put(
-                Visibility.OTHER_CARE_UNIT.name(),
-                ctx.value.currentAssignment.isOtherUnits() &&
-                pdlReport.hasRelationship.value);
+        Boolean hasRelationShip = pdlReport.hasRelationship.value;
+        Assignment assignment = ctx.value.currentAssignment;
 
-        shouldBeVisible.put(
-                Visibility.OTHER_CARE_PROVIDER.name(),
-                ctx.value.currentAssignment.isOtherProviders() &&
-                pdlReport.hasRelationship.value);
+        shouldBeVisible.put(Visibility.SAME_CARE_UNIT.name(), hasRelationShip);
+        shouldBeVisible.put(Visibility.OTHER_CARE_UNIT.name(), assignment.isOtherUnits() && hasRelationShip);
+        shouldBeVisible.put(Visibility.OTHER_CARE_PROVIDER.name(), assignment.isOtherProviders() && hasRelationShip);
 
         patientInformationExist = csReport.availablePatientInformation;
     }
@@ -77,6 +74,7 @@ public class PdlUserState implements Serializable {
         currentVisibility = Visibility.SAME_CARE_UNIT;
         shouldBeVisible.clear();
         currentProgress = PdlProgress.firstStep();
+        toggleAllInfoResourceState = SelectOrDeselect.SELECT;
     }
 
     public SummaryReport getSumReport() {
@@ -204,5 +202,17 @@ public class PdlUserState implements Serializable {
                 ", missingResults=" + missingResults +
                 ", invalid=" + invalid +
                 '}';
+    }
+
+    public void setToggleAllInfoResourceState(SelectOrDeselect toggleAllInfoResourceState) {
+        this.toggleAllInfoResourceState = toggleAllInfoResourceState;
+    }
+
+    public SelectOrDeselect getToggleAllInfoResourceState() {
+        return toggleAllInfoResourceState;
+    }
+
+    public static enum SelectOrDeselect {
+        SELECT, DESELECT
     }
 }
