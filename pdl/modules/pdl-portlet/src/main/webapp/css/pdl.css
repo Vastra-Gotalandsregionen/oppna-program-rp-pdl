@@ -64,6 +64,10 @@
     color: #3a87ad;
 }
 
+.aui .pdl .label {
+    padding-left: 0;
+}
+
 .pdl ul.infotypes {
     font-family: Ubuntu,Arial,Verdana,Helvetica,sans-serif;
     font-size: 1.4em;
@@ -566,12 +570,13 @@
     position: relative;
 }
 
-.toggle-all-link:hover .tooltip {
+.toggle-all-link:hover .tooltip, .custom-tooltip-enabled:hover .tooltip {
     opacity: 1;
+    z-index: 1000000;
     /*box-shadow: 0px 0px 9px -15px #000;*/
 }
 
-.toggle-all-link .tooltip {
+.toggle-all-link .tooltip, .custom-tooltip-enabled .tooltip {
     background-color: #fff;
     /*background-color: #2868af;*/
     border: 2px solid #aaa;
@@ -587,6 +592,27 @@
     text-align: center;
     transition: opacity .2s;
     width: 90px;
+    z-index: -1;
+}
+
+.custom-tooltip-enabled span.tooltip {
+    bottom: -47px;
+    display: block;
+    font-size: 1em;
+    font-weight: normal;
+    left: 94px;
+    min-width: 300px;
+    text-align: left;
+}
+
+.custom-tooltip-enabled {
+    background: url(../images/i-icon.png) no-repeat scroll 65px 0px / 17px auto transparent;
+    border: 1px dotted #31708F;
+    border-radius: 3px;
+    cursor: help;
+    padding: 2px 18px 2px 2px;
+    position: relative;
+    white-space: pre-line;
 }
 
 .tooltip:after, .tooltip:before {

@@ -34,7 +34,7 @@
     </portlet:actionURL>
 
     <div class="clearfix callout callout-info">
-        <p class="label">Samtycke från patient saknas för din vårdgivare. Du måste inhämta patientens samtycke.</p>
+        <p class="label">Samtycke från patient saknas för din <span class="custom-tooltip-enabled">vårdgivare<span class="tooltip">Med vårdgivare menas: Statlig myndighet, landsting och kommun i fråga om sådan hälso- och sjukvård som myndigheten, landstinget eller kommunen har ansvar för (offentlig vårdgivare) samt annan juridisk person eller enskild näringsidkare som bedriver hälso- och sjukvård (privat vårdgivare).</span> </span>. Du måste inhämta patientens samtycke.</p>
         <p>Det finns patientinformation hos annan vårdgivare för ${state.patient.patientDisplayName}. För att få information från andra vårdgivare behöver du inhämta patientens samtycke.</p>
         <p>Råder en nödsituation kan detta steget passeras. Ditt val loggförs.<p>
         <p><a href="http://www.vgregion.se/sv/Vastra-Gotalandsregionen/startsida/Vard-och-halsa/Sa-styrs-varden/Halso--och-sjukvardsavdelningen/Patientdatalagen/" target="_blank">Visa information om Patientdatalagen</a><i class="icon link_external"></i></p>

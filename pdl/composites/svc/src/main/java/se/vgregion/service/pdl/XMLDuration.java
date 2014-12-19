@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -27,10 +28,17 @@ class XMLDuration {
 
     private static XMLGregorianCalendar calculateEndDate(int duration, RoundedTimeUnit timeUnit) {
         GregorianCalendar c = new GregorianCalendar();
-        c.setTimeZone(TimeZone.getTimeZone("CET"));
+        c.setTimeZone(TimeZone.getTimeZone("Europe/Stockholm"));
 
         try {
             switch (timeUnit) {
+                case NEAREST_YEAR:
+                    Date yearAdded = DateUtils.addYears(new Date(), duration);
+                    Date yearRounded = DateUtils.ceiling(yearAdded, Calendar.YEAR);
+                    Date yearTruncated = DateUtils.truncate(yearRounded, Calendar.YEAR);
+                    c.setTime(yearTruncated);
+
+                    return DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
                 case NEAREST_MONTH:
                     Date monthAdded = DateUtils.addMonths(new Date(), duration);
                     Date monthRounded = DateUtils.ceiling(monthAdded, Calendar.MONTH);

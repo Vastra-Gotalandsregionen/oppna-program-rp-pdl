@@ -139,6 +139,7 @@
 
 .bfr table th, .bfr table td {
     padding: 1em;
+    text-align: left;
 }
 
 .bfr i.icon {

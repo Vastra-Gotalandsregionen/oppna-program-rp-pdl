@@ -38,6 +38,22 @@
         <name>portlet-setup-show-borders</name>
         <value>true</value>
       </preference>
+      <preference>
+        <name>establishRelationDuration</name>
+        <value>24</value>
+      </preference>
+      <preference>
+        <name>establishRelationTimeUnit</name>
+        <value>NEAREST_HOUR</value>
+      </preference>
+      <preference>
+        <name>establishConsentDuration</name>
+        <value>200</value>
+      </preference>
+      <preference>
+        <name>establishConsentTimeUnit</name>
+        <value>NEAREST_YEAR</value>
+      </preference>
     </portlet-preferences>
 
     <supported-publishing-event>
@@ -72,6 +88,22 @@
       <preference>
         <name>portlet-setup-show-borders</name>
         <value>true</value>
+      </preference>
+      <preference>
+        <name>establishRelationDuration</name>
+        <value>1</value>
+      </preference>
+      <preference>
+        <name>establishRelationTimeUnit</name>
+        <value>NEAREST_HALF_HOUR</value>
+      </preference>
+      <preference>
+        <name>establishConsentDuration</name>
+        <value>1</value>
+      </preference>
+      <preference>
+        <name>establishConsentTimeUnit</name>
+        <value>NEAREST_HALF_HOUR</value>
       </preference>
     </portlet-preferences>
 

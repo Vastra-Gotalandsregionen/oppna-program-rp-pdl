@@ -31,14 +31,14 @@ public class PdlEditController {
     public String edit(Model model, RenderRequest request, RenderResponse response) {
 
         PortletPreferences prefs = request.getPreferences();
-        String establishRelationDuration = prefs.getValue("establishRelationDuration", "1");
-        String establishRelationTimeUnit = prefs.getValue("establishRelationTimeUnit", RoundedTimeUnit.NEAREST_DAY.toString());
+        String establishRelationDuration = prefs.getValue("establishRelationDuration", null);
+        String establishRelationTimeUnit = prefs.getValue("establishRelationTimeUnit", RoundedTimeUnit.NEAREST_HOUR.toString());
 
         model.addAttribute("establishRelationDuration", establishRelationDuration);
         model.addAttribute("establishRelationTimeUnit", establishRelationTimeUnit);
 
-        String establishConsentDuration = prefs.getValue("establishConsentDuration", "7");
-        String establishConsentTimeUnit = prefs.getValue("establishConsentTimeUnit", RoundedTimeUnit.NEAREST_DAY.toString());
+        String establishConsentDuration = prefs.getValue("establishConsentDuration", null);
+        String establishConsentTimeUnit = prefs.getValue("establishConsentTimeUnit", RoundedTimeUnit.NEAREST_HOUR.toString());
 
         model.addAttribute("establishConsentDuration", establishConsentDuration);
         model.addAttribute("establishConsentTimeUnit", establishConsentTimeUnit);
