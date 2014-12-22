@@ -9,6 +9,9 @@ import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v2.CheckBlocksResp
 import se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderInterface;
 import se.riv.ehr.patientconsent.accesscontrol.checkconsentresponder.v1.CheckConsentRequestType;
 import se.riv.ehr.patientconsent.accesscontrol.checkconsentresponder.v1.CheckConsentResponseType;
+import se.riv.ehr.patientconsent.querying.getconsentsforpatient.v1.rivtabp21.GetConsentsForPatientResponderInterface;
+import se.riv.ehr.patientconsent.querying.getconsentsforpatientresponder.v1.GetConsentsForPatientRequestType;
+import se.riv.ehr.patientconsent.querying.getconsentsforpatientresponder.v1.GetConsentsForPatientResponseType;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationRequestType;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationResponseType;
@@ -44,7 +47,7 @@ public class Report {
             final Patient patient,
             final List<WithInfoType<CareSystem>> careSystems,
             final CheckBlocksResponderInterface checkBlocks,
-            final CheckConsentResponderInterface checkConsent,
+            final GetConsentsForPatientResponderInterface getConsentsForPatient,
             final CheckPatientRelationResponderInterface checkRelationship,
             final ExecutorService executorService,
             final Assignment currentAssignment
@@ -65,7 +68,7 @@ public class Report {
                             servicesHsaId,
                             ctx,
                             patient.patientId,
-                            checkConsent,
+                            getConsentsForPatient,
                             executorService
                     );
         } else {
@@ -220,12 +223,12 @@ public class Report {
             final String servicesHsaId,
             final PdlContext ctx,
             final String patientId,
-            final CheckConsentResponderInterface checkConsent,
+            final GetConsentsForPatientResponderInterface getConsentsForPatient,
             ExecutorService executorService
     ) {
         Callable<WithOutcome<CheckedConsent>> consentAsync = new Callable<WithOutcome<CheckedConsent>>() {
             public WithOutcome<CheckedConsent> call() throws Exception {
-                return checkConsent(servicesHsaId, ctx, patientId, checkConsent);
+                return careProviderHasPatientConsent(servicesHsaId, ctx, patientId, getConsentsForPatient);
             }
         };
 
@@ -297,6 +300,21 @@ public class Report {
         CheckedConsent consent = Consent.asCheckedConsent(consentResponse);
 
         return Consent.decideOutcome(consentResponse.getCheckResultType().getResult(), consent);
+    }
+
+    static WithOutcome<CheckedConsent> careProviderHasPatientConsent(
+            String regionalSecurityServicesHsaId,
+            PdlContext ctx,
+            String patientId,
+            GetConsentsForPatientResponderInterface getConsentsForPatient
+    ) {
+        GetConsentsForPatientRequestType request = Consent.getConsentsForPatientRequest(ctx, patientId);
+        GetConsentsForPatientResponseType getConsentsForPatientResponse = getConsentsForPatient.getConsentsForPatient(
+                regionalSecurityServicesHsaId, request);
+
+        CheckedConsent consent = Consent.asCheckedConsent(getConsentsForPatientResponse);
+
+        return Consent.decideOutcome(getConsentsForPatientResponse.getGetConsentsResultType().getResult(), consent);
     }
 
     private static Future<WithOutcome<CheckedConsent>> consentNotNeeded(ExecutorService executorService) {

@@ -75,8 +75,8 @@ public class MockAccessControl implements AccessControl {
                         VG,
                         "Vård och behandling - Utökad",
                         careProviderHsaId,
-                        "SE2321000131-E000000000774", // Verksamhet Kirurgi Sahlgrenska (där har Tian Testberg info)
-//                        careUnitHsaId,
+//                        "SE2321000131-E000000000774", // Verksamhet Kirurgi Sahlgrenska (där har Tian Testberg info)
+                        careUnitHsaId,
                         "careProviderDisplayNameSame",
                         "careUnitDisplayNameSame",
                         sameCareGiver

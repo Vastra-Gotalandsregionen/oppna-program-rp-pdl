@@ -7,6 +7,7 @@ import se.riv.ehr.blocking.administration.registertemporaryextendedrevoke.v2.riv
 import se.riv.ehr.blocking.querying.getblocksforpatient.v2.rivtabp21.GetBlocksForPatientResponderInterface;
 import se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderInterface;
 import se.riv.ehr.patientconsent.administration.registerextendedconsent.v1.rivtabp21.RegisterExtendedConsentResponderInterface;
+import se.riv.ehr.patientconsent.querying.getconsentsforpatient.v1.rivtabp21.GetConsentsForPatientResponderInterface;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelation.v1.rivtabp21.RegisterExtendedPatientRelationResponderInterface;
 import se.vgregion.domain.assignment.Assignment;
@@ -32,6 +33,8 @@ public class PdlServiceProxy implements PdlService {
     private CheckBlocksResponderInterface checkBlocks;
     @Resource(name = "checkConsent")
     private CheckConsentResponderInterface checkConsent;
+    @Resource(name = "getConsentsForPatient")
+    private GetConsentsForPatientResponderInterface getConsentsForPatient;
     @Resource(name = "checkRelationship")
     private CheckPatientRelationResponderInterface checkRelationship;
     @Resource(name = "blocksForPatient")
@@ -86,7 +89,7 @@ public class PdlServiceProxy implements PdlService {
                 patient,
                 careSystems,
                 checkBlocks,
-                checkConsent,
+                getConsentsForPatient,
                 checkRelationship,
                 executorService,
                 null
@@ -101,7 +104,7 @@ public class PdlServiceProxy implements PdlService {
                 patient,
                 careSystems,
                 checkBlocks,
-                checkConsent,
+                getConsentsForPatient,
                 checkRelationship,
                 executorService,
                 currentAssignment

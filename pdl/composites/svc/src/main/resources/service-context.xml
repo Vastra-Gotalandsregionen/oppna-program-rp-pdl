@@ -34,6 +34,10 @@
                 serviceClass="se.riv.ehr.patientconsent.administration.registerextendedconsent.v1.rivtabp21.RegisterExtendedConsentResponderInterface"
                 address="${ws.endpoint.pdl.registerConsent}" />
 
+  <jaxws:client id="getConsentsForPatient"
+                serviceClass="se.riv.ehr.patientconsent.querying.getconsentsforpatient.v1.rivtabp21.GetConsentsForPatientResponderInterface"
+                address="${ws.endpoint.pdl.getConsentsForPatient}" />
+
   <jaxws:client id="blocksForPatient"
                 serviceClass="se.riv.ehr.blocking.querying.getblocksforpatient.v2.rivtabp21.GetBlocksForPatientResponderInterface"
                 address="${ws.endpoint.pdl.patientBlocks}" />

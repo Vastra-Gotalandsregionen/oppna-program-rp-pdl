@@ -14,6 +14,7 @@ pdl.regionalSecurityServicesHsaId=SE2321000131-E000000000001
 ws.endpoint.pdl.checkBlocks=https://${TP_HOST}:${TP_PORT1}/${TP_BASE_URI}/ehr/blocking/accesscontrol/CheckBlocks/2/rivtabp21
 ws.endpoint.pdl.checkConsent=https://${TP_HOST}:${TP_PORT1}/${TP_BASE_URI}/ehr/patientconsent/accesscontrol/CheckConsent/1/rivtabp21
 ws.endpoint.pdl.checkRelationship=https://${TP_HOST}:${TP_PORT1}/${TP_BASE_URI}/ehr/patientrelationship/accesscontrol/CheckPatientRelation/1/rivtabp21
+ws.endpoint.pdl.getConsentsForPatient=https://${TP_HOST}:${TP_PORT1}/${TP_BASE_URI}/ehr/patientconsent/querying/GetConsentsForPatient/1/rivtabp21
 ws.endpoint.pdl.patientBlocks=https://${TP_HOST}:${TP_PORT1}/${TP_BASE_URI}/ehr/blocking/administration/GetExtendedBlocksForPatient/2/rivtabp21
 ws.endpoint.pdl.temporaryRevoke=https://${TP_HOST}:${TP_PORT1}/${TP_BASE_URI}/ehr/blocking/administration/RegisterTemporaryExtendedRevoke/2/rivtabp21
 ws.endpoint.pdl.registerConsent=https://${TP_HOST}:${TP_PORT1}/${TP_BASE_URI}/ehr/patientconsent/administration/RegisterExtendedConsent/1/rivtabp21

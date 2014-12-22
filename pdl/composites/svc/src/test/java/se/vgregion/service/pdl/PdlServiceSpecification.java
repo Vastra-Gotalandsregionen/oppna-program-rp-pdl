@@ -9,9 +9,10 @@ import org.mockito.MockitoAnnotations;
 import se.riv.ehr.blocking.accesscontrol.checkblocks.v2.rivtabp21.CheckBlocksResponderInterface;
 import se.riv.ehr.blocking.accesscontrol.checkblocksresponder.v2.CheckBlocksRequestType;
 import se.riv.ehr.patientconsent.accesscontrol.checkconsent.v1.rivtabp21.CheckConsentResponderInterface;
-import se.riv.ehr.patientconsent.accesscontrol.checkconsentresponder.v1.CheckConsentRequestType;
 import se.riv.ehr.patientconsent.administration.registerextendedconsent.v1.rivtabp21.RegisterExtendedConsentResponderInterface;
 import se.riv.ehr.patientconsent.administration.registerextendedconsentresponder.v1.RegisterExtendedConsentRequestType;
+import se.riv.ehr.patientconsent.querying.getconsentsforpatient.v1.rivtabp21.GetConsentsForPatientResponderInterface;
+import se.riv.ehr.patientconsent.querying.getconsentsforpatientresponder.v1.GetConsentsForPatientRequestType;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelation.v1.rivtabp21.CheckPatientRelationResponderInterface;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationRequestType;
 import se.riv.ehr.patientrelationship.administration.registerextendedpatientrelation.v1.rivtabp21.RegisterExtendedPatientRelationResponderInterface;
@@ -38,6 +39,8 @@ public class PdlServiceSpecification {
     private CheckBlocksResponderInterface blocksInterface;
     @Mock
     private CheckConsentResponderInterface consentInterface;
+    @Mock
+    private GetConsentsForPatientResponderInterface getConsentsForPatientInterface;
     @Mock
     private CheckPatientRelationResponderInterface relationshipInterface;
     @Mock
@@ -132,8 +135,8 @@ public class PdlServiceSpecification {
         when(blocksInterface.checkBlocks(anyString(), isA(CheckBlocksRequestType.class))).
                 thenReturn(BlockingSpec.blockedResult(0, true)); // Not under test, avoid null pointer
 
-        when(consentInterface.checkConsent(eq(serviceHsaId), isA(CheckConsentRequestType.class))).
-                thenAnswer(ConsentSpec.queryRequestAndRespond(ctx, patient, true, false));
+        when(getConsentsForPatientInterface.getConsentsForPatient(eq(serviceHsaId), isA(GetConsentsForPatientRequestType.class))).
+                thenAnswer(ConsentSpec.queryGetConsentsForPatientRequestAndRespond(ctx, patient, true, false));
 
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
                 thenReturn(RelationshipSpec.relationshipResult(false));  // Not under test, avoid null pointer
@@ -152,8 +155,8 @@ public class PdlServiceSpecification {
         when(blocksInterface.checkBlocks(anyString(), isA(CheckBlocksRequestType.class))).
                 thenReturn(BlockingSpec.blockedResult(0, true)); // Not under test, avoid null pointer
 
-        when(consentInterface.checkConsent(eq(serviceHsaId), isA(CheckConsentRequestType.class))).
-                thenAnswer(ConsentSpec.queryRequestAndRespond(ctx, patient, true, true));
+        when(getConsentsForPatientInterface.getConsentsForPatient(eq(serviceHsaId), isA(GetConsentsForPatientRequestType.class))).
+                thenAnswer(ConsentSpec.queryGetConsentsForPatientRequestAndRespond(ctx, patient, true, true));
 
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
                 thenReturn(RelationshipSpec.relationshipResult(false));  // Not under test, avoid null pointer
@@ -172,8 +175,8 @@ public class PdlServiceSpecification {
         when(blocksInterface.checkBlocks(anyString(), isA(CheckBlocksRequestType.class))).
                 thenReturn(BlockingSpec.blockedResult(0, true)); // Not under test, avoid null pointer
 
-        when(consentInterface.checkConsent(eq(serviceHsaId), isA(CheckConsentRequestType.class))).
-                thenAnswer(ConsentSpec.queryRequestAndRespond(ctx, patient, false, true));
+        when(getConsentsForPatientInterface.getConsentsForPatient(eq(serviceHsaId), isA(GetConsentsForPatientRequestType.class))).
+                thenAnswer(ConsentSpec.queryGetConsentsForPatientRequestAndRespond(ctx, patient, false, true));
 
         when(relationshipInterface.checkPatientRelation(anyString(), isA(CheckPatientRelationRequestType.class))).
                 thenReturn(RelationshipSpec.relationshipResult(false));  // Not under test, avoid null pointer

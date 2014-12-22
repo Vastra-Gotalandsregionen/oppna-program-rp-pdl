@@ -8,6 +8,8 @@ import se.riv.ehr.patientconsent.accesscontrol.checkconsentresponder.v1.CheckCon
 import se.riv.ehr.patientconsent.administration.registerextendedconsent.v1.rivtabp21.RegisterExtendedConsentResponderInterface;
 import se.riv.ehr.patientconsent.administration.registerextendedconsentresponder.v1.RegisterExtendedConsentRequestType;
 import se.riv.ehr.patientconsent.administration.registerextendedconsentresponder.v1.RegisterExtendedConsentResponseType;
+import se.riv.ehr.patientconsent.querying.getconsentsforpatientresponder.v1.GetConsentsForPatientRequestType;
+import se.riv.ehr.patientconsent.querying.getconsentsforpatientresponder.v1.GetConsentsForPatientResponseType;
 import se.riv.ehr.patientconsent.v1.*;
 import se.riv.ehr.patientrelationship.accesscontrol.checkpatientrelationresponder.v1.CheckPatientRelationRequestType;
 import se.vgregion.domain.decorators.WithOutcome;
@@ -19,12 +21,23 @@ import se.vgregion.domain.pdl.RoundedTimeUnit;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.soap.SOAPFaultException;
 import java.io.Serializable;
+import java.util.List;
 
 class Consent {
     private static final Logger LOGGER = LoggerFactory.getLogger(Consent.class.getName());
 
     private Consent() {
         // Utility class, no constructor!
+    }
+
+    static GetConsentsForPatientRequestType getConsentsForPatientRequest(PdlContext ctx, String patientId) {
+
+        GetConsentsForPatientRequestType request = new GetConsentsForPatientRequestType();
+
+        request.setPatientId(patientId);
+        request.setCareProviderId(ctx.currentAssignment.careProviderHsaId);
+
+        return request;
     }
 
     static CheckConsentRequestType checkConsentRequest(PdlContext ctx, String patientId) {
@@ -41,8 +54,7 @@ class Consent {
 
 
     public static CheckedConsent asCheckedConsent(CheckConsentResponseType consentResponse) {
-        boolean hasConsent =
-                consentResponse.getCheckResultType().isHasConsent();
+        boolean hasConsent = consentResponse.getCheckResultType().isHasConsent();
 
 
         PdlReport.ConsentType consentType = (
@@ -53,6 +65,32 @@ class Consent {
 
         return new CheckedConsent( consentType, hasConsent );
     }
+
+    /**
+     * Checks whether at least one consent (PdlAssertion) exists. If at least one consent is of type Consent, as opposed
+     * to Emergency, the Consent type is chosen.
+     *
+     * @param getConsentsForPatientResponse
+     * @return
+     */
+    public static CheckedConsent asCheckedConsent(GetConsentsForPatientResponseType getConsentsForPatientResponse) {
+        List<PDLAssertionType> pdlAssertions = getConsentsForPatientResponse.getGetConsentsResultType()
+                .getPdlAssertions();
+
+        boolean hasConsent = pdlAssertions != null && pdlAssertions.size() > 0;
+
+        PdlReport.ConsentType consentType = PdlReport.ConsentType.None;
+
+        // This loop will make consentType equal to ConsentType.Consent if any pdlAssertion is of type Consent.
+        for (PDLAssertionType assertion : pdlAssertions) {
+            if (consentType.equals(PdlReport.ConsentType.None) || consentType.equals(PdlReport.ConsentType.Emergency)) {
+                consentType = PdlReport.ConsentType.valueOf(assertion.getAssertionType().value());
+            }
+        }
+
+        return new CheckedConsent(consentType, hasConsent);
+    }
+
 
     public static CheckPatientRelationRequestType checkRelationshipRequest(PdlContext ctx) {
 
@@ -106,8 +144,8 @@ class Consent {
         request.setAssertionId(java.util.UUID.randomUUID().toString());
         request.setAssertionType(AssertionTypeType.fromValue(consentType.name()));
         request.setCareProviderId(ctx.currentAssignment.careProviderHsaId);
-        request.setCareUnitId(ctx.currentAssignment.getCareUnitHsaId());
-        request.setEmployeeId(ctx.getEmployeeHsaId());
+        request.setEmployeeId(null); // Don't specify, we only wish to specify as far as careProvider...
+        request.setCareUnitId(ctx.currentAssignment.getCareUnitHsaId()); //... but currently the web service requires this too
 
         XMLDuration xmlDuration = new XMLDuration(duration, roundedTimeUnit);
         request.setStartDate(xmlDuration.startDate);

@@ -7,8 +7,12 @@ import se.riv.ehr.patientconsent.accesscontrol.checkconsentresponder.v1.CheckCon
 import se.riv.ehr.patientconsent.accesscontrol.checkconsentresponder.v1.CheckConsentResponseType;
 import se.riv.ehr.patientconsent.administration.registerextendedconsentresponder.v1.RegisterExtendedConsentRequestType;
 import se.riv.ehr.patientconsent.administration.registerextendedconsentresponder.v1.RegisterExtendedConsentResponseType;
+import se.riv.ehr.patientconsent.querying.getconsentsforpatientresponder.v1.GetConsentsForPatientRequestType;
+import se.riv.ehr.patientconsent.querying.getconsentsforpatientresponder.v1.GetConsentsForPatientResponseType;
 import se.riv.ehr.patientconsent.v1.AccessingActorType;
 import se.riv.ehr.patientconsent.v1.AssertionTypeType;
+import se.riv.ehr.patientconsent.v1.GetConsentsResultType;
+import se.riv.ehr.patientconsent.v1.PDLAssertionType;
 import se.riv.ehr.patientconsent.v1.ResultCodeType;
 import se.riv.ehr.patientconsent.v1.ResultType;
 import se.vgregion.events.context.Patient;
@@ -24,6 +28,30 @@ public class ConsentSpec {
         // Utility class, no constructor!
     }
 
+    static GetConsentsForPatientResponseType queryResultGetConsentsForPatient(boolean hasConsent, boolean emergency) {
+        GetConsentsForPatientResponseType response = new GetConsentsForPatientResponseType();
+
+        AssertionTypeType consentType = (emergency) ? AssertionTypeType.EMERGENCY : AssertionTypeType.CONSENT;
+
+        ResultType result = new ResultType();
+        result.setResultCode(ResultCodeType.OK);
+        result.setResultText("All OK.");
+
+        GetConsentsResultType getConsentsResultType = new GetConsentsResultType();
+
+        getConsentsResultType.setResult(result);
+
+        if (hasConsent) {
+            PDLAssertionType pdlAssertionType = new PDLAssertionType();
+            pdlAssertionType.setAssertionType(consentType);
+
+            getConsentsResultType.getPdlAssertions().add(pdlAssertionType);
+        }
+
+        response.setGetConsentsResultType(getConsentsResultType);
+
+        return response;
+    }
 
     static CheckConsentResponseType queryResult(boolean hasConsent, boolean emergency) {
         CheckConsentResponseType response = new CheckConsentResponseType();
@@ -67,6 +95,27 @@ public class ConsentSpec {
         };
     }
 
+    static Answer<GetConsentsForPatientResponseType> queryGetConsentsForPatientRequestAndRespond(
+            final PdlContext ctx,
+            final Patient pe,
+            final boolean hasConsent,
+            final boolean emergency
+    ) {
+        return new Answer<GetConsentsForPatientResponseType>() {
+            @Override
+            public GetConsentsForPatientResponseType answer(InvocationOnMock invocationOnMock) throws Throwable {
+                GetConsentsForPatientRequestType req = (GetConsentsForPatientRequestType) (invocationOnMock.getArguments()[1]);
+
+                assertEquals(pe.patientId, req.getPatientId());
+                assertEquals(ctx.currentAssignment.careProviderHsaId, req.getCareProviderId());
+
+                GetConsentsForPatientResponseType response = queryResultGetConsentsForPatient(hasConsent, emergency);
+
+                return response;
+            }
+        };
+    }
+
     private static RegisterExtendedConsentResponseType establishResponse(boolean success) {
         RegisterExtendedConsentResponseType resp = new RegisterExtendedConsentResponseType();
         ResultType result = new ResultType();
@@ -96,7 +145,6 @@ public class ConsentSpec {
                 assertEquals(pe.getPatientId(), req.getPatientId());
                 assertEquals(ctx.currentAssignment.careProviderHsaId, req.getCareProviderId());
                 assertEquals(ctx.currentAssignment.careUnitHsaId, req.getCareUnitId());
-                assertEquals(ctx.employeeHsaId, req.getEmployeeId());
                 assertNotNull(req.getRegistrationAction().getRegistrationDate());
                 assertNotNull(req.getEndDate());
                 assertNotNull(req.getAssertionId());
