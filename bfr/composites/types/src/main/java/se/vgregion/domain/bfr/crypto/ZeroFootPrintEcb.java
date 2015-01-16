@@ -24,7 +24,7 @@ public class ZeroFootPrintEcb {
     private static final String KEY_SPEC_TYPE = "DESede";
     private static final String CRYPTO = "DESede/ECB/PKCS7Padding";
     private static final String STUDY_UID = "<study-uid>";
-    private static final String USER_NAME = "<user-name>";
+    private static final String USER_NAME = "<user-name>"; // hsa-id
     private static final String PASSWORD = "<password>";
     private static final String TIME = "<datetime-created>";
     private static final String PATTERN =  "viewall&sui="+STUDY_UID+"&un="+USER_NAME+"&custom="+USER_NAME+"&pw="+PASSWORD+"|"+TIME;

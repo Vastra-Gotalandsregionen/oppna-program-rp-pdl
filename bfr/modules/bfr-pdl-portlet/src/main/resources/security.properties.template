@@ -2,6 +2,7 @@
 
 # Mawell Zero Footprint
 ZFP_HOST=<your.ip.or.domain>
+ZFP_HOST_SJUNET=<your.ip.or.domain>
 
 # ZFP ECB
 zfp.password=<password.to.access.zfp>
@@ -9,4 +10,5 @@ zfp.ecbkey=<ecb.encryption.key>
 
 # Url with encrypted token
 # 0 = encrypted key to the end of URL
-zfp.url=http://${ZFP_HOST}/ZFP?lights=off&mode=Inbound#pl=
+zfp.url=https://${ZFP_HOST}/ZFP?lights=off&mode=Inbound#pl=
+zfp.url.sjunet=https://${ZFP_HOST_SJUNET}/ZFP?lights=off&mode=Inbound#pl=

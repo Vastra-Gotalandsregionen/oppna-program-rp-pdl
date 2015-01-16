@@ -17,13 +17,17 @@ public class ZeroFootPrintUrls {
     @Value("${zfp.url}")
     private String zfpUrl;
 
+    @Value("${zfp.url.sjunet}")
+    private String zfpUrlSjunet;
+
     @Value("${zfp.password}")
     private String zfpPassword;
 
     @Value("${zfp.ecbkey}")
     private String zfpKey;
 
-    public WithOutcome<Referral> addZfpUrls(WithOutcome<Referral> referralDetails, String employeeId) {
+    public WithOutcome<Referral> addZfpUrls(WithOutcome<Referral> referralDetails, String employeeId,
+                                            boolean sjunetAccess) {
         if(referralDetails.success) {
             ArrayList<Study> studies = new ArrayList<Study>();
             for(Study study : referralDetails.value.studies) {
@@ -37,7 +41,7 @@ public class ZeroFootPrintUrls {
                             zfpKey);
 
                     if(url.success) {
-                        urls.add(zfpUrl + url.value);
+                        urls.add(sjunetAccess ? zfpUrlSjunet : zfpUrl + url.value);
                     }
 
                 }

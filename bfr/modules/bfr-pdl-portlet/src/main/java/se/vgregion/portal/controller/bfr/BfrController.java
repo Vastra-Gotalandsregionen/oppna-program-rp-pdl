@@ -1,5 +1,6 @@
 package se.vgregion.portal.controller.bfr;
 
+import com.liferay.portal.util.PortalUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import se.vgregion.service.bfr.ZeroFootPrintUrls;
 import javax.portlet.ActionResponse;
 import javax.portlet.Event;
 import javax.portlet.EventRequest;
+import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,6 +65,7 @@ public class BfrController {
 
     @ActionMapping("showReferral")
     public void showReferral(
+            PortletRequest request,
             @RequestParam String requestId,
             @RequestParam boolean expand,
             ActionResponse response
@@ -75,7 +78,10 @@ public class BfrController {
 
                 WithOutcome<Referral> referralDetails = radiologySource.requestByBrokerId(ref.infoBrokerId);
 
-                referralDetails = zfpUrls.addZfpUrls(referralDetails, pdlTicket.userContext.employeeHsaId);
+                boolean isSjunetAccess = isSjunetRequest(request);
+
+                referralDetails = zfpUrls.addZfpUrls(referralDetails, pdlTicket.userContext.employeeHsaId,
+                        isSjunetAccess);
 
                 state.setCurrentReferral(referralDetails);
             } else {
@@ -84,6 +90,17 @@ public class BfrController {
 
             response.setRenderParameter("view", "view");
         }
+    }
+
+    protected boolean isSjunetRequest(PortletRequest request) {
+        boolean isSjunetAccess;
+        String serverName = PortalUtil.getHttpServletRequest(request).getServerName();
+        if (serverName.toLowerCase().contains("vgregion.sjunet.org")) {
+            isSjunetAccess = true;
+        } else {
+            isSjunetAccess = false;
+        }
+        return isSjunetAccess;
     }
 
     @EventMapping("{http://pdl.portalen.vgregion.se/events}pctx.reset")
