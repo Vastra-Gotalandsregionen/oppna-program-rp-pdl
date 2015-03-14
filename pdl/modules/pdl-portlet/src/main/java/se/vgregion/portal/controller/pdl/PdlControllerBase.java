@@ -74,9 +74,6 @@ public abstract class PdlControllerBase {
     @Autowired
     protected LogRepo logRepo;
     @Autowired
-    @Qualifier("MockAccessControl")
-    protected AccessControl accessControl;
-    @Autowired
     @Qualifier("CareAgreementMock")
     protected CareAgreement careAgreement;
     @Autowired
@@ -616,11 +613,13 @@ public abstract class PdlControllerBase {
         }
 
         if (hsaId.success) {
-            return accessControl.getContextByEmployeeId(hsaId.value);
+            return getAccessControl().getContextByEmployeeId(hsaId.value);
         } else {
             return hsaId.mapValue(new PdlContext("", "", new TreeMap<String, Assignment>()));
         }
     }
+
+    protected abstract AccessControl getAccessControl();
 
     @Override
     public String toString() {
@@ -629,7 +628,7 @@ public abstract class PdlControllerBase {
                 ", state=" + state +
                 ", systems=" + systems +
                 ", logRepo=" + logRepo +
-                ", accessControl=" + accessControl +
+                ", accessControl=" + getAccessControl() +
                 ", careAgreement=" + careAgreement +
                 '}';
     }

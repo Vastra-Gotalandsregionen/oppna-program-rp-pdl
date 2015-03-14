@@ -54,6 +54,10 @@ import java.util.*;
 public class PdlAdminController extends PdlControllerBase {
     private static final Logger LOGGER = LoggerFactory.getLogger(PdlController.class.getName());
 
+    @Autowired
+    @Qualifier("MockAccessControl")
+    protected AccessControl accessControl;
+
     @RenderMapping
     public String enterSearchPatient(PortletRequest request) {
         state.reset(); // Make sure state is reset when user navigates to the start page.
@@ -75,5 +79,10 @@ public class PdlAdminController extends PdlControllerBase {
             Model model
     ) throws IOException {
         searchPatientInformationCommon(patientIdType, currentAssignment, reset, request, response, model, patientId);
+    }
+
+    @Override
+    protected AccessControl getAccessControl() {
+        return accessControl;
     }
 }

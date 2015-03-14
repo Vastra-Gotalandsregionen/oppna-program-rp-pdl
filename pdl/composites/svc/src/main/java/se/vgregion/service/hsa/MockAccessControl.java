@@ -61,7 +61,8 @@ public class MockAccessControl implements AccessControl {
                 new Assignment(
                         SJF,
                         "Sammanhållen Journalföring",
-                        "SE5565189692-0001",
+                        "SE5565189692-13R",
+//                        "SE5565189692-0001",
                         "SE5565189692-E0123",
                         "careProviderDisplayNameOther",
                         "careUnitDisplayNameOther",

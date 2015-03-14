@@ -4,6 +4,8 @@ import com.liferay.portal.util.Portal;
 import com.liferay.portal.util.PortalUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,7 @@ import org.springframework.web.portlet.bind.annotation.RenderMapping;
 import se.vgregion.domain.decorators.*;
 import se.vgregion.domain.pdl.PdlContext;
 import se.vgregion.portal.controller.pdl.PdlControllerBase;
+import se.vgregion.service.search.AccessControl;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -27,6 +30,10 @@ public class PdlController extends PdlControllerBase {
 
     private Portal portal;
     private static final String SESSION_PATIENT_ID = "SESSION_PATIENT_ID";
+
+    @Autowired
+    @Qualifier("HsaAccessControl")
+    protected AccessControl accessControl;
 
     public PdlController() {
         this.portal = PortalUtil.getPortal();
@@ -99,4 +106,8 @@ public class PdlController extends PdlControllerBase {
         return "errorPage";
     }
 
+    @Override
+    protected AccessControl getAccessControl() {
+        return accessControl;
+    }
 }
