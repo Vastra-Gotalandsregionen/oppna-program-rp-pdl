@@ -1,4 +1,4 @@
-<td id="wikicontent" class="psdescription">
+
     <h1><a name="Smidig_PDL-anpassning_av_vårdapplikationer"></a>Smidig PDL-anpassning av vårdapplikationer<a
             href="#Smidig_PDL-anpassning_av_vårdapplikationer" class="section_anchor"></a></h1>
 
@@ -33,8 +33,9 @@
 
     <p>Guide för anslutande system: <a href="https://code.google.com/p/oppna-program-rp-pdl/wiki/Ansutningsguide"
                                        rel="nofollow">Anslutningsguide</a></p>
-</td>
 
-
-<h2>ZFPBrowserWithEncryptedPayload.zip</h2>
-The ZFPBrowserWithEncryptedPayload.zip file contains code which illustrates how the ZFP token string may look like. The code also shows how to generate the secret key from a password.
+    <h2>ZFPBrowserWithEncryptedPayload.zip</h2>
+    <p>
+        The ZFPBrowserWithEncryptedPayload.zip file contains code which illustrates how the ZFP token string may look
+        like. The code also shows how to generate the secret key from a password.
+    </p>
