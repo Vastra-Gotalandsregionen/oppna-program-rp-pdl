@@ -1,1 +1,0 @@
-The ZFPBrowserWithEncryptedPayload.zip file contains code which illustrates how the ZFP token string may look like. The code also shows how to generate the secret key from a password.
