@@ -29,7 +29,7 @@ public class PdlController extends PdlControllerBase {
     private static final Logger LOGGER = LoggerFactory.getLogger(PdlController.class.getName());
 
     private Portal portal;
-    private static final String SESSION_PATIENT_ID = "SESSION_PATIENT_ID";
+    private static final String SESSION_PATIENT_ID = "sessionPatientId";
 
     @Autowired
     @Qualifier("HsaAccessControl")
@@ -79,7 +79,7 @@ public class PdlController extends PdlControllerBase {
             ActionResponse response,
             Model model
     ) throws IOException {
-        String patientId = (String) model.asMap().get("SESSION_PATIENT_ID");
+        String patientId = (String) model.asMap().get(SESSION_PATIENT_ID);
         searchPatientInformationCommon(patientIdType, currentAssignment, reset, request, response, model, patientId);
     }
 

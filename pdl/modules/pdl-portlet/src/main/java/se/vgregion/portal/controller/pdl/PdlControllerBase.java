@@ -120,6 +120,7 @@ public abstract class PdlControllerBase {
 
             if (isValidPatientId) {
 
+                // Request to web service happens inside here.
                 WithOutcome<WithPatient<ArrayList<WithInfoType<CareSystem>>>> patientCareSystems =
                         systems.byPatientId(ctx, patientIdTrimmed, pidtype);
 
@@ -148,6 +149,7 @@ public abstract class PdlControllerBase {
 
                     // Security Services only supports Social Security Number or Samordningsnummer.
                     if (pidtype == InfobrokerPersonIdType.PAT_PERS_NR || pidtype == InfobrokerPersonIdType.PAT_SAMO_NR) {
+                        // Web service calls to all security services happens here.
                         newReport = fetchPdlReport(ctx, careSystems, timeUnits, duration, ctx.assignments.get(currentAssignment));
                     } else {
                         newReport = PdlReport.defaultReport(careSystems);

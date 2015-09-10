@@ -86,7 +86,11 @@ public class HsaAccessControl implements AccessControl {
                                 access
                         );
 
-                        boolean hasAgreement = agreementService.hasCareAgreement(assignment.getCareProviderHsaId());
+                        String careProviderHsaId = assignment.getCareProviderHsaId();
+
+                        boolean hasAgreement = agreementService.hasCareAgreement(careProviderHsaId);
+
+                        LOGGER.info(careProviderHsaId + ": hasCareAgreement = " + hasAgreement);
 
                         if (hasAgreement) {
                             assignments.put(miu.getHsaIdentity(), assignment);

@@ -16,28 +16,28 @@
   <!-- The name value containing the URL pattern can NOT be loaded from a property file -->
   <http:conduit name="https://rtjptest.vgregion.se.*">
     <http:tlsClientParameters disableCNCheck="true">
-      <sec:keyManagers keyPassword="${pdl.tjp.keystore.password}">
+      <sec:keyManagers keyPassword="${pdl.tjp-test.keystore.password}">
         <sec:keyStore
                 type="${pdl.tjp.keystore.type}"
-                password="${pdl.tjp.keystore.password}"
-                file="${user.home}/.rp/pdl/${pdl.tjp.keystore.name}"/>
+                password="${pdl.tjp-test.keystore.password}"
+                file="${user.home}/.rp/pdl/${pdl.tjp-test.keystore.name}"/>
       </sec:keyManagers>
       <sec:trustManagers>
-        <sec:certStore file="${user.home}/.rp/pdl/${pdl.tjp.trustcert.name}" />
+        <sec:certStore file="${user.home}/.rp/pdl/${pdl.tjp-test.trustcert.name}" />
       </sec:trustManagers>
     </http:tlsClientParameters>
   </http:conduit>
 
   <http:conduit name="https://esbtest.vgregion.se.*">
     <http:tlsClientParameters disableCNCheck="true">
-      <sec:keyManagers keyPassword="${pdl.tjp.keystore.password}">
+      <sec:keyManagers keyPassword="${pdl.tjp-test.keystore.password}">
         <sec:keyStore
                 type="${pdl.tjp.keystore.type}"
-                password="${pdl.tjp.keystore.password}"
-                file="${user.home}/.rp/pdl/${pdl.tjp.keystore.name}"/>
+                password="${pdl.tjp-test.keystore.password}"
+                file="${user.home}/.rp/pdl/${pdl.tjp-test.keystore.name}"/>
       </sec:keyManagers>
       <sec:trustManagers>
-        <sec:certStore file="${user.home}/.rp/pdl/${pdl.hsa.trustcert.name}" />
+        <sec:certStore file="${user.home}/.rp/pdl/${pdl.hsa-test.trustcert.name}" />
       </sec:trustManagers>
     </http:tlsClientParameters>
   </http:conduit>
