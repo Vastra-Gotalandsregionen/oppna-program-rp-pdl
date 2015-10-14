@@ -30,6 +30,8 @@
     <ehr.patientconsent.version>1</ehr.patientconsent.version>
     <ehr.patientrelationship.version>1</ehr.patientrelationship.version>
     <ehr.log.version>1</ehr.log.version>
+    <compileSource>1.7</compileSource>
+    <compileTarget>1.7</compileTarget>
   </properties>
 
   <!--NB! SCM config below assumes system name equals VGR subversion/googlecode project name! -->
@@ -48,6 +50,13 @@
             <include>**/*.java</include>
           </includes>
         </configuration>
+      </plugin>
+
+      <!-- The WAR Plugin is responsible for collecting all artifact dependencies, classes and resources of the web
+        application and packaging them into a web application archive. -->
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.5</version>
       </plugin>
     </plugins>
   </build>

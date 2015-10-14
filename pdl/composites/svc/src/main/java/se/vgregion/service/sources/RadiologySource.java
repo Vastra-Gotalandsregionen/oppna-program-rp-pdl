@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.w3._2005._08.addressing.AttributedURIType;
 import riv.ehr.ehrexchange.patienthistory._1.rivtabp20.PatientHistoryResponderInterface;
 import se.ecare.ib.exportmessage.ExternalId;
+import se.ecare.ib.exportmessage.Location;
+import se.ecare.ib.exportmessage.LocationData;
 import se.vgregion.domain.decorators.Maybe;
 import se.vgregion.domain.decorators.WithInfoType;
 import se.vgregion.domain.decorators.WithOutcome;
@@ -45,8 +47,15 @@ public class RadiologySource implements CareSystems {
     @Qualifier("hsaUnitMapping")
     private HsaUnitMapper hsaMapper;
 
-    @Resource(name = "hsaOrgmaster")
-    private HsaWsResponderInterface hsaOrgmaster;
+    public RadiologySource() {
+    }
+
+    public RadiologySource(
+            PatientHistoryResponderInterface infoBroker,
+            HsaUnitMapper hsaMapper) {
+        this.infoBroker = infoBroker;
+        this.hsaMapper = hsaMapper;
+    }
 
     private ExecutorService executorService =
             Executors.newCachedThreadPool(new ThreadFactory() {
@@ -278,14 +287,31 @@ public class RadiologySource implements CareSystems {
     private Maybe<String> extractHsaUnitId(Request req) {
         Maybe<String> hsaUnitId = Maybe.none();
 
-        boolean hasData = req.getPlacer() != null &&
-                req.getPlacer().getLocationData() != null &&
-                req.getPlacer().getLocationData().getExternalIds() != null;
+        Location placer = req.getPlacer();
 
-        if(hasData) {
-            for( ExternalId eid : req.getPlacer().getLocationData().getExternalIds().getExternalId()) {
+        // Check in "locationData" first.
+        if (placer != null && placer.getLocationData() != null && placer.getLocationData().getExternalIds() != null) {
+
+            for( ExternalId eid : placer.getLocationData().getExternalIds().getExternalId()) {
                 if(eid.getType().getCode().equals(HSA_UNIT)) {
                     hsaUnitId = Maybe.some(eid.getValue());
+                }
+            }
+        }
+
+        // If not found in "locationData" it may be found in "linkedLocationData".
+        if (hsaUnitId.isEmtpy) {
+            // Has no data yet.
+            if (placer.getLinkedLocationData() != null) {
+                for (LocationData linkedLocationData : placer.getLinkedLocationData()) {
+                    if (linkedLocationData.getExternalIds() != null) {
+                        ExternalId latestInLargestScope = linkedLocationData.getExternalIds().getLatestInLargestScope();
+
+                        if (latestInLargestScope.getType().getCode().equalsIgnoreCase(HSA_UNIT)) {
+                            hsaUnitId = Maybe.some(latestInLargestScope.getValue());
+                            break; // We break on first hit (hopefully there is only one linkedLocataData with HSA ID).
+                        }
+                    }
                 }
             }
         }

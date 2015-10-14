@@ -177,9 +177,9 @@ public abstract class PdlControllerBase {
             } else {
                 state.setInvalid(true);
                 response.setRenderParameter("view", "view");
+                throw new RuntimeException("Invalid patient id.");
             }
         } else {
-
             state.setCurrentProgress(PdlProgress.firstStep().nextStep());
             response.setRenderParameter("view", "pickInfoResource");
         }

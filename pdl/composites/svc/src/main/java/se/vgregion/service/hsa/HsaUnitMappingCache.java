@@ -17,7 +17,16 @@ import urn.riv.hsa.HsaWsResponder.v3.CareUnitType;
 import urn.riv.hsa.HsaWsResponder.v3.GetCareUnitListResponseType;
 import urn.riv.hsa.HsaWsResponder.v3.GetCareUnitResponseType;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
+import java.util.Hashtable;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -65,6 +74,8 @@ public class HsaUnitMappingCache implements HsaUnitMapper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HsaUnitMappingCache.class);
 
+    private static final String HEALTH_CARE_UNIT_CLASS_IN_LDAP = "hsaHealthCareUnit";
+
     private static AtomicReference<ConcurrentHashMap<CareProviderUnitHsaId, CareProviderUnit>> careProviderUnitsByUnitHsaId;
 
     static {
@@ -75,11 +86,38 @@ public class HsaUnitMappingCache implements HsaUnitMapper {
     @Resource(name = "hsaOrgmaster")
     private HsaWsResponderInterface hsaOrgmaster;
 
+    @Resource(name = "hsaLdapProperties")
+    private Hashtable hsaLdapProperties;
+
     @Autowired
     private CareAgreement careAgreements;
 
     @Value("${pdl.orgMasterServicesHsaId}")
     private String orgmasterHsaId;
+
+    private DirContext dirContext;
+
+    public HsaUnitMappingCache() {
+    }
+
+    public HsaUnitMappingCache(
+            HsaWsResponderInterface hsaOrgmaster,
+            CareAgreement careAgreement,
+            String orgmasterHsaId) {
+        this.hsaOrgmaster = hsaOrgmaster;
+        this.careAgreements = careAgreement;
+        this.orgmasterHsaId = orgmasterHsaId;
+    }
+
+    @PostConstruct
+    public void init() {
+
+        try {
+            dirContext = new InitialDirContext(hsaLdapProperties);
+        } catch (NamingException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
 
     public static void doCacheUpdate(Set<String> careProviders, HsaWsResponderInterface hsaOrgmaster, String logicalAddressHsaId) {
 
@@ -137,6 +175,7 @@ public class HsaUnitMappingCache implements HsaUnitMapper {
         WithOutcome<Maybe<CareProviderUnit>> outcome = WithOutcome.success(emptyResult);
 
         try {
+            // Find the careUnitHsaId of which the unit with hsaUnitId is a member of.
             GetCareUnitResponseType careUnitResponse = hsaOrgmaster.getCareUnit(
                     HsaWsUtil.getAttribute(orgmasterHsaId),
                     HsaWsUtil.getAttribute(null),
@@ -156,6 +195,33 @@ public class HsaUnitMappingCache implements HsaUnitMapper {
                         toCareProviderUnit(careProviderHsaId, careUnitHsaId);
 
                 outcome = WithOutcome.success(careProviderUnit);
+            } else {
+                // The hsaUnitId isn't a member unit
+
+                // We take a chance that we find it in our cache under VGR.
+                CareProviderUnit careProviderUnitFromCache = careProviderUnitsByUnitHsaId.get().get(
+                        new CareProviderUnitHsaId(CareAgreement.VGR, hsaUnitId));
+
+                if (careProviderUnitFromCache != null) {
+                    String careProviderHsaId = careProviderUnitFromCache.careProviderHsaId;
+                    String careUnitHsaId = careProviderUnitFromCache.careUnitHsaId;
+
+                    Maybe<CareProviderUnit> careProviderUnit =
+                            toCareProviderUnit(careProviderHsaId, careUnitHsaId);
+
+                    outcome = WithOutcome.success(careProviderUnit);
+                } else {
+                    // Last resort - lookup in HSA LDAP
+                    LOGGER.info("Last resort for " + hsaUnitId);
+
+                    CareProviderUnit unit = lookupInLdap(hsaUnitId);
+
+                    if (unit != null) {
+                        Maybe<CareProviderUnit> some = Maybe.some(unit);
+
+                        outcome = WithOutcome.success(some);
+                    }
+                }
             }
         } catch (HsaWsFault hsaWsFault) {
             outcome = WithOutcome.remoteFailure(emptyResult);
@@ -163,6 +229,63 @@ public class HsaUnitMappingCache implements HsaUnitMapper {
         }
 
         return outcome;
+    }
+
+    public CareProviderUnit lookupInLdap(String hsaUnitId) {
+
+        if (dirContext == null) {
+            LOGGER.warn("dirContext = null");
+            return null;
+        }
+
+        try {
+
+            SearchControls searchControls = new SearchControls();
+            searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+            NamingEnumeration<SearchResult> search = dirContext.search("", "hsaIdentity=" + hsaUnitId, searchControls);
+
+            if (search.hasMore()) {
+                SearchResult searchResult = search.next();
+                NamingEnumeration<?> objectclass = searchResult.getAttributes().get("objectclass").getAll();
+
+                while (objectclass.hasMore()) {
+                    String next = (String) objectclass.next();
+
+                    if (next.equals(HEALTH_CARE_UNIT_CLASS_IN_LDAP)) {
+                        // It is a health care unit
+
+                        String dnString = searchResult.getName();
+
+                        String healthCareUnitName = getSimpleName(dnString);
+
+                        String careProviderHsaId = (String) searchResult.getAttributes().get("hsaresponsiblehealthcareprovider").get();
+
+                        NamingEnumeration<SearchResult> searchCareProvider = dirContext.search("", "hsaIdentity=" + careProviderHsaId, searchControls);
+
+                        dnString = searchCareProvider.next().getName();
+
+                        String careProviderDisplayName = getSimpleName(dnString);
+
+                        CareProviderUnit unit = new CareProviderUnit(careProviderHsaId, careProviderDisplayName, hsaUnitId, healthCareUnitName);
+
+                        return unit;
+                    }
+                }
+            }
+        } catch (NamingException e) {
+            LOGGER.error(e.getMessage(), e);
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+
+        LOGGER.info("Didn't find careProviderUnit with HSA ID " + hsaUnitId);
+        return null;
+    }
+
+    private String getSimpleName(String dnString) {
+        Scanner scanner = new Scanner(dnString);
+        scanner.useDelimiter(",?[a-z]+="); // "ou=" and ",ou=" become delimiters so we step through everything between those matches.
+        return scanner.next(); // The string after the first "ou=" is the simple name.
     }
 
     @Override

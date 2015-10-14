@@ -3,16 +3,24 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:task="http://www.springframework.org/schema/task"
        xmlns:jaxws="http://cxf.apache.org/jaxws"
-       xmlns:cxf="http://cxf.apache.org/core"
+       xmlns:cxf="http://cxf.apache.org/core" xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
        http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
        http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
   <context:component-scan base-package="se.vgregion.service" />
 
+  <util:map id="hsaLdapProperties" map-class="java.util.Hashtable">
+    <entry key="java.naming.factory.initial" value="com.sun.jndi.ldap.LdapCtxFactory"/>
+    <entry key="java.naming.provider.url" value="${hsa.ldap.url}"/>
+    <entry key="com.sun.jndi.ldap.connect.pool" value="true"/>
+    <entry key="java.naming.security.principal" value="${hsa.ldap.user.dn}"/>
+    <entry key="java.naming.security.credentials" value="${hsa.ldap.user.password}"/>
+    <entry key="java.naming.ldap.factory.socket" value="se.vgregion.service.ldap.HsaSslSocketFactory"/>
+  </util:map>
 
   <jaxws:client id="checkBlocks"
                 serviceClass="se.riv.ehr.blocking.accesscontrol.checkblocks.v2.rivtabp21.CheckBlocksResponderInterface"

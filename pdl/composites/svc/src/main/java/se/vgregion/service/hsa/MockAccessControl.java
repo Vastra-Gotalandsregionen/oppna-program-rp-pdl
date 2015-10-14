@@ -18,8 +18,8 @@ public class MockAccessControl implements AccessControl {
     public static final String SJF = "SJF";
     public static final String VE = "VE";
     public static final String VG = "VG";
-    public static final String careProviderHsaId = "SE2321000131-E000000000001";
-    public static final String careUnitHsaId = "SE2321000131-E000000010252";
+    public static final String careProviderHsaId = "SE2321000131-E000000000001"; // VGR
+    public static final String careUnitHsaId = "SE2321000131-E000000010252"; // Arbetsterapi och Fysioterapi SkaS Skövde
 
     @Override
     public WithOutcome<PdlContext> getContextByEmployeeId(String hsaId) {
@@ -61,9 +61,10 @@ public class MockAccessControl implements AccessControl {
                 new Assignment(
                         SJF,
                         "Sammanhållen Journalföring",
-                        "SE5565189692-13R",
+                        "SE5565189692-15R", // Capio Lundby Närsjukhus
 //                        "SE5565189692-0001",
-                        "SE5565189692-E0123",
+                        "SE5567695209-5WP", // SE5567695209-5WP Ortopedienheten
+//                        "SE5565189692-E0123",
                         "careProviderDisplayNameOther",
                         "careUnitDisplayNameOther",
                         otherProviders
@@ -76,7 +77,7 @@ public class MockAccessControl implements AccessControl {
                         VG,
                         "Vård och behandling - Utökad",
                         careProviderHsaId,
-//                        "SE2321000131-E000000000774", // Verksamhet Kirurgi Sahlgrenska (där har Tian Testberg info)
+//                        "SE2321000131-E000000000774", // Verksamhet Kirurgi Sahlgrenska (där har Tian Testberg info) Vårdenheten Stämmer, får kolla o m Tian Testberg fortfarande har info där.
                         careUnitHsaId,
                         "careProviderDisplayNameSame",
                         "careUnitDisplayNameSame",
@@ -100,7 +101,6 @@ public class MockAccessControl implements AccessControl {
         return new PdlContext(
                 "Ludvig Läkare",
                 hsaId,
-//                "SE2321000131-P000000069215", // Susanne Lindqvist
                 assignments
 
         );

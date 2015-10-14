@@ -38,6 +38,12 @@
 
     <dependency>
       <groupId>se.vgregion.commons-util</groupId>
+      <artifactId>commons-util-core-bc-composite-security</artifactId>
+      <version>3.22</version>
+    </dependency>
+
+    <dependency>
+      <groupId>se.vgregion.commons-util</groupId>
       <artifactId>commons-util-core-bc-composite-svc-ldap</artifactId>
       <version>3.21</version>
     </dependency>

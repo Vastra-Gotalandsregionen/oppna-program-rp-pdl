@@ -115,6 +115,7 @@ Generation time : 2013-10-08 14:16:23 CEST
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-war-plugin</artifactId>
+            <version>2.5</version>
             <configuration>
               <webResources>
                 <resource>
