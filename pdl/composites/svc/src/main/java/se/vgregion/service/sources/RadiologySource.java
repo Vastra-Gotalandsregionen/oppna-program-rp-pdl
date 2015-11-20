@@ -252,7 +252,11 @@ public class RadiologySource implements CareSystems {
                     sb.append(examination.getCode().getDescription());
                     if (examinations.size() > 1) {
                         sb.append(" (");
-                        sb.append(examination.getNumberOfImages().intValue());
+                        if (examination.getNumberOfImages() != null) {
+                            sb.append(examination.getNumberOfImages().intValue());
+                        } else {
+                            sb.append("Okänt värde");
+                        }
                         sb.append(")");
                     }
 

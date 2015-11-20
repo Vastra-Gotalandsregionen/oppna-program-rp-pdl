@@ -23,7 +23,8 @@
                 file="${user.home}/.rp/pdl/${pdl.tjp-test.keystore.name}"/>
       </sec:keyManagers>
       <sec:trustManagers>
-        <sec:certStore file="${user.home}/.rp/pdl/${pdl.tjp-test.trustcert.name}" />
+        <sec:keyStore file="${user.home}/.rp/pdl/${pdl-siths-truststore.name}"
+                      password="${pdl-siths-truststore.password}" />
       </sec:trustManagers>
     </http:tlsClientParameters>
   </http:conduit>
@@ -37,7 +38,8 @@
                 file="${user.home}/.rp/pdl/${pdl.tjp-test.keystore.name}"/>
       </sec:keyManagers>
       <sec:trustManagers>
-        <sec:certStore file="${user.home}/.rp/pdl/${pdl.hsa-test.trustcert.name}" />
+        <sec:keyStore file="${user.home}/.rp/pdl/${pdl-siths-truststore.name}"
+                      password="${pdl-siths-truststore.password}" />
       </sec:trustManagers>
     </http:tlsClientParameters>
   </http:conduit>
@@ -51,7 +53,8 @@
                 file="${user.home}/.rp/pdl/${pdl.tjp.keystore.name}"/>
       </sec:keyManagers>
       <sec:trustManagers>
-        <sec:certStore file="${user.home}/.rp/pdl/${pdl.tjp.trustcert.name}" />
+        <sec:keyStore file="${user.home}/.rp/pdl/${pdl-siths-truststore.name}"
+                      password="${pdl-siths-truststore.password}" />
       </sec:trustManagers>
     </http:tlsClientParameters>
   </http:conduit>
@@ -65,7 +68,8 @@
                 file="${user.home}/.rp/pdl/${pdl.tjp.keystore.name}"/>
       </sec:keyManagers>
       <sec:trustManagers>
-        <sec:certStore file="${user.home}/.rp/pdl/${pdl.hsa.trustcert.name}" />
+        <sec:keyStore file="${user.home}/.rp/pdl/${pdl-siths-truststore.name}"
+                      password="${pdl-siths-truststore.password}" />
       </sec:trustManagers>
     </http:tlsClientParameters>
   </http:conduit>

@@ -7,8 +7,9 @@ pdl.tjp.keystore.name=<your.keystore>.p12
 pdl.tjp.keystore.password=<your.store.password>
 pdl.tjp.keystore.keypass=<your.key.password>
 
-# Used when client certificates are needed to connect to security services
-pdl.tjp.trustcert.name=<your.client.cert>.pem
+# Used to determine trust when connecting to security services
+pdl-siths-truststore.name=<your.truststore.name>
+pdl-siths-truststore.password=<your.truststore.password>
 
 # Signing XML-data structures
 pdl.sign.keystore.name=
