@@ -603,13 +603,13 @@ public abstract class PdlControllerBase {
         WithOutcome<String> hsaId;
         if (hsaIdFromRequest != null && !"".equals(hsaIdFromRequest)) {
             hsaId = WithOutcome.success(hsaIdFromRequest);
-        } else if (userUtil.getUserId(request).length() == 6) { // VGR-ID is 6 characters
-            // Try looking it up in ldap
-            String vgrId = userUtil.getUserId(request);
-            hsaId = ldapService.getHsaIdByVgrId(vgrId);
         } else if (userUtil.getUserId(request).toUpperCase().startsWith("SE")) {
             // It's an HSA ID
             hsaId = WithOutcome.success(userUtil.getUserId(request));
+        } else if (userUtil.getUserId(request).length() >= 6) { // VGR-ID is 6 characters
+            // Try looking it up in ldap
+            String vgrId = userUtil.getUserId(request);
+            hsaId = ldapService.getHsaIdByVgrId(vgrId);
         } else {
             hsaId = WithOutcome.unfulfilled("no value");
         }

@@ -7,6 +7,9 @@ pdl.tjp.keystore.name=<your.keystore>.p12
 pdl.tjp.keystore.password=<your.store.password>
 pdl.tjp.keystore.keypass=<your.key.password>
 
+pdl.tjp-test.keystore.name=
+pdl.tjp-test.keystore.password=
+
 # Used to determine trust when connecting to security services
 pdl-siths-truststore.name=<your.truststore.name>
 pdl-siths-truststore.password=<your.truststore.password>

@@ -119,6 +119,15 @@ public class HsaUnitMappingCache implements HsaUnitMapper {
         }
     }
 
+    /**
+     * Fetches all care units for each care provider given as argument from webservice. For each care unit found an
+     * object instance is stored in a map where the key is the concatenation of its care provider HSA ID and its own
+     * HSA ID.
+     *
+     * @param careProviders
+     * @param hsaOrgmaster
+     * @param logicalAddressHsaId
+     */
     public static void doCacheUpdate(Set<String> careProviders, HsaWsResponderInterface hsaOrgmaster, String logicalAddressHsaId) {
 
         ConcurrentHashMap<CareProviderUnitHsaId, CareProviderUnit> replaceCareProviderUnits =
@@ -231,6 +240,14 @@ public class HsaUnitMappingCache implements HsaUnitMapper {
         return outcome;
     }
 
+    /**
+     * Searches for an entity with the given HSA ID. If found it is checked whether the entity is hsaHealthCareUnit.
+     * Then it is assumed it has an attribute "hsaresponsiblehealthcareprovider". Together the results are used to
+     * create a {@link CareProviderUnit} which is returned.
+     *
+     * @param hsaUnitId The HSA ID of (hopefully) an hsaHealthCareUnit
+     * @return a {@link CareProviderUnit}
+     */
     public CareProviderUnit lookupInLdap(String hsaUnitId) {
 
         if (dirContext == null) {
